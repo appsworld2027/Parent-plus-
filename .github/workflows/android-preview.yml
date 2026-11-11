@@ -7,8 +7,10 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: android-preview
-  cancel-in-progress: false
+  # A new group isolates SDK20 builds from unfinished legacy diagnostic runs.
+  # Later pushes on the same branch supersede an obsolete preview.
+  group: android-preview-sdk20-v2-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[diagnose-only]')
