@@ -1,0 +1,17 @@
+name: Inspect failed Android build
+on:
+  push:
+    branches: [codex/coach-foundation]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  diagnose:
+    if: contains(github.event.head_commit.message, '[diagnose-only]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        with:
+          script: await require('./scripts/diagnose-build.cjs')({github, context}, 43094369260)
