@@ -72,3 +72,7 @@ The local foundation passes its implemented automated checks and Android bundlin
 ### SDK bootstrap repair
 
 Owner screenshots confirm an interrupted secondary Android CLI download, before native compilation. Official self-contained command-line tools 20.0 successfully installed platform 37.0 in a clean local probe. Six installer regression checks and actionlint pass. The updated workflow records sanitized SDK-stage failures and retries only transient SDK transfers (at most three attempts). A new remote build is required before claiming an installable APK.
+
+- Follow-up: the complete replacement installer exited successfully against the owned local SDK and verified platform 37.0, build tools 37.0.0, NDK 27b and CMake 3.22.1. Google tools emit an XML-version warning, but package installation and verification complete successfully.
+- Repair source commit: `148546abc33ff38c18a6562df3bef867e1077f76`, pushed to `codex/coach-foundation`. Its remote start record has not yet appeared on `build-status`; push acceptance alone does not prove Actions execution. APK generation remains unconfirmed.
+- Owner fallback without admin changes: open https://github.com/appsworld2027/Parent-plus-/actions/workflows/android-preview.yml and use **Run workflow**, selecting `codex/coach-foundation`, if there is no new run. Re-running the old failed run uses its old source and does not include this repair.
