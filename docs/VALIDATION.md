@@ -20,7 +20,7 @@ Date: 11 November 2026. App version: 0.1.0. Validation is current-instance evide
 - Supabase connectivity from this cloud instance remains blocked by network policy. No schema, auth workflow, or API operation is claimed as verified.
 - Supabase Auth and application tables, gateway integration, and actual teaching/fee workflows are not implemented in Module 0.
 - Diagnostics are sanitized, bounded, in-memory reports. No remote ingestion, persisted support logs, native crash monitoring, or continuous support service exists yet.
-- GitHub Actions workflow is present but has not executed on GitHub. Changes are local and uncommitted; no push or pull request has been made.
+- GitHub Actions workflow is present; its remote execution status has not been inspected. Source was committed and pushed successfully to `codex/coach-foundation`. No pull request or merge to `main` has been made.
 - Dependency compatibility was taken from the installed official SDK map. External Expo/React Native Directory checks were unavailable; no claim is made that those external checks passed.
 
 ## Readiness decision

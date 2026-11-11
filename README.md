@@ -38,7 +38,7 @@ On machines with system Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/
 
 `export:android` verifies Metro's Android bundle; it does not create an installable APK. A native APK requires build/signing setup and validation on a device. `eas.json` defines an internal APK profile and a production AAB profile; no Expo account/project has been linked or build submitted.
 
-GitHub Actions checks are prepared in `.github/workflows/checks.yml`; they have not executed on GitHub until the workflow is pushed and run there.
+GitHub Actions checks are prepared in `.github/workflows/checks.yml`. Source has been pushed to `codex/coach-foundation`; remote workflow results have not yet been inspected. Local test results are documented separately.
 
 ## Diagnostics
 

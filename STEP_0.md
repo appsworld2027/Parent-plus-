@@ -40,7 +40,7 @@ No live transaction or real parent payment is needed in Step 0.
 
 The selected repository is `appsworld2027/Parent-plus-`. Its read access was verified during onboarding. No new repository is needed. Push/PR and CI capabilities must be checked separately before claiming changes have been published.
 
-Documents currently created in the workspace are not automatically pushed to GitHub. Codex will report local, committed, pushed, and PR states explicitly.
+Work does not automatically sync from this cloud workspace to your computer. The app, plans, migrations, and tests have now been committed and pushed to GitHub branch `codex/coach-foundation`. Select that branch on GitHub or fetch it into your local checkout. It has not been merged into `main`, and no pull request has been created.
 
 ## E. What Codex builds as Module 0
 
