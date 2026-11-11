@@ -76,3 +76,12 @@ Owner screenshots confirm an interrupted secondary Android CLI download, before 
 - Follow-up: the complete replacement installer exited successfully against the owned local SDK and verified platform 37.0, build tools 37.0.0, NDK 27b and CMake 3.22.1. Google tools emit an XML-version warning, but package installation and verification complete successfully.
 - Repair source commit: `148546abc33ff38c18a6562df3bef867e1077f76`, pushed to `codex/coach-foundation`. Its remote start record has not yet appeared on `build-status`; push acceptance alone does not prove Actions execution. APK generation remains unconfirmed.
 - Owner fallback without admin changes: open https://github.com/appsworld2027/Parent-plus-/actions/workflows/android-preview.yml and use **Run workflow**, selecting `codex/coach-foundation`, if there is no new run. Re-running the old failed run uses its old source and does not include this repair.
+
+## First successful Android APK — 12 November 2026
+
+- GitHub run [43100171391](https://github.com/appsworld2027/Parent-plus-/actions/runs/43100171391) published `success` at 2026-11-11T21:16:46.812Z for source `e4256b55eae46571bf9c46d04079f9f65be038e6`, approximately 10m29s after its start record. Retrieved proactively at 21:21:36Z.
+- [Download preview artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43100171391/artifacts/13892256981). GitHub packages it as a ZIP; extract `ParentPlus-Coach-Preview.apk`. Artifact retention is 14 days. Requires repository access.
+- APK package `com.parentplus.coach.preview`, ARM64, development signed, 26,298,186 bytes. The build script ran `apksigner verify --verbose` before upload. SHA-256: `3d13fbd1bced10d4c5c7dbb40ddb9431c5c7bfe391137b8796a43f5762f30ce2`. Source SHA matches the successful workflow report.
+- Real project's settings-only probe passed again: reachable, public key accepted, email enabled, email confirmation required, anonymous profile reads denied. This is not a real-user login test.
+- Device installation, secure-storage behavior, email confirmation/recovery deep links, real login, roster migration 002 deployment and live roster writes remain unverified. This is an internal preview, not a production or Play Store release.
+- Monitoring stops on this terminal success; there is no continuing background monitor. Next check is installation and email authentication on an actual Android device.

@@ -65,3 +65,5 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - Validation: actionlint validates the workflow. A start record for the new source revision is required before claiming it executed; a successful APK report is separately required before claiming the build works. Do not create repeated diagnostic workflows if this test remains queued.
 
 - Observed result: after only the concurrency isolation change, GitHub published a real `running` record for source e4256b55eae46571bf9c46d04079f9f65be038e6 at 2026-11-11T21:06:17.910Z, run https://github.com/appsworld2027/Parent-plus-/actions/runs/43100171391. This strongly implicates the legacy group as the queue blockage. It does not establish which old run held it, explain the UI cancellation failures, or prove APK success.
+
+- BUILD-002/BUILD-003 follow-up: run 43100171391 completed successfully and uploaded a signature-verified APK after the installer and queue isolation repairs. Both repairs are verified for this run. Legacy cancellation errors were not independently diagnosed and do not block this preview artifact.
