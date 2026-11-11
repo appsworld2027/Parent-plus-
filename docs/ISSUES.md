@@ -50,3 +50,9 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - Inline discard/archive confirmations could appear above or below the current scroll position.
 - Replaced with modal dialogs, dismissed the keyboard when requesting navigation, and reset scroll on form/tab changes. Navigation remains blocked while a save is pending.
 - Validation: all 16 browser checks pass, including in-viewport confirmation assertions. Native phone keyboard/back-button behavior still needs device testing.
+
+## BUILD-002 — Interrupted secondary Android CLI bootstrap
+
+- GitHub run 43094369260 downloaded the command-line tools archive, then failed inside the new SDK launcher's secondary download: `gzip decompression failed: Peer disconnected`. App compilation never started. Owner screenshots establish this cause.
+- Correction: use Google's self-contained command-line tools 20.0, verified against its official repository SHA-1, while keeping the app's SDK/platform/NDK versions unchanged. Add bounded transfer retries and sanitized SDK-stage failure evidence. No access changes are needed for this route.
+- Validation: tools 20.0 successfully listed and installed platform 37.0 into a clean local SDK root. Six regression checks cover interrupted-transfer retries, bounded timeouts, fatal-access failures, checksum/path rejection and log redaction. Workflow syntax passes actionlint. The replacement remote APK build still needs verification.

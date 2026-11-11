@@ -6,22 +6,10 @@ on:
     paths-ignore: ['**/*.md', 'docs/images/**']
 permissions:
   contents: write
-  actions: read
 concurrency:
   group: android-preview
   cancel-in-progress: false
 jobs:
-  diagnostics:
-    runs-on: ubuntu-24.04
-    continue-on-error: true
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            await require('./scripts/github-build-status.cjs')({github, context}, 'diagnosing');
-            await require('./scripts/diagnose-build.cjs')({github, context}, 43094369260);
   build:
     if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[diagnose-only]')
     runs-on: ubuntu-24.04
@@ -31,6 +19,7 @@ jobs:
       EXPO_NO_DOTENV: '1'
       EXPO_PUBLIC_APP_ENV: test
       ANDROID_HOME: /tmp/parentplus-sdk
+      ANDROID_SDK_ROOT: /tmp/parentplus-sdk
       ANDROID_USER_HOME: /tmp/parentplus-android-user
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +45,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: /tmp/parentplus-sdk
-          key: parentplus-android-sdk37-0-tools37-ndk27b-v1
+          key: parentplus-android-sdk37-0-tools20-ndk27b-v2
       - uses: actions/cache@v4
         with:
           path: |
@@ -66,21 +55,14 @@ jobs:
           restore-keys: parentplus-gradle94-
       - run: npm ci
       - run: npm run check
+      - name: Check SDK installer failure handling
+        run: python3 scripts/test_android_installer.py
       - name: Check actual project settings without creating users or sending emails
         continue-on-error: true
         run: node scripts/check-live-auth.mjs
       - name: Install checksum-verified Android command-line tools
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ ! -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
-            curl --fail --location --retry 1 https://dl.google.com/android/repository/commandlinetools-linux-16111833_latest.zip -o "$RUNNER_TEMP/android-tools.zip"
-            printf '%s  %s\n' 'e025545c62a8e64c7559119566a569fb1dec5f60' "$RUNNER_TEMP/android-tools.zip" | sha1sum --check --status
-            mkdir -p "$ANDROID_HOME/cmdline-tools/latest" "$RUNNER_TEMP/sdk-unpack"
-            unzip -q "$RUNNER_TEMP/android-tools.zip" -d "$RUNNER_TEMP/sdk-unpack"
-            cp -a "$RUNNER_TEMP/sdk-unpack/cmdline-tools/." "$ANDROID_HOME/cmdline-tools/latest/"
-          fi
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" 'platform-tools' 'platforms;android-37.0' 'build-tools;37.0.0' 'ndk;27.1.12297006' 'cmake;3.22.1'
+        id: sdk
+        run: python3 scripts/install-android-sdk.py
       - name: Build and verify preview APK
         run: python3 scripts/build-android-preview.py
       - name: Upload installable APK

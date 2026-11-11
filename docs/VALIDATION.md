@@ -67,4 +67,8 @@ The local foundation passes its implemented automated checks and Android bundlin
 - The native local source-build alternative was attempted using React Native's supported composite build. A full checksum-verified JDK 21 and platform CA trust configuration resolved missing-compiler/TLS setup issues. The alternative still encountered denied dependency destinations (Boost archive and React Native prebuilt references); it has not produced an APK. No TLS/signature/checksum checks were disabled.
 - Latest phone-layout change: confirmations use visible modal dialogs, and opening forms resets scroll position. TypeScript and all 16 browser checks passed, including assertions that discard confirmation stays inside the viewport. Latest automated suite remains 50 passing tests.
 - Roster screenshots use explicitly fictional records and a simulated backend; they do not prove live roster deployment or device behavior.
-- APK download/installation and real email sign-in remain blocked/unverified. The concrete next diagnosis is either the failed GitHub step output or approved access to `api.github.com` / `repo.reactnative.dev` (plus the project hostname for direct backend tests).
+- APK download/installation and real email sign-in remain unverified. The owner supplied the failed step output; the diagnosis and replacement SDK installer are recorded below. No admin access changes are requested.
+
+### SDK bootstrap repair
+
+Owner screenshots confirm an interrupted secondary Android CLI download, before native compilation. Official self-contained command-line tools 20.0 successfully installed platform 37.0 in a clean local probe. Six installer regression checks and actionlint pass. The updated workflow records sanitized SDK-stage failures and retries only transient SDK transfers (at most three attempts). A new remote build is required before claiming an installable APK.
