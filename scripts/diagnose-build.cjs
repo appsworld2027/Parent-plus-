@@ -1,9 +1,12 @@
 module.exports = async ({ github, context }, runId) => {
   const repo = context.repo;
-  const jobs = (await github.rest.actions.listJobsForWorkflowRun({ ...repo, run_id: runId })).data.jobs;
-  const failed = jobs.find(job => job.conclusion === 'failure');
-  const report = { runId, failedJob: failed?.name ?? null, steps: failed?.steps?.map(step => ({ name: step.name, conclusion: step.conclusion })) ?? [], tail: [] };
-  if (failed) {
+  const report = { runId, failedJob: null, steps: [], tail: [], lookupError: null };
+  try {
+    const jobs = (await github.rest.actions.listJobsForWorkflowRun({ ...repo, run_id: runId })).data.jobs;
+    const failed = jobs.find(job => job.conclusion === 'failure');
+    report.failedJob = failed?.name ?? null;
+    report.steps = failed?.steps?.map(step => ({ name: step.name, conclusion: step.conclusion })) ?? [];
+    if (failed) {
     const result = await github.rest.actions.downloadJobLogsForWorkflowRun({ ...repo, job_id: failed.id });
     const text = typeof result.data === 'string' ? result.data : Buffer.from(result.data).toString('utf8');
     report.tail = text.split('\n').filter(line => !line.includes('##[debug]')).slice(-260).map(line => line
@@ -12,6 +15,9 @@ module.exports = async ({ github, context }, runId) => {
       .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[redacted token]')
       .replace(/https?:\/\/[^\s<>]+/g, url => { try { const value = new URL(url); return `${value.protocol}//${value.hostname}${value.pathname}`; } catch { return '[url]'; } })
       .slice(0, 500));
+    }
+  } catch (error) {
+    report.lookupError = { status: error.status ?? null, name: error.name ?? 'Error', message: String(error.message ?? 'Build log unavailable').slice(0, 500) };
   }
   const path = `.build-status/diagnosis-${runId}.json`;
   let sha;
