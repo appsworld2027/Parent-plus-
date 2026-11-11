@@ -2,6 +2,8 @@
 
 Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
 
+Implementation is paused at the owner's request. See [the saved progress checkpoint and journey chart](PROGRESS.md) before resuming.
+
 ## Current state
 
 Module 0 foundation: native component navigation, safe configuration checks, error boundary/recovery, sanitized in-memory diagnostic reports, and automated tests. Teaching screens remain labelled placeholders, not completed features.
