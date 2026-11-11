@@ -1,6 +1,6 @@
 # Your next step: prepare an Expo account
 
-Update: owner supplied Expo username `appsworld2027`; the app configuration now targets that owner. Expo login/build authorization and native installation remain pending. The next actionable setup is [apply the Supabase database script](SUPABASE_SETUP.md).
+Update: owner supplied Expo username `appsworld2027`; the app configuration targets that owner. The database migration has been applied and its version confirmed in the dashboard. Do not repeat database setup. Next, follow [email-link settings](AUTH_SETUP.md). Expo login/build authorization and native installation remain pending.
 
 You have already supplied the Supabase project URL and public key. You do not need to send them again or change network settings to continue foundation work.
 

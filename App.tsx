@@ -5,6 +5,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from './src/config';
 import { diagnostics } from './src/diagnostics';
 import { ErrorBoundary } from './src/ErrorBoundary';
+import { AuthProvider, useAuth } from './src/auth/AuthProvider';
+import { AuthGate } from './src/auth/AuthGate';
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
@@ -24,7 +26,8 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
   </Pressable>;
 }
 
-function AppContent() {
+function AppContent({ exitPreview }: { exitPreview?: () => void }) {
+  const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
   const [report, setReport] = useState('');
   const [notice, setNotice] = useState('');
@@ -69,8 +72,8 @@ function AppContent() {
           <Text style={styles.subtitle}>A calmer home for your classes, your students, and the little wins along the way.</Text>
           <View style={styles.hero}>
             <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
-            <Text style={styles.heroTitle}>Let’s lay the foundation.</Text>
-            <Text style={styles.heroBody}>We’re building your coach app one tested module at a time. Your records will appear after secure account setup.</Text>
+            <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
+            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Student and class management are the next modules.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
             <Action label="View setup status" onPress={() => navigate('Support')} secondary />
           </View>
           <Text style={styles.sectionTitle}>A place for everything</Text>
@@ -92,9 +95,10 @@ function AppContent() {
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Connection status</Text>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Public configuration</Text><Text style={styles.statusValue}>{appConfig.configured ? 'Provided' : 'Not configured'}</Text></View>
-            <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>Not verified</Text></View>
+            <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>{auth.academy ? 'Workspace loaded' : 'Not verified'}</Text></View>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Payment collection</Text><Text style={styles.statusValue}>Not enabled</Text></View>
-            <Text style={styles.small}>{appConfig.configured ? 'Project settings are present. Database and authentication will be connected in the next module.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
+            <Text style={styles.small}>{auth.academy ? `Academy: ${auth.academy.name}` : appConfig.configured ? 'Project settings are present. Sign in to verify your workspace connection.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
+            {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <Action label="Sign out" secondary onPress={() => { void auth.logout().then(message => { if (message) setNotice(message); }); }} />}
           </View>
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Report a problem</Text>
@@ -135,7 +139,7 @@ function AppContent() {
 }
 
 export default function App() {
-  return <SafeAreaProvider><ErrorBoundary><AppContent /></ErrorBoundary></SafeAreaProvider>;
+  return <SafeAreaProvider><ErrorBoundary><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></ErrorBoundary></SafeAreaProvider>;
 }
 
 const styles = StyleSheet.create({

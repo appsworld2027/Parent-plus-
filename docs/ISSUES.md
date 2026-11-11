@@ -24,3 +24,10 @@
 ## Reporting a new issue
 
 Record app version, safe error reference, expected/observed behavior, known cause, correction, regression check, and open/resolved status. Never paste private student content or credentials here.
+
+## TEST-001 — Authentication fixtures did not isolate requests
+
+- Status: resolved for the current local browser suite.
+- Symptom: initial route-based browser fixtures did not intercept SDK calls as expected; six new authentication tests failed. Initial server/configuration isolation changes alone were insufficient.
+- Correction: the test runner uses a dedicated port and refuses existing servers. Authentication tests now install a fictional fetch transport before app/SDK startup and block unexpected external fetch destinations. Native/application auth code is unchanged by the fixtures.
+- Validation: all 11 browser tests passed, including different failure/success paths, SDK endpoint-call assertions, S256 challenges, session reload/clearing, and password recovery. This is simulated-backend evidence, not evidence of live Supabase reachability.

@@ -4,9 +4,11 @@ Native Android coach app using React Native, Expo SDK 58, and TypeScript. The pa
 
 ## Current state
 
-Module 0 foundation: native component navigation, safe configuration checks, error boundary/recovery, sanitized in-memory diagnostic reports, and automated tests. Teaching screens are labelled placeholders, not completed features. Supabase authentication, database, and payments are not implemented yet.
+Module 0 foundation: native component navigation, safe configuration checks, error boundary/recovery, sanitized in-memory diagnostic reports, and automated tests. Teaching screens remain labelled placeholders, not completed features.
 
-Module 1: the initial database migration and PostgreSQL access-control tests are prepared. Database deployment is pending; follow [Supabase setup](docs/SUPABASE_SETUP.md). Expo owner is configured as `appsworld2027`; build authorization is separate.
+Module 1: the initial database migration has been applied by the owner and its version confirmed in the Supabase dashboard. PostgreSQL access-control tests run locally. Expo owner is configured as `appsworld2027`; build authorization is separate.
+
+Module 2: email sign-up/sign-in/recovery, secure native session storage, and academy onboarding are implemented and tested using simulated backend responses. Live email delivery, actual SDK operations, native deep links, and Android installation remain unverified. Follow [email setup](docs/AUTH_SETUP.md). Payments are not implemented.
 
 ## Local development
 
@@ -34,7 +36,7 @@ npm run export:android
 npm run export:web
 ```
 
-On machines with system Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e`. Browser tests start and stop their own local Expo server on port 8081. They verify the React Native web target; they do not replace Android device testing.
+On machines with system Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e`. Browser tests start their own local Expo server on port 18081 and refuse an existing server. Authentication tests install a simulated transport before app startup; they do not send real emails or call live Supabase. They verify the React Native web target and SDK/UI behavior, not Android device behavior or actual provider delivery.
 
 `export:android` verifies Metro's Android bundle; it does not create an installable APK. A native APK requires build/signing setup and validation on a device. `eas.json` defines an internal APK profile and a production AAB profile; no Expo account/project has been linked or build submitted.
 

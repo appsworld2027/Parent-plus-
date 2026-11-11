@@ -1,9 +1,10 @@
-export type ErrorCode = 'CONTROLLED_FAILURE' | 'SCREEN_FAILURE' | 'REPORT_SHARE_FAILED';
+export type ErrorCode = 'CONTROLLED_FAILURE' | 'SCREEN_FAILURE' | 'REPORT_SHARE_FAILED'
+  | 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACADEMY_FAILURE' | 'AUTH_CALLBACK_FAILURE';
 export type Diagnostic = Readonly<{
   reference: string;
   timestamp: string;
   code: ErrorCode;
-  action: 'diagnostic-check' | 'screen-render' | 'share-report';
+  action: 'diagnostic-check' | 'screen-render' | 'share-report' | 'auth-request' | 'session-restore' | 'academy-request' | 'email-link';
   build: string;
 }>;
 
@@ -11,6 +12,10 @@ const allowedActions = {
   CONTROLLED_FAILURE: 'diagnostic-check',
   SCREEN_FAILURE: 'screen-render',
   REPORT_SHARE_FAILED: 'share-report',
+  AUTH_FAILURE: 'auth-request',
+  SESSION_FAILURE: 'session-restore',
+  ACADEMY_FAILURE: 'academy-request',
+  AUTH_CALLBACK_FAILURE: 'email-link',
 } as const;
 
 // Accept only enumerated codes, never raw exception messages, form data, or API bodies.

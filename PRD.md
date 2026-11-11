@@ -1,7 +1,7 @@
 # Product requirements: Parent Plus Coach
 
 Version: 1.0 · 11 November 2026
-Status: Module 0 foundation implemented locally; native device verification and later modules remain open. See [validation](docs/VALIDATION.md).
+Status: foundation, initial database schema, and email login/academy onboarding implemented. Owner confirmed the migration in Supabase; authentication SDK/UI tests use simulated responses. Native device and real auth verification remain open. See [validation](docs/VALIDATION.md).
 Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
 
 ## 1. Purpose and release target
