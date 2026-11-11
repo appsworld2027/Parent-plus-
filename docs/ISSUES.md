@@ -44,3 +44,9 @@ Record app version, safe error reference, expected/observed behavior, known caus
 
 - Browser test found that an enrolled/selected batch did not expose a checked state on the web accessibility tree.
 - Added explicit aria-checked while retaining native accessibility state. The selection/reload/disabled-existing-enrolment browser check then passed.
+
+## UI-002 — Confirmations on long forms
+
+- Inline discard/archive confirmations could appear above or below the current scroll position.
+- Replaced with modal dialogs, dismissed the keyboard when requesting navigation, and reset scroll on form/tab changes. Navigation remains blocked while a save is pending.
+- Validation: all 16 browser checks pass, including in-viewport confirmation assertions. Native phone keyboard/back-button behavior still needs device testing.

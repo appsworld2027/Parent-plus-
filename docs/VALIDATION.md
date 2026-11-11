@@ -59,3 +59,12 @@ The local foundation passes its implemented automated checks and Android bundlin
 - A GitHub native preview workflow and signature-checking build script are prepared. Remote execution/artifact/live-auth probe outcomes must be checked after push; this document does not claim a successful APK yet.
 - Public Supabase connection defaults are now intentionally in `config/public-client.json` and bundled into the client. This supersedes the earlier local-only public-key choice. Privileged keys and personal records are excluded. `.env.local`, generated Android files, caches, artifacts and Python bytecode are ignored by Git.
 - The preview uses its own package ID, development signing, and source-revision-aware diagnostic build identifiers. It is not a production signing/release setup.
+
+### Confirmed remote result and current blocker
+
+- GitHub run `43094369260` executed the real project's settings-only probe. It confirmed reachability, acceptance of the public key, email enabled, confirmation required, and anonymous profile reads denied. It did not register/login a user or send mail.
+- That run ended in failure without an APK or build-stage error tail. Later diagnostic workflows have not published their reports yet; workflow syntax has been checked with checksum-verified official actionlint. Their absence is not proof of a specific permission/billing/queue cause.
+- The native local source-build alternative was attempted using React Native's supported composite build. A full checksum-verified JDK 21 and platform CA trust configuration resolved missing-compiler/TLS setup issues. The alternative still encountered denied dependency destinations (Boost archive and React Native prebuilt references); it has not produced an APK. No TLS/signature/checksum checks were disabled.
+- Latest phone-layout change: confirmations use visible modal dialogs, and opening forms resets scroll position. TypeScript and all 16 browser checks passed, including assertions that discard confirmation stays inside the viewport. Latest automated suite remains 50 passing tests.
+- Roster screenshots use explicitly fictional records and a simulated backend; they do not prove live roster deployment or device behavior.
+- APK download/installation and real email sign-in remain blocked/unverified. The concrete next diagnosis is either the failed GitHub step output or approved access to `api.github.com` / `repo.reactnative.dev` (plus the project hostname for direct backend tests).

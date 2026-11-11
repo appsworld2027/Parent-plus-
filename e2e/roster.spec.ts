@@ -75,12 +75,23 @@ test('unsaved forms require confirmation before leaving through navigation', asy
   await page.getByRole('textbox', { name: 'Student name', exact: true }).fill('Unsaved Fictional Child');
   await page.getByRole('tab', { name: 'Today', exact: true }).click();
   await expect(page.getByText('Leave your unsaved changes?')).toBeVisible();
+  await expect(page.getByText('Leave your unsaved changes?')).toBeInViewport();
   await page.getByRole('button', { name: 'Keep editing', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Student name', exact: true })).toHaveValue('Unsaved Fictional Child');
   await page.getByRole('tab', { name: 'Today', exact: true }).click();
   await page.getByRole('button', { name: 'Discard and leave', exact: true }).click();
   await expect(page.getByRole('heading', { name: /More teaching/ })).toBeVisible();
   expect(await page.evaluate(() => window.__coachFixture.roster.students.length)).toBe(0);
+});
+
+test('a long student form keeps its back/discard confirmation in the viewport', async ({ page }) => {
+  await openRoster(page);
+  await page.getByRole('button', { name: 'Add a student', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Student name', exact: true }).fill('Fictional Unsaved');
+  await page.getByRole('button', { name: 'Back to students', exact: true }).click();
+  await expect(page.getByText('Discard your unsaved changes?')).toBeInViewport();
+  await page.getByRole('button', { name: 'Keep editing', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Student name', exact: true })).toHaveValue('Fictional Unsaved');
 });
 
 test('missing database update is explained and does not display a fake empty roster', async ({ page }) => {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BackHandler, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { BackHandler, Keyboard, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from './src/config';
@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from './src/auth/AuthProvider';
 import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
 import { appVersion, buildRevision } from './src/version';
+import { ConfirmDialog } from './src/ui/ConfirmDialog';
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
@@ -37,6 +38,9 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [rosterDirty, setRosterDirty] = useState(false);
   const [rosterBusy, setRosterBusy] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<Screen | null>(null);
+  const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
+  const scrollToTop = useCallback(() => scroll.current?.scrollTo({ y: 0, animated: false }), []);
+  useEffect(scrollToTop, [screen, scrollToTop]);
   useEffect(() => {
     const back = BackHandler.addEventListener('hardwareBackPress', () => {
       if (screen === 'Today') return false;
@@ -48,7 +52,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
 
   function navigate(next: Screen) {
     if (screen === 'Students' && rosterBusy) { setNotice('Please wait for the save to finish.'); return; }
-    if (screen === 'Students' && next !== 'Students' && rosterDirty) { setPendingNavigation(next); return; }
+    if (screen === 'Students' && next !== 'Students' && rosterDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -80,13 +84,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
       </View>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
-        {pendingNavigation && <View accessibilityRole="alert" style={styles.card}>
-          <Text style={styles.sectionTitle}>Leave your unsaved changes?</Text>
-          <Action label="Keep editing" secondary onPress={() => setPendingNavigation(null)} />
-          <Action label="Discard and leave" onPress={() => { setRosterDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); }} />
-        </View>}
         {screen === 'Students' && !!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
@@ -95,7 +94,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <View style={styles.hero}>
             <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
             <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
-            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Student and class management are the next modules.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
+            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage students and batches now; classes, observations, and fees are next.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
             <Action label="View setup status" onPress={() => navigate('Support')} secondary />
           </View>
           <Text style={styles.sectionTitle}>A place for everything</Text>
@@ -137,7 +136,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setRosterDirty} onBusyChange={setRosterBusy} /> : <>
+        </> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setRosterDirty} onBusyChange={setRosterBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
@@ -156,6 +155,9 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name}</Text>
         </Pressable>)}
       </View>
+      <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message="Your changes have not been saved. Keep editing or discard this form before leaving."
+        confirmLabel="Discard and leave" cancelLabel="Keep editing" onCancel={() => setPendingNavigation(null)}
+        onConfirm={() => { if (pendingNavigation) { setRosterDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
     </View>
   </SafeAreaView>;
 }

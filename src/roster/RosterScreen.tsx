@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { randomUUID } from 'expo-crypto';
 import type { Batch, BatchDraft, Roster, Student, StudentDraft } from './model';
 import { formatFee, parseFee, validateStudent } from './model';
 import { archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 
 function Button({ label, onPress, soft = false, disabled = false }: { label: string; onPress: () => void; soft?: boolean; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
@@ -15,7 +16,7 @@ function Field({ label, value, onChange, disabled, kind = 'text', max = 100 }: {
     keyboardType={kind === 'email' ? 'email-address' : kind === 'phone' ? 'phone-pad' : kind === 'number' ? 'number-pad' : kind === 'money' ? 'decimal-pad' : 'default'} style={s.input} /></View>;
 }
 
-export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy: string; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void }) {
+export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChange }: { academy: string; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
   const [tab, setTab] = useState<'students' | 'batches'>('students');
   const [data, setData] = useState<Roster | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +43,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy
   useEffect(() => { void reload(); return () => { loadVersion.current++; }; }, [reload]);
   useEffect(() => { onDirtyChange(dirty); return () => onDirtyChange(false); }, [dirty, onDirtyChange]);
   useEffect(() => { onBusyChange(busy); return () => onBusyChange(false); }, [busy, onBusyChange]);
+  useEffect(onViewChange, [studentDraft?.id, batchDraft?.id, tab, onViewChange]);
 
   const batches = data?.batches.filter(b => !b.archived_at) ?? [];
   const existingEnrolments = (student: string) => data?.enrolments.filter(e => e.student_id === student).map(e => e.batch_id) ?? [];
@@ -57,7 +59,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy
     setDirty(false); setError(''); setNotice(''); setArchiveTarget(null);
   }
   function close() { setStudentDraft(null); setBatchDraft(null); setDirty(false); setDiscard(false); setError(''); }
-  function back() { if (dirty) setDiscard(true); else close(); }
+  function back() { Keyboard.dismiss(); if (dirty) setDiscard(true); else close(); }
   function updateStudent(field: keyof StudentDraft, value: string | string[]) {
     setStudentDraft(current => current ? { ...current, [field]: value } : current); setDirty(true);
   }
@@ -68,14 +70,14 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy
     if (busy) return;
     const invalid = studentDraft ? validateStudent(studentDraft) : batchDraft
       ? !batchDraft.name.trim() ? 'Enter a batch name.' : parseFee(batchDraft.fee) === null ? 'Enter a monthly fee in rupees, with up to two decimal places.' : null : 'Open a record first.';
-    if (invalid) { setError(invalid); return; }
+    if (invalid) { setError(invalid); onViewChange(); return; }
     setBusy(true); setError('');
     try {
       if (studentDraft) await saveStudent(academy, studentDraft);
       else if (batchDraft) await saveBatch(academy, batchDraft);
       close(); setNotice(studentDraft ? 'Student saved.' : 'Batch saved.');
       await reload();
-    } catch (failure) { setError(rosterFailure(failure, 'The save could not be confirmed. Your entries are still here. Retry safely.')); }
+    } catch (failure) { setError(rosterFailure(failure, 'The save could not be confirmed. Your entries are still here. Retry safely.')); onViewChange(); }
     finally { setBusy(false); }
   }
   async function confirmArchive() {
@@ -94,10 +96,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
     {!!notice && <Text accessibilityRole="status" style={s.notice}>{notice}</Text>}
     {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-    {discard && <View accessibilityRole="alert" style={s.card}>
-      <Text style={s.title}>Discard your unsaved changes?</Text><Button label="Keep editing" soft onPress={() => setDiscard(false)} />
-      <Button label="Discard changes" onPress={close} />
-    </View>}
+    <ConfirmDialog visible={discard} title="Discard your unsaved changes?" message="Keep editing to retain this form, or discard it to go back."
+      confirmLabel="Discard changes" cancelLabel="Keep editing" onConfirm={close} onCancel={() => setDiscard(false)} />
     {studentDraft ? <View style={s.card}>
       <Field label="Student name" value={studentDraft.name} onChange={value => updateStudent('name', value)} disabled={busy} />
       <Field label="Age (optional)" kind="number" max={3} value={studentDraft.age} onChange={value => updateStudent('age', value)} disabled={busy} />
@@ -152,11 +152,9 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange }: { academy
           <Button label={`Edit ${batch.name}`} soft onPress={() => editBatch(batch)} />
         </View>)}
       </>}
-      {archiveTarget && <View accessibilityRole="alert" style={s.card}><Text style={s.title}>Archive {archiveTarget.name}?</Text>
-        <Text style={s.body}>The student leaves the active list. Their attendance, observations, and fee records are retained.</Text>
-        <Button label="Confirm archive" disabled={busy} onPress={() => { void confirmArchive(); }} />
-        <Button label="Cancel archive" soft disabled={busy} onPress={() => setArchiveTarget(null)} />
-      </View>}
+      <ConfirmDialog visible={archiveTarget !== null} title={`Archive ${archiveTarget?.name ?? 'student'}?`}
+        message="The student leaves the active list. Their attendance, observations, and fee records are retained."
+        confirmLabel="Confirm archive" cancelLabel="Cancel archive" busy={busy} onConfirm={() => { void confirmArchive(); }} onCancel={() => setArchiveTarget(null)} />
     </>}
   </View>;
 }
