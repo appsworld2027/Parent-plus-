@@ -2,6 +2,8 @@
 
 Checkpoint date: 12 November 2026 (Asia/Kolkata).
 Status: resumed by the owner. Students/batches implementation and Android build automation are in progress. The earlier pause checkpoint is retained below as historical context.
+
+Owner constraint: do not ask for administrator/network access changes. Use the existing GitHub build route. The first run failed without sufficient error detail available to this coding workspace; the next owner action is only to open the failed step and share its final error screenshot, not to debug code or change permissions. Preserve this constraint on resume.
 Repository branch: `codex/coach-foundation`.
 Application-code baseline: `f2f393798c5366996210ab92478cc54ab2c60c48`.
 

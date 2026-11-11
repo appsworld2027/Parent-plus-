@@ -4,6 +4,8 @@
 
 Current checkpoint: [run 43094369260](https://github.com/appsworld2027/Parent-plus-/actions/runs/43094369260) verified the live connection/security settings but failed before producing an APK. Do not interpret the source or workflow setup as an available installer. Its failed-step output is needed for the next CI correction while cloud GitHub API access remains blocked.
 
+The owner cannot change administrator/network settings; do not request those changes. Continue the GitHub-hosted build route using existing repository access. To supply missing diagnostic information, the owner can open the run link, click the red **build** item, expand the red failed step, and share a screenshot of its final error lines. No token, password, configuration change, or code interpretation is needed for that step.
+
 - [Android preview builds](https://github.com/appsworld2027/Parent-plus-/actions/workflows/android-preview.yml)
 - [Regular automated checks](https://github.com/appsworld2027/Parent-plus-/actions/workflows/checks.yml)
 
