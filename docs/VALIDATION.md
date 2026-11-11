@@ -49,3 +49,13 @@ The local foundation passes its implemented automated checks and Android bundlin
 - Expo Crypto supplies native secure random values and SHA-256 through an adapter. Standard UTF-8 encoding is provided where absent. Email-link actions refuse to proceed if the required crypto APIs are unavailable rather than use the SDK's weaker fallback. The adapter has known-digest and delegation checks, but still requires native-device validation.
 - Direct cloud-to-Supabase access remains blocked. Actual email delivery, real verification/recovery, refresh against the provider, native links, Expo authorization/signing, and APK/device checks remain open. No real-payment functionality exists yet.
 - Email URL/provider setup instructions are in `docs/AUTH_SETUP.md`; preserving email confirmation is required.
+
+## Module 3 and Android preview preparation — 12 November 2026
+
+- Version 0.2.0: TypeScript passed, 50 automated tests passed across 6 files, and 15 browser tests passed. New SQL tests exercise atomic student/contact/enrolment saves, duplicate/lost-response identity, foreign-academy rejection, archive/history preservation, guardian edits, and direct-write restrictions. Browser tests cover actual SDK/UI requests against a fictional transport, batch/student create/edit/reload/search/archive, save failure/retry, and unsaved navigation guards.
+- Migration 002 is prepared and locally applied twice in tests. It has not yet been applied to the owner's Supabase project. No migration 001 rerun is requested.
+- Latest Android Metro export passed at 678 modules. The native local build progressed through plugin compilation and native app/CMake setup after installing checksum-verified SDK tools, the correct platform 37.0, NDK, Gradle, and Java 17 toolchain.
+- Native local build remains blocked by the Maven redirect to `repo.reactnative.dev`, denied by the coding environment. The settings-draft tool still cannot read its current configuration, so no unknown network rules were replaced.
+- A GitHub native preview workflow and signature-checking build script are prepared. Remote execution/artifact/live-auth probe outcomes must be checked after push; this document does not claim a successful APK yet.
+- Public Supabase connection defaults are now intentionally in `config/public-client.json` and bundled into the client. This supersedes the earlier local-only public-key choice. Privileged keys and personal records are excluded. `.env.local`, generated Android files, caches, artifacts and Python bytecode are ignored by Git.
+- The preview uses its own package ID, development signing, and source-revision-aware diagnostic build identifiers. It is not a production signing/release setup.

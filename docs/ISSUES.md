@@ -31,3 +31,16 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - Symptom: initial route-based browser fixtures did not intercept SDK calls as expected; six new authentication tests failed. Initial server/configuration isolation changes alone were insufficient.
 - Correction: the test runner uses a dedicated port and refuses existing servers. Authentication tests now install a fictional fetch transport before app/SDK startup and block unexpected external fetch destinations. Native/application auth code is unchanged by the fixtures.
 - Validation: all 11 browser tests passed, including different failure/success paths, SDK endpoint-call assertions, S256 challenges, session reload/clearing, and password recovery. This is simulated-backend evidence, not evidence of live Supabase reachability.
+
+## BUILD-001 — Native toolchain and dependency download
+
+- SDK manager initially tried a restricted home directory. Resolved through the supported ANDROID_USER_HOME under `/workspace/.parentplus`.
+- Android 37 uses package `platforms;android-37.0` in the current repository manifest; installing the older-style `android-37` name did not provide it. Installed the correct official package.
+- Java 17 was missing. Downloaded official Temurin 17.0.21+9, verified its SHA-256, and configured the Gradle toolchain while retaining Java 21 as runtime. Gradle then compiled the Kotlin plugins and reached the native app/CMake tasks.
+- Remaining local blocker: Maven redirects React Native's AAR to `repo.reactnative.dev`, denied by this environment's outbound policy. The editable environment draft tool still cannot read configuration. Neither checksums nor TLS verification were disabled, and the artifact was not substituted with untrusted content.
+- Route forward: a standard GitHub Actions Android build, with public client settings, signature verification, and a live settings-only auth check. Remote execution still needs confirmation from the actual workflow/status record.
+
+## UI-001 — Batch checkbox accessibility
+
+- Browser test found that an enrolled/selected batch did not expose a checked state on the web accessibility tree.
+- Added explicit aria-checked while retaining native accessibility state. The selection/reload/disabled-existing-enrolment browser check then passed.

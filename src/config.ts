@@ -1,3 +1,5 @@
+import publicClient from '../config/public-client.json';
+
 export type AppEnvironment = 'development' | 'test' | 'production';
 export type PublicSettings = {
   EXPO_PUBLIC_SUPABASE_URL?: string;
@@ -20,6 +22,7 @@ export function readConfig(settings: PublicSettings) {
   return {
     environment,
     configured: validUrl && publishableKey,
+    publishableKey: publishableKey ? key : undefined,
     url: validUrl ? settings.EXPO_PUBLIC_SUPABASE_URL : undefined,
     missing: [!validUrl && 'Project URL', !publishableKey && 'Publishable key'].filter(Boolean) as string[],
   };
@@ -27,6 +30,6 @@ export function readConfig(settings: PublicSettings) {
 
 export const appConfig = readConfig({
   EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENV,
-  EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
-  EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL || publicClient.supabaseUrl,
+  EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY || publicClient.supabasePublishableKey,
 });

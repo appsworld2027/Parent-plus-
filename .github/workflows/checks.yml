@@ -1,5 +1,9 @@
 name: App checks
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, codex/coach-foundation]
+    paths-ignore: ['**/*.md', 'docs/images/**']
+  pull_request:
 jobs:
   foundation:
     runs-on: ubuntu-latest

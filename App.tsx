@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { BackHandler, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from './src/config';
@@ -7,6 +7,8 @@ import { diagnostics } from './src/diagnostics';
 import { ErrorBoundary } from './src/ErrorBoundary';
 import { AuthProvider, useAuth } from './src/auth/AuthProvider';
 import { AuthGate } from './src/auth/AuthGate';
+import { RosterScreen } from './src/roster/RosterScreen';
+import { appVersion, buildRevision } from './src/version';
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
@@ -32,9 +34,23 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [report, setReport] = useState('');
   const [notice, setNotice] = useState('');
   const [crash, setCrash] = useState(false);
+  const [rosterDirty, setRosterDirty] = useState(false);
+  const [rosterBusy, setRosterBusy] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<Screen | null>(null);
+  useEffect(() => {
+    const back = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (screen === 'Today') return false;
+      navigate('Today'); return true;
+    });
+    return () => back.remove();
+  }, [screen, rosterDirty, rosterBusy]);
   if (crash) throw new Error('Controlled development render failure');
 
-  function navigate(next: Screen) { setScreen(next); setNotice(''); }
+  function navigate(next: Screen) {
+    if (screen === 'Students' && rosterBusy) { setNotice('Please wait for the save to finish.'); return; }
+    if (screen === 'Students' && next !== 'Students' && rosterDirty) { setPendingNavigation(next); return; }
+    setScreen(next); setNotice('');
+  }
   function runDiagnostic() {
     const event = diagnostics.record('CONTROLLED_FAILURE');
     setNotice(`Diagnostic check recorded. Reference: ${event.reference}. The app is still working.`);
@@ -65,7 +81,13 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v0.1.0</Text></View>
+        <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
+        {pendingNavigation && <View accessibilityRole="alert" style={styles.card}>
+          <Text style={styles.sectionTitle}>Leave your unsaved changes?</Text>
+          <Action label="Keep editing" secondary onPress={() => setPendingNavigation(null)} />
+          <Action label="Discard and leave" onPress={() => { setRosterDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); }} />
+        </View>}
+        {screen === 'Students' && !!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
@@ -115,7 +137,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : <>
+        </> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setRosterDirty} onBusyChange={setRosterBusy} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

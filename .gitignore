@@ -45,3 +45,6 @@ yarn-error.*
 !.env.example
 playwright-report/
 test-results/
+artifacts/
+__pycache__/
+*.pyc

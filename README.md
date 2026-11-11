@@ -2,7 +2,7 @@
 
 Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
 
-Implementation is paused at the owner's request. See [the saved progress checkpoint and journey chart](PROGRESS.md) before resuming.
+Implementation has resumed at the owner's request. See [the saved progress checkpoint and journey chart](PROGRESS.md).
 
 ## Current state
 
@@ -11,6 +11,8 @@ Module 0 foundation: native component navigation, safe configuration checks, err
 Module 1: the initial database migration has been applied by the owner and its version confirmed in the Supabase dashboard. PostgreSQL access-control tests run locally. Expo owner is configured as `appsworld2027`; build authorization is separate.
 
 Module 2: email sign-up/sign-in/recovery, secure native session storage, and academy onboarding are implemented and tested using simulated backend responses. Live email delivery, actual SDK operations, native deep links, and Android installation remain unverified. Follow [email setup](docs/AUTH_SETUP.md). Payments are not implemented.
+
+Module 3: students/guardian contacts, batch create/edit, additive enrolment, search, archive view, safe retries, and unsaved-form guards are implemented. [Migration 002](docs/ROSTER_SETUP.md) must be applied before real roster use. [Android preview automation](docs/ANDROID_PREVIEW.md) builds without Expo credentials; inspect the actual run outcome for artifact availability.
 
 ## Local development
 
@@ -22,7 +24,7 @@ cp .env.example .env.local
 npm start
 ```
 
-Supply only the public Supabase URL and publishable key in `.env.local`. Never use a service-role or gateway secret in an `EXPO_PUBLIC_` variable. The local file is ignored by Git. Missing config does not prevent startup. Config presence does not establish a working backend.
+Public project defaults are now bundled in `config/public-client.json` so connected previews can build without manual account setup. `.env.local` can override them. These are client-visible URL/publishable settings, not privileged credentials. Never add service-role, database, SMTP, gateway, or signing secrets there or in an `EXPO_PUBLIC_` variable. Config presence does not establish a working backend.
 
 For this restricted cloud workspace, use `npm_config_cache=/tmp/parentplus-npm-cache` for npm and `EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1` for Expo commands. Offline mode skips external Expo metadata calls; package versions were selected from the installed official SDK compatibility map. It does not disable TLS or package integrity verification.
 

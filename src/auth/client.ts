@@ -15,7 +15,7 @@ const storage = createSessionStorage(Platform.OS === 'web' ? {
   removeItem: key => SecureStore.deleteItemAsync(key),
 });
 
-export const supabase = appConfig.configured ? createClient(appConfig.url!, process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!, {
+export const supabase = appConfig.configured ? createClient(appConfig.url!, appConfig.publishableKey!, {
   auth: { storage, autoRefreshToken: true, persistSession: true, detectSessionInUrl: false, flowType: 'pkce', lock: processLock },
   global: {
     fetch: async (input, init) => {

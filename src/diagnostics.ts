@@ -1,10 +1,12 @@
+import { diagnosticBuild } from './version';
+
 export type ErrorCode = 'CONTROLLED_FAILURE' | 'SCREEN_FAILURE' | 'REPORT_SHARE_FAILED'
-  | 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACADEMY_FAILURE' | 'AUTH_CALLBACK_FAILURE';
+  | 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACADEMY_FAILURE' | 'AUTH_CALLBACK_FAILURE' | 'ROSTER_FAILURE';
 export type Diagnostic = Readonly<{
   reference: string;
   timestamp: string;
   code: ErrorCode;
-  action: 'diagnostic-check' | 'screen-render' | 'share-report' | 'auth-request' | 'session-restore' | 'academy-request' | 'email-link';
+  action: 'diagnostic-check' | 'screen-render' | 'share-report' | 'auth-request' | 'session-restore' | 'academy-request' | 'email-link' | 'roster-request';
   build: string;
 }>;
 
@@ -16,6 +18,7 @@ const allowedActions = {
   SESSION_FAILURE: 'session-restore',
   ACADEMY_FAILURE: 'academy-request',
   AUTH_CALLBACK_FAILURE: 'email-link',
+  ROSTER_FAILURE: 'roster-request',
 } as const;
 
 // Accept only enumerated codes, never raw exception messages, form data, or API bodies.
@@ -31,14 +34,14 @@ export function createDiagnostics(limit = 30, now = () => new Date()) {
       const timestamp = now().toISOString();
       const event = Object.freeze({
         reference: `PP-${session}-${(++sequence).toString(36)}`.toUpperCase(),
-        timestamp, code, action: allowedActions[code], build: '0.1.0',
+        timestamp, code, action: allowedActions[code], build: diagnosticBuild,
       });
       records = [...records, event].slice(-limit);
       return event;
     },
     list: () => [...records],
     clear: () => { records = []; },
-    export: () => JSON.stringify({ application: 'Parent Plus Coach', build: '0.1.0', events: records }, null, 2),
+    export: () => JSON.stringify({ application: 'Parent Plus Coach', build: diagnosticBuild, events: records }, null, 2),
   };
 }
 

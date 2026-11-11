@@ -1,15 +1,15 @@
-# Parent Plus Coach — paused checkpoint
+# Parent Plus Coach — progress and resume checkpoint
 
 Checkpoint date: 12 November 2026 (Asia/Kolkata).
-Status: paused at the owner's request. Do not resume implementation without a new instruction.
+Status: resumed by the owner. Students/batches implementation and Android build automation are in progress. The earlier pause checkpoint is retained below as historical context.
 Repository branch: `codex/coach-foundation`.
 Application-code baseline: `f2f393798c5366996210ab92478cc54ab2c60c48`.
 
 ## Where we are
 
-The foundation, initial database schema, and email login/academy onboarding have been implemented. The owner installed the schema in Supabase and supplied its migration-version result. Automated local checks pass.
+The foundation, initial database schema, email login/academy onboarding, and students/batches screens have been implemented. The owner installed migration 001. Migration 002 for atomic roster operations is prepared and locally tested; owner deployment remains pending. Android preview CI automation is prepared because the local native build is blocked by a denied artifact host. Actual CI build results must be inspected before claiming an APK exists.
 
-The coach app is not ready for a real teaching pilot yet. Core teaching screens are placeholders, payment integration has not started, and no APK or real Android/email journey has been verified. A database table being present does not mean its product feature is complete.
+The coach app is not ready for a complete teaching pilot yet. Students/batches are implemented; scheduling, attendance UI, observations, fees, and payments remain open. No actual Android/email journey has been verified. A database table being present does not mean its product feature is complete.
 
 ## Journey chart
 
@@ -18,8 +18,8 @@ flowchart TD
     A["PRD and coach-first scope<br/>Documented"] --> B["Native app foundation<br/>Built; local checks pass"]
     B --> C["Supabase schema and access rules<br/>Installed; local PostgreSQL tests pass"]
     C --> D["Email login and academy setup<br/>Built; simulated-backend tests pass"]
-    D --> E["CURRENT CHECKPOINT: PAUSED<br/>Live email and Android verification pending"]
-    E --> F["Students, guardian contacts, batches<br/>Schema exists; app workflows pending"]
+    D --> E["CURRENT WORK: ACTIVE<br/>Android preview build and live settings checks"]
+    E --> F["Students, guardian contacts, batches<br/>Implemented; migration 002/device checks pending"]
     F --> G["Dated classes and attendance<br/>Schema/save function exists; app workflows pending"]
     G --> H["Observations and saved drafts<br/>Schema exists; editor/publication pending"]
     H --> I["Invoices, balances, manual payments<br/>Schema exists; financial workflows pending"]
@@ -46,8 +46,8 @@ Source: [PRD functional requirements](PRD.md#5-functional-requirements).
 | AUTH-01 | Email registration, verification, login, recovery, logout | Screens, SDK calls, owned email routes, safe failures; simulated flows pass | Real confirmation/recovery emails and Android flow, including invalid/expired links |
 | AUTH-02 | Secure session restoration and onboarding | Chunked session adapter, reload/logout browser checks, onboarding flow | Native SecureStore/device restart and real refresh/sign-out checks |
 | ORG-01 | Owner academy setup | Academy/profile tables, ownership rules, retry-safe creation function, setup screen | Real authenticated API test; current UI defaults to INR and Asia/Kolkata |
-| STU-01 | Student/guardian management | Protected schema | Add/edit/archive screens and real persistence/history checks |
-| BAT-01 | Batches and enrolments | Protected schema and relationship/uniqueness tests | Batch/enrolment screens and end-to-end checks |
+| STU-01 | Student/guardian management | Add/edit/archive UI; transactional student/contact saves; tested retries/search/archiving | Apply migration 002 and verify actual API/device persistence |
+| BAT-01 | Batches and enrolments | Batch create/edit, exact fee parsing, multi-batch assignment, local SQL/browser tests | Apply migration 002 and verify actual API/device behavior; ending/moving enrolments deferred |
 | SCH-01 | Dated sessions | Schema, time/status constraints | Create/edit/cancel UI and timezone/device checks |
 | ATT-01 | Attendance | Schema and atomic save function; duplicate/rollback/cancellation tests | Attendance UI, local drafts, network/restart recovery in the app |
 | OBS-01 | Text observations and drafts | Schema and recipient relationships | Editor, durable app drafts, safe publication function, history/retry checks |
@@ -97,4 +97,4 @@ No entire P0 user requirement is being marked fully accepted solely on simulated
 5. Finish native/security/payment/privacy/recovery gates before claiming pilot readiness. Keep the parent app deferred.
 6. Send progress updates roughly once a minute during sustained work. Report permission/external-service blockers promptly; do not loop unchanged retries.
 
-No new setup action is required from the owner while paused.
+On return, the owner will need migration 002 and a phone installation/login check once an actual APK is available. Use direct links in docs/ROSTER_SETUP.md and docs/ANDROID_PREVIEW.md. Do not repeat migration 001 or the email settings already confirmed.
