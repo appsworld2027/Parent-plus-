@@ -95,7 +95,7 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 | Live settings probe | Key/settings accepted and anonymous profile access denied | Registered-user access isolation, email flow or payment correctness |
 | Guided phone acceptance | The specified real device/user journey works | Scenarios not actually exercised |
 
-Candidate 0.3.0: TypeScript, 79 automated tests and 26 browser checks passed locally; both target exports pass. Its native build is still to be verified. The last verified APK is 0.2.1; phone confirmation of the original repair and new workflows remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
+Candidate 0.3.0: TypeScript, 79 automated tests and 26 browser checks passed locally; both target exports pass. Its final native build and signature verification passed in run 43164824902, source 80bf1e7. Phone confirmation of the original repair and new workflows remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
 
 For each substantial module: confirm its acceptance criteria, test meaningful failure paths, perform the Android acceptance step, and record Built / Checks passed / Failures or blockers / Next action. Do not label a module complete because a table or screen exists.
 

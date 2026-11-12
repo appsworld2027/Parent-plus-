@@ -123,3 +123,11 @@ The new native accessibility contract check failed on two unsupported status pro
 - Migration 004 adds the owner-checked class fingerprint wrapper and revokes direct client access to the previous wrapper. Published migration 003 is preserved. A moved/cancelled class cannot accept attendance from an old open screen even if its attendance revision is unchanged.
 - Reopening attendance refreshes roster eligibility. Explicit API rejection never becomes success through subset comparison; lost-response reconciliation requires a complete current roster, matching class context and an advanced server revision.
 - TypeScript and **79 automated tests across 10 files** passed; **26 browser flows** passed, including moved-class rejection and newly enrolled child refresh. A generated owner bundle applies 002/003/004 after 001; a read-only consistency check prevents migration/bundle drift. Final native rebuild remains pending.
+
+### Final 0.3.0 native result
+
+- [Run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902) reported **success** at 2026-11-12T06:06:08.354Z, retrieved proactively at 06:06:17Z, for source `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Build start was 05:57:51.592Z: approximately 8m17s. Source matches the class-context wrapper and generated owner bundle.
+- [Final APK artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830): package `com.parentplus.coach.preview`, ARM64, development signed, 26,345,566 bytes. Pipeline APK signature verification passed. SHA-256 `d15f64d79ea2244d528aa55ba9e6909918b1af9dbbf71c8d5cb5b476715ddade`. This supersedes the initial 10b9968 candidate.
+- The final live settings-only probe passed all five booleans at 05:59:10Z. It did not create users, send emails or read private records.
+- Earlier local evidence for final source: TypeScript, 79 automated checks and 26 browser flows passed. Native compilation provides Android bundle/compile validation for the final additional guards; their live/device behavior remains unverified.
+- All source/docs are on the development branch. Monitoring stops on terminal success; no unattended monitor remains. Owner still needs to apply/verify the combined 002/003/004 update and complete guided phone acceptance using the final APK. No real collection or public release is enabled.

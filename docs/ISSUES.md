@@ -90,3 +90,5 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - Automated/browser restart, corruption/private-field stripping, storage-failure and sign-out-race checks pass. Native persistence and share-sheet behavior remain to be tested. This repair does not provide native crash stacks or remote monitoring.
 
 - DATA-001 review follow-up: an attendance revision alone does not detect edits made to an as-yet-unmarked class. Added migration 004 with canonical class-context checking, preserving published 003. Reopening refreshes roster context; explicit rejected saves are not reconciled as success against an old matching subset. SQL/model/browser regressions pass. The final hardened APK and live/device checks remain pending.
+
+- DATA-001/LOG-001 build follow-up: final source 80bf1e7 compiled and passed signature verification in run 43164824902. Build verification is complete; deployment and Android phone acceptance remain open. The earlier internal 10b9968 APK is superseded.

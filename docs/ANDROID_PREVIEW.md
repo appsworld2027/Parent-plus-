@@ -2,7 +2,7 @@
 
 ## Build/download links
 
-Current checkpoint: version **0.2.1** built successfully in [run 43145465149](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149). [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972), extract the ZIP and install the APK as an update. The owner installed the earlier build and reports email confirmation/login. The 0.2.1 Android success-message repair still needs phone verification. See [the current pause checkpoint](../PROGRESS.md).
+Current checkpoint: final version **0.3.0** built successfully in [run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902) from `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830), extract the ZIP and install the APK as an update. This is the final class-context-checked build; the earlier 0.3.0 candidate run 43163487986 is superseded. Apply the [combined database update](CLASS_SETUP.md) before the live classes/attendance acceptance journey. The email success-message repair is included but still needs phone confirmation. See [current progress](../PROGRESS.md).
 
 No owner admin/network changes or Expo authorization are required for this working preview route. The earlier SDK bootstrap and shared-queue build problems were repaired; do not ask for the old failed-step screenshots again.
 
@@ -40,4 +40,4 @@ The small build-status JSON records are saved on a separate `build-status` branc
 
 Supabase default email delivery can restrict recipients/rate. If delivery fails, it needs diagnosis or an approved SMTP provider; keep email confirmation enabled. An APK and server settings probe do not by themselves prove the real email/device journey passed.
 
-For students/batches, apply [migration 002](ROSTER_SETUP.md) before the roster test.
+For the current app, apply the [combined 002/003/004 update](CLASS_SETUP.md) before roster/classes tests; do not repeat 001.

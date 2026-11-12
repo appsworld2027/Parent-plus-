@@ -1,9 +1,10 @@
 # Current owner steps
 
-Development has resumed. Start with the phone check below; coding and automated tests can proceed independently. The current source of truth is [the progress checkpoint](../PROGRESS.md).
+Development has resumed. The final 0.3.0 APK build is verified; database deployment and phone acceptance still need confirmation.
 
-1. Install the [0.2.1 APK update](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972), preserving existing app data. This build is verified; its reported-crash repair is not yet verified on the phone.
-2. With guidance, test one recovery-email request, recovery link/password update, academy setup and session restart/sign-out. No new registration is required.
-3. Apply the [single combined database update](CLASS_SETUP.md), which includes migrations 002, 003 and 004 after your existing 001. Test students/batches first, then classes/attendance with a verified 0.3.0 APK and fictional records.
+1. Apply the [single combined database update](CLASS_SETUP.md) in your [Supabase SQL Editor](https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql). It applies 002, 003 and 004 after your existing 001. Share the result/version rows. Do not repeat the initial setup.
+2. Install the [final 0.3.0 APK update](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830), preserving existing app data. Extract the ZIP and tap `ParentPlus-Coach-Preview.apk` → Update. This includes the earlier email success-message repair; no separate 0.2.1 installation is needed.
+3. With guidance, verify one recovery-email success message stays open, then complete recovery/password update, academy setup, session restart/sign-out and roster tests. Use the existing account; no new registration is needed.
+4. Test classes/attendance with fictional records using [the phone checklist](CLASS_SETUP.md). Save to the class before sign-out because device-only drafts are cleared.
 
-The initial database migration and email settings were already confirmed. Do not repeat them. An Expo login, admin/network changes, or new tokens are not required for the successful GitHub preview build route. Never share passwords or login codes.
+The initial migration and email settings were already confirmed. No Expo authorization, admin/network changes or new tokens are needed for this working preview route. Never share passwords or login codes. See [current progress](../PROGRESS.md).

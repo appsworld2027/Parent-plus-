@@ -1,8 +1,8 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Candidate 0.3.0 is locally tested; its native build and live deployment must be verified separately.
+Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Live deployment and phone acceptance remain pending. No build monitor is active.
 
-Branch: `codex/coach-foundation`. Latest verified APK source: `5c4c53be82e492b3faa3ec831376de57f720b7b6`. Latest verified APK: **0.2.1**. Current source candidate: **0.3.0**, Android versionCode 4. Changes are saved to GitHub; no PR/merge to main is recorded.
+Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Latest verified APK: **0.3.0**, Android versionCode 4. Changes are saved to GitHub; no PR/merge to main is recorded.
 
 ## Actual position
 
@@ -48,16 +48,16 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 
 - Latest local checks: TypeScript passed, **79 automated tests across 10 files**, **26 browser tests**. Browser auth/roster tests use a fictional transport, not real project records.
 - Native accessibility contract test failed at exactly the two invalid status props before the repair, then passed. It reads the installed Android implementation; it is not a device crash reproduction.
-- Successful replacement build: [run 43145465149](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149), source `5c4c53be82e492b3faa3ec831376de57f720b7b6`.
-- [Download 0.2.1 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
-- APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,298,214 bytes. SHA-256 `a8960174c6a0c9b228a100f1387297d25306898f04f07b5a7d29a5a3d59cdcc1`.
+- Successful replacement build: [run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902), source `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`.
+- [Download 0.3.0 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
+- APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,345,566 bytes. SHA-256 `d15f64d79ea2244d528aa55ba9e6909918b1af9dbbf71c8d5cb5b476715ddade`.
 - Real settings-only auth probe passed: reachable, public key accepted, email enabled, confirmation required, anonymous profile records denied. This does not independently establish real-user session/recovery tests.
 - Owner confirmed migration `202611110001`, email provider and redirect settings. Do not repeat those setup tasks.
 - [Detailed validation](docs/VALIDATION.md), [issue history](docs/ISSUES.md), [roster deployment](docs/ROSTER_SETUP.md), [PRD](PRD.md), [build sequence](BUILD_PLAN.md).
 
 ## Right resume order
 
-1. Install a verified APK update, preserving existing app data. The existing 0.2.1 repair build remains available until 0.3.0 is verified. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
+1. Install a verified APK update, preserving existing app data. Use the final 0.3.0 link above; it includes the earlier email success-message repair. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
 2. Verify the new best-effort persisted diagnostics on Android. Continue assessing native crash reporting through a supported integration; no remote/native monitoring exists yet. Any external setup must be concrete and minimal.
 3. Apply migrations 002, 003 and 004 using the [classes setup guide](docs/CLASS_SETUP.md), then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
 4. Finish module 4 device/live acceptance, then build modules 5, 6 and 7 with a test gate each. Begin payment-provider onboarding/test-access confirmation early while independent coding proceeds; no real collection or purchase without owner authorization.
