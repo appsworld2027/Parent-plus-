@@ -85,7 +85,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={s.hint}>Use at least 10 characters.</Text></>}
       {!!failure && <Text accessibilityRole="alert" style={s.error}>{failure}</Text>}
-      {!!message && <Text accessibilityRole="status" style={s.notice}>{message}</Text>}
+      {!!message && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
       {!forceRecovery && <>
         {mode !== 'login' && <Button title="Back to sign in" onPress={() => choose('login')} soft disabled={busy} />}

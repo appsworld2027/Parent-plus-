@@ -85,3 +85,9 @@ Owner screenshots confirm an interrupted secondary Android CLI download, before 
 - Real project's settings-only probe passed again: reachable, public key accepted, email enabled, email confirmation required, anonymous profile reads denied. This is not a real-user login test.
 - Device installation, secure-storage behavior, email confirmation/recovery deep links, real login, roster migration 002 deployment and live roster writes remain unverified. This is an internal preview, not a production or Play Store release.
 - Monitoring stops on this terminal success; there is no continuing background monitor. Next check is installation and email authentication on an actual Android device.
+
+## Android success-message repair — version 0.2.1
+
+The owner reports native app installation, confirmation email receipt and subsequent login. The owner also reports a crash after the in-app account-creation submission. Treat login as owner-reported, not independently observed. See ANDROID-001 in ISSUES.md.
+
+The new native accessibility contract check failed on two unsupported status props before the repair. After the repair: TypeScript passed, 51 automated tests passed across 7 files, and all 16 browser tests passed. Browser tests include signup/recovery success messages and batch/student-save success notices; they retain their ARIA status semantics. Device confirmation of the fix and the replacement APK build are pending.

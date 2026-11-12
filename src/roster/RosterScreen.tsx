@@ -94,7 +94,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
     && (batchFilter === 'all' || data.enrolments.some(e => e.student_id === student.id && e.batch_id === batchFilter))) ?? [];
   return <View style={s.root}>
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
-    {!!notice && <Text accessibilityRole="status" style={s.notice}>{notice}</Text>}
+    {!!notice && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{notice}</Text>}
     {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
     <ConfirmDialog visible={discard} title="Discard your unsaved changes?" message="Keep editing to retain this form, or discard it to go back."
       confirmLabel="Discard changes" cancelLabel="Keep editing" onConfirm={close} onCancel={() => setDiscard(false)} />
