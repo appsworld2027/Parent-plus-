@@ -11,7 +11,7 @@ No owner admin/network changes or Expo authorization are required for this worki
 
 Open the latest successful Android preview run for `codex/coach-foundation`. Under Artifacts download **ParentPlus-Coach-Preview**, unzip it, and copy `ParentPlus-Coach-Preview.apk` to the Android phone. A workflow file being present does not mean a successful artifact exists: check the actual run outcome first.
 
-The workflow builds a standalone ARM64 Android preview (Android 7.0/API 24 or later). It includes its JavaScript bundle and does not require a laptop Metro server or an Expo account login. It uses a separate application ID `com.parentplus.coach.preview` and development signing; store/production signing is not completed by this preview.
+The earlier verified builds through 0.3.1 are ARM64-only. Candidate 0.3.2 changes the workflow to package ARM64 phones and x86_64 Intel/AMD emulators in one APK (Android 7.0/API 24 or later), with actual library/header verification. Verify the new build result before claiming compatibility. See [Windows emulator setup](WINDOWS_EMULATOR.md). It includes its JavaScript bundle and does not require a laptop Metro server or an Expo account login. It uses a separate application ID `com.parentplus.coach.preview` and development signing; store/production signing is not completed by this preview.
 
 Android may ask you to allow installation from the browser/file app used to open the APK. Enable it for that installation source as needed, then install **Parent Plus Coach Preview**. If installation fails, share the message; do not troubleshoot Android tools yourself.
 

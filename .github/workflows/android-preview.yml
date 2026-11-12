@@ -59,6 +59,8 @@ jobs:
       - run: npm run check
       - name: Check SDK installer failure handling
         run: python3 scripts/test_android_installer.py
+      - name: Check phone and emulator APK compatibility guard
+        run: python3 scripts/test_apk_architectures.py
       - name: Check actual project settings without creating users or sending emails
         continue-on-error: true
         run: node scripts/check-live-auth.mjs

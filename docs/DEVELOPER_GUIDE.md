@@ -37,7 +37,7 @@ Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then 
 | `e2e/support/backend.ts` | Fictional SDK transport for browser flows | Never deploy as a live backend |
 | `.github/workflows/checks.yml` | Browser/automated/export pipeline | `playwright.config.ts` |
 | `.github/workflows/android-preview.yml` | Native preview build and evidence | `scripts/install-android-sdk.py`, `build-android-preview.py` |
-| `scripts/build_support.py`, `test_android_installer.py` | Safe build-error redaction and installer regression checks | BUILD-002 in ISSUES.md |
+| `scripts/build_support.py`, `test_android_installer.py`, `test_apk_architectures.py` | Safe build-error redaction, installer checks and APK ABI/ELF verification | BUILD-002 in ISSUES.md |
 | `scripts/check-live-auth.mjs` | Read-only live settings/security probe | Its safe boolean report; not a user login test |
 | `scripts/github-build-status.cjs` | Publish per-revision start/final reports over Git | `build-status` branch, not app data |
 | `scripts/diagnose-build.cjs` | Historical diagnostic experiment | Not invoked by the current Android workflow |

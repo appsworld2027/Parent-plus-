@@ -150,3 +150,9 @@ The new native accessibility contract check failed on two unsupported status pro
 - All live settings-probe booleans passed at 07:42:01Z. The probe does not create users, send emails or read private records.
 - No schema change: owner-confirmed 001–004 remain the required installed versions. Phone acceptance of visible notifications and server attendance/restart is still pending. Source comments and feedback/architecture docs are updated; all nine architecture/progress diagrams render and current feedback documentation links resolve.
 - Monitoring stopped on terminal success. No unattended monitor remains active.
+
+## Windows Intel compatibility packaging — candidate 0.3.2
+
+- The owner supplied Windows / Intel Core Ultra 7 for manual emulator checks. The existing ARM64-only APK is not the correct artifact for a standard x86_64 image. Candidate 0.3.2 / versionCode 6 packages both `arm64-v8a` and `x86_64` with unchanged application features and backend schema.
+- Four new Python checks verify dual-ABI acceptance, missing emulator libraries, mislabeled CPU headers and unexpected ABI rejection. All passed. Existing six installer checks, Python compilation and actionlint passed. The native workflow runs the new guard against the actual built APK before upload and records architecture/library counts.
+- TypeScript and the 79-test suite are rerun for this source metadata/build change; native build result remains pending. Existing browser evidence is retained separately; no emulator/device runtime is claimed. Physical-phone automation and feature work remain on hold.

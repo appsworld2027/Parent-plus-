@@ -12,8 +12,10 @@ import re
 import shutil
 import subprocess
 
-from build_support import sanitize_build_line
+from build_support import sanitize_build_line, verify_apk_architectures
 
+# One APK contains phone and Intel/AMD emulator native libraries.
+architectures = ('arm64-v8a', 'x86_64')
 root = Path(__file__).resolve().parent.parent
 revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
 env = {**os.environ, 'PARENTPLUS_BUILD_VARIANT': 'preview', 'EXPO_PUBLIC_APP_ENV': 'test',
@@ -36,7 +38,7 @@ if java17:
     with gradle_props.open('a') as output:
         output.write(f'\norg.gradle.java.installations.paths={java17}\nkotlin.compiler.execution.strategy=in-process\n')
 command = ['./gradlew', ':app:assembleRelease', '--no-daemon', '--max-workers=2',
-                '-PreactNativeArchitectures=arm64-v8a', '-Pandroid.enableMinifyInReleaseBuilds=false',
+                f'-PreactNativeArchitectures={",".join(architectures)}', '-Pandroid.enableMinifyInReleaseBuilds=false',
                 '-Pandroid.enableShrinkResourcesInReleaseBuilds=false', '-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g']
 process = subprocess.Popen(command, cwd=root / 'android', env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 tail = []
@@ -49,9 +51,15 @@ if process.wait() != 0:
     raise SystemExit(process.returncode)
 apk = root / 'android/app/build/outputs/apk/release/app-release.apk'
 subprocess.run([str(sdk / 'build-tools/37.0.0/apksigner'), 'verify', '--verbose', str(apk)], check=True)
+try:
+    native_libraries = verify_apk_architectures(apk, architectures)
+except Exception as error:
+    output = root / 'artifacts'; output.mkdir(exist_ok=True)
+    (output / 'build-failure.json').write_text(json.dumps({'sourceSha': revision, 'stage': 'apk-architecture-check', 'tail': [sanitize_build_line(str(error))]}, indent=2))
+    raise
 output = root / 'artifacts'; output.mkdir(exist_ok=True)
 target = output / 'ParentPlus-Coach-Preview.apk'; shutil.copy2(apk, target)
-report = {'sourceSha': revision, 'package': 'com.parentplus.coach.preview', 'architecture': 'arm64-v8a',
+report = {'sourceSha': revision, 'package': 'com.parentplus.coach.preview', 'architecture': ','.join(architectures), 'architectures': list(architectures), 'nativeLibraries': native_libraries,
           'signing': 'development', 'bytes': target.stat().st_size, 'sha256': hashlib.file_digest(target.open('rb'), 'sha256').hexdigest()}
 (output / 'android-build.json').write_text(json.dumps(report, indent=2))
 print(json.dumps(report))
