@@ -55,7 +55,12 @@ export function createSessionStorage(driver: StorageDriver) {
       if (previous) await cleanup(key, previous).catch(() => undefined);
     }),
     removeItem: (key: string) => serial(async () => {
-      const manifest = parseManifest(await driver.getItem(key));
+      const raw = await driver.getItem(key);
+      let manifest: Manifest | null = null;
+      try { manifest = parseManifest(raw); }
+      catch { /* Explicit discard/sign-out must work even with a corrupt index. */ }
+      // SecureStore cannot enumerate unknown orphan chunks after index corruption.
+      // Remove the index regardless; clean known chunks only from a valid manifest.
       await driver.removeItem(key);
       if (manifest) await cleanup(key, manifest);
     }),

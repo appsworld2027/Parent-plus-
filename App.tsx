@@ -10,6 +10,8 @@ import { AuthProvider, useAuth } from './src/auth/AuthProvider';
 import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
 import { ClassesScreen } from './src/classes/ClassesScreen';
+import { ObservationsScreen } from './src/observations/ObservationsScreen';
+import { SignOutButton } from './src/auth/SignOutButton';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
@@ -34,7 +36,7 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
 }
 
 // Workspace navigation stays here; feature forms own their inputs and API calls.
-// Roster dirty/busy callbacks let tab changes and Android Back respect pending edits.
+// Feature dirty/busy callbacks let tab changes and Android Back respect pending edits.
 function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
@@ -57,8 +59,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
-    if ((screen === 'Students' || screen === 'Schedule') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
-    if ((screen === 'Students' || screen === 'Schedule') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
+    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
+    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -95,7 +97,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       <ActionFeedback />
       <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
-        {(screen === 'Students' || screen === 'Schedule') && !!notice && <Text style={styles.notice}>{notice}</Text>}
+        {(screen === 'Students' || screen === 'Schedule' || screen === 'Post') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
@@ -103,7 +105,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <View style={styles.hero}>
             <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
             <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
-            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Observations and fees follow in later modules.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
+            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Record private student observations in Post. Fee collection follows in a later module.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
             <Action label="View setup status" onPress={() => navigate('Support')} secondary />
           </View>
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} />}
@@ -129,7 +131,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>{auth.academy ? 'Workspace loaded' : 'Not verified'}</Text></View>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Payment collection</Text><Text style={styles.statusValue}>Not enabled</Text></View>
             <Text style={styles.small}>{auth.academy ? `Academy: ${auth.academy.name}` : appConfig.configured ? 'Project settings are present. Sign in to verify your workspace connection.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
-            {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <Action label="Sign out" secondary onPress={() => { void auth.logout().then(message => { if (message) setNotice(message, { kind: 'error', title: 'Sign-out needs attention' }); }); }} />}
+            {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <SignOutButton />}
           </View>
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Report a problem</Text>
@@ -146,7 +148,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
@@ -165,7 +167,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name}</Text>
         </Pressable>)}
       </View>
-      <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message={screen === 'Schedule' ? 'Unsaved edits will be discarded. Attendance drafts already saved on this device are retained.' : 'Your changes have not been saved. Keep editing or discard this form before leaving.'}
+      <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message={screen === 'Post' ? 'Your latest edits have not been saved on this device. Keep editing and retry saving, or leave and lose these latest edits. Any earlier device draft is retained.' : screen === 'Schedule' ? 'Unsaved edits will be discarded. Attendance drafts already saved on this device are retained.' : 'Your changes have not been saved. Keep editing or discard this form before leaving.'}
         confirmLabel="Discard and leave" cancelLabel="Keep editing" onCancel={() => setPendingNavigation(null)}
         onConfirm={() => { if (pendingNavigation) { setFormDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
     </View>

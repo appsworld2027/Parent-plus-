@@ -1,9 +1,10 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AppState, Linking, Platform } from 'react-native';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './client';
 import { parseAuthLink } from './rules';
 import { diagnostics } from '../diagnostics';
+import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { useFeedback } from '../ui/ActionFeedback';
 
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   const [error, setError] = useState('');
   const [recovery, setRecovery] = useState(false);
   const [revision, setRevision] = useState(0);
+  const draftCleanup = useRef<Promise<string | null>>(Promise.resolve(null));
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -46,8 +48,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
         diagnostics.clear(); setAcademy(null); setRecovery(false);
-        void attendanceDrafts.clear().catch(() => {
-          if (active) setError(safeAuthFailure('SESSION_FAILURE', 'You are signed out, but the device draft could not be cleared. Your coding partner can help.'));
+        // Invalidate observation writers synchronously; queued removal runs once.
+        // Explicit logout awaits this same job instead of racing a second clear.
+        draftCleanup.current = Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
+          const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but a device draft could not be cleared. Your coding partner can help.');
+          if (active) setError(message);
+          return message;
         });
       }
       setSession(next); setLoading(false);
@@ -132,13 +138,10 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       const result = await supabase.auth.signOut({ scope: 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
-      try { await attendanceDrafts.clear(); }
-      catch {
-        const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but the device draft could not be cleared. Your coding partner can help.');
-        setError(message); return message;
-      }
+      const cleanupError = await draftCleanup.current;
+      if (cleanupError) { setError(cleanupError); return cleanupError; }
       await diagnostics.flush();
-      show({ kind: 'success', title: 'Signed out', message: 'Your session and device-only attendance draft have been cleared.', source: 'auth-sign-out' });
+      show({ kind: 'success', title: 'Signed out', message: 'Your session and device-only drafts have been cleared.', source: 'auth-sign-out' });
       return null;
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
   }, [show, dismiss]);

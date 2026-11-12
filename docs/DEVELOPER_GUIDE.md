@@ -131,7 +131,7 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 
 - The owner cannot change administrator/network access. Existing Git transport and GitHub-hosted builds work; the Supabase dashboard remains the manual deployment route. Do not request repeat credentials or inaccessible admin changes.
 - Give direct dashboard/file links and short phone checks. The owner should not interpret code or debug stack traces. Ask only for evidence/actions unavailable through authorized tools.
-- Respect the latest owner pause/resume instruction; the latest instruction is Stop; only checkpoint syncing is currently authorized. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
+- Respect the latest owner pause/resume instruction; the latest instruction resumes feature development while the owner sets up the emulator later. Phone-control automation remains on hold. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
 - Source is on `codex/coach-foundation`; no PR/merge to main is recorded. Fetch/switch to the correct branch on another computer. Installed APKs require explicit updates.
 - Preview development signing is separate from production-key custody and Play publication. Build artifacts expire; regenerate a verified build if needed.
 - Keep diagnostic data separate from family content/financial audit records. Diagnostics now persist on the device on a best-effort basis with validated restoration, memory fallback and sign-out clearing. Native crash/remote reporting remains open; do not claim it is connected.
@@ -141,3 +141,7 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 ## 9. Before handing off a change
 
 Explain what changed and why, point to the code/diagram and acceptance criterion, list executed checks plus their limits, identify the source/build, record open issues and give the next concrete step. For comment/document-only edits, verify links, diagram syntax and that executable code is unchanged; a new APK is unnecessary. Run relevant checks for actual behavior changes rather than adding tests that merely repeat the code.
+
+## Module 5 entry points
+
+Private observation code, transactional invariants and recovery paths are mapped in [OBSERVATIONS.md](OBSERVATIONS.md). Keep the UUID/revision and fixed-recipient guarantees intact when adding fields. Autosave uses inline feedback so typing does not dismiss the keyboard. Explicit server writes use the shared fixed notification row. Apply only migration 005 to the owner project already at 004.

@@ -1,3 +1,4 @@
+import type { Observation } from '../../src/observations/model';
 import type { Page } from '@playwright/test';
 import type { Roster } from '../../src/roster/model';
 import type { ClassSession, Marks } from '../../src/classes/model';
@@ -7,10 +8,10 @@ const user = { id: '00000000-0000-0000-0000-000000000001', email: 'coach@example
   created_at: '2026-01-01T00:00:00Z', app_metadata: {}, user_metadata: {}, identities: [] };
 declare global {
   interface Window {
-    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean };
+    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean; observations: Observation[]; observationRecipients: Record<string, string[]>; observationVersions: Record<string, { revision: number; note: string; status: string; saved_at: string }[]>; failObservation: boolean; loseObservationResponse: boolean; holdObservation: boolean };
   }
 }
-export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean } = {}) {
+export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean; missingObservationMigration?: boolean } = {}) {
   // A transport fixture installed before the real app/SDK loads. No Supabase
   // request can leave this browser; authentication and storage code are unchanged.
   await page.addInitScript(({ user, options }) => {
@@ -25,7 +26,8 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       : { students: [], contacts: [], batches: [], enrolments: [] });
     const teaching = JSON.parse(sessionStorage.getItem('__fictional_classes') ?? 'null') ?? {
       classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };
-    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false };
+    const notes = JSON.parse(sessionStorage.getItem('__fictional_observations') ?? 'null') ?? { observations: [], recipients: {}, versions: {} };
+    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false, observations: notes.observations, observationRecipients: notes.recipients, observationVersions: notes.versions, failObservation: false, loseObservationResponse: false, holdObservation: false };
     const account = options.unverified ? { ...user, email_confirmed_at: null } : user;
     const original = window.fetch.bind(window);
     window.fetch = async (input, init) => {
@@ -106,6 +108,47 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           session.attendance_revision++; data = session.attendance_revision; persistClasses();
           if (state.loseAttendanceResponse) { state.loseAttendanceResponse = false; throw new TypeError('Simulated lost response after attendance commit'); }
         }
+      } else if (url.pathname.endsWith('/rpc/save_observation')) {
+        while (state.holdObservation) await new Promise(resolve => setTimeout(resolve, 20));
+        const existing = state.observations.find(row => row.id === payload.target_observation);
+        if (state.failObservation) { status = 500; data = { message: 'Private note backend failure' }; }
+        else {
+          const same = existing && existing.note === payload.note_text && existing.status === payload.desired_status
+            && existing.batch_id === payload.target_batch && existing.session_id === payload.target_session
+            && existing.audience === payload.audience_kind && [...state.observationRecipients[existing.id]].sort().join(',') === [...payload.recipient_ids].sort().join(',');
+          if (existing && !same && existing.revision !== payload.expected_revision) { status = 400; data = { code: '40001', message: 'Changed note' }; }
+          else {
+            const now = new Date().toISOString();
+            const value = same ? existing! : { id: payload.target_observation, academy_id: payload.target_academy,
+              batch_id: payload.target_batch, session_id: payload.target_session, note: payload.note_text,
+              status: payload.desired_status, audience: payload.audience_kind, author_id: user.id,
+              revision: (existing?.revision ?? 0) + 1, created_at: existing?.created_at ?? now,
+              updated_at: now, recorded_at: existing?.recorded_at ?? (payload.desired_status === 'recorded' ? now : null) };
+            if (!same) {
+              state.observations = state.observations.filter(row => row.id !== value.id).concat(value);
+              state.observationRecipients[value.id] = payload.recipient_ids;
+              state.observationVersions[value.id] = [{ revision: value.revision, note: value.note, status: value.status, saved_at: now }, ...(state.observationVersions[value.id] ?? [])];
+              sessionStorage.setItem('__fictional_observations', JSON.stringify({ observations: state.observations, recipients: state.observationRecipients, versions: state.observationVersions }));
+            }
+            data = value;
+            if (state.loseObservationResponse) { state.loseObservationResponse = false; throw new TypeError('Simulated lost note response after commit'); }
+          }
+        }
+      } else if (url.pathname.endsWith('/observations')) {
+        if (options.missingObservationMigration) { status = 400; data = { code: '42703', message: 'Missing note column' }; }
+        else {
+          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          let rows = state.observations.filter(row => !id || row.id === id).sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
+          const cursor = url.searchParams.get('or')?.match(/created_at\.eq\.([^,]+),id\.lt\.([0-9a-f-]+)/);
+          if (cursor) rows = rows.filter(row => row.created_at < cursor[1] || (row.created_at === cursor[1] && row.id < cursor[2]));
+          data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
+        }
+      } else if (url.pathname.endsWith('/observation_recipients')) {
+        const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '');
+        data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
+      } else if (url.pathname.endsWith('/observation_versions')) {
+        const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '') ?? '';
+        data = (state.observationVersions[id] ?? []).slice(0,5);
       } else if (url.pathname.endsWith('/class_sessions')) {
         if (options.missingClassMigration) { status = 400; data = { code: '42703', message: 'Missing class column' }; }
         else {
@@ -119,11 +162,11 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/attendance')) {
         const id = url.searchParams.get('session_id')?.replace(/^eq\./, '') ?? '';
         data = Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ student_id, status }));
-      } else if (url.pathname.endsWith('/students')) data = state.roster.students;
+      } else if (url.pathname.endsWith('/students')) data = state.roster.students.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;
         data = options.missingRosterMigration ? { code: '42703', message: 'Fictional missing column' } : state.roster.contacts;
-      } else if (url.pathname.endsWith('/enrolments')) data = state.roster.enrolments;
+      } else if (url.pathname.endsWith('/enrolments')) data = state.roster.enrolments.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       else if (url.pathname.endsWith('/batches')) {
         if (method === 'POST') {
           const batch = { ...payload, archived_at: null };

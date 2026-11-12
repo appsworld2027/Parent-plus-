@@ -39,6 +39,16 @@ describe('secure session adapter', () => {
     expect(await store.getItem('session')).toBe(null);
     expect(values.size).toBe(0);
   });
+  it('can explicitly discard a corrupt index and save a fresh session', async () => {
+    const { driver } = memory();
+    const store = createSessionStorage(driver);
+    await driver.setItem('session', 'corrupt-index');
+    await expect(store.getItem('session')).rejects.toThrow();
+    await store.removeItem('session');
+    expect(await store.getItem('session')).toBeNull();
+    await store.setItem('session', 'fresh-token');
+    expect(await store.getItem('session')).toBe('fresh-token');
+  });
   it('fails explicitly on incomplete storage instead of returning a partial token', async () => {
     const { driver, values } = memory();
     const store = createSessionStorage(driver);

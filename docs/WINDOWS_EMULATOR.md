@@ -22,4 +22,4 @@ Saved Supabase records are shared after signing in to the same app account. A ph
 
 The build guard checks both requested ABI folders and the ELF machine type of every packaged native library, in addition to APK signature verification. That establishes native CPU packaging. It does not prove installation, startup, graphics, email links or app flows on this particular Windows emulator.
 
-Feature development remains stopped. Physical-phone automation remains on hold. This packaging work supports the owner's requested manual laptop testing; it does not connect the cloud agent to the laptop or phone.
+Feature development has now resumed for observations; the 0.3.2 link above remains the last verified build until the new result is recorded. Physical-phone automation remains on hold. This packaging work supports the owner's requested manual laptop testing; it does not connect the cloud agent to the laptop or phone.

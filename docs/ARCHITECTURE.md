@@ -1,12 +1,12 @@
 # How Parent Plus Coach works today
 
-Reviewed: 12 November 2026. Applies to candidate app version 0.3.1. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
+Reviewed: 12 November 2026. Applies to candidate app version 0.4.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system
 
 ```mermaid
 flowchart TD
-    Coach["Coach using the installed Android app"] --> UI["App screens: login, academy setup, roster, classes and attendance"]
+    Coach["Coach using the installed Android app"] --> UI["App screens: login, academy setup, roster, classes, attendance and observations"]
     UI --> Client["Supabase client: public project settings + signed-in session"]
     Client --> Auth["Supabase Auth: account, email verification, login"]
     Auth --> Email["Confirmation or recovery email to the coach"]
@@ -17,7 +17,7 @@ flowchart TD
     Rules --> DB["Supabase PostgreSQL: academy and private app records"]
     DB --> API
     API --> UI
-    Client --> Store["Phone SecureStore: saved session, verifier, diagnostics and one attendance draft"]
+    Client --> Store["Phone SecureStore: saved session, verifier, diagnostics, one attendance draft and one private observation draft"]
     Developer["Developer edits source and tests"] --> Git["GitHub: source, plans, tests and migrations"]
     Git --> Actions["GitHub Actions: automated checks and Android build"]
     Actions --> APK["Downloadable internal-preview APK"]
@@ -39,9 +39,9 @@ The roster paths require migration 002; classes/attendance require migrations 00
 | GitHub `build-status` branch | Small per-source build reports | Reports are written at job start/end, not a live stream of each build step |
 | Supabase Auth | User identities and authentication sessions managed by the provider | An academy contact record does not create a parent login |
 | Supabase PostgreSQL | Academy, students, contacts, batches and enrolments; schema also exists for later modules | Table existence does not mean the feature is implemented |
-| Android SecureStore | Session/verifier, bounded safe diagnostics and one attendance draft through chunked adapters | Attendance drafts hold scoped IDs/statuses, not student names; no full offline roster cache |
+| Android SecureStore | Session/verifier, bounded safe diagnostics, one attendance draft and one private observation draft through chunked adapters | Observation drafts include private note text; attendance drafts hold scoped IDs/statuses. No full offline roster cache |
 | App memory | Current form entries, loaded records and current screen; diagnostic fallback when storage fails | Student/class-edit drafts are not durable; attendance is durable only after device-save confirmation |
-| Web browser sessionStorage | Web sessions, diagnostics and attendance draft through the same storage adapter | Reload tests do not validate Android SecureStore or persistence after closing the browser tab |
+| Web browser sessionStorage | Web sessions, diagnostics and private drafts through the same storage adapter | Reload tests do not validate Android SecureStore or persistence after closing the browser tab |
 
 The public URL and publishable key in `config/public-client.json` are bundled client configuration. Database security depends on verified user identity, privileges, policies and constraints. A public key is not an owner/service-role credential. No service-role, SMTP, gateway or production-signing secret belongs in the client.
 
@@ -198,7 +198,7 @@ erDiagram
 
 One academy is owned per account in this version. Migration 002 permits at most one primary contact per student. Composite foreign keys prevent a child, batch and enrolment being connected across academies. Current enrolment uniqueness is per academy/student/batch pair, not a history of repeat enrolment periods.
 
-Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented and their installed versions are owner-confirmed; real app/API acceptance is pending. `observations`, `observation_recipients`, `fee_invoices`, and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
+Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented and their installed versions are owner-confirmed; real app/API acceptance is pending. `observations` and `observation_recipients` now have Module 5 workflows, with private `observation_versions` added in migration 005 (deployment pending). `fee_invoices` and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
 
 ## 7. Errors and diagnostics
 
@@ -248,4 +248,8 @@ GitHub builds provide the working preview route without Expo login. `eas.json` i
 
 ## 9. What is deliberately outside the current working flow
 
-Post and Fees remain pending-module screens. Schedule now manages classes and attendance; Today queries actual dated sessions and counts classes with an attendance save. It does not claim every later roster change has been reconciled, and fee/observation dashboard figures are not implemented. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.
+Post implements private observations and drafts; see [its flow and recovery rules](OBSERVATIONS.md). Migration 005 is prepared but not deployed. Fees remains a pending-module screen. Schedule now manages classes and attendance; Today queries actual dated sessions and counts classes with an attendance save. It does not claim every later roster change has been reconciled, and fee/observation dashboard figures are not implemented. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.
+
+## Module 5: observations
+
+See [the complete observation flow](OBSERVATIONS.md#data-flow-and-recovery). The screen validates inputs and persists one scoped device snapshot, then explicitly calls `save_observation`. The function checks academy ownership, revision, batch/class and enrolments; one transaction writes the note, fixed recipient set and private version. Recorded scope cannot be changed. Exact retries return the existing version. Restart compares the snapshot with server state; conflicting text is copied only by an explicit new-draft action. Sign-out invalidates queued observation writers before removing device copies. No parent delivery exists.

@@ -94,6 +94,7 @@ test('sign-out clears private attendance drafts', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText('Draft saved on this device');
   await page.getByRole('button', { name: 'Open support and diagnostics', exact: true }).click();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await page.getByRole('button', { name: 'Remove drafts and sign out', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Welcome back.', exact: true })).toBeVisible();
   expect(await page.evaluate(() => Object.keys(sessionStorage).filter(k => k.startsWith('parentplus.coach.attendance-draft.')))).toEqual([]);
 });

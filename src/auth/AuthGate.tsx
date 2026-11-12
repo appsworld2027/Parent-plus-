@@ -1,3 +1,4 @@
+import { SignOutButton } from './SignOutButton';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -132,7 +133,7 @@ function AcademySetup() {
       <Text style={s.hint}>Starting with INR and Asia/Kolkata.</Text>
       {!!error && <Text style={s.error}>{error}</Text>}
       <Button title={busy ? 'Saving…' : 'Create my workspace'} onPress={() => { void save(); }} disabled={busy} />
-      <Button title="Sign out" soft disabled={busy} onPress={() => { void auth.logout().then(message => { if (message) setError(message); }); }} />
+      <SignOutButton disabled={busy} />
     </View></Page>;
 }
 
@@ -141,7 +142,6 @@ function AcademySetup() {
 export function AuthGate({ render }: { render: (exitPreview?: () => void) => React.ReactNode }) {
   const auth = useAuth();
   const [preview, setPreview] = useState(false);
-  const [logoutError, setLogoutError] = useFeedbackMessage('error', 'Sign-out needs attention');
   const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
   useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
@@ -149,8 +149,7 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;
   if (!auth.session) return <AuthForm onPreview={() => setPreview(true)} />;
   if (auth.error) return <Page><Text accessibilityRole="header" style={s.title}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
-    {!!logoutError && <Text style={s.error}>{logoutError}</Text>}
-    <Button title="Retry connection" onPress={auth.reload} /><Button title="Sign out" soft onPress={() => { void auth.logout().then(message => setLogoutError(message ?? '')); }} /></Page>;
+    <Button title="Retry connection" onPress={auth.reload} /><SignOutButton /></Page>;
   if (!auth.academy) return <AcademySetup />;
   return <ErrorBoundary>{render()}</ErrorBoundary>;
 }
