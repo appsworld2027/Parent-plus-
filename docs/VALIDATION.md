@@ -131,3 +131,8 @@ The new native accessibility contract check failed on two unsupported status pro
 - The final live settings-only probe passed all five booleans at 05:59:10Z. It did not create users, send emails or read private records.
 - Earlier local evidence for final source: TypeScript, 79 automated checks and 26 browser flows passed. Native compilation provides Android bundle/compile validation for the final additional guards; their live/device behavior remains unverified.
 - All source/docs are on the development branch. Monitoring stops on terminal success; no unattended monitor remains. Owner still needs to apply/verify the combined 002/003/004 update and complete guided phone acceptance using the final APK. No real collection or public release is enabled.
+
+### Owner database deployment confirmation — 12 November 2026
+
+- Owner first supplied a successful combined-update execution result, then ran the requested migration-version query filtered to 001–004. The follow-up screenshot shows four rows, confirming the expected installed version set. Migration 001 retains its earlier timestamp; upgrades 002–004 show `2026-11-12 06:57:00.026915+00`.
+- This is owner dashboard/version evidence, not a direct database connection or an end-to-end app/security test. Do not request another initial setup or repeat the upgrade script. Next action: install the verified final 0.3.0 APK, verify the email success-message repair and complete the guided roster/classes phone tests.

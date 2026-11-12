@@ -26,7 +26,7 @@ flowchart TD
 
 The installed app talks directly to Supabase over HTTPS; it does not need a running laptop or Codex session. GitHub is used to develop and distribute builds. New GitHub source does not automatically update an installed APK. No custom application server or payment integration is deployed yet.
 
-The roster paths require migration 002; classes/attendance require migrations 003/004. Their live deployment and device acceptance are not confirmed. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
+The roster paths require migration 002; classes/attendance require migrations 003/004. The owner has confirmed versions 001–004 installed through the filtered version query; app/API and device acceptance remain pending. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
 
 [Open the rendered system diagram](images/system-flow.png). It is a snapshot generated from the first Mermaid block above; refresh it when that flow changes.
 
@@ -180,7 +180,7 @@ Clients cannot directly insert/update classes or call the old attendance functio
 
 ## 6. Current data relationships
 
-Relationships below describe migration 001 plus the prepared 002/003/004 changes. Deployments of 002/003/004 remain unconfirmed.
+Relationships below describe migration 001 plus the prepared 002/003/004 changes. The owner has now confirmed versions 001–004 installed; actual app/API acceptance remains pending.
 
 ```mermaid
 erDiagram
@@ -198,7 +198,7 @@ erDiagram
 
 One academy is owned per account in this version. Migration 002 permits at most one primary contact per student. Composite foreign keys prevent a child, batch and enrolment being connected across academies. Current enrolment uniqueness is per academy/student/batch pair, not a history of repeat enrolment periods.
 
-Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented but live deployment is pending. `observations`, `observation_recipients`, `fee_invoices`, and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
+Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented and their installed versions are owner-confirmed; real app/API acceptance is pending. `observations`, `observation_recipients`, `fee_invoices`, and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
 
 ## 7. Errors and diagnostics
 

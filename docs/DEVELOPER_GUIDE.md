@@ -73,7 +73,7 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 ## 4. Database changes and deployment
 
 - Migration 001 is confirmed installed. Do not tell the owner to recreate the project or rerun the initial setup.
-- Migrations 002, 003 and 004 are prepared/tested; deployment remains unconfirmed. Follow [ROSTER_SETUP.md](ROSTER_SETUP.md), then [CLASS_SETUP.md](CLASS_SETUP.md), and record evidence.
+- The owner has confirmed migration versions 001–004 installed via the filtered four-row dashboard result. Do not ask for repeat setup. Use [CLASS_SETUP.md](CLASS_SETUP.md) for the pending app/API and phone acceptance.
 - The owner can use the generated `supabase/setup_after_001.sql` bundle from `npm run prepare:owner-sql`. `node scripts/prepare-owner-sql.mjs --check` verifies it without editing files.
 - Preserve deployed migration history. Future behavior/schema changes need a new numbered migration, review of data preservation and corresponding database tests.
 - Database tests use disposable PGlite plus simulated Supabase auth roles. They do not inspect or mutate the real project. PGlite success must be followed by relevant real API/device acceptance.

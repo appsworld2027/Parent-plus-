@@ -1,6 +1,6 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Live deployment and phone acceptance remain pending. No build monitor is active.
+Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. No build monitor is active.
 
 Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Latest verified APK: **0.3.0**, Android versionCode 4. Changes are saved to GitHub; no PR/merge to main is recorded.
 
@@ -8,17 +8,17 @@ Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a
 
 A standalone native Android preview has been built successfully. The owner installed the earlier 0.2.0 APK and reported receiving the confirmation email and logging in. The owner also reported the app closing after the in-app account-creation email request. An unsupported Android accessibility prop was found on that success screen and roster-save notices. Version 0.2.1 repairs both. Its build and signature verification passed, but installation and confirmation of that repair on the owner's phone are still pending. Do not describe the crash as device-verified resolved.
 
-Students, guardian contacts and batches are implemented and tested locally/browser-side. Migration 002 deployment and live phone persistence tests are not confirmed. Classes, attendance and a real-record Today summary are now implemented and locally tested; migrations 003/004 and phone acceptance remain pending. The full observation/fee/payment journey is not yet available. No percentage is assigned: modules differ substantially in size, and implemented is distinct from accepted.
+Students, guardian contacts and batches are implemented and tested locally/browser-side. Migration 002 installation is confirmed by the owner’s filtered four-row version result; live phone persistence tests remain pending. Classes, attendance and a real-record Today summary are now implemented and locally tested; migrations 003/004 are confirmed installed, while app/API and phone acceptance remain pending. The full observation/fee/payment journey is not yet available. No percentage is assigned: modules differ substantially in size, and implemented is distinct from accepted.
 
 ## Module status and next gates
 
 | Original build-plan module | Built / verified | Remaining before acceptance |
 | --- | --- | --- |
 | 0 — Foundation, testing, diagnostics | Native shell, GitHub source/CI, recovery boundary, validated device-persisted safe reports with best-effort storage and sign-out clearing; prior APK builds/device launch | Native persistence/sharing and controlled recovery checks; remote/native crash monitoring remains unimplemented |
-| 1 — Database and access protection | Migration 001 confirmed installed; schemas and local PostgreSQL isolation/constraint tests | Deploy migrations 002, 003 and 004; real two-account isolation tests; backup/export/restore validation |
+| 1 — Database and access protection | Migrations 001–004 confirmed installed; local PostgreSQL isolation/constraint tests | real two-account isolation tests; backup/export/restore validation |
 | 2 — Authentication and academy onboarding | Email signup/login/recovery, secure storage and academy setup implemented; owner reports actual email and login | Verify 0.2.1 success-message repair; real academy setup, cold restart, refresh/logout, recovery/password update, invalid/expired links; production email delivery setup/limits |
-| 3 — Students, contacts, batches | Add/edit/archive, guardian contact, batch create/edit, additive enrolment, search/filter, retry/navigation guards; SQL/browser checks pass | Migration 002, live save/reopen/restart/edit/archive and offline/retry checks. Ending/moving/restoring enrolments remain deferred |
-| 4 — Sessions and attendance | Dated session create/edit/cancel UI, present/late/absent and mark-all, one device attendance draft, complete-roster revision-checked atomic saves, lost-response reconciliation, real-record Today summary; SQL/model/browser checks | Deploy migrations 003/004; Android/native storage, actual API isolation, timezone, restart/offline/conflict acceptance |
+| 3 — Students, contacts, batches | Add/edit/archive, guardian contact, batch create/edit, additive enrolment, search/filter, retry/navigation guards; SQL/browser checks pass | Live save/reopen/restart/edit/archive and offline/retry checks. Ending/moving/restoring enrolments remain deferred |
+| 4 — Sessions and attendance | Dated session create/edit/cancel UI, present/late/absent and mark-all, one device attendance draft, complete-roster revision-checked atomic saves, lost-response reconciliation, real-record Today summary; SQL/model/browser checks | Android/native storage, actual API isolation, timezone, restart/offline/conflict acceptance |
 | 5 — Observations and drafts | Schema/recipient relationships | Editor, durable drafts, explicit recipient snapshots, record/edit/history and safe retry behavior; photos/rich fields optional later |
 | 6 — Invoices and manual payments | Protected schema and some integrity tests | Trusted invoice/manual-payment operations, fee snapshots, due dates, partial/paid/overdue balances, correction trail and screens |
 | 7 — Payment gateway | No gateway integration or collection enabled | Confirm provider/test eligibility; server-only credentials and link creation; webhook verification/reconciliation; duplicate/failure/delay/mismatch/refund/excess-payment checks; separate approved live enablement |
@@ -32,7 +32,7 @@ The larger parent app is deferred. Phone/WhatsApp authentication, media/rich fee
 flowchart TD
   A["Foundation + initial schema built"] --> B["Email login reported working"]
   B --> C["Owner acceptance pending: verify success-message repair + recovery/restart"]
-  C --> D["Deploy migrations 002/003/004 + test students/batches on phone"]
+  C --> D["Migrations 001–004 confirmed installed; test students/batches on phone"]
   D --> E["Sessions + attendance implemented<br/>Local tests pass; native/live checks pending"]
   E --> F["Observations + saved drafts"]
   F --> G["Invoices + manual payments"]
@@ -52,14 +52,14 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 - [Download 0.3.0 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
 - APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,345,566 bytes. SHA-256 `d15f64d79ea2244d528aa55ba9e6909918b1af9dbbf71c8d5cb5b476715ddade`.
 - Real settings-only auth probe passed: reachable, public key accepted, email enabled, confirmation required, anonymous profile records denied. This does not independently establish real-user session/recovery tests.
-- Owner confirmed migration `202611110001`, email provider and redirect settings. Do not repeat those setup tasks.
+- Owner confirmed migration `202611110001`, email provider and redirect settings. A subsequent filtered version query returned all four expected rows, confirming 002–004 at `2026-11-12 06:57:00.026915+00`. Do not repeat those setup tasks.
 - [Detailed validation](docs/VALIDATION.md), [issue history](docs/ISSUES.md), [roster deployment](docs/ROSTER_SETUP.md), [PRD](PRD.md), [build sequence](BUILD_PLAN.md).
 
 ## Right resume order
 
 1. Install a verified APK update, preserving existing app data. Use the final 0.3.0 link above; it includes the earlier email success-message repair. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
 2. Verify the new best-effort persisted diagnostics on Android. Continue assessing native crash reporting through a supported integration; no remote/native monitoring exists yet. Any external setup must be concrete and minimal.
-3. Apply migrations 002, 003 and 004 using the [classes setup guide](docs/CLASS_SETUP.md), then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
+3. Database updates are installed. Use the [classes setup guide](docs/CLASS_SETUP.md) for acceptance, then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
 4. Finish module 4 device/live acceptance, then build modules 5, 6 and 7 with a test gate each. Begin payment-provider onboarding/test-access confirmation early while independent coding proceeds; no real collection or purchase without owner authorization.
 5. Connect the Today dashboard to saved records, finish privacy/deletion/settings/backups, and run whole-journey Android/security/payment/recovery acceptance. Establish production signing and provider/email configuration before a production release. Keep the larger parent app deferred.
 

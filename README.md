@@ -6,9 +6,9 @@ Development has resumed at the owner’s request. See [the current progress chec
 
 Final version 0.3.0 has a successful native Android build with signature verification. The owner installed 0.2.0 and reports email confirmation/login. Version 0.2.1 repairs unsupported Android success-message accessibility props; device acceptance remains pending.
 
-Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration 001 is confirmed deployed; migration 002 and roster device checks remain pending. Latest local checks for candidate 0.3.0: TypeScript, 79 automated tests and 26 browser tests passed.
+Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration versions 001–004 are owner-confirmed installed; real app/API and roster device checks remain pending. Latest local checks for candidate 0.3.0: TypeScript, 79 automated tests and 26 browser tests passed.
 
-Version 0.3.0 adds classes/attendance, a real-record Today class summary and device-persisted diagnostics. [Migrations 003/004 and phone acceptance](docs/CLASS_SETUP.md) remain pending. Observations, invoices/manual payments, gateway integration and remaining release/privacy/backup/native-monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
+Version 0.3.0 adds classes/attendance, a real-record Today class summary and device-persisted diagnostics. [Phone acceptance](docs/CLASS_SETUP.md) remains pending; the migrations are installed. Observations, invoices/manual payments, gateway integration and remaining release/privacy/backup/native-monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
 
 ## Start here
 

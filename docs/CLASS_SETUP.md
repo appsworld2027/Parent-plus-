@@ -2,6 +2,8 @@
 
 Version 0.3.0 adds dated classes, attendance, one private device draft and actual-record Today figures. The final source needs migrations **002, 003 and 004** after your confirmed migration 001. A combined file below applies those upgrades in order; do not recreate the project or repeat 001.
 
+Current owner checkpoint: versions 001–004 are confirmed installed by the four-row dashboard result on 12 November 2026. **Do not repeat the update. Proceed to section 4 phone acceptance.** The setup instructions below remain a reference for provisioning/developers.
+
 ## 1. Apply the combined update
 
 1. Open [the complete database-update file](https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/setup_after_001.sql). Use **Copy raw file**, or **Raw → select all → copy**.
