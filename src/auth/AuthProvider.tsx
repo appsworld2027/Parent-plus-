@@ -20,11 +20,15 @@ export function safeAuthFailure(code: 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACAD
   return `${message} Reference: ${reference}`;
 }
 
+// Single owner of authentication and academy state. See docs/ARCHITECTURE.md.
+// Keep SDK lifecycle work here so screens cannot create competing auth subscriptions.
 export function AuthProvider({ children }: React.PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [academy, setAcademy] = useState<Academy | null>(null);
   const [academyLoading, setAcademyLoading] = useState(false);
+  // Tie academy readiness to the token that was actually checked. A refreshed/new
+  // session must not briefly reveal a workspace validated for the previous token.
   const [checkedSession, setCheckedSession] = useState('');
   const [error, setError] = useState('');
   const [recovery, setRecovery] = useState(false);
@@ -75,6 +79,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   useEffect(() => {
     if (!supabase || Platform.OS === 'web') return;
+    // Mobile background timers are unreliable; refresh only while the app is active.
     const sync = () => { if (AppState.currentState === 'active') supabase!.auth.startAutoRefresh(); else supabase!.auth.stopAutoRefresh(); };
     sync();
     const subscription = AppState.addEventListener('change', sync);
@@ -90,6 +95,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         const parsed = parseAuthLink(url, Platform.OS === 'web' ? globalThis.location.origin : undefined);
         if (!parsed) return;
         if (parsed.error || !parsed.code) throw new Error('Invalid email link');
+        // Android may deliver the same initial link again as a live URL event.
+        // Exchange a given one-time code once per mounted provider.
         if (parsed.code === lastCode) return;
         lastCode = parsed.code;
         // Remove code from browser history before doing a network operation.
@@ -112,6 +119,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
   const logout = useCallback(async () => {
     if (!supabase) return null;
     try {
+      // End this device session. Account deletion and other-device logout are separate.
       const result = await supabase.auth.signOut({ scope: 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();

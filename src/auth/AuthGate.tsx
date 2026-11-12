@@ -25,6 +25,8 @@ function Page({ children }: React.PropsWithChildren) {
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
 
+// Form state is intentionally local: handled request errors retain usable inputs,
+// but unsaved values are not durable across app termination. Never log form contents.
 function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void; forceRecovery?: boolean }) {
   const auth = useAuth();
   const [selected, setSelected] = useState<AuthMode>('login');
@@ -85,6 +87,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={s.hint}>Use at least 10 characters.</Text></>}
       {!!failure && <Text accessibilityRole="alert" style={s.error}>{failure}</Text>}
+      {/* Android rejects accessibilityRole="status"; ARIA role + live region is supported. See ANDROID-001. */}
       {!!message && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
       {!forceRecovery && <>
@@ -126,6 +129,8 @@ function AcademySetup() {
     </View></Page>;
 }
 
+// Render priority matters: loading and password recovery precede the workspace.
+// The database still enforces ownership; hiding a screen is not an access policy.
 export function AuthGate({ render }: { render: (exitPreview?: () => void) => React.ReactNode }) {
   const auth = useAuth();
   const [preview, setPreview] = useState(false);

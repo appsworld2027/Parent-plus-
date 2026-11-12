@@ -31,6 +31,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   const [dirty, setDirty] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [archiveTarget, setArchiveTarget] = useState<Student | null>(null);
+  // Ignore stale responses after another reload or unmount. This avoids restoring
+  // old roster data over a newer save; it does not cancel the network requests.
   const loadVersion = useRef(0);
 
   const reload = useCallback(async () => {
@@ -50,6 +52,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   function editStudent(student?: Student) {
     if (!data) return;
     const contact = data.contacts.find(c => c.student_id === student?.id);
+    // Allocate an ID once per opened form, not on each Save press. A lost-response
+    // retry must address the same student so the server can avoid duplicates.
     setStudentDraft({ id: student?.id ?? randomUUID(), name: student?.name ?? '', age: student?.age_years?.toString() ?? '',
       guardian: contact?.name ?? '', email: contact?.email ?? '', phone: contact?.phone ?? '', batches: student ? existingEnrolments(student.id) : [] });
     setDirty(false); setError(''); setNotice(''); setArchiveTarget(null);
@@ -66,6 +70,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   function updateBatch(field: keyof BatchDraft, value: string) {
     setBatchDraft(current => current ? { ...current, [field]: value } : current); setDirty(true);
   }
+  // Close only after the write succeeds. On failure keep the same draft/UUID so
+  // Retry is safe. Drafts are in memory; full offline/durable drafts are not built.
   async function save() {
     if (busy) return;
     const invalid = studentDraft ? validateStudent(studentDraft) : batchDraft
@@ -94,6 +100,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
     && (batchFilter === 'all' || data.enrolments.some(e => e.student_id === student.id && e.batch_id === batchFilter))) ?? [];
   return <View style={s.root}>
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
+    {/* Keep native and web status semantics compatible; see ANDROID-001. */}
     {!!notice && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{notice}</Text>}
     {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
     <ConfirmDialog visible={discard} title="Discard your unsaved changes?" message="Keep editing to retain this form, or discard it to go back."

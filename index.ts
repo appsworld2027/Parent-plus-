@@ -1,4 +1,6 @@
 import 'react-native-url-polyfill/auto';
+// Install the native WebCrypto adapter before App imports the Supabase client.
+// PKCE email links need secure random values and SHA-256 during SDK initialization/use.
 import './src/auth/installCrypto';
 import { registerRootComponent } from 'expo';
 

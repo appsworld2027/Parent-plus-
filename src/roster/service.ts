@@ -11,6 +11,8 @@ export function rosterFailure(error: unknown, fallback: string) {
   try { reference = diagnostics.record('ROSTER_FAILURE').reference; } catch { /* Preserve the original recovery path. */ }
   return `${message} Reference: ${reference}`;
 }
+// All four reads must succeed before a load is accepted. These are parallel API
+// requests, not one database snapshot; filters do not replace server ownership rules.
 export async function loadRoster(academy: string): Promise<Roster> {
   if (!supabase) throw new Error('Client unavailable');
   const results = await Promise.all([
@@ -22,6 +24,8 @@ export async function loadRoster(academy: string): Promise<Roster> {
   for (const result of results) if (result.error) throw result.error;
   return { students: results[0].data ?? [], contacts: results[1].data ?? [], batches: results[2].data ?? [], enrolments: results[3].data ?? [] } as Roster;
 }
+// Migration 002 is required: one trusted transaction saves the student, primary
+// contact and added enrolments. Do not replace this with three independent writes.
 export async function saveStudent(academy: string, draft: StudentDraft) {
   if (!supabase) throw new Error('Client unavailable');
   const result = await supabase.rpc('save_student', {
@@ -31,6 +35,8 @@ export async function saveStudent(academy: string, draft: StudentDraft) {
   });
   if (result.error) throw result.error;
 }
+// Batch writes use ordinary table privileges/RLS; unlike the multi-record student
+// save, one upsert is enough. Amounts cross the API boundary as integer paise.
 export async function saveBatch(academy: string, draft: BatchDraft) {
   if (!supabase) throw new Error('Client unavailable');
   const amount = parseFee(draft.fee);
@@ -38,6 +44,7 @@ export async function saveBatch(academy: string, draft: BatchDraft) {
   const result = await supabase.from('batches').upsert({ id: draft.id, academy_id: academy, name: draft.name.trim(), room: draft.room.trim(), monthly_fee_paise: amount }, { onConflict: 'id' });
   if (result.error) throw result.error;
 }
+// Archive retains attendance/financial history; it is not account/privacy deletion.
 export async function archiveStudent(id: string) {
   if (!supabase) throw new Error('Client unavailable');
   const result = await supabase.rpc('archive_student', { target_student: id });

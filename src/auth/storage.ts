@@ -17,6 +17,8 @@ function parseManifest(raw: string | null): Manifest | null {
 // SecureStore values have platform-dependent size limits. Commit a manifest only
 // after every new ASCII chunk is written, so interrupted refreshes keep the old session.
 export function createSessionStorage(driver: StorageDriver) {
+  // Supabase can refresh/write while another operation reads the session. Serialize
+  // the whole logical operation so readers never assemble two different generations.
   let queue: Promise<unknown> = Promise.resolve();
   function serial<T>(operation: () => Promise<T>): Promise<T> {
     const result = queue.then(operation);

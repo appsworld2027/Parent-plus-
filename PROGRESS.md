@@ -2,7 +2,7 @@
 
 Date: 12 November 2026. Status: **paused at the owner's request**. No build monitor is active. Resume implementation only when requested.
 
-Branch: `codex/coach-foundation`. Latest app source: `5c4c53be82e492b3faa3ec831376de57f720b7b6`. Version: **0.2.1**, Android versionCode 3. Changes are saved to GitHub; no PR/merge to main is recorded.
+Branch: `codex/coach-foundation`. Latest verified APK source: `5c4c53be82e492b3faa3ec831376de57f720b7b6`. Version: **0.2.1**, Android versionCode 3. Changes are saved to GitHub; no PR/merge to main is recorded.
 
 ## Actual position
 
@@ -62,6 +62,14 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 3. Apply migration 002 using the supplied dashboard instructions, then complete students/batches device/API and real two-account isolation tests. Use fictional records for acceptance.
 4. Build modules 4, 5, 6 and 7 in order, with a test gate each. Begin payment-provider onboarding/test-access confirmation early while independent coding proceeds; no real collection or purchase without owner authorization.
 5. Connect the Today dashboard to saved records, finish privacy/deletion/settings/backups, and run whole-journey Android/security/payment/recovery acceptance. Establish production signing and provider/email configuration before a production release. Keep the larger parent app deferred.
+
+## Documentation and product working agreement
+
+Current-state flow diagrams are in [ARCHITECTURE.md](docs/ARCHITECTURE.md). The code map, comments policy, handover and product collaboration practices are in [DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md).
+
+Refresh affected technical docs after substantial changes. Make one consolidated PRD/progress review per active working day; update the PRD when requirements actually change and record unchanged reviews in progress. Report critical failures, blockers and material product decisions immediately. This is not an automated background schedule. Product discussions should bring recommendations, tradeoffs and acceptance criteria, not only implementation details.
+
+Daily product review on 12 November 2026: coach-first scope and PRD requirements are unchanged. Documentation/readability review adds current flow diagrams, source comments, a developer handover and a product decision record; feature development remains paused. Latest app behavior/version and pending device acceptance remain unchanged.
 
 ## Ownership and constraints
 

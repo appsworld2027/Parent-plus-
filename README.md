@@ -10,6 +10,15 @@ Modules 0–3: app foundation, initial database schema, email authentication/aca
 
 Classes/attendance UI, observations, invoices/manual payments, gateway integration, actual-record dashboard and release/privacy/backup/monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
 
+## Start here
+
+- [How the app actually works](docs/ARCHITECTURE.md): system, login, roster-save, data and build diagrams.
+- [Product decisions](docs/PRODUCT_DECISIONS.md): scope choices, tradeoffs and current assumptions.
+- [Developer handover](docs/DEVELOPER_GUIDE.md): file map, setup, tests, security boundaries and the working agreement.
+- [Current progress](PROGRESS.md): completed work, verification limits and the next acceptance steps.
+
+Update affected technical docs after substantial changes. Review PRD/progress once per active working day; flag important blockers and product decisions immediately. This is an active-session practice, not an unattended scheduled service.
+
 ## Local development
 
 Use Node 24 and npm. From this repository:
@@ -40,7 +49,7 @@ On machines with system Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/
 
 `export:android` verifies Metro's Android bundle; it does not create an installable APK. A native APK requires build/signing setup and validation on a device. `eas.json` defines an internal APK profile and a production AAB profile; no Expo account/project has been linked or build submitted.
 
-GitHub Actions checks are prepared in `.github/workflows/checks.yml`. Source has been pushed to `codex/coach-foundation`; remote workflow results have not yet been inspected. Local test results are documented separately.
+GitHub Actions app checks run from `.github/workflows/checks.yml`; the native preview uses `.github/workflows/android-preview.yml`. Successful APK build evidence is saved in [validation](docs/VALIDATION.md). Treat automated checks, native builds and actual phone acceptance as separate results.
 
 ## Diagnostics
 

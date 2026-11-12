@@ -6,6 +6,8 @@ export type Roster = { students: Student[]; contacts: Contact[]; batches: Batch[
 export type StudentDraft = { id: string; name: string; age: string; guardian: string; email: string; phone: string; batches: string[] };
 export type BatchDraft = { id: string; name: string; room: string; fee: string };
 
+// Parse decimal text directly into paise. Floating-point rupees (parseFloat * 100)
+// can round incorrectly; API/database amounts use integers. No currency conversion.
 export function parseFee(rupees: string): number | null {
   if (!/^\d{1,9}(?:\.\d{1,2})?$/.test(rupees.trim())) return null;
   const [whole, fraction = ''] = rupees.trim().split('.');

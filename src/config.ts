@@ -28,6 +28,9 @@ export function readConfig(settings: PublicSettings) {
   };
 }
 
+// EXPO_PUBLIC values and bundled defaults are visible to every app user. Never
+// put server credentials here. The URL selects the backend; the environment flag
+// only controls app behavior and does not create a separate test database.
 export const appConfig = readConfig({
   EXPO_PUBLIC_APP_ENV: process.env.EXPO_PUBLIC_APP_ENV,
   EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL || publicClient.supabaseUrl,

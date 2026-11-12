@@ -29,6 +29,8 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
   </Pressable>;
 }
 
+// Workspace navigation stays here; feature forms own their inputs and API calls.
+// Roster dirty/busy callbacks let tab changes and Android Back respect pending edits.
 function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
@@ -162,6 +164,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   </SafeAreaView>;
 }
 
+// AuthProvider owns identity/data readiness; AuthGate decides which screen is safe to show.
+// This React error boundary cannot catch every Android native crash.
 export default function App() {
   return <SafeAreaProvider><ErrorBoundary><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></ErrorBoundary></SafeAreaProvider>;
 }

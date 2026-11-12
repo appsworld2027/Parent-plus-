@@ -2,6 +2,8 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { diagnostics } from './diagnostics';
 
+// Recovers React render failures. Event-handler/async errors need their own catches;
+// Android native crashes and OS termination require separate telemetry/recovery.
 export class ErrorBoundary extends React.Component<React.PropsWithChildren, { failed: boolean; reference?: string }> {
   state: { failed: boolean; reference?: string } = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }

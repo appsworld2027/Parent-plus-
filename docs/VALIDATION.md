@@ -99,3 +99,10 @@ The new native accessibility contract check failed on two unsupported status pro
 - Real settings-only auth check passed: reachable, key accepted, email enabled, confirmation required, anonymous records blocked. It did not send mail or create users.
 - Remaining acceptance check: install as an update without clearing app data; use the existing confirmed account. Sign out if necessary, request one recovery email, and verify the confirmation message remains visible without app closure. This exercises the repaired success notice without duplicate registration. Phone confirmation is still pending.
 - Build monitoring ended on terminal success; no unattended monitor remains active.
+
+## Documentation and readability checkpoint — 12 November 2026
+
+- Added current runtime/login/roster/data/diagnostic/build diagrams, a developer file map and handover, and an existing-product decision record. Recorded the owner agreement: affected technical docs after substantial changes; one consolidated PRD/progress review per active working day; material blockers/decisions immediately. Product requirements are unchanged.
+- Added responsibility/invariant comments in 11 TypeScript/TSX source files. Compared before/after transpilation with comments removed: executable output is identical for every changed source file. TypeScript passes.
+- Parsed and rendered all 8 Mermaid diagrams across ARCHITECTURE.md and PROGRESS.md with Mermaid 10.9.5 in Chromium. Inspected the rendered system overview and saved `docs/images/system-flow.png` from the first architecture block. All 48 checked local markdown-link targets exist; whitespace checks pass.
+- This documentation/comment-only milestone does not change app behavior or release version. Full automated/browser suites and APK generation were not repeated; their last evidence remains the 0.2.1 repair build. Commit CI is deliberately skipped for this milestone to preserve the paused build state. Phone acceptance of that build, migration 002 deployment and feature work remain pending.
