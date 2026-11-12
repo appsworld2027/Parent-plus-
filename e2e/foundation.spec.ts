@@ -19,7 +19,7 @@ test('error report stays safe, can be cleared, and app remains usable', async ({
   await page.getByRole('button', { name: 'Open support and diagnostics' }).click();
   await expect(page.getByText('Not verified', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Run safe error check', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('Reference: PP-');
+  await expect(page.getByRole('status')).toContainText('Reference: PP-');
   await expect(page.getByTestId('diagnostic-report')).toContainText('CONTROLLED_FAILURE');
   await expect(page.getByTestId('diagnostic-report')).not.toContainText('supabase.co');
   await expect(page.getByTestId('diagnostic-report')).not.toContainText('sb_publishable_');

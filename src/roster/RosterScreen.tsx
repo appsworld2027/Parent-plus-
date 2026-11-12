@@ -5,6 +5,7 @@ import type { Batch, BatchDraft, Roster, Student, StudentDraft } from './model';
 import { formatFee, parseFee, validateStudent } from './model';
 import { archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { useFeedbackMessage } from '../ui/ActionFeedback';
 
 function Button({ label, onPress, soft = false, disabled = false }: { label: string; onPress: () => void; soft?: boolean; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
@@ -21,8 +22,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   const [data, setData] = useState<Roster | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
+  const [error, setError] = useFeedbackMessage('error', 'Action needs attention');
+  const [notice, setNotice] = useFeedbackMessage('success', 'Saved to your workspace');
   const [search, setSearch] = useState('');
   const [batchFilter, setBatchFilter] = useState('all');
   const [showArchived, setShowArchived] = useState(false);
@@ -38,8 +39,8 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   const reload = useCallback(async () => {
     const version = ++loadVersion.current;
     setLoading(true); setError('');
-    try { const result = await loadRoster(academy); if (loadVersion.current === version) setData(result); }
-    catch (failure) { if (loadVersion.current === version) setError(rosterFailure(failure, 'Your roster could not be loaded. Check the connection and retry.')); }
+    try { const result = await loadRoster(academy); if (loadVersion.current === version) { setData(result); return true; } return false; }
+    catch (failure) { if (loadVersion.current === version) setError(rosterFailure(failure, 'Your roster could not be loaded. Check the connection and retry.')); return false; }
     finally { if (loadVersion.current === version) setLoading(false); }
   }, [academy]);
   useEffect(() => { void reload(); return () => { loadVersion.current++; }; }, [reload]);
@@ -77,7 +78,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
     const invalid = studentDraft ? validateStudent(studentDraft) : batchDraft
       ? !batchDraft.name.trim() ? 'Enter a batch name.' : parseFee(batchDraft.fee) === null ? 'Enter a monthly fee in rupees, with up to two decimal places.' : null : 'Open a record first.';
     if (invalid) { setError(invalid); onViewChange(); return; }
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setNotice('');
     try {
       if (studentDraft) await saveStudent(academy, studentDraft);
       else if (batchDraft) await saveBatch(academy, batchDraft);
@@ -88,9 +89,9 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
   }
   async function confirmArchive() {
     if (!archiveTarget || busy) return;
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setNotice('');
     try { await archiveStudent(archiveTarget.id); setArchiveTarget(null); setNotice('Student archived. Their history has been retained.'); await reload(); }
-    catch (failure) { setError(rosterFailure(failure, 'Archiving could not be confirmed. Retry safely.')); }
+    catch (failure) { setArchiveTarget(null); setError(rosterFailure(failure, 'Archiving could not be confirmed. Retry safely.')); }
     finally { setBusy(false); }
   }
 
@@ -100,9 +101,9 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
     && (batchFilter === 'all' || data.enrolments.some(e => e.student_id === student.id && e.batch_id === batchFilter))) ?? [];
   return <View style={s.root}>
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
-    {/* Keep native and web status semantics compatible; see ANDROID-001. */}
-    {!!notice && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{notice}</Text>}
-    {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+    {/* Inline context stays available; ActionFeedback announces the result outside scrolling. */}
+    {!!notice && <Text style={s.notice}>{notice}</Text>}
+    {!!error && <Text style={s.error}>{error}</Text>}
     <ConfirmDialog visible={discard} title="Discard your unsaved changes?" message="Keep editing to retain this form, or discard it to go back."
       confirmLabel="Discard changes" cancelLabel="Keep editing" onConfirm={close} onCancel={() => setDiscard(false)} />
     {studentDraft ? <View style={s.card}>
@@ -135,7 +136,7 @@ export function RosterScreen({ academy, onDirtyChange, onBusyChange, onViewChang
       <View style={s.tabs}><Button label="Students" soft={tab !== 'students'} disabled={busy} onPress={() => { setTab('students'); setError(''); }} />
         <Button label="Batches" soft={tab !== 'batches'} disabled={busy} onPress={() => { setTab('batches'); setError(''); }} /></View>
       {loading && <ActivityIndicator accessibilityLabel="Loading roster" color="#1F6F6B" />}
-      <Button label="Refresh roster" soft disabled={loading || busy} onPress={() => { void reload(); }} />
+      <Button label="Refresh roster" soft disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Roster refreshed.', { title: 'Refresh complete' }); }); }} />
       {tab === 'students' ? <>
         <Button label="Add a student" disabled={!data || loading || busy} onPress={() => editStudent()} />
         {data && <><Field label="Search students" value={search} disabled={busy} onChange={setSearch} />

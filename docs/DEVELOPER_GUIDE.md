@@ -27,6 +27,7 @@ Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then 
 | `src/roster/RosterScreen.tsx` | Student/batch forms, search, load/save state and guards | `e2e/roster.spec.ts` |
 | `src/roster/model.ts` | Data shapes, input validation and integer money conversion | `tests/roster.test.ts` |
 | `src/roster/service.ts` | Roster query/RPC boundary and safe errors | Migration 002 and database tests |
+| `src/ui/ActionFeedback.tsx` | Fixed in-app result notification, scoped publishers and accessible Dismiss | `e2e/feedback.spec.ts`, [feedback design](ACTION_FEEDBACK.md) |
 | `src/diagnostics.ts`, `src/deviceStorage.ts`, `src/ErrorBoundary.tsx` | Validated device-persisted diagnostic metadata, storage fallback and render recovery | `tests/diagnostics.test.ts`, foundation browser checks |
 | `src/classes/ClassesScreen.tsx`, `model.ts`, `service.ts` | Dated classes, attendance, timezone/eligibility logic and trusted API calls | `tests/classes.test.ts`, `classes-database.test.ts`, `e2e/classes.spec.ts` |
 | `src/classes/drafts.ts`, `localDrafts.ts` | One scoped device attendance draft, serialized cleanup | Device storage, auth sign-out and draft tests |

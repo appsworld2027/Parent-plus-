@@ -1,8 +1,12 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. No build monitor is active.
+Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Current patch: 0.3.1 fixes action feedback hidden by scrolling; native build verification pending.
 
-Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Latest verified APK: **0.3.0**, Android versionCode 4. Changes are saved to GitHub; no PR/merge to main is recorded.
+Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Latest verified APK: **0.3.0**, Android versionCode 4. Current source candidate: **0.3.1**, versionCode 5. Changes are saved to GitHub; no PR/merge to main is recorded.
+
+## Current phone evidence and feedback repair
+
+The owner’s screenshots confirm 0.3.0/80bf1e7 installed, an owned workspace and saved roster/class data visible, and an unsent device attendance draft. A server attendance save/restart has not yet been confirmed. The owner reported unclear success/failure; 0.3.1 adds a fixed notification row, explicit local-vs-server state and result details. See [feedback design/evidence](docs/ACTION_FEEDBACK.md). No database update is needed. Code fix is tested in browser; native phone verification remains pending.
 
 ## Actual position
 
@@ -46,7 +50,7 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 
 ## Evidence
 
-- Latest local checks: TypeScript passed, **79 automated tests across 10 files**, **26 browser tests**. Browser auth/roster tests use a fictional transport, not real project records.
+- Latest local checks: TypeScript passed, **79 automated tests across 10 files**, **30 browser tests**, followed by 21 focused checks after final notification wording changes. Browser auth/roster tests use a fictional transport, not real project records.
 - Native accessibility contract test failed at exactly the two invalid status props before the repair, then passed. It reads the installed Android implementation; it is not a device crash reproduction.
 - Successful replacement build: [run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902), source `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`.
 - [Download 0.3.0 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.

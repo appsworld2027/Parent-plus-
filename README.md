@@ -10,6 +10,8 @@ Modules 0–3: app foundation, initial database schema, email authentication/aca
 
 Version 0.3.0 adds classes/attendance, a real-record Today class summary and device-persisted diagnostics. [Phone acceptance](docs/CLASS_SETUP.md) remains pending; the migrations are installed. Observations, invoices/manual payments, gateway integration and remaining release/privacy/backup/native-monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
 
+Candidate 0.3.1 adds [fixed action feedback](docs/ACTION_FEEDBACK.md) so results remain visible while scrolling. Database versions 001–004 are already confirmed installed; no SQL change is needed for this patch.
+
 ## Start here
 
 - [How the app actually works](docs/ARCHITECTURE.md): system, login, roster-save, data and build diagrams.

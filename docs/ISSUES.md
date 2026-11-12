@@ -92,3 +92,9 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - DATA-001 review follow-up: an attendance revision alone does not detect edits made to an as-yet-unmarked class. Added migration 004 with canonical class-context checking, preserving published 003. Reopening refreshes roster context; explicit rejected saves are not reconciled as success against an old matching subset. SQL/model/browser regressions pass. The final hardened APK and live/device checks remain pending.
 
 - DATA-001/LOG-001 build follow-up: final source 80bf1e7 compiled and passed signature verification in run 43164824902. Build verification is complete; deployment and Android phone acceptance remain open. The earlier internal 10b9968 APK is superseded.
+
+## UI-003 — Action results could be out of view
+
+- Owner reported no clear success/failure on the phone. Existing result text was near the top of the page ScrollView, allowing a saved form or long roster to hide it. This is a feedback defect; screenshots show stored roster/class data and a device-only attendance draft, not a confirmed server-attendance failure.
+- Candidate 0.3.1 adds a fixed result row outside scrolling, explicit server/local-draft statuses, persistent Dismiss, repeat-result publication, cleared stale success while pending, and class-time/attendance-count summaries. Failed archive/discard dialogs close before displaying their failure. Auth/account/diagnostic action results use the same system.
+- 79 automated checks and 30 browser flows passed; 21 affected auth/classes/feedback checks passed after final wording changes. Four new browser regressions verify viewport visibility, same-message repeats, modal failure, pending status and local/server outcomes. Native build/phone checks remain pending. No SQL changes.

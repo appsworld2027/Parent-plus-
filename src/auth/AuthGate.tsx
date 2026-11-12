@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
@@ -6,6 +6,7 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { useAuth, safeAuthFailure } from './AuthProvider';
 import { authRedirect, supabase } from './client';
 import { AuthMode, validateAuth } from './rules';
+import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
 
 function Button({ title, onPress, disabled = false, soft = false }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
@@ -19,7 +20,7 @@ function Field({ label, value, onChange, password = false, email = false }: { la
     keyboardType={email ? 'email-address' : 'default'} style={s.input} maxLength={password ? 200 : email ? 320 : 100} /></View>;
 }
 function Page({ children }: React.PropsWithChildren) {
-  return <SafeAreaView style={s.safe}><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+  return <SafeAreaView style={s.safe}><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.page}>
       <Text style={s.logo}>✦  Parent Plus Coach</Text>{children}<Text style={s.footer}>A little more connected.</Text>
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;
@@ -29,14 +30,15 @@ function Page({ children }: React.PropsWithChildren) {
 // but unsaved values are not durable across app termination. Never log form contents.
 function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void; forceRecovery?: boolean }) {
   const auth = useAuth();
+  const feedback = useFeedback();
   const [selected, setSelected] = useState<AuthMode>('login');
   const mode = forceRecovery ? 'updatePassword' : selected;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
-  const [failure, setFailure] = useState('');
+  const [message, setMessage] = useFeedbackMessage('info', 'Email request completed');
+  const [failure, setFailure] = useFeedbackMessage('error', 'Action needs attention');
   const titles = { login: 'Welcome back.', signup: 'A calmer teaching day starts here.', recover: 'Let’s get you back in.', updatePassword: 'Choose a new password.' };
   function choose(next: AuthMode) { setSelected(next); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
   async function submit() {
@@ -45,7 +47,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     const invalid = validateAuth(mode, email, password, confirm);
     if (invalid) { setFailure(invalid); return; }
     if (!supabase) { setFailure('The project connection needs configuration. Your coding partner can help.'); return; }
-    setBusy(true);
+    setBusy(true); feedback.dismiss();
     try {
       if ((mode === 'signup' || mode === 'recover') &&
         (!globalThis.crypto?.getRandomValues || !globalThis.crypto?.subtle?.digest || typeof TextEncoder === 'undefined')) {
@@ -54,6 +56,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       if (mode === 'login') {
         const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (result.error) throw result.error;
+        feedback.show({ kind: 'success', title: 'Signed in', message: 'Your account is connected. Opening your workspace…', source: 'auth-sign-in' });
       } else if (mode === 'signup') {
         const result = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: authRedirect() } });
         if (result.error) throw result.error;
@@ -66,7 +69,9 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       } else {
         const result = await supabase.auth.updateUser({ password });
         if (result.error) throw result.error;
-        setPassword(''); setConfirm(''); auth.finishRecovery();
+        setPassword(''); setConfirm('');
+        feedback.show({ kind: 'success', title: 'Password updated', message: 'Your new password was saved.', source: 'auth-password' });
+        auth.finishRecovery();
       }
     } catch (error) {
       const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
@@ -81,14 +86,14 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     <Text style={s.kicker}>YOUR COACH WORKSPACE</Text><Text accessibilityRole="header" style={s.title}>{titles[mode]}</Text>
     <Text style={s.body}>{mode === 'login' ? 'Sign in to keep your classes, observations, and fees together.' : mode === 'signup' ? 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}
-    {!!auth.error && <Text accessibilityRole="alert" style={s.error}>{auth.error}</Text>}
+    {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
     <View style={s.card}>
       {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={s.hint}>Use at least 10 characters.</Text></>}
-      {!!failure && <Text accessibilityRole="alert" style={s.error}>{failure}</Text>}
-      {/* Android rejects accessibilityRole="status"; ARIA role + live region is supported. See ANDROID-001. */}
-      {!!message && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{message}</Text>}
+      {!!failure && <Text style={s.error}>{failure}</Text>}
+      {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
+      {!!message && <Text style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
       {!forceRecovery && <>
         {mode !== 'login' && <Button title="Back to sign in" onPress={() => choose('login')} soft disabled={busy} />}
@@ -104,17 +109,19 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
 
 function AcademySetup() {
   const auth = useAuth();
+  const feedback = useFeedback();
   const [name, setName] = useState('');
   const [owner, setOwner] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useFeedbackMessage('error', 'Workspace needs attention');
   async function save() {
     if (busy) return;
     if (!name.trim() || !owner.trim()) { setError('Enter your name and academy name.'); return; }
-    setBusy(true); setError('');
+    setBusy(true); setError(''); feedback.dismiss();
     try {
       const result = await supabase!.rpc('create_academy', { academy_name: name.trim(), owner_name: owner.trim() });
       if (result.error) throw result.error;
+      feedback.show({ kind: 'success', title: 'Workspace created', message: 'Your academy was saved. Loading your workspace…', source: 'academy-created' });
       auth.refreshAcademy();
     } catch { setError(safeAuthFailure('ACADEMY_FAILURE', 'Your academy could not be saved. Your entries are still here; try again.')); }
     finally { setBusy(false); }
@@ -123,7 +130,7 @@ function AcademySetup() {
     <Text style={s.body}>Set up your workspace. You can add students and batches in the next module.</Text>
     <View style={s.card}><Field label="Your name" value={owner} onChange={setOwner} /><Field label="Academy name" value={name} onChange={setName} />
       <Text style={s.hint}>Starting with INR and Asia/Kolkata.</Text>
-      {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+      {!!error && <Text style={s.error}>{error}</Text>}
       <Button title={busy ? 'Saving…' : 'Create my workspace'} onPress={() => { void save(); }} disabled={busy} />
       <Button title="Sign out" soft disabled={busy} onPress={() => { void auth.logout().then(message => { if (message) setError(message); }); }} />
     </View></Page>;
@@ -134,13 +141,15 @@ function AcademySetup() {
 export function AuthGate({ render }: { render: (exitPreview?: () => void) => React.ReactNode }) {
   const auth = useAuth();
   const [preview, setPreview] = useState(false);
-  const [logoutError, setLogoutError] = useState('');
+  const [logoutError, setLogoutError] = useFeedbackMessage('error', 'Sign-out needs attention');
+  const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
+  useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
   if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color="#1F6F6B" size="large" /><Text style={s.body}>Opening your workspace…</Text></Page>;
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;
   if (!auth.session) return <AuthForm onPreview={() => setPreview(true)} />;
-  if (auth.error) return <Page><Text accessibilityRole="header" style={s.title}>Let’s reconnect.</Text><Text accessibilityRole="alert" style={s.error}>{auth.error}</Text>
-    {!!logoutError && <Text accessibilityRole="alert" style={s.error}>{logoutError}</Text>}
+  if (auth.error) return <Page><Text accessibilityRole="header" style={s.title}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
+    {!!logoutError && <Text style={s.error}>{logoutError}</Text>}
     <Button title="Retry connection" onPress={auth.reload} /><Button title="Sign out" soft onPress={() => { void auth.logout().then(message => setLogoutError(message ?? '')); }} /></Page>;
   if (!auth.academy) return <AcademySetup />;
   return <ErrorBoundary>{render()}</ErrorBoundary>;

@@ -136,3 +136,9 @@ The new native accessibility contract check failed on two unsupported status pro
 
 - Owner first supplied a successful combined-update execution result, then ran the requested migration-version query filtered to 001–004. The follow-up screenshot shows four rows, confirming the expected installed version set. Migration 001 retains its earlier timestamp; upgrades 002–004 show `2026-11-12 06:57:00.026915+00`.
 - This is owner dashboard/version evidence, not a direct database connection or an end-to-end app/security test. Do not request another initial setup or repeat the upgrade script. Next action: install the verified final 0.3.0 APK, verify the email success-message repair and complete the guided roster/classes phone tests.
+
+## Visible action feedback — candidate 0.3.1
+
+- Added a shared fixed in-app notification row outside auth/workspace scrolling. Errors stay visible until acknowledged/replaced; explicit success/local-draft distinctions and saved class/attendance summaries avoid assuming a server save from a device draft. No timer hides results.
+- 79 automated tests passed. The full 30 browser flows passed, followed by 21 targeted auth/classes/feedback checks after final summary/wording changes. New tests verify entire notification inside the viewport while scrolled, repeated identical saves, failed archive dialog closure, persistent failure, retained server state, distinct local/server status and no stale success during a held request.
+- Inspected `docs/images/feedback-success.png` and `feedback-error.png` at 412×915. All records are fictional. Current Android build/phone acceptance is still pending; app version 0.3.1 / versionCode 5. No new migration or setup permissions are needed.

@@ -5,6 +5,7 @@ import { supabase } from './client';
 import { parseAuthLink } from './rules';
 import { diagnostics } from '../diagnostics';
 import { attendanceDrafts } from '../classes/localDrafts';
+import { useFeedback } from '../ui/ActionFeedback';
 
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
@@ -24,6 +25,7 @@ export function safeAuthFailure(code: 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACAD
 // Single owner of authentication and academy state. See docs/ARCHITECTURE.md.
 // Keep SDK lifecycle work here so screens cannot create competing auth subscriptions.
 export function AuthProvider({ children }: React.PropsWithChildren) {
+  const { show, dismiss } = useFeedback();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [academy, setAcademy] = useState<Academy | null>(null);
@@ -124,6 +126,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   const logout = useCallback(async () => {
     if (!supabase) return null;
+    dismiss();
     try {
       // End this device session. Account deletion and other-device logout are separate.
       const result = await supabase.auth.signOut({ scope: 'local' });
@@ -135,9 +138,10 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         setError(message); return message;
       }
       await diagnostics.flush();
+      show({ kind: 'success', title: 'Signed out', message: 'Your session and device-only attendance draft have been cleared.', source: 'auth-sign-out' });
       return null;
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
-  }, []);
+  }, [show, dismiss]);
 
   return <Context.Provider value={{ session, loading, academy,
     academyLoading: academyLoading || (!!session && checkedSession !== session.access_token), error, recovery,

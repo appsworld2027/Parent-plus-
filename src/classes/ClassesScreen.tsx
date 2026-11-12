@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 
 import { randomUUID } from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
 import type { AttendanceDraft, ClassContext, ClassDraft, ClassSession, Mark, Marks } from './model';
 import { classValues, completeMarks, eligibleStudents, fingerprint, localParts, sameMarks } from './model';
@@ -35,8 +36,8 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [notice, setNotice] = useState('');
-  const [error, setError] = useState('');
+  const [notice, setNotice] = useFeedbackMessage('info', 'Update');
+  const [error, setError] = useFeedbackMessage('error', 'Action needs attention');
   const generation = useRef(0);
   const scope = (session: string) => ({ owner, academy: academy.id, session });
 
@@ -44,13 +45,15 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     const version = ++generation.current; setLoading(true); setError('');
     try {
       const data = await loadClasses(academy.id, selectedDate, academy.timezone);
-      if (version !== generation.current) return;
+      if (version !== generation.current) return false;
       setContext(data);
+      let complete = true;
       try {
         const local = await attendanceDrafts.read();
         if (version === generation.current) setDeviceDraft(local?.owner === owner && local.academy === academy.id ? local : null);
-      } catch { if (version === generation.current) setError(classFailure(null, 'Saved device drafts could not be read. Online classes are still available.')); }
-    } catch (failure) { if (version === generation.current) setError(classFailure(failure, 'Classes could not be loaded. Check the connection and refresh.')); }
+      } catch { complete = false; if (version === generation.current) setError(classFailure(null, 'Saved device drafts could not be read. Online classes are still available.')); }
+      return complete && version === generation.current;
+    } catch (failure) { if (version === generation.current) setError(classFailure(failure, 'Classes could not be loaded. Check the connection and refresh.')); return false; }
     finally { if (version === generation.current) setLoading(false); }
   }, [academy.id, academy.timezone, owner, selectedDate]);
   useEffect(() => { void reload(); return () => { generation.current++; }; }, [reload]);
@@ -71,8 +74,8 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
   async function saveSession() {
     if (!draft || busy) return;
     try { classValues(draft, academy.timezone); } catch (failure) { setError(failure instanceof Error ? failure.message : 'Check class details.'); onViewChange(); return; }
-    setBusy(true); setError('');
-    try { await saveClass(academy.id, draft, academy.timezone); const nextDate = draft.startDate; close(); setNotice('Class saved.'); setDate(nextDate); setSelectedDate(nextDate); await reload(); }
+    setBusy(true); setError(''); setNotice('');
+    try { await saveClass(academy.id, draft, academy.timezone); const nextDate = draft.startDate; close(); setNotice(`Class saved. ${draft.startDate} ${draft.startTime} – ${draft.endDate} ${draft.endTime} (${academy.timezone}).`, { kind: 'success', title: 'Class saved' }); setDate(nextDate); setSelectedDate(nextDate); await reload(); }
     catch (failure) { setError(classFailure(failure, 'The class save could not be confirmed. Keep your entries and retry. Once attendance is recorded, class times are protected.')); onViewChange(); }
     finally { setBusy(false); }
   }
@@ -99,7 +102,7 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
       if (local) {
         const marks = visibleMarks(loaded.session, local.marks, latest);
         if (fingerprint(loaded.session) === local.fingerprint && completeMarks(marks, latest, loaded.session, academy.timezone) && sameMarks(marks, saved)) {
-          await attendanceDrafts.clear(scope(session.id)); setDeviceDraft(null); setNotice('Your earlier attendance save is already recorded on the server.');
+          await attendanceDrafts.clear(scope(session.id)); setDeviceDraft(null); setNotice('Your earlier attendance save is already recorded on the server.', { kind: 'success', title: 'Attendance confirmed' });
         } else if (fingerprint(loaded.session) !== local.fingerprint || local.revision !== loaded.session.attendance_revision) {
           setConflict(local);
         } else { value.marks = marks; value.local = true; setNotice('Unsent attendance draft restored from this device. Review and save to your class.'); }
@@ -114,26 +117,27 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
   }
   async function changeMarks(marks: Marks) {
     if (!active || busy) return;
-    setActive({ ...active, marks, local: true }); setDirty(true); setBusy(true); setError('');
+    setActive({ ...active, marks, local: true }); setDirty(true); setBusy(true); setError(''); setNotice('');
     const local: AttendanceDraft = { version: 1, ...scope(active.session.id), fingerprint: fingerprint(active.session),
       revision: active.session.attendance_revision, marks, savedAt: new Date().toISOString() };
     try {
       await attendanceDrafts.save(local); setDeviceDraft(local); setDirty(false);
-      setNotice('Draft saved on this device. Not yet saved to your class.');
+      setNotice('Draft saved on this device. Not yet saved to your class.', { title: 'Device draft saved — not sent to class' });
     } catch { setError(classFailure(null, 'Your changes are only in memory because device storage failed. Keep this screen open and save online.')); }
     finally { setBusy(false); }
   }
   async function finishSaved(value: Active, revision: number) {
     setActive({ ...value, session: { ...value.session, attendance_revision: revision }, saved: value.marks, local: false });
-    setDirty(false); setNotice('Attendance saved to your class.');
+    const count = (mark: Mark) => Object.values(value.marks).filter(saved => saved === mark).length;
+    setDirty(false); setNotice(`Attendance saved to your class. Present: ${count('present')} · Late: ${count('late')} · Absent: ${count('absent')}.`, { kind: 'success', title: 'Attendance saved to class' });
     // A cleanup failure must not misrepresent a confirmed server save as failed.
     try { await attendanceDrafts.clear(scope(value.session.id)); setDeviceDraft(null); }
-    catch { setNotice('Attendance saved to your class. The old device draft could not be cleared; it will be compared when reopened.'); }
+    catch { setNotice('Attendance saved to your class. The old device draft could not be cleared; it will be compared when reopened.', { title: 'Attendance saved; device cleanup needs attention' }); }
   }
   async function submitAttendance() {
     if (!active || !context || busy) return;
     if (!completeMarks(active.marks, context, active.session, academy.timezone)) { setError('Mark each enrolled student before saving (up to 500 students).'); onViewChange(); return; }
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setNotice('');
     try { const revision = await saveAttendance(active.session, active.marks); await finishSaved(active, revision); }
     catch (failure) {
       const code = failure && typeof failure === 'object' && 'code' in failure ? String(failure.code ?? '') : '';
@@ -152,10 +156,10 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     } finally { setBusy(false); }
   }
   async function discardDeviceDraft() {
-    setBusy(true);
+    setBusy(true); setError(''); setNotice('');
     try { await attendanceDrafts.clear(); setDeviceDraft(null); setDiscardStored(false); setNotice('Device attendance draft discarded. Server records are unchanged.'); }
     catch { setError(classFailure(null, 'The device draft could not be cleared. Try again.')); }
-    finally { setBusy(false); }
+    finally { setDiscardStored(false); setBusy(false); }
   }
 
   const students = active && context ? eligibleStudents(context, active.session, academy.timezone) : [];
@@ -165,8 +169,8 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     <Text style={s.kicker}>YOUR TEACHING SCHEDULE</Text>
     <Text accessibilityRole="header" style={s.heading}>{draft ? 'Class details' : active ? 'Class attendance' : 'Classes and attendance'}</Text>
     <Text style={s.body}>Dates and times use {academy.timezone}.</Text>
-    {!!notice && <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{notice}</Text>}
-    {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+    {!!notice && <Text style={s.notice}>{notice}</Text>}
+    {!!error && <Text style={s.error}>{error}</Text>}
     {draft ? <View style={s.card}>
       <Text style={s.label}>Batch</Text>
       {context?.batches.filter(b => !b.archived_at || b.id === draft.batch).map(batch => <Pressable key={batch.id} accessibilityRole="radio" accessibilityLabel={`Class batch ${batch.name}`} accessibilityState={{ checked: draft.batch === batch.id, disabled: busy }} aria-checked={draft.batch === batch.id} disabled={busy} onPress={() => update('batch', batch.id)} style={s.choice}><Text>{draft.batch === batch.id ? '●' : '○'} {batch.name}</Text></Pressable>)}
@@ -199,7 +203,7 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
           catch (failure) { setError(failure instanceof Error ? failure.message : 'Check the date.'); }
         }} />
         <Button title="Create a class" disabled={!context || loading || busy} onPress={() => edit()} />
-        <Button title="Refresh classes" disabled={loading || busy} onPress={() => { void reload(); }} />
+        <Button title="Refresh classes" disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Classes refreshed.', { kind: 'success', title: 'Refresh complete' }); }); }} />
       </View>
       {loading && <ActivityIndicator accessibilityLabel="Loading classes" />}
       {deviceDraft && <View style={s.card}><Text style={s.title}>Attendance draft on this device</Text><Text style={s.body}>Reconnect to verify the class and resume your unsent work. Nothing is sent automatically.</Text><Button title="Resume attendance draft" disabled={busy || loading} onPress={() => { void resumeDraft(); }} /><Button title="Discard saved attendance draft" disabled={busy} onPress={() => setDiscardStored(true)} /></View>}

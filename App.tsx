@@ -13,6 +13,7 @@ import { ClassesScreen } from './src/classes/ClassesScreen';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
+import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
@@ -38,7 +39,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
   const [report, setReport] = useState('');
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useFeedbackMessage('info', 'Update');
   const [crash, setCrash] = useState(false);
   const [formDirty, setFormDirty] = useState(false);
   const [formBusy, setFormBusy] = useState(false);
@@ -74,10 +75,10 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       setNotice('Your sanitized report is displayed below. You can select and copy it.');
       return;
     }
-    try { await Share.share({ message: payload, title: 'Parent Plus diagnostic report' }); }
+    try { await Share.share({ message: payload, title: 'Parent Plus diagnostic report' }); setNotice('Your diagnostic report is prepared. The share sheet does not confirm delivery.', { title: 'Report prepared' }); }
     catch {
       const event = diagnostics.record('REPORT_SHARE_FAILED');
-      setNotice(`Sharing could not open. Your report is still available below. Reference: ${event.reference}`);
+      setNotice(`Sharing could not open. Your report is still available below. Reference: ${event.reference}`, { kind: 'error', title: 'Sharing could not open' });
     }
   }
 
@@ -91,9 +92,10 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
       </View>
-      <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+      <ActionFeedback />
+      <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
-        {(screen === 'Students' || screen === 'Schedule') && !!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
+        {(screen === 'Students' || screen === 'Schedule') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
@@ -127,7 +129,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>{auth.academy ? 'Workspace loaded' : 'Not verified'}</Text></View>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Payment collection</Text><Text style={styles.statusValue}>Not enabled</Text></View>
             <Text style={styles.small}>{auth.academy ? `Academy: ${auth.academy.name}` : appConfig.configured ? 'Project settings are present. Sign in to verify your workspace connection.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
-            {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <Action label="Sign out" secondary onPress={() => { void auth.logout().then(message => { if (message) setNotice(message); }); }} />}
+            {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <Action label="Sign out" secondary onPress={() => { void auth.logout().then(message => { if (message) setNotice(message, { kind: 'error', title: 'Sign-out needs attention' }); }); }} />}
           </View>
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Report a problem</Text>
@@ -142,7 +144,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <Action label="Run safe error check" secondary onPress={runDiagnostic} />
             <Action label="Test screen recovery" secondary onPress={() => setCrash(true)} />
           </View>}
-          {!!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
+          {!!notice && <Text style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
         </> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
@@ -174,7 +176,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
 // This React error boundary cannot catch every Android native crash.
 export default function App() {
   useEffect(() => { void diagnostics.connect(deviceStorage); }, []);
-  return <SafeAreaProvider><ErrorBoundary><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></ErrorBoundary></SafeAreaProvider>;
+  return <SafeAreaProvider><ErrorBoundary><FeedbackProvider><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></FeedbackProvider></ErrorBoundary></SafeAreaProvider>;
 }
 
 const styles = StyleSheet.create({

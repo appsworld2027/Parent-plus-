@@ -1,6 +1,6 @@
 # How Parent Plus Coach works today
 
-Reviewed: 12 November 2026. Applies to candidate app version 0.3.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
+Reviewed: 12 November 2026. Applies to candidate app version 0.3.1. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system
 
@@ -49,7 +49,7 @@ The public URL and publishable key in `config/public-client.json` are bundled cl
 
 ```mermaid
 flowchart TD
-    Start["Open app: index.ts installs native crypto support"] --> Root["App.tsx: safe-area provider + error boundary + AuthProvider"]
+    Start["Open app: index.ts installs native crypto support"] --> Root["App.tsx: safe-area provider + error boundary + FeedbackProvider + AuthProvider"]
     Root --> Session["Restore stored session and subscribe to auth events"]
     Session --> Gate["AuthGate chooses a screen"]
     Gate -->|"Loading session or academy"| Loading["Opening your workspace"]
@@ -205,6 +205,7 @@ Migration 003 adds attendance revisions and trusted class/attendance writes to `
 ```mermaid
 flowchart LR
     Action["Form / network operation fails"] --> Safe["Known safe message + generated reference"]
+    Safe --> Visible["Fixed in-app result notification outside page scrolling"]
     Safe --> Buffer["Bounded validated diagnostics: device persistence with in-memory fallback"]
     Buffer --> Inspect["Coach explicitly prepares a support report"]
     Inspect --> Share["Native share sheet or selectable web report"]
@@ -216,6 +217,8 @@ flowchart LR
 Raw exceptions, form contents, email links and tokens are not added to reports. Reports retain only allowed codes/references/time/build/action. Reports now persist through the device adapter when available. On restoration, unknown fields and events older than 14 days are discarded; the buffer is bounded to 30 records. Sign-out clears reports and the attendance draft. Storage failures keep diagnostics in memory and expose an unavailable-storage status. Writes are best-effort and an abrupt termination can interrupt a pending write. Error boundaries cover React rendering, not every native failure or asynchronous rejection. They must not be represented as comprehensive crash monitoring.
 
 UI guards preserve edits during handled failures and block navigation while saves are pending. Student and class-edit forms are in memory. Attendance marks persist only after the device draft confirmation. A restart needs network access to validate the class before restoring attendance; full offline roster/schedule editing and automatic sync are not implemented.
+
+See [action feedback](ACTION_FEEDBACK.md) for the 0.3.1 notification path. Success/info/error notices reserve a fixed row outside scrolling; device-draft messages explicitly do not assert a class save. Notice text remains in UI memory, separate from persisted enumerated diagnostic metadata.
 
 ## 8. Code-to-APK delivery
 

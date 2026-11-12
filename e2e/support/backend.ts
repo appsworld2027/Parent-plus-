@@ -7,7 +7,7 @@ const user = { id: '00000000-0000-0000-0000-000000000001', email: 'coach@example
   created_at: '2026-01-01T00:00:00Z', app_metadata: {}, user_metadata: {}, identities: [] };
 declare global {
   interface Window {
-    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean };
+    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean };
   }
 }
 export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean } = {}) {
@@ -25,7 +25,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       : { students: [], contacts: [], batches: [], enrolments: [] });
     const teaching = JSON.parse(sessionStorage.getItem('__fictional_classes') ?? 'null') ?? {
       classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };
-    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false };
+    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false };
     const account = options.unverified ? { ...user, email_confirmed_at: null } : user;
     const original = window.fetch.bind(window);
     window.fetch = async (input, init) => {
@@ -80,6 +80,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (state.loseStudentResponse) { state.loseStudentResponse = false; throw new TypeError('Simulated response lost after commit'); }
         }
       } else if (url.pathname.endsWith('/rpc/archive_student')) {
+        if (state.failArchive) return new Response(JSON.stringify({ message: 'Fictional private archive failure' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
         const student = state.roster.students.find(s => s.id === payload.target_student);
         if (student) student.archived_at = new Date().toISOString();
         persistRoster(); data = true;
@@ -94,6 +95,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           persistClasses(); data = value.id;
         }
       } else if (url.pathname.endsWith('/rpc/save_class_attendance_checked')) {
+        while (state.holdAttendance) await new Promise(resolve => setTimeout(resolve, 20));
         const session = state.classes.find(c => c.id === payload.target_session);
         if (state.failAttendance) { status = 500; data = { message: 'Private attendance backend failure' }; }
         else if (!session || session.status === 'cancelled') { status = 400; data = { code: '22023', message: 'Unavailable class' }; }
