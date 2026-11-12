@@ -35,7 +35,8 @@
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm test",
     "export:web": "expo export --platform web",
-    "export:android": "expo export --platform android"
+    "export:android": "expo export --platform android",
+    "prepare:owner-sql": "node scripts/prepare-owner-sql.mjs"
   },
   "private": true
 }

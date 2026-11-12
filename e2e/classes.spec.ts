@@ -39,7 +39,7 @@ test('attendance draft survives restart; saving it updates actual Today figures'
   await openClasses(page); await attendance(page);
   await page.getByRole('button', { name: 'Mark all present', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Draft saved on this device');
-  expect(await page.evaluate(() => window.__coachFixture.calls.filter(c => c.endsWith('/save_class_attendance')).length)).toBe(0);
+  expect(await page.evaluate(() => window.__coachFixture.calls.filter(c => c.endsWith('/save_class_attendance_checked')).length)).toBe(0);
   await page.reload();
   await page.getByRole('tab', { name: 'Schedule', exact: true }).click();
   await page.getByRole('button', { name: 'Resume attendance draft', exact: true }).click();
@@ -59,7 +59,7 @@ test('failed attendance save retains device draft and lost response reconciles w
   await expect(page.getByRole('status')).toContainText('Draft saved on this device');
   await page.evaluate(() => { window.__coachFixture.failAttendance = true; });
   await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('draft is retained');
+  await expect(page.getByRole('alert')).toContainText('entries remain on this screen');
   await expect(page.getByRole('radio', { name: 'Fictional Ria: late', exact: true })).toBeChecked();
   await page.evaluate(() => { window.__coachFixture.failAttendance = false; window.__coachFixture.loseAttendanceResponse = true; });
   await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
@@ -80,7 +80,7 @@ test('stale draft requires an explicit comparison before replacing server attend
     sessionStorage.setItem('__fictional_classes', JSON.stringify({ classes: state.classes, attendance: state.attendance }));
   });
   await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('Attendance changed on the server');
+  await expect(page.getByRole('alert')).toContainText('attendance changed');
   await page.getByRole('button', { name: 'Reopen saved attendance', exact: true }).click();
   await expect(page.getByText('The saved class or attendance changed', { exact: true })).toBeInViewport();
   await page.getByRole('button', { name: 'Use server records', exact: true }).click();
@@ -113,4 +113,39 @@ test('missing classes migration shows a setup error instead of a fake empty sche
   await expect(page.getByRole('alert')).toContainText('classes database update is needed');
   await expect(page.getByText(/No classes scheduled/)).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Create a class', exact: true })).toBeDisabled();
+});
+
+test('a moved class cannot accept attendance from the old open screen', async ({ page }) => {
+  await openClasses(page); await attendance(page);
+  await page.getByRole('button', { name: 'Mark all present', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Draft saved on this device');
+  await page.evaluate(() => {
+    const session = window.__coachFixture.classes[0];
+    session.starts_at = session.starts_at.slice(0, 10) + 'T13:30:00.000Z';
+    session.ends_at = session.ends_at.slice(0, 10) + 'T14:30:00.000Z';
+  });
+  await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('attendance changed');
+  expect(await page.evaluate(() => Object.keys(window.__coachFixture.attendance))).toHaveLength(0);
+  await page.getByRole('button', { name: 'Reopen saved attendance', exact: true }).click();
+  await expect(page.getByText('The saved class or attendance changed', { exact: true })).toBeVisible();
+});
+
+test('a new enrolled child is not silently missed when old marks already match', async ({ page }) => {
+  await openClasses(page); await attendance(page);
+  await page.getByRole('button', { name: 'Mark all present', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Draft saved on this device');
+  await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Attendance saved to your class');
+  await page.evaluate(() => {
+    const state = window.__coachFixture;
+    const id = '00000000-0000-0000-0000-000000000023';
+    state.roster.students.push({ id, name: 'Fictional New Student', age_years: 7, archived_at: null });
+    state.roster.enrolments.push({ student_id: id, batch_id: state.classes[0].batch_id, starts_on: '2020-01-01', ends_on: null });
+  });
+  await page.getByRole('button', { name: 'Save attendance to class', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('attendance changed');
+  await page.getByRole('button', { name: 'Reopen saved attendance', exact: true }).click();
+  await expect(page.getByRole('radio', { name: 'Fictional New Student: present', exact: true })).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'Fictional New Student: present', exact: true })).not.toBeChecked();
 });

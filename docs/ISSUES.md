@@ -88,3 +88,5 @@ Record app version, safe error reference, expected/observed behavior, known caus
 
 - The original diagnostic buffer was in memory, limiting investigation after app closure. Candidate 0.3.0 persists allowed metadata through a chunked device adapter, reconstructs/validates saved fields, bounds count/age on restoration, and invalidates queued writes at sign-out. Storage failures degrade to a visible memory-only report state.
 - Automated/browser restart, corruption/private-field stripping, storage-failure and sign-out-race checks pass. Native persistence and share-sheet behavior remain to be tested. This repair does not provide native crash stacks or remote monitoring.
+
+- DATA-001 review follow-up: an attendance revision alone does not detect edits made to an as-yet-unmarked class. Added migration 004 with canonical class-context checking, preserving published 003. Reopening refreshes roster context; explicit rejected saves are not reconciled as success against an old matching subset. SQL/model/browser regressions pass. The final hardened APK and live/device checks remain pending.

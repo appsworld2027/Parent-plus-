@@ -26,7 +26,7 @@ flowchart TD
 
 The installed app talks directly to Supabase over HTTPS; it does not need a running laptop or Codex session. GitHub is used to develop and distribute builds. New GitHub source does not automatically update an installed APK. No custom application server or payment integration is deployed yet.
 
-The roster paths require migration 002; classes/attendance require migration 003. Their live deployment and device acceptance are not confirmed. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
+The roster paths require migration 002; classes/attendance require migrations 003/004. Their live deployment and device acceptance are not confirmed. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
 
 [Open the rendered system diagram](images/system-flow.png). It is a snapshot generated from the first Mermaid block above; refresh it when that flow changes.
 
@@ -146,7 +146,7 @@ Enrolment editing is additive. Existing memberships are retained; moving/ending/
 
 Money is parsed as integer paise from decimal text. For example, ₹2,500.50 becomes 250050 paise. A batch's default fee is not an invoice or a payment.
 
-## Classes and attendance flow — migration 003
+## Classes and attendance flow — migrations 003/004
 
 ```mermaid
 flowchart TD
@@ -161,7 +161,7 @@ flowchart TD
     Choice --> Marks
     Marks --> Local["Save one scoped draft on this device; show unsent status"]
     Local --> Submit["Coach explicitly saves to class"]
-    Submit --> Server["save_class_attendance: verify revision and complete roster; atomic write"]
+    Submit --> Server["save_class_attendance_checked: verify revision and complete roster; atomic write"]
     Server -->|"Confirmed"| Done["Advance revision; clear device draft; Today reads saved records"]
     Server -->|"Error or lost response"| Read["Read server state to reconcile; never auto-overwrite"]
     Read -->|"Desired marks already saved"| Done
@@ -174,9 +174,9 @@ Times are stored as UTC timestamps, entered/displayed in the academy IANA timezo
 
 One active attendance draft is stored per device, scoped to owner/academy/session, with marks, server revision and a class fingerprint. No names or contacts are copied into that draft. A different class cannot silently replace it; explicit discard/resume is offered. It survives restart only if the write completed and storage remains available.
 
-On reopen, the app verifies server context before restoration. Changed class/revision requires a choice. A save locks the class and checks the expected revision, all currently eligible students and the existing attendance constraints. A stale save is rejected; a lost response triggers a read-only comparison. Student/enrolment changes can require review; this is not a multi-device automatic merge.
+On reopen, the app verifies server context before restoration. Changed class/revision requires a choice. A save locks the class and checks its canonical date/batch/status fingerprint, expected attendance revision, all currently eligible students and the existing attendance constraints. A stale save is rejected; only uncertain network outcomes trigger a read-only comparison against the complete refreshed roster and an advanced revision. An explicit server rejection remains an error even if an older saved subset matches. Student/enrolment changes can require review; this is not a multi-device automatic merge.
 
-Clients cannot directly insert/update classes or call the old attendance function after migration 003. Trusted functions validate ownership. Cancelling retains history and blocks further attendance writes; recorded attendance prevents timing/batch edits. Room/status edits remain possible.
+Clients cannot directly insert/update classes or call the old attendance function after migrations 003/004. Trusted functions validate ownership. Cancelling retains history and blocks further attendance writes; recorded attendance prevents timing/batch edits. Room/status edits remain possible.
 
 ## 6. Current data relationships
 

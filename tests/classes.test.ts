@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { classValues, dayRange, eligibleStudents, localParts, sameMarks, wallTime } from '../src/classes/model';
+import { classValues, completeMarks, dayRange, eligibleStudents, localParts, sameMarks, wallTime } from '../src/classes/model';
 import { createAttendanceDrafts, parseAttendanceDraft } from '../src/classes/drafts';
 import type { AttendanceDraft, ClassContext, ClassDraft, ClassSession } from '../src/classes/model';
 
@@ -69,4 +69,10 @@ describe('private attendance device drafts', () => {
     const store = createAttendanceDrafts({ getItem: async () => null, setItem: async () => { throw new Error('full'); }, removeItem: async () => {} });
     await expect(store.save(local)).rejects.toThrow('full'); expect(local.marks['student-1']).toBe('present');
   });
+});
+
+it('a matching saved subset is not complete when the roster gained a student', () => {
+  const context: ClassContext = { sessions: [session], batches: [], students: ['a','b'].map(id => ({ id, name: id, age_years: null, archived_at: null })), enrolments: ['a','b'].map(student_id => ({ student_id, batch_id: session.batch_id, starts_on: '2020-01-01', ends_on: null })) };
+  expect(sameMarks({ a: 'present' }, { a: 'present' })).toBe(true);
+  expect(completeMarks({ a: 'present' }, context, session, 'Asia/Kolkata')).toBe(false);
 });

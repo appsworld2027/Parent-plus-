@@ -8,17 +8,17 @@ Branch: `codex/coach-foundation`. Latest verified APK source: `5c4c53be82e492b3f
 
 A standalone native Android preview has been built successfully. The owner installed the earlier 0.2.0 APK and reported receiving the confirmation email and logging in. The owner also reported the app closing after the in-app account-creation email request. An unsupported Android accessibility prop was found on that success screen and roster-save notices. Version 0.2.1 repairs both. Its build and signature verification passed, but installation and confirmation of that repair on the owner's phone are still pending. Do not describe the crash as device-verified resolved.
 
-Students, guardian contacts and batches are implemented and tested locally/browser-side. Migration 002 deployment and live phone persistence tests are not confirmed. Classes, attendance and a real-record Today summary are now implemented and locally tested; migration 003 and phone acceptance remain pending. The full observation/fee/payment journey is not yet available. No percentage is assigned: modules differ substantially in size, and implemented is distinct from accepted.
+Students, guardian contacts and batches are implemented and tested locally/browser-side. Migration 002 deployment and live phone persistence tests are not confirmed. Classes, attendance and a real-record Today summary are now implemented and locally tested; migrations 003/004 and phone acceptance remain pending. The full observation/fee/payment journey is not yet available. No percentage is assigned: modules differ substantially in size, and implemented is distinct from accepted.
 
 ## Module status and next gates
 
 | Original build-plan module | Built / verified | Remaining before acceptance |
 | --- | --- | --- |
 | 0 — Foundation, testing, diagnostics | Native shell, GitHub source/CI, recovery boundary, validated device-persisted safe reports with best-effort storage and sign-out clearing; prior APK builds/device launch | Native persistence/sharing and controlled recovery checks; remote/native crash monitoring remains unimplemented |
-| 1 — Database and access protection | Migration 001 confirmed installed; schemas and local PostgreSQL isolation/constraint tests | Deploy migrations 002 and 003; real two-account isolation tests; backup/export/restore validation |
+| 1 — Database and access protection | Migration 001 confirmed installed; schemas and local PostgreSQL isolation/constraint tests | Deploy migrations 002, 003 and 004; real two-account isolation tests; backup/export/restore validation |
 | 2 — Authentication and academy onboarding | Email signup/login/recovery, secure storage and academy setup implemented; owner reports actual email and login | Verify 0.2.1 success-message repair; real academy setup, cold restart, refresh/logout, recovery/password update, invalid/expired links; production email delivery setup/limits |
 | 3 — Students, contacts, batches | Add/edit/archive, guardian contact, batch create/edit, additive enrolment, search/filter, retry/navigation guards; SQL/browser checks pass | Migration 002, live save/reopen/restart/edit/archive and offline/retry checks. Ending/moving/restoring enrolments remain deferred |
-| 4 — Sessions and attendance | Dated session create/edit/cancel UI, present/late/absent and mark-all, one device attendance draft, complete-roster revision-checked atomic saves, lost-response reconciliation, real-record Today summary; SQL/model/browser checks | Deploy migration 003; Android/native storage, actual API isolation, timezone, restart/offline/conflict acceptance |
+| 4 — Sessions and attendance | Dated session create/edit/cancel UI, present/late/absent and mark-all, one device attendance draft, complete-roster revision-checked atomic saves, lost-response reconciliation, real-record Today summary; SQL/model/browser checks | Deploy migrations 003/004; Android/native storage, actual API isolation, timezone, restart/offline/conflict acceptance |
 | 5 — Observations and drafts | Schema/recipient relationships | Editor, durable drafts, explicit recipient snapshots, record/edit/history and safe retry behavior; photos/rich fields optional later |
 | 6 — Invoices and manual payments | Protected schema and some integrity tests | Trusted invoice/manual-payment operations, fee snapshots, due dates, partial/paid/overdue balances, correction trail and screens |
 | 7 — Payment gateway | No gateway integration or collection enabled | Confirm provider/test eligibility; server-only credentials and link creation; webhook verification/reconciliation; duplicate/failure/delay/mismatch/refund/excess-payment checks; separate approved live enablement |
@@ -32,7 +32,7 @@ The larger parent app is deferred. Phone/WhatsApp authentication, media/rich fee
 flowchart TD
   A["Foundation + initial schema built"] --> B["Email login reported working"]
   B --> C["Owner acceptance pending: verify success-message repair + recovery/restart"]
-  C --> D["Deploy migrations 002/003 + test students/batches on phone"]
+  C --> D["Deploy migrations 002/003/004 + test students/batches on phone"]
   D --> E["Sessions + attendance implemented<br/>Local tests pass; native/live checks pending"]
   E --> F["Observations + saved drafts"]
   F --> G["Invoices + manual payments"]
@@ -46,7 +46,7 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 
 ## Evidence
 
-- Latest local checks: TypeScript passed, **76 automated tests across 9 files**, **24 browser tests**. Browser auth/roster tests use a fictional transport, not real project records.
+- Latest local checks: TypeScript passed, **79 automated tests across 10 files**, **26 browser tests**. Browser auth/roster tests use a fictional transport, not real project records.
 - Native accessibility contract test failed at exactly the two invalid status props before the repair, then passed. It reads the installed Android implementation; it is not a device crash reproduction.
 - Successful replacement build: [run 43145465149](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149), source `5c4c53be82e492b3faa3ec831376de57f720b7b6`.
 - [Download 0.2.1 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
@@ -59,7 +59,7 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 
 1. Install a verified APK update, preserving existing app data. The existing 0.2.1 repair build remains available until 0.3.0 is verified. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
 2. Verify the new best-effort persisted diagnostics on Android. Continue assessing native crash reporting through a supported integration; no remote/native monitoring exists yet. Any external setup must be concrete and minimal.
-3. Apply migrations 002 and 003 using the [classes setup guide](docs/CLASS_SETUP.md), then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
+3. Apply migrations 002, 003 and 004 using the [classes setup guide](docs/CLASS_SETUP.md), then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
 4. Finish module 4 device/live acceptance, then build modules 5, 6 and 7 with a test gate each. Begin payment-provider onboarding/test-access confirmation early while independent coding proceeds; no real collection or purchase without owner authorization.
 5. Connect the Today dashboard to saved records, finish privacy/deletion/settings/backups, and run whole-journey Android/security/payment/recovery acceptance. Establish production signing and provider/email configuration before a production release. Keep the larger parent app deferred.
 

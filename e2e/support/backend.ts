@@ -93,11 +93,12 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (index < 0) state.classes.push(value); else state.classes[index] = value;
           persistClasses(); data = value.id;
         }
-      } else if (url.pathname.endsWith('/rpc/save_class_attendance')) {
+      } else if (url.pathname.endsWith('/rpc/save_class_attendance_checked')) {
         const session = state.classes.find(c => c.id === payload.target_session);
         if (state.failAttendance) { status = 500; data = { message: 'Private attendance backend failure' }; }
         else if (!session || session.status === 'cancelled') { status = 400; data = { code: '22023', message: 'Unavailable class' }; }
-        else if (session.attendance_revision !== payload.expected_revision) { status = 400; data = { code: '40001', message: 'Changed attendance' }; }
+        else if ([session.batch_id, new Date(session.starts_at).toISOString(), new Date(session.ends_at).toISOString(), session.status].join('|') !== payload.expected_context || session.attendance_revision !== payload.expected_revision) { status = 400; data = { code: '40001', message: 'Changed attendance' }; }
+        else if (payload.marks.length !== state.roster.students.filter(student => !student.archived_at && state.roster.enrolments.some(e => e.student_id === student.id && e.batch_id === session.batch_id)).length) { status = 400; data = { code: '40001', message: 'Changed roster' }; }
         else {
           state.attendance[session.id] = Object.fromEntries(payload.marks.map((m: { student_id: string; status: string }) => [m.student_id, m.status]));
           session.attendance_revision++; data = session.attendance_revision; persistClasses();

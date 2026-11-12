@@ -116,3 +116,10 @@ The new native accessibility contract check failed on two unsupported status pro
 - Screenshots `docs/images/classes.png` and `attendance.png` were inspected at 412×915, using explicitly fictional records. They do not prove live deployment/device acceptance. Architecture diagrams and handover have been updated with the new flow and current limits.
 - Migrations 002/003 are not confirmed deployed. Migration 001/settings must not be repeated. [Classes setup](CLASS_SETUP.md) supplies the ordered deployment/version checks and phone acceptance steps. Existing email crash repair still lacks phone confirmation.
 - Native/remote crash telemetry, full offline roster/schedule cache, student/class-edit durable drafts and multiple concurrent device drafts are not implemented. Persisted diagnostics do not capture every native crash or abrupt termination; storage is best-effort and failures remain visible.
+
+### Final class-context hardening
+
+- Initial candidate source `10b996836b51e0461f19cd2bf4935c8ec1b1e7c6` built successfully in run 43163487986 at 05:52:06Z, with signature-verified APK and all live-settings booleans true. That artifact is superseded by the class-context hardening below; do not hand it off as the final candidate.
+- Migration 004 adds the owner-checked class fingerprint wrapper and revokes direct client access to the previous wrapper. Published migration 003 is preserved. A moved/cancelled class cannot accept attendance from an old open screen even if its attendance revision is unchanged.
+- Reopening attendance refreshes roster eligibility. Explicit API rejection never becomes success through subset comparison; lost-response reconciliation requires a complete current roster, matching class context and an advanced server revision.
+- TypeScript and **79 automated tests across 10 files** passed; **26 browser flows** passed, including moved-class rejection and newly enrolled child refresh. A generated owner bundle applies 002/003/004 after 001; a read-only consistency check prevents migration/bundle drift. Final native rebuild remains pending.

@@ -50,7 +50,7 @@ export function classValues(draft: ClassDraft, timezone: string) {
   if (Date.parse(ends) <= Date.parse(starts)) throw new Error('Class end must be after its start.');
   return { starts, ends };
 }
-export function fingerprint(session: ClassSession) { return [session.batch_id, session.starts_at, session.ends_at, session.status].join('|'); }
+export function fingerprint(session: ClassSession) { return [session.batch_id, new Date(session.starts_at).toISOString(), new Date(session.ends_at).toISOString(), session.status].join('|'); }
 export function eligibleStudents(context: ClassContext, session: ClassSession, timezone: string) {
   const date = localParts(session.starts_at, timezone).date;
   const ids = new Set(context.enrolments.filter(e => e.batch_id === session.batch_id && e.starts_on <= date && (!e.ends_on || e.ends_on >= date)).map(e => e.student_id));
@@ -58,4 +58,12 @@ export function eligibleStudents(context: ClassContext, session: ClassSession, t
 }
 export function sameMarks(local: Marks, saved: Marks) {
   return Object.keys(local).length > 0 && Object.entries(local).every(([id, mark]) => saved[id] === mark);
+}
+
+// Reconciliation must compare the complete current roster, not merely a matching
+// subset: a newly enrolled child otherwise could be mistaken for a finished save.
+export function completeMarks(marks: Marks, context: ClassContext, session: ClassSession, timezone: string) {
+  const students = eligibleStudents(context, session, timezone);
+  return students.length > 0 && students.length <= 500 && Object.keys(marks).length === students.length
+    && students.every(student => ['present', 'late', 'absent'].includes(marks[student.id]));
 }

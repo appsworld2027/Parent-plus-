@@ -1,12 +1,12 @@
 import { supabase } from '../auth/client';
 import { diagnostics } from '../diagnostics';
 import type { ClassContext, ClassDraft, ClassSession, Marks } from './model';
-import { classValues, dayRange } from './model';
+import { classValues, dayRange, fingerprint } from './model';
 
 export function classFailure(error: unknown, fallback: string) {
   const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
   const text = ['42703', '42883', 'PGRST202', 'PGRST204'].includes(code) ? 'The classes database update is needed. Your coding partner has the setup script.'
-    : code === '40001' ? 'Attendance changed on the server. Reopen the class to compare your saved draft before trying again.'
+    : code === '40001' ? 'The saved class, roster or attendance changed. Reopen the class and review before saving.'
     : code === '23505' ? 'A class already exists for this batch and start time. Refresh the list before retrying.' : fallback;
   let reference = 'unavailable';
   try { reference = diagnostics.record('CLASS_FAILURE').reference; } catch { /* Keep the recovery path usable. */ }
@@ -40,9 +40,9 @@ export async function loadAttendance(academy: string, id: string): Promise<{ ses
   if (session.error) throw session.error; if (attendance.error) throw attendance.error;
   return { session: session.data as ClassSession, marks: Object.fromEntries((attendance.data ?? []).map(row => [row.student_id, row.status])) };
 }
-export async function saveAttendance(session: string, revision: number, marks: Marks): Promise<number> {
+export async function saveAttendance(session: ClassSession, marks: Marks): Promise<number> {
   if (!supabase) throw new Error('Client unavailable');
-  const result = await supabase.rpc('save_class_attendance', { target_session: session, expected_revision: revision,
+  const result = await supabase.rpc('save_class_attendance_checked', { target_session: session.id, expected_revision: session.attendance_revision, expected_context: fingerprint(session),
     marks: Object.entries(marks).map(([student_id, status]) => ({ student_id, status })) });
   if (result.error) throw result.error;
   return result.data as number;

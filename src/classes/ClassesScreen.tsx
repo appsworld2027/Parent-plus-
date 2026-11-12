@@ -5,7 +5,7 @@ import type { Academy } from '../auth/AuthProvider';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { attendanceDrafts } from './localDrafts';
 import type { AttendanceDraft, ClassContext, ClassDraft, ClassSession, Mark, Marks } from './model';
-import { classValues, eligibleStudents, fingerprint, localParts, sameMarks } from './model';
+import { classValues, completeMarks, eligibleStudents, fingerprint, localParts, sameMarks } from './model';
 import { classFailure, loadAttendance, loadClasses, saveAttendance, saveClass } from './service';
 
 function Button({ title, onPress, disabled = false }: { title: string; onPress: () => void; disabled?: boolean }) {
@@ -76,8 +76,8 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     catch (failure) { setError(classFailure(failure, 'The class save could not be confirmed. Keep your entries and retry. Once attendance is recorded, class times are protected.')); onViewChange(); }
     finally { setBusy(false); }
   }
-  function visibleMarks(session: ClassSession, marks: Marks) {
-    const ids = new Set(context ? eligibleStudents(context, session, academy.timezone).map(s => s.id) : []);
+  function visibleMarks(session: ClassSession, marks: Marks, data = context) {
+    const ids = new Set(data ? eligibleStudents(data, session, academy.timezone).map(s => s.id) : []);
     return Object.fromEntries(Object.entries(marks).filter(([id]) => ids.has(id))) as Marks;
   }
   async function openAttendance(session: Pick<ClassSession, 'id'>, discardOther = false) {
@@ -92,11 +92,13 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
       }
       const loaded = await loadAttendance(academy.id, session.id);
       if (loaded.session.status === 'cancelled') throw new Error('Cancelled class');
-      const saved = visibleMarks(loaded.session, loaded.marks);
+      const latest = await loadClasses(academy.id, localParts(loaded.session.starts_at, academy.timezone).date, academy.timezone);
+      setContext(latest);
+      const saved = visibleMarks(loaded.session, loaded.marks, latest);
       const value: Active = { session: loaded.session, marks: saved, saved, local: false };
       if (local) {
-        const marks = visibleMarks(loaded.session, local.marks);
-        if (fingerprint(loaded.session) === local.fingerprint && sameMarks(marks, saved)) {
+        const marks = visibleMarks(loaded.session, local.marks, latest);
+        if (fingerprint(loaded.session) === local.fingerprint && completeMarks(marks, latest, loaded.session, academy.timezone) && sameMarks(marks, saved)) {
           await attendanceDrafts.clear(scope(session.id)); setDeviceDraft(null); setNotice('Your earlier attendance save is already recorded on the server.');
         } else if (fingerprint(loaded.session) !== local.fingerprint || local.revision !== loaded.session.attendance_revision) {
           setConflict(local);
@@ -130,18 +132,22 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
   }
   async function submitAttendance() {
     if (!active || !context || busy) return;
-    const students = eligibleStudents(context, active.session, academy.timezone);
-    if (!students.length || students.length > 500 || students.some(s => !active.marks[s.id])) { setError('Mark each enrolled student before saving (up to 500 students).'); onViewChange(); return; }
+    if (!completeMarks(active.marks, context, active.session, academy.timezone)) { setError('Mark each enrolled student before saving (up to 500 students).'); onViewChange(); return; }
     setBusy(true); setError('');
-    try { const revision = await saveAttendance(active.session.id, active.session.attendance_revision, active.marks); await finishSaved(active, revision); }
+    try { const revision = await saveAttendance(active.session, active.marks); await finishSaved(active, revision); }
     catch (failure) {
+      const code = failure && typeof failure === 'object' && 'code' in failure ? String(failure.code ?? '') : '';
+      // An explicit server rejection is not an uncertain network outcome. It must
+      // not become "saved" just because an older subset already has equal marks.
+      if (code) { setError(classFailure(failure, 'Attendance was rejected. Your entries remain on this screen; reopen the class to review.')); onViewChange(); return; }
       // Read-only reconciliation handles a server commit whose response was lost.
       // Never automatically overwrite a newer revision with a stale local draft.
       try {
         const current = await loadAttendance(academy.id, active.session.id);
-        if (fingerprint(current.session) === fingerprint(active.session) && sameMarks(active.marks, current.marks)) await finishSaved(active, current.session.attendance_revision);
-        else setError(classFailure(failure, 'Attendance was not confirmed. Your device draft is retained. Reopen saved attendance before retrying.'));
-      } catch { setError(classFailure(failure, 'Attendance was not confirmed. Your device draft is retained. Reconnect and reopen saved attendance.')); }
+        const latest = await loadClasses(academy.id, localParts(current.session.starts_at, academy.timezone).date, academy.timezone);
+        if (current.session.attendance_revision > active.session.attendance_revision && fingerprint(current.session) === fingerprint(active.session) && completeMarks(active.marks, latest, current.session, academy.timezone) && sameMarks(active.marks, current.marks)) await finishSaved({ ...active, session: current.session }, current.session.attendance_revision);
+        else setError(classFailure(failure, 'Attendance was not confirmed. Your entries remain on this screen. Reopen saved attendance before retrying.'));
+      } catch { setError(classFailure(failure, 'Attendance was not confirmed. Your entries remain on this screen. Reconnect and reopen saved attendance.')); }
       onViewChange();
     } finally { setBusy(false); }
   }

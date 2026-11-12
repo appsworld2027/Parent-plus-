@@ -73,10 +73,11 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 ## 4. Database changes and deployment
 
 - Migration 001 is confirmed installed. Do not tell the owner to recreate the project or rerun the initial setup.
-- Migrations 002 and 003 are prepared/tested; deployment remains unconfirmed. Follow [ROSTER_SETUP.md](ROSTER_SETUP.md), then [CLASS_SETUP.md](CLASS_SETUP.md), and record evidence.
+- Migrations 002, 003 and 004 are prepared/tested; deployment remains unconfirmed. Follow [ROSTER_SETUP.md](ROSTER_SETUP.md), then [CLASS_SETUP.md](CLASS_SETUP.md), and record evidence.
+- The owner can use the generated `supabase/setup_after_001.sql` bundle from `npm run prepare:owner-sql`. `node scripts/prepare-owner-sql.mjs --check` verifies it without editing files.
 - Preserve deployed migration history. Future behavior/schema changes need a new numbered migration, review of data preservation and corresponding database tests.
 - Database tests use disposable PGlite plus simulated Supabase auth roles. They do not inspect or mutate the real project. PGlite success must be followed by relevant real API/device acceptance.
-- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student`, `save_class_session` and `save_class_attendance` are client function names after migration 003. The old `save_attendance` becomes an internal helper; clients cannot bypass revision checks through it.
+- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student`, `save_class_session` and `save_class_attendance_checked` are client function names after migrations 003/004. The old `save_attendance` and `save_class_attendance` become internal helpers; clients cannot bypass revision checks through it.
 - Row Level Security (RLS) restricts rows an account may access. UI filters are convenience, not security. Privileged functions must validate ownership and use restricted execution/search-path privileges.
 - Current scope is one owned academy per account. Parent contacts do not create authenticated parent identities. Changing either assumption needs a product/data-model decision, not just a UI change.
 
@@ -94,7 +95,7 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 | Live settings probe | Key/settings accepted and anonymous profile access denied | Registered-user access isolation, email flow or payment correctness |
 | Guided phone acceptance | The specified real device/user journey works | Scenarios not actually exercised |
 
-Candidate 0.3.0: TypeScript, 76 automated tests and 24 browser checks passed locally; both target exports pass. Its native build is still to be verified. The last verified APK is 0.2.1; phone confirmation of the original repair and new workflows remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
+Candidate 0.3.0: TypeScript, 79 automated tests and 26 browser checks passed locally; both target exports pass. Its native build is still to be verified. The last verified APK is 0.2.1; phone confirmation of the original repair and new workflows remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
 
 For each substantial module: confirm its acceptance criteria, test meaningful failure paths, perform the Android acceptance step, and record Built / Checks passed / Failures or blockers / Next action. Do not label a module complete because a table or screen exists.
 
