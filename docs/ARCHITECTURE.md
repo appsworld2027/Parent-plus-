@@ -63,13 +63,14 @@ flowchart TD
     Home --> Students["Students / batches management"]
     Home --> Support["Support and sanitized report export"]
     Home --> Classes["Schedule: dated classes and attendance"]
-    Home --> Later["Post / Fees show pending-module information"]
+    Home --> Notes["Post: private observations, device drafts and workspace history"]
+    Home --> Later["Fees shows pending-module information"]
 ```
 
 File responsibilities:
 
 - `index.ts`: installs crypto support before the auth client is imported, then registers the app.
-- `App.tsx`: wraps providers, displays the workspace/navigation, and guards leaving a student form.
+- `App.tsx`: wraps providers, displays the workspace/navigation, and guards leaving feature forms with pending edits or writes.
 - `src/auth/AuthProvider.tsx`: owns session/academy state, validates the user, handles email links and native refresh lifecycle.
 - `src/auth/AuthGate.tsx`: renders the appropriate form, loading/error state, onboarding or workspace. It is a UI gate, not the database security boundary.
 
@@ -214,7 +215,7 @@ flowchart LR
     Native["Native crash / OS termination"] -. "coverage gap" .-> Missing["No persistent native crash reporting connected"]
 ```
 
-Raw exceptions, form contents, email links and tokens are not added to reports. Reports retain only allowed codes/references/time/build/action. Reports now persist through the device adapter when available. On restoration, unknown fields and events older than 14 days are discarded; the buffer is bounded to 30 records. Sign-out clears reports and the attendance draft. Storage failures keep diagnostics in memory and expose an unavailable-storage status. Writes are best-effort and an abrupt termination can interrupt a pending write. Error boundaries cover React rendering, not every native failure or asynchronous rejection. They must not be represented as comprehensive crash monitoring.
+Raw exceptions, form contents, email links and tokens are not added to reports. Reports retain only allowed codes/references/time/build/action. Reports now persist through the device adapter when available. On restoration, unknown fields and events older than 14 days are discarded; the buffer is bounded to 30 records. Sign-out clears reports and the attendance/observation device drafts. Storage failures keep diagnostics in memory and expose an unavailable-storage status. Writes are best-effort and an abrupt termination can interrupt a pending write. Error boundaries cover React rendering, not every native failure or asynchronous rejection. They must not be represented as comprehensive crash monitoring.
 
 UI guards preserve edits during handled failures and block navigation while saves are pending. Student and class-edit forms are in memory. Attendance marks persist only after the device draft confirmation. A restart needs network access to validate the class before restoring attendance; full offline roster/schedule editing and automatic sync are not implemented.
 

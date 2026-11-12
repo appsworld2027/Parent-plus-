@@ -1,6 +1,6 @@
 # Developer handover and working agreement
 
-Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has stopped feature development and placed phone-control automation on hold. Read the current checkpoint before taking action; a sync request authorizes saving progress, not resuming implementation.
+Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has explicitly resumed feature development while postponing Windows-emulator setup. Phone-control automation remains on hold. Read the current checkpoint before taking action; development resumes do not authorize payment activation or parent delivery.
 
 ## 1. Read in this order
 

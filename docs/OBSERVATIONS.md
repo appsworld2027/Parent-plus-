@@ -1,14 +1,14 @@
 # Private observations — Module 5
 
-Version 0.4.0 candidate. Implements PRD OBS-01. Local/browser evidence and native build status are in [validation](VALIDATION.md) and [progress](../PROGRESS.md). Deployment of migration 005 and native acceptance are separate checks.
+Version 0.4.0 internal preview. [Download verified APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808/artifacts/13948107259); [native build evidence](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808). Implements PRD OBS-01. Local/browser evidence and native build status are in [validation](VALIDATION.md) and [progress](../PROGRESS.md). Deployment of migration 005 and native acceptance are separate checks.
 
 [View the fictional recorded-note screenshot](images/observation-recorded.png).
 
 ## Owner setup when ready
 
-No action is needed while Codex completes the build. Existing login, roster and attendance use the already-installed migrations 001–004.
+The build is ready. Complete these steps when convenient; no immediate action is required. Existing login, roster and attendance use the already-installed migrations 001–004.
 
-For observations, apply **only the new 005 update** once the build is ready:
+For observations, apply **only the new 005 update** when you are ready to try the module:
 
 1. Open [the new SQL file on GitHub](https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/migrations/202611120005_observations.sql). Use **Raw → Copy** (or the file's Copy control) to copy the entire file.
 2. Open [your Supabase SQL editor](https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql/new). Create a new query, paste the complete file and press **Run**. Do not append it to old SQL or rerun initial setup. The update preserves current records and enables RLS on the new history table. It also replaces access policies/functions, which can cause a generic SQL warning.
