@@ -2,7 +2,7 @@
 
 ## Build/download links
 
-Current checkpoint: final version **0.3.0** built successfully in [run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902) from `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830), extract the ZIP and install the APK as an update. This is the final class-context-checked build; the earlier 0.3.0 candidate run 43163487986 is superseded. Apply the [combined database update](CLASS_SETUP.md) before the live classes/attendance acceptance journey. The email success-message repair is included but still needs phone confirmation. See [current progress](../PROGRESS.md).
+Current checkpoint: version **0.3.1** built successfully in [run 43176931524](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524) from `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524/artifacts/13924941624), extract the ZIP and install as an update. It adds fixed visible action feedback and includes the 0.3.0 classes/attendance safeguards. Owner-confirmed database versions 001–004 are already installed: **no SQL update is required**. Phone notification/attendance acceptance remains pending. See [current progress](../PROGRESS.md).
 
 No owner admin/network changes or Expo authorization are required for this working preview route. The earlier SDK bootstrap and shared-queue build problems were repaired; do not ask for the old failed-step screenshots again.
 

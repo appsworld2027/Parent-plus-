@@ -142,3 +142,11 @@ The new native accessibility contract check failed on two unsupported status pro
 - Added a shared fixed in-app notification row outside auth/workspace scrolling. Errors stay visible until acknowledged/replaced; explicit success/local-draft distinctions and saved class/attendance summaries avoid assuming a server save from a device draft. No timer hides results.
 - 79 automated tests passed. The full 30 browser flows passed, followed by 21 targeted auth/classes/feedback checks after final summary/wording changes. New tests verify entire notification inside the viewport while scrolled, repeated identical saves, failed archive dialog closure, persistent failure, retained server state, distinct local/server status and no stale success during a held request.
 - Inspected `docs/images/feedback-success.png` and `feedback-error.png` at 412×915. All records are fictional. Current Android build/phone acceptance is still pending; app version 0.3.1 / versionCode 5. No new migration or setup permissions are needed.
+
+### Verified 0.3.1 APK result
+
+- [Run 43176931524](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524) reported **success** at 2026-11-12T07:48:12.225Z for source `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`, retrieved proactively at 07:48:46Z. Started at 07:40:06.128Z, approximately 8m06s.
+- [Download artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524/artifacts/13924941624): ARM64 `com.parentplus.coach.preview`, development signed, 26,351,470 bytes; pipeline signature verification passed. SHA-256 `6d359a7ec5edf9e04fecc58b41767388896d3c4bbddcfcb927b90f370cf34239`. Source contains the fixed feedback host/provider and 0.3.1 metadata.
+- All live settings-probe booleans passed at 07:42:01Z. The probe does not create users, send emails or read private records.
+- No schema change: owner-confirmed 001–004 remain the required installed versions. Phone acceptance of visible notifications and server attendance/restart is still pending. Source comments and feedback/architecture docs are updated; all nine architecture/progress diagrams render and current feedback documentation links resolve.
+- Monitoring stopped on terminal success. No unattended monitor remains active.

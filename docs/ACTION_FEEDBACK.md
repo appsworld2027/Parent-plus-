@@ -28,4 +28,4 @@ Inline context remains available after dismissal; its duplicate announcements ar
 
 79 automated checks passed, including the native-role source-contract guard. All 30 browser flows passed, followed by 21 focused auth/classes/feedback checks after final wording changes. The four new feedback flows verify full viewport visibility while scrolled, repeated identical saves, failed archive/modal dismissal, local-vs-server status, unchanged server records after failure, and no stale success during a held request.
 
-Inspected screenshots use fictional records: [success](images/feedback-success.png), [failure](images/feedback-error.png). Native APK verification and phone acceptance must be recorded separately. Database versions 001–004 are already installed; **do not repeat SQL setup** for this patch.
+Inspected screenshots use fictional records: [success](images/feedback-success.png), [failure](images/feedback-error.png). Native build/signature verification passed in run 43176931524 for source 73805fa. Phone acceptance remains pending. Database versions 001–004 are already installed; **do not repeat SQL setup** for this patch.

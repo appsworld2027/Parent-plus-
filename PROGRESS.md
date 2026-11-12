@@ -1,12 +1,12 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Current patch: 0.3.1 fixes action feedback hidden by scrolling; native build verification pending.
+Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Version 0.3.1 fixes action feedback hidden by scrolling and passed its native build/signature check. Phone verification remains pending. No build monitor is active.
 
-Branch: `codex/coach-foundation`. Latest verified APK source: `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`. Latest verified APK: **0.3.0**, Android versionCode 4. Current source candidate: **0.3.1**, versionCode 5. Changes are saved to GitHub; no PR/merge to main is recorded.
+Branch: `codex/coach-foundation`. Latest verified APK source: `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`. Latest verified APK: **0.3.1**, Android versionCode 5. Changes are saved to GitHub; no PR/merge to main is recorded.
 
 ## Current phone evidence and feedback repair
 
-The owner’s screenshots confirm 0.3.0/80bf1e7 installed, an owned workspace and saved roster/class data visible, and an unsent device attendance draft. A server attendance save/restart has not yet been confirmed. The owner reported unclear success/failure; 0.3.1 adds a fixed notification row, explicit local-vs-server state and result details. See [feedback design/evidence](docs/ACTION_FEEDBACK.md). No database update is needed. Code fix is tested in browser; native phone verification remains pending.
+The owner’s screenshots confirm 0.3.0/80bf1e7 installed, an owned workspace and saved roster/class data visible, and an unsent device attendance draft. A server attendance save/restart has not yet been confirmed. The owner reported unclear success/failure; 0.3.1 adds a fixed notification row, explicit local-vs-server state and result details. See [feedback design/evidence](docs/ACTION_FEEDBACK.md). No database update is needed. Code fix is browser-tested and native-build verified; phone verification remains pending.
 
 ## Actual position
 
@@ -52,16 +52,16 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 
 - Latest local checks: TypeScript passed, **79 automated tests across 10 files**, **30 browser tests**, followed by 21 focused checks after final notification wording changes. Browser auth/roster tests use a fictional transport, not real project records.
 - Native accessibility contract test failed at exactly the two invalid status props before the repair, then passed. It reads the installed Android implementation; it is not a device crash reproduction.
-- Successful replacement build: [run 43164824902](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902), source `80bf1e725a8897c7a27dc7ddea17d2a1985db8db`.
-- [Download 0.3.0 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43164824902/artifacts/13920265830). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
-- APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,345,566 bytes. SHA-256 `d15f64d79ea2244d528aa55ba9e6909918b1af9dbbf71c8d5cb5b476715ddade`.
+- Successful replacement build: [run 43176931524](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524), source `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`.
+- [Download 0.3.1 artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524/artifacts/13924941624). GitHub ZIP contains `ParentPlus-Coach-Preview.apk`; artifacts retained 14 days.
+- APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,351,470 bytes. SHA-256 `6d359a7ec5edf9e04fecc58b41767388896d3c4bbddcfcb927b90f370cf34239`.
 - Real settings-only auth probe passed: reachable, public key accepted, email enabled, confirmation required, anonymous profile records denied. This does not independently establish real-user session/recovery tests.
 - Owner confirmed migration `202611110001`, email provider and redirect settings. A subsequent filtered version query returned all four expected rows, confirming 002–004 at `2026-11-12 06:57:00.026915+00`. Do not repeat those setup tasks.
 - [Detailed validation](docs/VALIDATION.md), [issue history](docs/ISSUES.md), [roster deployment](docs/ROSTER_SETUP.md), [PRD](PRD.md), [build sequence](BUILD_PLAN.md).
 
 ## Right resume order
 
-1. Install a verified APK update, preserving existing app data. Use the final 0.3.0 link above; it includes the earlier email success-message repair. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
+1. Install a verified APK update, preserving existing app data. Use the final 0.3.1 link above; it includes the earlier email success-message repair. With the existing account, request a recovery email once and confirm its success message stays visible. Then separately complete link/password-update, login, academy and restart/sign-out tests. Investigate failures before claiming acceptance.
 2. Verify the new best-effort persisted diagnostics on Android. Continue assessing native crash reporting through a supported integration; no remote/native monitoring exists yet. Any external setup must be concrete and minimal.
 3. Database updates are installed. Use the [classes setup guide](docs/CLASS_SETUP.md) for acceptance, then complete students/batches/classes device/API and real two-account isolation tests. Use fictional records for acceptance.
 4. Finish module 4 device/live acceptance, then build modules 5, 6 and 7 with a test gate each. Begin payment-provider onboarding/test-access confirmation early while independent coding proceeds; no real collection or purchase without owner authorization.
