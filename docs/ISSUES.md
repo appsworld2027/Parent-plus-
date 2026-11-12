@@ -77,3 +77,14 @@ Record app version, safe error reference, expected/observed behavior, known caus
 - The defect matches the reported timing, but without a device crash log this does not prove it was the owner's sole crash cause. Updated APK installation and a non-duplicating recovery-email success test on the phone remain necessary. Existing logs are bounded in-memory application diagnostics, not persistent native crash telemetry.
 
 - ANDROID-001 follow-up: the 0.2.1 APK compiled, passed signature verification and was uploaded by run 43145465149. Code defect repaired and build verified; device confirmation remains open. Do not mark the owner-reported crash resolved solely from the CI result.
+
+## DATA-001 — Lost-response and competing attendance saves
+
+- Risk addressed before live acceptance: independently saved attendance from another device could be replaced by an older device draft; a lost response could misrepresent a committed save as missing.
+- Migration 003 serializes through a class-row lock and revision check, requires all eligible active students, reuses the existing atomic validation and revokes client bypass routes. A changed revision requires explicit comparison. Client reconciliation only reads server state and never automatically overwrites it.
+- SQL and browser checks pass for stale saves, invalid/incomplete marks rolling back, draft retention and lost-response reconciliation. Native/deployed acceptance remains open.
+
+## LOG-001 — Diagnostic references disappeared on restart
+
+- The original diagnostic buffer was in memory, limiting investigation after app closure. Candidate 0.3.0 persists allowed metadata through a chunked device adapter, reconstructs/validates saved fields, bounds count/age on restoration, and invalidates queued writes at sign-out. Storage failures degrade to a visible memory-only report state.
+- Automated/browser restart, corruption/private-field stripping, storage-failure and sign-out-race checks pass. Native persistence and share-sheet behavior remain to be tested. This repair does not provide native crash stacks or remote monitoring.

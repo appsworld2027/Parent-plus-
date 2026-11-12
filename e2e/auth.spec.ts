@@ -53,6 +53,8 @@ test('a verified session loads its academy, survives reload, and clears on sign-
   await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible();
   const remaining = await page.evaluate(() => Object.keys(sessionStorage).filter(key => key.includes('auth-token') && !key.includes('code-verifier')));
   expect(remaining).toEqual([]);
+  const retained = await page.evaluate(() => Object.keys(sessionStorage).filter(key => key.startsWith('parentplus.coach.diagnostics.')));
+  expect(retained).toEqual([]);
 });
 
 test('new owners see onboarding and can safely retry failed academy creation', async ({ page }) => {

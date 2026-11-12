@@ -1,20 +1,31 @@
 import type { Page } from '@playwright/test';
 import type { Roster } from '../../src/roster/model';
+import type { ClassSession, Marks } from '../../src/classes/model';
 
 const user = { id: '00000000-0000-0000-0000-000000000001', email: 'coach@example.test',
   aud: 'authenticated', role: 'authenticated', email_confirmed_at: '2026-01-01T00:00:00Z',
   created_at: '2026-01-01T00:00:00Z', app_metadata: {}, user_metadata: {}, identities: [] };
 declare global {
   interface Window {
-    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean };
+    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean };
   }
 }
-export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean } = {}) {
+export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean } = {}) {
   // A transport fixture installed before the real app/SDK loads. No Supabase
   // request can leave this browser; authentication and storage code are unchanged.
   await page.addInitScript(({ user, options }) => {
-    const roster = JSON.parse(sessionStorage.getItem('__fictional_roster') ?? 'null') ?? { students: [], contacts: [], batches: [], enrolments: [] };
-    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false };
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    const batchId = '00000000-0000-0000-0000-000000000031';
+    const studentId = '00000000-0000-0000-0000-000000000021';
+    const classId = '00000000-0000-0000-0000-000000000051';
+    const roster = JSON.parse(sessionStorage.getItem('__fictional_roster') ?? 'null') ?? (options.readyClass
+      ? { students: [{ id: studentId, name: 'Fictional Ria', age_years: 6, archived_at: null }], contacts: [],
+          batches: [{ id: batchId, name: 'Fictional Clay Class', room: 'Room 1', monthly_fee_paise: 250000, archived_at: null }],
+          enrolments: [{ student_id: studentId, batch_id: batchId, starts_on: '2020-01-01', ends_on: null }] }
+      : { students: [], contacts: [], batches: [], enrolments: [] });
+    const teaching = JSON.parse(sessionStorage.getItem('__fictional_classes') ?? 'null') ?? {
+      classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };
+    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false };
     const account = options.unverified ? { ...user, email_confirmed_at: null } : user;
     const original = window.fetch.bind(window);
     window.fetch = async (input, init) => {
@@ -28,6 +39,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       const payload = init?.body ? JSON.parse(String(init.body)) : {};
       const method = init?.method ?? (input instanceof Request ? input.method : 'GET');
       const persistRoster = () => sessionStorage.setItem('__fictional_roster', JSON.stringify(state.roster));
+      const persistClasses = () => sessionStorage.setItem('__fictional_classes', JSON.stringify({ classes: state.classes, attendance: state.attendance }));
       state.calls.push(url.pathname);
       let data: unknown = {};
       let status = 200;
@@ -71,6 +83,39 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         const student = state.roster.students.find(s => s.id === payload.target_student);
         if (student) student.archived_at = new Date().toISOString();
         persistRoster(); data = true;
+      } else if (url.pathname.endsWith('/rpc/save_class_session')) {
+        const index = state.classes.findIndex(c => c.id === payload.target_session);
+        if (state.failClass) { status = 500; data = { message: 'Private class backend failure' }; }
+        else if (index >= 0 && state.classes[index].attendance_revision > 0 && (state.classes[index].starts_at !== payload.begins_at || state.classes[index].ends_at !== payload.finishes_at || state.classes[index].batch_id !== payload.target_batch)) {
+          status = 400; data = { code: '22023', message: 'Attendance protects class timing' };
+        } else {
+          const value = { id: payload.target_session, batch_id: payload.target_batch, starts_at: payload.begins_at, ends_at: payload.finishes_at, room: payload.class_room, status: payload.class_status, attendance_revision: index < 0 ? 0 : state.classes[index].attendance_revision };
+          if (index < 0) state.classes.push(value); else state.classes[index] = value;
+          persistClasses(); data = value.id;
+        }
+      } else if (url.pathname.endsWith('/rpc/save_class_attendance')) {
+        const session = state.classes.find(c => c.id === payload.target_session);
+        if (state.failAttendance) { status = 500; data = { message: 'Private attendance backend failure' }; }
+        else if (!session || session.status === 'cancelled') { status = 400; data = { code: '22023', message: 'Unavailable class' }; }
+        else if (session.attendance_revision !== payload.expected_revision) { status = 400; data = { code: '40001', message: 'Changed attendance' }; }
+        else {
+          state.attendance[session.id] = Object.fromEntries(payload.marks.map((m: { student_id: string; status: string }) => [m.student_id, m.status]));
+          session.attendance_revision++; data = session.attendance_revision; persistClasses();
+          if (state.loseAttendanceResponse) { state.loseAttendanceResponse = false; throw new TypeError('Simulated lost response after attendance commit'); }
+        }
+      } else if (url.pathname.endsWith('/class_sessions')) {
+        if (options.missingClassMigration) { status = 400; data = { code: '42703', message: 'Missing class column' }; }
+        else {
+          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const times = url.searchParams.getAll('starts_at');
+          const from = times.find(t => t.startsWith('gte.'))?.slice(4);
+          const until = times.find(t => t.startsWith('lt.'))?.slice(3);
+          const rows = state.classes.filter(c => (!id || c.id === id) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
+          if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : rows;
+        }
+      } else if (url.pathname.endsWith('/attendance')) {
+        const id = url.searchParams.get('session_id')?.replace(/^eq\./, '') ?? '';
+        data = Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ student_id, status }));
       } else if (url.pathname.endsWith('/students')) data = state.roster.students;
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;

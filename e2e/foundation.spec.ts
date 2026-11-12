@@ -41,3 +41,23 @@ test('screen error boundary recovers and preserves only a sanitized error code',
   await expect(page.getByTestId('diagnostic-report')).toContainText('SCREEN_FAILURE');
   await expect(page.getByTestId('diagnostic-report')).not.toContainText('Controlled development render failure');
 });
+
+test('safe diagnostics survive reload and deliberate clearing persists', async ({ page }) => {
+  await page.getByRole('button', { name: 'Open support and diagnostics' }).click();
+  await page.getByRole('button', { name: 'Run safe error check', exact: true }).click();
+  await page.getByRole('button', { name: 'Prepare diagnostic report' }).click();
+  await expect(page.getByTestId('diagnostic-report')).toContainText('saved-on-device');
+  await page.reload();
+  await page.getByRole('button', { name: 'Explore interface preview', exact: true }).click();
+  await page.getByRole('button', { name: 'Open support and diagnostics' }).click();
+  await page.getByRole('button', { name: 'Prepare diagnostic report' }).click();
+  await expect(page.getByTestId('diagnostic-report')).toContainText('CONTROLLED_FAILURE');
+  await page.getByRole('button', { name: 'Clear local diagnostic report' }).click();
+  await page.getByRole('button', { name: 'Prepare diagnostic report' }).click();
+  await expect(page.getByTestId('diagnostic-report')).toContainText('"events": []');
+  await page.reload();
+  await page.getByRole('button', { name: 'Explore interface preview', exact: true }).click();
+  await page.getByRole('button', { name: 'Open support and diagnostics' }).click();
+  await page.getByRole('button', { name: 'Prepare diagnostic report' }).click();
+  await expect(page.getByTestId('diagnostic-report')).toContainText('"events": []');
+});

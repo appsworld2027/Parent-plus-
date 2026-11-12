@@ -1,6 +1,6 @@
 # Developer handover and working agreement
 
-Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). Feature development is paused; documentation work is authorized. Do not treat this guide as authorization to resume pending features.
+Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has resumed feature development. Work follows the current checkpoint and module acceptance gates.
 
 ## 1. Read in this order
 
@@ -27,7 +27,10 @@ Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then 
 | `src/roster/RosterScreen.tsx` | Student/batch forms, search, load/save state and guards | `e2e/roster.spec.ts` |
 | `src/roster/model.ts` | Data shapes, input validation and integer money conversion | `tests/roster.test.ts` |
 | `src/roster/service.ts` | Roster query/RPC boundary and safe errors | Migration 002 and database tests |
-| `src/diagnostics.ts`, `src/ErrorBoundary.tsx` | Allowed diagnostic metadata and render recovery | `tests/diagnostics.test.ts`, foundation browser checks |
+| `src/diagnostics.ts`, `src/deviceStorage.ts`, `src/ErrorBoundary.tsx` | Validated device-persisted diagnostic metadata, storage fallback and render recovery | `tests/diagnostics.test.ts`, foundation browser checks |
+| `src/classes/ClassesScreen.tsx`, `model.ts`, `service.ts` | Dated classes, attendance, timezone/eligibility logic and trusted API calls | `tests/classes.test.ts`, `classes-database.test.ts`, `e2e/classes.spec.ts` |
+| `src/classes/drafts.ts`, `localDrafts.ts` | One scoped device attendance draft, serialized cleanup | Device storage, auth sign-out and draft tests |
+| `src/classes/TodayClasses.tsx` | Today figures from real session records | Class service and attendance browser journey |
 | `supabase/migrations/` | Versioned database schema, policies, trusted operations | `tests/database.test.ts` and deployment instructions |
 | `tests/native-accessibility.test.ts` | Check literal roles against actual RN Android supported enum | ANDROID-001; web/type checks alone missed this |
 | `e2e/support/backend.ts` | Fictional SDK transport for browser flows | Never deploy as a live backend |
@@ -70,10 +73,10 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 ## 4. Database changes and deployment
 
 - Migration 001 is confirmed installed. Do not tell the owner to recreate the project or rerun the initial setup.
-- Migration 002 is prepared/tested; actual deployment remains unconfirmed. Follow [ROSTER_SETUP.md](ROSTER_SETUP.md), then record evidence.
+- Migrations 002 and 003 are prepared/tested; deployment remains unconfirmed. Follow [ROSTER_SETUP.md](ROSTER_SETUP.md), then [CLASS_SETUP.md](CLASS_SETUP.md), and record evidence.
 - Preserve deployed migration history. Future behavior/schema changes need a new numbered migration, review of data preservation and corresponding database tests.
 - Database tests use disposable PGlite plus simulated Supabase auth roles. They do not inspect or mutate the real project. PGlite success must be followed by relevant real API/device acceptance.
-- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student` and `save_attendance` are current function names.
+- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student`, `save_class_session` and `save_class_attendance` are client function names after migration 003. The old `save_attendance` becomes an internal helper; clients cannot bypass revision checks through it.
 - Row Level Security (RLS) restricts rows an account may access. UI filters are convenience, not security. Privileged functions must validate ownership and use restricted execution/search-path privileges.
 - Current scope is one owned academy per account. Parent contacts do not create authenticated parent identities. Changing either assumption needs a product/data-model decision, not just a UI change.
 
@@ -91,7 +94,7 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 | Live settings probe | Key/settings accepted and anonymous profile access denied | Registered-user access isolation, email flow or payment correctness |
 | Guided phone acceptance | The specified real device/user journey works | Scenarios not actually exercised |
 
-At version 0.2.1: 51 automated tests and 16 browser checks passed locally; replacement native build succeeded. Phone confirmation of the crash repair remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
+Candidate 0.3.0: TypeScript, 76 automated tests and 24 browser checks passed locally; both target exports pass. Its native build is still to be verified. The last verified APK is 0.2.1; phone confirmation of the original repair and new workflows remains pending. Link new evidence in VALIDATION.md with source/build identity. Keep local, CI, owner-reported and independently verified outcomes distinct.
 
 For each substantial module: confirm its acceptance criteria, test meaningful failure paths, perform the Android acceptance step, and record Built / Checks passed / Failures or blockers / Next action. Do not label a module complete because a table or screen exists.
 
@@ -126,10 +129,10 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 
 - The owner cannot change administrator/network access. Existing Git transport and GitHub-hosted builds work; the Supabase dashboard remains the manual deployment route. Do not request repeat credentials or inaccessible admin changes.
 - Give direct dashboard/file links and short phone checks. The owner should not interpret code or debug stack traces. Ask only for evidence/actions unavailable through authorized tools.
-- No feature development resumes until the owner requests it. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
+- Respect the latest owner pause/resume instruction; the owner has now requested a resume. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
 - Source is on `codex/coach-foundation`; no PR/merge to main is recorded. Fetch/switch to the correct branch on another computer. Installed APKs require explicit updates.
 - Preview development signing is separate from production-key custody and Play publication. Build artifacts expire; regenerate a verified build if needed.
-- Keep diagnostic data separate from family content/financial audit records. Current diagnostics are in memory; native/persistent reporting is an open requirement, not a promise already fulfilled.
+- Keep diagnostic data separate from family content/financial audit records. Diagnostics now persist on the device on a best-effort basis with validated restoration, memory fallback and sign-out clearing. Native crash/remote reporting remains open; do not claim it is connected.
 - Never log passwords/tokens/student details or automatically send reports to someone. Report sharing is a deliberate owner action.
 - Keep the parent app deferred and gateway collection disabled until separately implemented, tested and approved for the intended environment.
 

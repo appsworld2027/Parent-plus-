@@ -1,12 +1,12 @@
 # How Parent Plus Coach works today
 
-Reviewed: 12 November 2026. Applies to app version 0.2.1. Feature development is paused; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
+Reviewed: 12 November 2026. Applies to candidate app version 0.3.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system
 
 ```mermaid
 flowchart TD
-    Coach["Coach using the installed Android app"] --> UI["App screens: login, academy setup, students and batches"]
+    Coach["Coach using the installed Android app"] --> UI["App screens: login, academy setup, roster, classes and attendance"]
     UI --> Client["Supabase client: public project settings + signed-in session"]
     Client --> Auth["Supabase Auth: account, email verification, login"]
     Auth --> Email["Confirmation or recovery email to the coach"]
@@ -17,7 +17,7 @@ flowchart TD
     Rules --> DB["Supabase PostgreSQL: academy and private app records"]
     DB --> API
     API --> UI
-    Client --> Store["Phone SecureStore: saved login session and email-link verifier"]
+    Client --> Store["Phone SecureStore: saved session, verifier, diagnostics and one attendance draft"]
     Developer["Developer edits source and tests"] --> Git["GitHub: source, plans, tests and migrations"]
     Git --> Actions["GitHub Actions: automated checks and Android build"]
     Actions --> APK["Downloadable internal-preview APK"]
@@ -26,7 +26,7 @@ flowchart TD
 
 The installed app talks directly to Supabase over HTTPS; it does not need a running laptop or Codex session. GitHub is used to develop and distribute builds. New GitHub source does not automatically update an installed APK. No custom application server or payment integration is deployed yet.
 
-The diagram's roster paths exist in code but require migration 002. Its deployment and live roster acceptance are not confirmed. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
+The roster paths require migration 002; classes/attendance require migration 003. Their live deployment and device acceptance are not confirmed. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
 
 [Open the rendered system diagram](images/system-flow.png). It is a snapshot generated from the first Mermaid block above; refresh it when that flow changes.
 
@@ -39,9 +39,9 @@ The diagram's roster paths exist in code but require migration 002. Its deployme
 | GitHub `build-status` branch | Small per-source build reports | Reports are written at job start/end, not a live stream of each build step |
 | Supabase Auth | User identities and authentication sessions managed by the provider | An academy contact record does not create a parent login |
 | Supabase PostgreSQL | Academy, students, contacts, batches and enrolments; schema also exists for later modules | Table existence does not mean the feature is implemented |
-| Android SecureStore | Session/verifier storage through a chunked adapter | This is not offline storage for the student roster |
-| App memory | Current form entries, loaded roster, current screen, bounded diagnostics | Unsaved forms and diagnostics do not survive app termination |
-| Web browser sessionStorage | Test/web auth session through the same storage adapter | Browser checks do not validate Android SecureStore |
+| Android SecureStore | Session/verifier, bounded safe diagnostics and one attendance draft through chunked adapters | Attendance drafts hold scoped IDs/statuses, not student names; no full offline roster cache |
+| App memory | Current form entries, loaded records and current screen; diagnostic fallback when storage fails | Student/class-edit drafts are not durable; attendance is durable only after device-save confirmation |
+| Web browser sessionStorage | Web sessions, diagnostics and attendance draft through the same storage adapter | Reload tests do not validate Android SecureStore or persistence after closing the browser tab |
 
 The public URL and publishable key in `config/public-client.json` are bundled client configuration. Database security depends on verified user identity, privileges, policies and constraints. A public key is not an owner/service-role credential. No service-role, SMTP, gateway or production-signing secret belongs in the client.
 
@@ -62,7 +62,8 @@ flowchart TD
     User -->|"Academy available"| Home["AppContent: Today and navigation"]
     Home --> Students["Students / batches management"]
     Home --> Support["Support and sanitized report export"]
-    Home --> Later["Schedule / Post / Fees show pending-module information"]
+    Home --> Classes["Schedule: dated classes and attendance"]
+    Home --> Later["Post / Fees show pending-module information"]
 ```
 
 File responsibilities:
@@ -145,9 +146,41 @@ Enrolment editing is additive. Existing memberships are retained; moving/ending/
 
 Money is parsed as integer paise from decimal text. For example, ₹2,500.50 becomes 250050 paise. A batch's default fee is not an invoice or a payment.
 
+## Classes and attendance flow — migration 003
+
+```mermaid
+flowchart TD
+    Date["Choose date in academy timezone"] --> List["Load real sessions and roster context"]
+    List --> Edit["Create / edit / cancel via save_class_session"]
+    Edit --> Protected["Ownership and batch checks; protect timing after attendance"]
+    Protected --> List
+    List --> Open["Open attendance: load server revision and saved marks"]
+    Open --> Compare["Compare this owner's device draft with server context"]
+    Compare -->|"Changed revision or class"| Choice["Explicitly choose server records or review device draft"]
+    Compare -->|"Matching context"| Marks["Mark present / late / absent or mark all"]
+    Choice --> Marks
+    Marks --> Local["Save one scoped draft on this device; show unsent status"]
+    Local --> Submit["Coach explicitly saves to class"]
+    Submit --> Server["save_class_attendance: verify revision and complete roster; atomic write"]
+    Server -->|"Confirmed"| Done["Advance revision; clear device draft; Today reads saved records"]
+    Server -->|"Error or lost response"| Read["Read server state to reconcile; never auto-overwrite"]
+    Read -->|"Desired marks already saved"| Done
+    Read -->|"Not confirmed"| Keep["Keep device draft; reconnect and compare"]
+```
+
+Code: `ClassesScreen.tsx` owns screen/form state; `model.ts` converts academy wall time, validates classes and selects students enrolled on the local class date; `service.ts` calls Supabase; `drafts.ts` validates and serializes the device draft. `TodayClasses.tsx` queries current sessions rather than inventing figures.
+
+Times are stored as UTC timestamps, entered/displayed in the academy IANA timezone. Invalid dates, non-positive durations, daylight-saving gaps and repeated ambiguous times are rejected. The current form supports years 2000–2100.
+
+One active attendance draft is stored per device, scoped to owner/academy/session, with marks, server revision and a class fingerprint. No names or contacts are copied into that draft. A different class cannot silently replace it; explicit discard/resume is offered. It survives restart only if the write completed and storage remains available.
+
+On reopen, the app verifies server context before restoration. Changed class/revision requires a choice. A save locks the class and checks the expected revision, all currently eligible students and the existing attendance constraints. A stale save is rejected; a lost response triggers a read-only comparison. Student/enrolment changes can require review; this is not a multi-device automatic merge.
+
+Clients cannot directly insert/update classes or call the old attendance function after migration 003. Trusted functions validate ownership. Cancelling retains history and blocks further attendance writes; recorded attendance prevents timing/batch edits. Room/status edits remain possible.
+
 ## 6. Current data relationships
 
-Solid relationships below describe deployed migration 001 plus the prepared migration 002 changes. Migration 002 deployment remains unconfirmed.
+Relationships below describe migration 001 plus the prepared 002/003 changes. Deployments of 002/003 remain unconfirmed.
 
 ```mermaid
 erDiagram
@@ -158,18 +191,21 @@ erDiagram
     STUDENT ||--o{ CONTACT : has
     STUDENT ||--o{ ENROLMENT : joins_through
     BATCH ||--o{ ENROLMENT : receives
+    BATCH ||--o{ CLASS_SESSION : schedules
+    CLASS_SESSION ||--o{ ATTENDANCE : records
+    ENROLMENT ||--o{ ATTENDANCE : qualifies
 ```
 
 One academy is owned per account in this version. Migration 002 permits at most one primary contact per student. Composite foreign keys prevent a child, batch and enrolment being connected across academies. Current enrolment uniqueness is per academy/student/batch pair, not a history of repeat enrolment periods.
 
-The later-module tables are `class_sessions`, `attendance`, `observations`, `observation_recipients`, `fee_invoices`, and `fee_payments`. The attendance-save function exists, but its app UI is pending. Observations and financial tables do not yet provide complete user workflows. Gateway webhook/event processing is not implemented.
+Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented but live deployment is pending. `observations`, `observation_recipients`, `fee_invoices`, and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
 
 ## 7. Errors and diagnostics
 
 ```mermaid
 flowchart LR
     Action["Form / network operation fails"] --> Safe["Known safe message + generated reference"]
-    Safe --> Buffer["Bounded in-memory diagnostic buffer"]
+    Safe --> Buffer["Bounded validated diagnostics: device persistence with in-memory fallback"]
     Buffer --> Inspect["Coach explicitly prepares a support report"]
     Inspect --> Share["Native share sheet or selectable web report"]
     Render["React screen-render error"] --> Boundary["ErrorBoundary: recoverable screen"]
@@ -177,9 +213,9 @@ flowchart LR
     Native["Native crash / OS termination"] -. "coverage gap" .-> Missing["No persistent native crash reporting connected"]
 ```
 
-Raw exceptions, form contents, email links and tokens are not added to reports. Reports retain only allowed codes/references/time/build/action. Reports currently disappear on restart and clear at sign-out. Error boundaries cover React rendering, not every native failure or asynchronous rejection. They must not be represented as comprehensive crash monitoring.
+Raw exceptions, form contents, email links and tokens are not added to reports. Reports retain only allowed codes/references/time/build/action. Reports now persist through the device adapter when available. On restoration, unknown fields and events older than 14 days are discarded; the buffer is bounded to 30 records. Sign-out clears reports and the attendance draft. Storage failures keep diagnostics in memory and expose an unavailable-storage status. Writes are best-effort and an abrupt termination can interrupt a pending write. Error boundaries cover React rendering, not every native failure or asynchronous rejection. They must not be represented as comprehensive crash monitoring.
 
-UI guards preserve edits during handled failures and block navigation while saves are pending. They do not make unsaved drafts durable if the OS terminates the app. Full offline editing/sync and persistent draft recovery remain future work.
+UI guards preserve edits during handled failures and block navigation while saves are pending. Student and class-edit forms are in memory. Attendance marks persist only after the device draft confirmation. A restart needs network access to validate the class before restoring attendance; full offline roster/schedule editing and automatic sync are not implemented.
 
 ## 8. Code-to-APK delivery
 
@@ -209,4 +245,4 @@ GitHub builds provide the working preview route without Expo login. `eas.json` i
 
 ## 9. What is deliberately outside the current working flow
 
-Schedule, Post and Fees are pending-module screens. The home screen is a workspace/navigation shell, not a calculated live dashboard. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.
+Post and Fees remain pending-module screens. Schedule now manages classes and attendance; Today queries actual dated sessions and counts classes with an attendance save. It does not claim every later roster change has been reconciled, and fee/observation dashboard figures are not implemented. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.

@@ -4,6 +4,7 @@ import type { Session } from '@supabase/supabase-js';
 import { supabase } from './client';
 import { parseAuthLink } from './rules';
 import { diagnostics } from '../diagnostics';
+import { attendanceDrafts } from '../classes/localDrafts';
 
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
@@ -41,7 +42,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       // Do not await SDK calls inside this callback: the SDK holds its auth lock.
       if (!active) return;
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
-      if (event === 'SIGNED_OUT') { diagnostics.clear(); setAcademy(null); setRecovery(false); }
+      if (event === 'SIGNED_OUT') {
+        diagnostics.clear(); setAcademy(null); setRecovery(false);
+        void attendanceDrafts.clear().catch(() => {
+          if (active) setError(safeAuthFailure('SESSION_FAILURE', 'You are signed out, but the device draft could not be cleared. Your coding partner can help.'));
+        });
+      }
       setSession(next); setLoading(false);
     });
     void supabase.auth.getSession().then(({ data: value, error: failure }) => {
@@ -123,6 +129,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       const result = await supabase.auth.signOut({ scope: 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
+      try { await attendanceDrafts.clear(); }
+      catch {
+        const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but the device draft could not be cleared. Your coding partner can help.');
+        setError(message); return message;
+      }
+      await diagnostics.flush();
       return null;
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
   }, []);

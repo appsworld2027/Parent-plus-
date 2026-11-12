@@ -4,10 +4,13 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from './src/config';
 import { diagnostics } from './src/diagnostics';
+import { deviceStorage } from './src/deviceStorage';
 import { ErrorBoundary } from './src/ErrorBoundary';
 import { AuthProvider, useAuth } from './src/auth/AuthProvider';
 import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
+import { ClassesScreen } from './src/classes/ClassesScreen';
+import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
 
@@ -37,8 +40,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [report, setReport] = useState('');
   const [notice, setNotice] = useState('');
   const [crash, setCrash] = useState(false);
-  const [rosterDirty, setRosterDirty] = useState(false);
-  const [rosterBusy, setRosterBusy] = useState(false);
+  const [formDirty, setFormDirty] = useState(false);
+  const [formBusy, setFormBusy] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<Screen | null>(null);
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const scrollToTop = useCallback(() => scroll.current?.scrollTo({ y: 0, animated: false }), []);
@@ -49,12 +52,12 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       navigate('Today'); return true;
     });
     return () => back.remove();
-  }, [screen, rosterDirty, rosterBusy]);
+  }, [screen, formDirty, formBusy]);
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
-    if (screen === 'Students' && rosterBusy) { setNotice('Please wait for the save to finish.'); return; }
-    if (screen === 'Students' && next !== 'Students' && rosterDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
+    if ((screen === 'Students' || screen === 'Schedule') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
+    if ((screen === 'Students' || screen === 'Schedule') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -63,6 +66,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
     setReport(diagnostics.export());
   }
   async function shareReport() {
+    await diagnostics.ready();
+    await diagnostics.flush();
     const payload = diagnostics.export();
     setReport(payload);
     if (Platform.OS === 'web') {
@@ -88,7 +93,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       </View>
       <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
-        {screen === 'Students' && !!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
+        {(screen === 'Students' || screen === 'Schedule') && !!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
@@ -96,9 +101,10 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <View style={styles.hero}>
             <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
             <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
-            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage students and batches now; classes, observations, and fees are next.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
+            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Observations and fees follow in later modules.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
             <Action label="View setup status" onPress={() => navigate('Support')} secondary />
           </View>
+          {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} />}
           <Text style={styles.sectionTitle}>A place for everything</Text>
           <View style={styles.grid}>
             {[
@@ -128,7 +134,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <Text style={styles.small}>Share a sanitized report with your coding partner. Reports contain error references and app version, never student details or credentials.</Text>
             <Action label="Prepare diagnostic report" onPress={() => { void shareReport(); }} />
             <Action label="Clear local diagnostic report" secondary onPress={() => { diagnostics.clear(); setReport(''); setNotice('Local diagnostic report cleared.'); }} />
-            <Text style={styles.caption}>Reports stay in memory until you share them. They clear when the app restarts. Remote crash monitoring is not connected.</Text>
+            <Text style={styles.caption}>Reports contain up to 30 safe events, saved on this device when storage is available. Saved events older than 14 days are removed when restored. Sign-out clears them. Remote/native crash monitoring is not connected.</Text>
           </View>
           {appConfig.environment !== 'production' && <View style={styles.devCard}>
             <Text style={styles.sectionTitle}>Development checks</Text>
@@ -138,7 +144,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text accessibilityRole="alert" style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setRosterDirty} onBusyChange={setRosterBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
@@ -157,9 +163,9 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name}</Text>
         </Pressable>)}
       </View>
-      <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message="Your changes have not been saved. Keep editing or discard this form before leaving."
+      <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message={screen === 'Schedule' ? 'Unsaved edits will be discarded. Attendance drafts already saved on this device are retained.' : 'Your changes have not been saved. Keep editing or discard this form before leaving.'}
         confirmLabel="Discard and leave" cancelLabel="Keep editing" onCancel={() => setPendingNavigation(null)}
-        onConfirm={() => { if (pendingNavigation) { setRosterDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
+        onConfirm={() => { if (pendingNavigation) { setFormDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
     </View>
   </SafeAreaView>;
 }
@@ -167,6 +173,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
 // AuthProvider owns identity/data readiness; AuthGate decides which screen is safe to show.
 // This React error boundary cannot catch every Android native crash.
 export default function App() {
+  useEffect(() => { void diagnostics.connect(deviceStorage); }, []);
   return <SafeAreaProvider><ErrorBoundary><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></ErrorBoundary></SafeAreaProvider>;
 }
 

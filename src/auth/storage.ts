@@ -14,6 +14,8 @@ function parseManifest(raw: string | null): Manifest | null {
   return value;
 }
 
+// Used for auth sessions and separately named private-metadata keys. The driver
+// supplies platform protection; this adapter only coordinates chunks and commits.
 // SecureStore values have platform-dependent size limits. Commit a manifest only
 // after every new ASCII chunk is written, so interrupted refreshes keep the old session.
 export function createSessionStorage(driver: StorageDriver) {

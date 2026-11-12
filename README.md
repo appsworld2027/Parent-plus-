@@ -2,13 +2,13 @@
 
 Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
 
-Development is paused at the owner's request. See [the current progress checkpoint and journey chart](PROGRESS.md).
+Development has resumed at the owner’s request. See [the current progress checkpoint and journey chart](PROGRESS.md).
 
 Version 0.2.1 has a successful native Android build. The owner installed 0.2.0 and reports email confirmation/login. Version 0.2.1 repairs unsupported Android success-message accessibility props; device acceptance remains pending.
 
-Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration 001 is confirmed deployed; migration 002 and roster device checks remain pending. Latest local checks: TypeScript, 51 automated tests and 16 browser tests passed.
+Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration 001 is confirmed deployed; migration 002 and roster device checks remain pending. Latest local checks for candidate 0.3.0: TypeScript, 76 automated tests and 24 browser tests passed.
 
-Classes/attendance UI, observations, invoices/manual payments, gateway integration, actual-record dashboard and release/privacy/backup/monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
+Candidate 0.3.0 adds classes/attendance, a real-record Today class summary and device-persisted diagnostics. [Migration 003 and phone acceptance](docs/CLASS_SETUP.md) remain pending. Observations, invoices/manual payments, gateway integration and remaining release/privacy/backup/native-monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
 
 ## Start here
 
@@ -53,6 +53,6 @@ GitHub Actions app checks run from `.github/workflows/checks.yml`; the native pr
 
 ## Diagnostics
 
-Support is available through the question-mark button. Reports accept only known error codes and safe metadata, are capped at 30 events, and clear when the app restarts. Report sharing is deliberate; remote monitoring is not enabled. Development/test mode includes controlled failure checks; unset/unknown environments default to production and hide them.
+Support is available through the question-mark button. Reports accept only known error codes and safe metadata, are capped at 30 events, and persist on the device when storage is available. Restoring strips unknown fields and removes events older than 14 days; sign-out clears reports. Report sharing is deliberate; remote monitoring is not enabled. Development/test mode includes controlled failure checks; unset/unknown environments default to production and hide them.
 
 See [validation](docs/VALIDATION.md), [issue record](docs/ISSUES.md), and [your next step](docs/OWNER_NEXT_STEP.md).
