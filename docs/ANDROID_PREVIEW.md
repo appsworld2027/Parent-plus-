@@ -2,7 +2,7 @@
 
 ## Build/download links
 
-Current checkpoint: version **0.3.1** built successfully in [run 43176931524](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524) from `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43176931524/artifacts/13924941624), extract the ZIP and install as an update. It adds fixed visible action feedback and includes the 0.3.0 classes/attendance safeguards. Owner-confirmed database versions 001–004 are already installed: **no SQL update is required**. Phone notification/attendance acceptance remains pending. See [current progress](../PROGRESS.md).
+Current checkpoint: version **0.3.2** built successfully in [run 43186145925](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925) from `21cb70a0e8769c92a8e8743c78051029b65f442b`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925/artifacts/13928512623). It retains 0.3.1 app behavior and includes both ARM64 phone and x86_64 emulator native libraries. Signature and ELF/header checks passed for all 17 libraries per architecture. See [Windows Intel setup](WINDOWS_EMULATOR.md). Versions 001–004 are already installed; **no SQL update is needed**. Actual emulator/phone acceptance remains pending.
 
 No owner admin/network changes or Expo authorization are required for this working preview route. The earlier SDK bootstrap and shared-queue build problems were repaired; do not ask for the old failed-step screenshots again.
 
@@ -11,7 +11,7 @@ No owner admin/network changes or Expo authorization are required for this worki
 
 Open the latest successful Android preview run for `codex/coach-foundation`. Under Artifacts download **ParentPlus-Coach-Preview**, unzip it, and copy `ParentPlus-Coach-Preview.apk` to the Android phone. A workflow file being present does not mean a successful artifact exists: check the actual run outcome first.
 
-The earlier verified builds through 0.3.1 are ARM64-only. Candidate 0.3.2 changes the workflow to package ARM64 phones and x86_64 Intel/AMD emulators in one APK (Android 7.0/API 24 or later), with actual library/header verification. Verify the new build result before claiming compatibility. See [Windows emulator setup](WINDOWS_EMULATOR.md). It includes its JavaScript bundle and does not require a laptop Metro server or an Expo account login. It uses a separate application ID `com.parentplus.coach.preview` and development signing; store/production signing is not completed by this preview.
+The earlier verified builds through 0.3.1 are ARM64-only. Version 0.3.2 changes the workflow to package ARM64 phones and x86_64 Intel/AMD emulators in one APK (Android 7.0/API 24 or later), with actual library/header verification. Build 43186145925 verified the requested native CPU packaging; runtime/device acceptance is separate. See [Windows emulator setup](WINDOWS_EMULATOR.md). It includes its JavaScript bundle and does not require a laptop Metro server or an Expo account login. It uses a separate application ID `com.parentplus.coach.preview` and development signing; store/production signing is not completed by this preview.
 
 Android may ask you to allow installation from the browser/file app used to open the APK. Enable it for that installation source as needed, then install **Parent Plus Coach Preview**. If installation fails, share the message; do not troubleshoot Android tools yourself.
 

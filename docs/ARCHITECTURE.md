@@ -232,8 +232,8 @@ flowchart TD
     Start --> Checks["Install dependencies; types/tests; SDK installer checks"]
     Checks --> Probe["Settings-only live auth probe; safe evidence; non-blocking"]
     Probe --> SDK["Checksum-verified SDK tools; required packages"]
-    SDK --> Native["Clean Expo native generation; Gradle ARM64 release build"]
-    Native --> Verify["Verify APK signature; record source SHA and SHA-256"]
+    SDK --> Native["Clean Expo native generation; Gradle ARM64 + x86_64 release build"]
+    Native --> Verify["Verify signature and native ABI headers; record source SHA and SHA-256"]
     Verify --> Artifact["Upload APK and evidence; record final outcome"]
     Artifact --> Install["Coach downloads ZIP and installs APK update"]
 ```

@@ -1,6 +1,6 @@
 # Use Parent Plus Coach on a Windows Intel laptop
 
-Owner hardware: Windows, Intel Core Ultra 7. This is an x86-64 host. The earlier 0.3.1 APK is ARM64-only; do not assume it works on a standard x86_64 emulator. Candidate 0.3.2 packages both `arm64-v8a` and `x86_64`; native build and package verification are required before giving its final download link.
+Owner hardware: Windows, Intel Core Ultra 7. This is an x86-64 host. The earlier 0.3.1 APK is ARM64-only; do not assume it works on a standard x86_64 emulator. Version 0.3.2 packages both `arm64-v8a` and `x86_64`; [run 43186145925](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925) passed native compilation, signature verification and ELF/header checks for 17 libraries per architecture. [Download the compatible APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925/artifacts/13928512623). Actual startup/UI acceptance on this laptop is still pending.
 
 ## Setup on the laptop
 
@@ -8,7 +8,7 @@ Owner hardware: Windows, Intel Core Ultra 7. This is an x86-64 host. The earlier
 2. Open **More Actions → Virtual Device Manager** from the welcome screen, or **Tools → Device Manager** from an open project. Menu labels can vary by release.
 3. Choose **Create Virtual Device**, select a Pixel phone profile, then choose a **Google APIs x86_64** system image such as **Android 15 / API 35**. Accept the official SDK license/download as prompted. Do not select ARM64 for this Intel laptop.
 4. Finish and press the play/start button beside that virtual device. Wait for its Android home screen.
-5. Download the verified **0.3.2 or newer multi-architecture APK** from the handover link, extract the ZIP and drag `ParentPlus-Coach-Preview.apk` onto the running emulator. Do not use the older phone-only build for this test.
+5. Download the [verified **0.3.2 multi-architecture APK**](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925/artifacts/13928512623), extract the ZIP and drag `ParentPlus-Coach-Preview.apk` onto the running emulator. Do not use the older phone-only build for this test.
 6. Open Parent Plus Coach Preview and sign in with the existing app email/password. A new emulator does not contain the phone's saved session, so it should ask for login. Do not create another app account just for this step.
 7. Check the green result notice by opening Students → Batches → edit the test batch → Save batch. Then complete the guided attendance-save/reopen checks.
 

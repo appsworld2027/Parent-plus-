@@ -1,19 +1,19 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **stopped at the owner’s request**. Feature work and phone-control setup remain stopped. The owner subsequently requested laptop testing and supplied Windows/Intel Core Ultra 7; a scoped CPU-compatibility packaging update is in progress. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Version 0.3.1 fixes action feedback hidden by scrolling and passed its native build/signature check. Phone verification remains pending. No build monitor is active.
+Date: 12 November 2026. Status: **stopped at the owner’s request**. Feature work and phone-control setup remain stopped. The owner subsequently requested laptop testing and supplied Windows/Intel Core Ultra 7; the scoped CPU-compatibility packaging update is built and verified. No feature development, phone-control setup or build monitor is active. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Version 0.3.1 fixes action feedback hidden by scrolling and passed its native build/signature check. Phone verification remains pending. No build monitor is active.
 
-Branch: `codex/coach-foundation`. Latest verified APK source: `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`. Latest verified APK: **0.3.1**, Android versionCode 5. Changes are saved to GitHub; no PR/merge to main is recorded.
+Branch: `codex/coach-foundation`. Latest verified APK source: `21cb70a0e8769c92a8e8743c78051029b65f442b`. Latest verified APK: **0.3.2**, Android versionCode 6, containing ARM64 and x86_64 native libraries. Changes are saved to GitHub; no PR/merge to main is recorded.
 
-## Laptop compatibility request — candidate 0.3.2
+## Laptop compatibility request — verified build 0.3.2
 
-Owner supplied Windows with Intel Core Ultra 7 after requesting APK/emulator links. Standard Windows Intel Android emulators need x86_64; the verified 0.3.1 phone APK is ARM64-only. The scoped 0.3.2 packaging change adds both architectures to the same APK, with native ELF/header verification and four regression checks. App features/API/schema behavior are unchanged. Feature development and phone automation remain on hold. See [Windows emulator steps](docs/WINDOWS_EMULATOR.md). Native build/architecture verification is pending; do not hand off the old ARM64 APK as Intel-compatible.
+Owner supplied Windows with Intel Core Ultra 7 after requesting APK/emulator links. Standard Windows Intel Android emulators need x86_64; the verified 0.3.1 phone APK is ARM64-only. The scoped 0.3.2 packaging change adds both architectures to the same APK, with native ELF/header verification and four regression checks. App features/API/schema behavior are unchanged. Feature development and phone automation remain on hold. See [Windows emulator steps](docs/WINDOWS_EMULATOR.md). Native compilation, signature and actual APK ABI/ELF checks passed in [run 43186145925](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925); 17 libraries per architecture verified. [Download 0.3.2](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925/artifacts/13928512623). Actual Windows-emulator installation/UI behavior remains pending.
 
 ## Stop / cloud-sync handover
 
 The owner paused physical-phone automation, returned to product planning, then explicitly said **Stop**. The subsequent instruction authorizes syncing current progress only. Resume development only when requested.
 
 - App source and documentation are saved on `codex/coach-foundation`; no merge to `main` is recorded.
-- Latest verified APK is 0.3.1, source 73805fa, run 43176931524. Native build/signature checks passed; installation and visible-notification acceptance on the phone are not confirmed.
+- The prior feedback APK is 0.3.1, source 73805fa, run 43176931524; the later scoped compatibility build is 0.3.2 as recorded above. Native build/signature checks passed; installation and visible-notification acceptance on the phone are not confirmed.
 - Database versions 001–004 are owner-confirmed installed. Do not repeat SQL setup.
 - Last local evidence: 79 automated checks, a full 30 browser flows and 21 focused checks after final wording changes. No new tests/builds were started for this sync.
 - Phone-control automation is **on hold**. The QA agent completed a read-only capability audit: no physical-phone connection exists. It did not pair with, control or modify the owner's phone. No test-phone purchase or debugging setup is required while paused.
