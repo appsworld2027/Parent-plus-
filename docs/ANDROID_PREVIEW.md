@@ -2,9 +2,9 @@
 
 ## Build/download links
 
-Current checkpoint: [run 43094369260](https://github.com/appsworld2027/Parent-plus-/actions/runs/43094369260) verified the live connection/security settings but failed before producing an APK. Do not interpret the source or workflow setup as an available installer. Its failed-step output is needed for the next CI correction while cloud GitHub API access remains blocked.
+Current checkpoint: version **0.2.1** built successfully in [run 43145465149](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149). [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972), extract the ZIP and install the APK as an update. The owner installed the earlier build and reports email confirmation/login. The 0.2.1 Android success-message repair still needs phone verification. See [the current pause checkpoint](../PROGRESS.md).
 
-The owner cannot change administrator/network settings; do not request those changes. Continue the GitHub-hosted build route using existing repository access. To supply missing diagnostic information, the owner can open the run link, click the red **build** item, expand the red failed step, and share a screenshot of its final error lines. No token, password, configuration change, or code interpretation is needed for that step.
+No owner admin/network changes or Expo authorization are required for this working preview route. The earlier SDK bootstrap and shared-queue build problems were repaired; do not ask for the old failed-step screenshots again.
 
 - [Android preview builds](https://github.com/appsworld2027/Parent-plus-/actions/workflows/android-preview.yml)
 - [Regular automated checks](https://github.com/appsworld2027/Parent-plus-/actions/workflows/checks.yml)

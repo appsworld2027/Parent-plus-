@@ -2,17 +2,13 @@
 
 Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
 
-Implementation has resumed at the owner's request. See [the saved progress checkpoint and journey chart](PROGRESS.md).
+Development is paused at the owner's request. See [the current progress checkpoint and journey chart](PROGRESS.md).
 
-## Current state
+Version 0.2.1 has a successful native Android build. The owner installed 0.2.0 and reports email confirmation/login. Version 0.2.1 repairs unsupported Android success-message accessibility props; device acceptance remains pending.
 
-Module 0 foundation: native component navigation, safe configuration checks, error boundary/recovery, sanitized in-memory diagnostic reports, and automated tests. Teaching screens remain labelled placeholders, not completed features.
+Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration 001 is confirmed deployed; migration 002 and roster device checks remain pending. Latest local checks: TypeScript, 51 automated tests and 16 browser tests passed.
 
-Module 1: the initial database migration has been applied by the owner and its version confirmed in the Supabase dashboard. PostgreSQL access-control tests run locally. Expo owner is configured as `appsworld2027`; build authorization is separate.
-
-Module 2: email sign-up/sign-in/recovery, secure native session storage, and academy onboarding are implemented and tested using simulated backend responses. Live email delivery, actual SDK operations, native deep links, and Android installation remain unverified. Follow [email setup](docs/AUTH_SETUP.md). Payments are not implemented.
-
-Module 3: students/guardian contacts, batch create/edit, additive enrolment, search, archive view, safe retries, and unsaved-form guards are implemented. [Migration 002](docs/ROSTER_SETUP.md) must be applied before real roster use. [Android preview automation](docs/ANDROID_PREVIEW.md) builds without Expo credentials; inspect the actual run outcome for artifact availability.
+Classes/attendance UI, observations, invoices/manual payments, gateway integration, actual-record dashboard and release/privacy/backup/monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
 
 ## Local development
 
