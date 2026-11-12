@@ -77,7 +77,7 @@ For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle ex
 - The owner can use the generated `supabase/setup_after_001.sql` bundle from `npm run prepare:owner-sql`. `node scripts/prepare-owner-sql.mjs --check` verifies it without editing files.
 - Preserve deployed migration history. Future behavior/schema changes need a new numbered migration, review of data preservation and corresponding database tests.
 - Database tests use disposable PGlite plus simulated Supabase auth roles. They do not inspect or mutate the real project. PGlite success must be followed by relevant real API/device acceptance.
-- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student`, `save_class_session` and `save_class_attendance_checked` are client function names after migrations 003/004. The old `save_attendance` and `save_class_attendance` become internal helpers; clients cannot bypass revision checks through it.
+- SQL RPC means a named database function called through the API. `create_academy`, `save_student`, `archive_student`, `save_class_session` and `save_class_attendance_checked` are client function names after migrations 003/004. The old `save_attendance` and `save_class_attendance` become internal helpers; clients cannot bypass revision/context checks through them.
 - Row Level Security (RLS) restricts rows an account may access. UI filters are convenience, not security. Privileged functions must validate ownership and use restricted execution/search-path privileges.
 - Current scope is one owned academy per account. Parent contacts do not create authenticated parent identities. Changing either assumption needs a product/data-model decision, not just a UI change.
 

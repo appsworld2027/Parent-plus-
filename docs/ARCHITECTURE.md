@@ -180,7 +180,7 @@ Clients cannot directly insert/update classes or call the old attendance functio
 
 ## 6. Current data relationships
 
-Relationships below describe migration 001 plus the prepared 002/003 changes. Deployments of 002/003 remain unconfirmed.
+Relationships below describe migration 001 plus the prepared 002/003/004 changes. Deployments of 002/003/004 remain unconfirmed.
 
 ```mermaid
 erDiagram
