@@ -2,7 +2,7 @@
 
 Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
 
-Development has resumed at the owner’s request. See [the current progress checkpoint and journey chart](PROGRESS.md).
+Development is stopped at the owner’s request. Current progress has been saved; resume only when requested. Physical-phone automation is also on hold. See [the current progress checkpoint and journey chart](PROGRESS.md).
 
 Version 0.3.1 has a successful native Android build with signature verification. The owner installed 0.2.0 and reports email confirmation/login. Version 0.2.1 repairs unsupported Android success-message accessibility props; device acceptance remains pending.
 

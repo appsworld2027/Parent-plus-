@@ -1,6 +1,6 @@
 # Current owner steps
 
-Development has resumed. The 0.3.1 feedback-fix APK build is verified; the owner has confirmed database versions 001–004 installed. Phone and real app/API acceptance remain pending.
+**Paused at the owner’s request. Nothing is required from the owner while paused.** The steps below are saved for a future requested resume. The 0.3.1 feedback-fix APK build is verified; the owner has confirmed database versions 001–004 installed. Phone and real app/API acceptance remain pending.
 
 Database update is complete; do not ask the owner to repeat the SQL.
 

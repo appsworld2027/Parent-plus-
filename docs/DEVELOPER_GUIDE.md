@@ -1,6 +1,6 @@
 # Developer handover and working agreement
 
-Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has resumed feature development. Work follows the current checkpoint and module acceptance gates.
+Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has stopped feature development and placed phone-control automation on hold. Read the current checkpoint before taking action; a sync request authorizes saving progress, not resuming implementation.
 
 ## 1. Read in this order
 
@@ -131,7 +131,7 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 
 - The owner cannot change administrator/network access. Existing Git transport and GitHub-hosted builds work; the Supabase dashboard remains the manual deployment route. Do not request repeat credentials or inaccessible admin changes.
 - Give direct dashboard/file links and short phone checks. The owner should not interpret code or debug stack traces. Ask only for evidence/actions unavailable through authorized tools.
-- Respect the latest owner pause/resume instruction; the owner has now requested a resume. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
+- Respect the latest owner pause/resume instruction; the latest instruction is Stop; only checkpoint syncing is currently authorized. Documentation work does not authorize payment activation, purchases, parent notifications or public release.
 - Source is on `codex/coach-foundation`; no PR/merge to main is recorded. Fetch/switch to the correct branch on another computer. Installed APKs require explicit updates.
 - Preview development signing is separate from production-key custody and Play publication. Build artifacts expire; regenerate a verified build if needed.
 - Keep diagnostic data separate from family content/financial audit records. Diagnostics now persist on the device on a best-effort basis with validated restoration, memory fallback and sign-out clearing. Native crash/remote reporting remains open; do not claim it is connected.

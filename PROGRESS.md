@@ -1,8 +1,21 @@
 # Parent Plus Coach — development checkpoint
 
-Date: 12 November 2026. Status: **resumed at the owner’s request**. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Version 0.3.1 fixes action feedback hidden by scrolling and passed its native build/signature check. Phone verification remains pending. No build monitor is active.
+Date: 12 November 2026. Status: **stopped at the owner’s request**. Only saving/syncing this checkpoint is authorized; no feature work or phone-control setup is running. Current milestone: persistent diagnostics, classes and attendance. Version 0.3.0 passed local checks and its final native APK build/signature verification. Owner screenshot now confirms migration versions 001–004 installed. Actual app/API and phone acceptance remain pending. Version 0.3.1 fixes action feedback hidden by scrolling and passed its native build/signature check. Phone verification remains pending. No build monitor is active.
 
 Branch: `codex/coach-foundation`. Latest verified APK source: `73805fa2c5bb60d77095b7ad19dc5ded8a7b2b53`. Latest verified APK: **0.3.1**, Android versionCode 5. Changes are saved to GitHub; no PR/merge to main is recorded.
+
+## Stop / cloud-sync handover
+
+The owner paused physical-phone automation, returned to product planning, then explicitly said **Stop**. The subsequent instruction authorizes syncing current progress only. Resume development only when requested.
+
+- App source and documentation are saved on `codex/coach-foundation`; no merge to `main` is recorded.
+- Latest verified APK is 0.3.1, source 73805fa, run 43176931524. Native build/signature checks passed; installation and visible-notification acceptance on the phone are not confirmed.
+- Database versions 001–004 are owner-confirmed installed. Do not repeat SQL setup.
+- Last local evidence: 79 automated checks, a full 30 browser flows and 21 focused checks after final wording changes. No new tests/builds were started for this sync.
+- Phone-control automation is **on hold**. The QA agent completed a read-only capability audit: no physical-phone connection exists. It did not pair with, control or modify the owner's phone. No test-phone purchase or debugging setup is required while paused.
+- No build monitor, active QA worker or unattended job is being maintained by this session. A repo sync does not create a background development service.
+- Next product module proposed: observations and durable drafts, followed by invoices/manual payments, gateway integration and release gates. These are pending; the recommendation is not a claim that they were implemented.
+- On an explicitly requested resume, first review pending 0.3.1 feedback and attendance acceptance. Keep the parent app deferred and phone-control automation on hold unless separately resumed.
 
 ## Current phone evidence and feedback repair
 
