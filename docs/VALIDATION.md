@@ -91,3 +91,11 @@ Owner screenshots confirm an interrupted secondary Android CLI download, before 
 The owner reports native app installation, confirmation email receipt and subsequent login. The owner also reports a crash after the in-app account-creation submission. Treat login as owner-reported, not independently observed. See ANDROID-001 in ISSUES.md.
 
 The new native accessibility contract check failed on two unsupported status props before the repair. After the repair: TypeScript passed, 51 automated tests passed across 7 files, and all 16 browser tests passed. Browser tests include signup/recovery success messages and batch/student-save success notices; they retain their ARIA status semantics. Device confirmation of the fix and the replacement APK build are pending.
+
+### Replacement APK verified in CI
+
+- Run [43145465149](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149) completed successfully at 2026-11-12T03:10:49.723Z for source `5c4c53be82e492b3faa3ec831376de57f720b7b6` (version 0.2.1 / versionCode 3). Its start record was at 03:02:32.423Z; elapsed approximately 8m17s. Proactively retrieved at 03:13:09Z.
+- [Replacement artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43145465149/artifacts/13911472972): development-signed ARM64 `com.parentplus.coach.preview`, 26,298,214 bytes. The pipeline ran APK signature verification before upload. SHA-256 `a8960174c6a0c9b228a100f1387297d25306898f04f07b5a7d29a5a3d59cdcc1`.
+- Real settings-only auth check passed: reachable, key accepted, email enabled, confirmation required, anonymous records blocked. It did not send mail or create users.
+- Remaining acceptance check: install as an update without clearing app data; use the existing confirmed account. Sign out if necessary, request one recovery email, and verify the confirmation message remains visible without app closure. This exercises the repaired success notice without duplicate registration. Phone confirmation is still pending.
+- Build monitoring ended on terminal success; no unattended monitor remains active.
