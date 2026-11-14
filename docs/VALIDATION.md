@@ -201,3 +201,9 @@ The agent verified the owner-authorized preview link works and checked the actua
 #### CI timing follow-up
 
 GitHub's full regression on `062aa74` passed 47/48 browser tests; the remaining flow found two Keep editing buttons while an earlier invoice confirmation was fading out. The shared invoice helper now waits for that confirmation to unmount, as the save/review sequence requires. This changes test sequencing only and retains the navigation/busy assertions. Workflow YAML parsing, diff checks and all nine billing browser flows pass before this follow-up is committed.
+
+#### Security and dependency follow-up
+
+At the owner's explicit request for thorough error/leakage checks, a tracked-source credential-pattern scan found no secret/private-key patterns in 126 files. Safe zero-row anonymous API probes to all 12 existing record tables returned401; relations introduced by005/006 returned404. No private rows were fetched. The new [security matrix](SECURITY_VALIDATION.md) records scope and remaining real-account/native gates.
+
+Full npm audit found one moderate underlying minimatch DoS advisory through Expo fingerprint (three package entries; no high/critical). A scoped override to minimatch11.0.1 preserves Expo58. Actual Android fingerprint generation succeeds before/after with the same hash and22 sources; ignore/negation/dotfile checks pass. The testing agent independently compared6,028 matcher results across44 patterns and137 paths, all equivalent. TypeScript and111 automated checks pass after installation; the new full audit reports zero known vulnerabilities. Native and Vercel build results for this final dependency source are checked separately; earlier cancelled APK attempts are not successes.

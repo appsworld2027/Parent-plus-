@@ -152,3 +152,8 @@ Private observation code, transactional invariants and recovery paths are mapped
 ## Module 6 entry points
 
 [Fees](FEES.md) maps the immutable invoice/receipt ledger, four trusted write functions, durable exact-request recovery, correction rules and acceptance checks. Read it before editing `src/fees/` or migration 006. Pending fee recovery records intentionally survive sign-out, scoped to the same account/academy; do not add them to ordinary draft cleanup without a reconciliation design. Reusing a request with changed data must fail. Only manual receipts can use the manual correction operation. Keep test and real received totals separate. New checkouts still need the Git identity verification above for Vercel.
+
+
+## Dependency security override
+
+`package.json` scopes minimatch11.0.1 to Expo fingerprint to address GHSA-g3hv-75wg-m249 without downgrading Expo58. Before updating/removing it, read [security verification](SECURITY_VALIDATION.md), regenerate the Android fingerprint, and run the dependency/build regressions. Fingerprint's public matcher API and project hash were checked before accepting this override. Keep the lockfile committed and use `npm ci` in CI.

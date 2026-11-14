@@ -130,3 +130,10 @@ Daily product review on 12 November 2026: coach-first scope and PRD requirements
 - Expo account authorization is unnecessary for the working GitHub preview route. Production signing/Play distribution remains separate.
 - No approved merchant configuration, deployed gateway backend, live payments or production SMTP is confirmed. Backup/restore and native crash monitoring remain open.
 - Use evidence-backed wording: distinguish source fixes, automated checks, CI success, owner reports and device verification. Check our code/configuration before attributing failures externally.
+
+
+### 14 November hosted and security follow-up
+
+The testing agent completed all **44 applicable browser flows on Vercel**, plus real production phone/desktop validation, JS loading, direct recovery-route and settings-only Supabase checks. Four deliberate development-only preview/error-injection flows are covered locally and correctly absent in hosted production. [Hosted report](docs/VERCEL_QA.md) records source/bundle identity and limits. The agent found and drove repairs for memory-only fee recovery, legacy TEST labels and a missing Vercel recovery-route fallback. Real API zero-row probes confirm all12 existing record tables deny anonymous access and005/006 relations are not available yet. Real authenticated writes and two-account acceptance remain open.
+
+A scoped build-tool dependency security repair passes TypeScript,111 tests, actual fingerprint generation and6,028 independent matcher comparisons; full npm audit now reports zero known vulnerabilities. See [security verification](docs/SECURITY_VALIDATION.md). Final CI/Vercel/native results for this dependency checkpoint will be recorded when terminal. No real records, emails or money were created by the hosted tests.
