@@ -222,3 +222,8 @@ Run43625002448 completed successfully (about8m15s), exact sourcecdd321e, report1
 ### Owner-reported005 installation and independent API check
 
 After an initial editor42601 error, the owner reports Success, no rows returned. Read-only live probes changed from404 to401/42501 for observation_versions; a zero-row observations query selecting revision/audience/updated_at/updated_by/recorded_at also returns401. No private record body was fetched. Fee balances remain404/PGRST205. The original observation database suite was rerun:8 tests pass. Internal deployed configuration cannot be read with the public client key, so the owner is supplied the read-only verifier in VERIFY_OBSERVATIONS.md. Its8 correct-state checks and5 unsafe-fixture detections were verified locally. Live internal verification and authenticated persistence/isolation remain pending; no successful write is inferred from a fixture test.
+
+
+###005 live configuration verification completed
+
+The owner supplied live screenshots showing all three RLS flags=true, exactly one authenticated owner-only policy per table, and all five remaining checks=true (migration registration, five required columns, no direct authenticated/anonymous writes, protected function settings/grants, and installed-body match). Combined with independent zero-row anonymous401 probes, the005 installation/security configuration is verified. Actual authenticated note persistence, two-account API isolation and native acceptance remain separate.006 is the next pending installation; do not repeat005 or earlier updates.
