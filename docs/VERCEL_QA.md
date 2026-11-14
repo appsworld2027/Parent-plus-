@@ -2,7 +2,7 @@
 
 App version: **0.5.0**. Project: `appsworld2027/parent-plus-varcel`.
 
-[Hosted branch app](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app) · [verified deployment](https://vercel.com/appsworld2027/parent-plus-varcel/9rjTrmYM5LMjZx2xh2jyo13xqxqT) · source `4ce4e26ba77cf63522b36d08db2f48105f845a18`.
+[Hosted branch app](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app) · [verified deployment](https://vercel.com/appsworld2027/parent-plus-varcel/C8LDT2CA4kWLxe7PPPMWxapmnLYS) · source `cdd321e95f6e5dee18b209c0fc3e87461d6a8ac1`.
 
 The preview remains protected by Vercel Authentication. The owner supplied an authorized share link for testing; its access token and temporary browser state are not stored in this repository. Deployment protection was not disabled.
 
@@ -23,7 +23,7 @@ The nine fee flows include partial/paid balances, fixed invoice amounts, exact-r
 
 The four local `foundation.spec.ts` flows intentionally require development-only preview/failure controls. They were excluded from the production-hosted run; separate hosted checks confirmed those controls are absent as intended. They are covered by the local development regression, not claimed as production-hosted passes.
 
-The runtime was tested through deployment source `3f59cd61a2627167e0100c703114e2649de1cbf1`; the later workflow/documentation deployment `4ce4e26` was rechecked and serves the identical JavaScript bundle. SHA-256: `584cccb23c3f32ec4add400032ed0249f15103f7309720ac8ed128cb3f5c6813`.
+The runtime was tested through deployment source `3f59cd61a2627167e0100c703114e2649de1cbf1`; later workflow/documentation source `4ce4e26` and dependency-security source `cdd321e` were rechecked and serve the identical JavaScript bundle. SHA-256: `584cccb23c3f32ec4add400032ed0249f15103f7309720ac8ed128cb3f5c6813`. Final bundle, root/recovery routes, static-asset loading and phone/desktop production smoke were reverified at approximately **18:10:55 UTC** on `cdd321e`; all passed with zero page errors and zero real Supabase writes.
 
 ## Real hosted and backend checks
 

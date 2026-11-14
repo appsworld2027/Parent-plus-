@@ -1,13 +1,17 @@
 # Current owner steps
 
-**Development has resumed. The new build is ready; complete these steps when convenient.** Set up the laptop emulator when convenient; physical-phone automation remains on hold. The 0.4.0 phone/Windows-emulator compatible APK build is verified; the owner has confirmed database versions 001–004 installed. Phone and real app/API acceptance remain pending.
+Version **0.5.0** is deployed on [your Vercel preview](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app). The testing agent passed all 44 applicable hosted browser flows using fictional records, plus real sign-in-screen/connectivity checks. See [the short testing report](VERCEL_QA.md). The [verified0.5.0 Android APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43625002448/artifacts/14126395027) is ready; download/extract the ZIP and update the preview app when convenient, preserving its data. It supports both ARM64 phones and x86_64 Windows emulators. [Build details](../PROGRESS.md).
 
-Existing database updates 001–004 are complete; do not repeat them. The new observations module requires only migration 005, prepared with [short direct-link instructions](OBSERVATIONS.md). Its deployment has not yet been confirmed.
+The live database is missing the new observation and fee updates. Existing updates **001–004 are already complete; do not repeat them or reset the project**. Real saves for the new features cannot be accepted until the missing updates are applied and checked.
 
-1. For laptop checks, follow [Windows Intel emulator setup](WINDOWS_EMULATOR.md). For the phone, install the [0.4.0 APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808/artifacts/13948107259), preserving existing app data. Extract the ZIP and tap `ParentPlus-Coach-Preview.apk` → Update. This includes the earlier email repair plus fixed visible action notifications; no separate 0.2.1 installation is needed.
-2. First check one result: Students → Batches → edit the existing test batch → Save batch. Expect a green fixed notification saying Batch saved. Dismiss it, then continue the guided attendance save/reopen check. No additional SQL is needed.
-3. With guidance, verify one recovery-email success message stays open, then complete recovery/password update, academy setup, session restart/sign-out and roster tests. Use the existing account; no new registration is needed.
-4. Complete the one-time [observations update and short test](OBSERVATIONS.md).
-5. Test classes/attendance with fictional records using [the phone checklist](CLASS_SETUP.md). Save to the class before sign-out because device-only drafts are cleared.
+## First step now
 
-The initial migration and email settings were already confirmed. No Expo authorization, admin/network changes or new tokens are needed for this working preview route. Never share passwords or login codes. See [current progress](../PROGRESS.md).
+Open your existing [Supabase SQL editor](https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql/new). Tell your coding partner when it is open. You will be guided one step at a time; no password or private API key needs to be shared.
+
+The prepared sequence is **005 observations**, followed by **006 fees**. Use only the missing individual updates, with the coding partner's guidance. The generated older all-updates bundle is not needed for your current 001–004 setup. The exact files and detailed acceptance steps are in [observations](OBSERVATIONS.md) and [fees](FEES.md).
+
+After setup, use fictional records for real persistence and access tests. The fee check creates a ₹2,500 invoice, records ₹1,000 manually, reopens to check ₹1,500 outstanding, then checks the remaining balance and correction history. These actions record test bookkeeping; they do not move money. Do not load real children's records until the outstanding live access checks pass.
+
+Existing login recovery, session restart/sign-out, roster/class/attendance and new observations/fees still need real API/native acceptance. The app's manual records are not gateway verified. Payment links, online collection, refunds and parent delivery are not enabled.
+
+Windows-emulator setup can wait. Physical-phone automation remains on hold. No new registration, billing plan or repeat initial database setup is required merely to open the hosted preview.
