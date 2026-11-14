@@ -157,3 +157,9 @@ Private observation code, transactional invariants and recovery paths are mapped
 ## Dependency security override
 
 `package.json` scopes minimatch11.0.1 to Expo fingerprint to address GHSA-g3hv-75wg-m249 without downgrading Expo58. Before updating/removing it, read [security verification](SECURITY_VALIDATION.md), regenerate the Android fingerprint, and run the dependency/build regressions. Fingerprint's public matcher API and project hash were checked before accepting this override. Keep the lockfile committed and use `npm ci` in CI.
+
+## 0.6.0 coach workflow handover
+
+Read [workflow review](COACH_WORKFLOW_REVIEW.md) and PRD1.1 before changing the next module. Student profile/batch membership and monthly fee visibility take priority over gateway work. `src/roster/RosterScreen.tsx` now owns profile, batch roster and inline editor routes; `src/fees/summary.ts` defines monthly totals; `src/photos/` owns picker, byte validation, private uploads, optimistic attachment and signed previews. `tests/coach-workflows-database.test.ts` applies007/008 twice against PostgreSQL with emulated Storage metadata/RLS. `e2e/coach-workflows.spec.ts` covers both roster directions, direct receipts/retry, profiles and both photo journeys. These fixtures are not live Storage acceptance.
+
+The existing project has001–006 installed. Only [combined007/008](UPDATE_007_008.md) is needed; it starts with BEGIN and returns two installed markers. Do not send/repeat the full setup bundle for this project. Old backends remain readable through the legacy student-column fallback, but new writes require007/008. No database update has been applied by the coding workspace. The native build checks merged APK permissions for absent camera/microphone access after adding the library picker. Signed photo previews expire after60seconds; interrupted orphan cleanup is a documented remaining limit.

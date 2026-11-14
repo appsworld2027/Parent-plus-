@@ -51,6 +51,13 @@ if process.wait() != 0:
     raise SystemExit(process.returncode)
 apk = root / 'android/app/build/outputs/apk/release/app-release.apk'
 subprocess.run([str(sdk / 'build-tools/37.0.0/apksigner'), 'verify', '--verbose', str(apk)], check=True)
+# Photo selection must not introduce camera or microphone access. Inspect the
+# built manifest, including permissions merged from dependency manifests.
+permissions_dump = subprocess.check_output([str(sdk / 'build-tools/37.0.0/aapt2'), 'dump', 'permissions', str(apk)], text=True)
+if 'android.permission.INTERNET' not in permissions_dump:
+    raise RuntimeError('APK permissions could not be verified')
+if any(permission in permissions_dump for permission in ['android.permission.CAMERA', 'android.permission.RECORD_AUDIO']):
+    raise RuntimeError('Unexpected camera or microphone permission in preview APK')
 try:
     native_libraries = verify_apk_architectures(apk, architectures)
 except Exception as error:
@@ -60,6 +67,6 @@ except Exception as error:
 output = root / 'artifacts'; output.mkdir(exist_ok=True)
 target = output / 'ParentPlus-Coach-Preview.apk'; shutil.copy2(apk, target)
 report = {'sourceSha': revision, 'package': 'com.parentplus.coach.preview', 'architecture': ','.join(architectures), 'architectures': list(architectures), 'nativeLibraries': native_libraries,
-          'signing': 'development', 'bytes': target.stat().st_size, 'sha256': hashlib.file_digest(target.open('rb'), 'sha256').hexdigest()}
+          'signing': 'development', 'cameraMicrophoneAbsent': True, 'bytes': target.stat().st_size, 'sha256': hashlib.file_digest(target.open('rb'), 'sha256').hexdigest()}
 (output / 'android-build.json').write_text(json.dumps(report, indent=2))
 print(json.dumps(report))

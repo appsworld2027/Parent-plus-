@@ -63,7 +63,9 @@ export async function getInvoice(academy: string, id: string): Promise<FeeDetail
 export async function executeFee(academy: string, operation: FeeOperation) {
   if (!supabase) throw new Error('Client unavailable');
   const o = operation;
-  const result = o.kind === 'invoice' ? await supabase.rpc('create_fee_invoice', { target_academy: academy, target_invoice: o.id,
+  const result = o.kind === 'collection' ? await supabase.rpc('collect_student_fee', { target_academy: academy, target_enrolment: o.enrolment, month_start: o.month,
+    expected_invoice: o.invoice, expected_fee: o.fee, payment_request: o.id, payment_amount: o.amount, payment_date: o.date, payment_method: o.method, payment_reference: o.reference })
+    : o.kind === 'invoice' ? await supabase.rpc('create_fee_invoice', { target_academy: academy, target_invoice: o.id,
     target_enrolment: o.enrolment, month_start: o.month, due_date: o.due, expected_fee_paise: o.amount })
     : o.kind === 'payment' ? await supabase.rpc('record_manual_fee_payment', { target_academy: academy, target_invoice: o.invoice,
       payment_request: o.id, payment_amount: o.amount, payment_date: o.date, payment_method: o.method, payment_reference: o.reference })
@@ -72,5 +74,18 @@ export async function executeFee(academy: string, operation: FeeOperation) {
     : await supabase.rpc('void_fee_invoice', { target_academy: academy, target_invoice: o.invoice, correction_reason: o.reason });
   if (result.error) throw result.error;
   if (typeof result.data !== 'string') throw new Error('Save result not confirmed');
-  return o.kind === 'invoice' ? o.id : o.invoice;
+  return o.kind === 'collection' ? result.data : o.kind === 'invoice' ? o.id : o.invoice;
+}
+
+export async function allMonthInvoices(academy: string, month: string): Promise<Invoice[]> {
+  const all: Invoice[] = [];
+  let cursor: Pick<Invoice,'id'|'created_at'> | undefined;
+  for (;;) {
+    const page = await listInvoices(academy,month,cursor);
+    all.push(...page.invoices);
+    if (!page.more) return all;
+    const next=page.invoices.at(-1)!;
+    if (next.id===cursor?.id) throw new Error('Invoice pagination did not advance');
+    cursor=next;
+  }
 }

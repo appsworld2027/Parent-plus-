@@ -68,19 +68,22 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/rpc/create_academy')) {
         if (state.failCreate) { status = 500; data = { message: 'Internal private database text' }; }
         else { state.academy = true; data = { id: 'academy-test' }; }
-      } else if (url.pathname.endsWith('/rpc/save_student')) {
+      } else if ((url.pathname.endsWith('/rpc/save_student') || url.pathname.endsWith('/rpc/save_student_profile'))) {
         if (state.failStudent) { status = 500; data = { message: 'Fictional private server error' }; }
         else {
-          const student = { id: payload.target_student, name: payload.student_name, age_years: payload.age_years, archived_at: null };
+          const student = { id: payload.target_student, name: payload.student_name, age_years: payload.age_years, archived_at: null, proficiency_level: payload.student_level ?? 'unassessed' };
           const index = state.roster.students.findIndex(s => s.id === student.id);
           if (index < 0) state.roster.students.push(student); else state.roster.students[index] = student;
           state.roster.contacts = state.roster.contacts.filter(c => c.student_id !== student.id);
           if (payload.guardian_name) state.roster.contacts.push({ student_id: student.id, name: payload.guardian_name, email: payload.guardian_email || null, phone: payload.guardian_phone || null });
           for (const batch of payload.batch_ids) if (!state.roster.enrolments.some(e => e.student_id === student.id && e.batch_id === batch))
-            state.roster.enrolments.push({ student_id: student.id, batch_id: batch, starts_on: '2026-11-12', ends_on: null });
+            state.roster.enrolments.push({ id: crypto.randomUUID(), student_id: student.id, batch_id: batch, starts_on: '2026-11-12', ends_on: null });
           persistRoster(); data = student.id;
           if (state.loseStudentResponse) { state.loseStudentResponse = false; throw new TypeError('Simulated response lost after commit'); }
         }
+      } else if (url.pathname.endsWith('/rpc/add_batch_students')) {
+        for(const id of payload.student_ids) if(!state.roster.enrolments.some(e=>e.batch_id===payload.target_batch&&e.student_id===id)) state.roster.enrolments.push({id:crypto.randomUUID(),student_id:id,batch_id:payload.target_batch,starts_on:today,ends_on:null});
+        persistRoster();data=payload.student_ids.length;
       } else if (url.pathname.endsWith('/rpc/archive_student')) {
         if (state.failArchive) return new Response(JSON.stringify({ message: 'Fictional private archive failure' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
         const student = state.roster.students.find(s => s.id === payload.target_student);
@@ -174,7 +177,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (index < 0) state.roster.batches.push(batch); else state.roster.batches[index] = batch;
           persistRoster();
         }
-        data = state.roster.batches;
+        data = state.roster.batches.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       } else { status = 400; data = { message: 'Unexpected fixture request' }; }
       return new Response(status === 204 ? null : JSON.stringify(data), { status,
         headers: { 'Content-Type': 'application/json', 'X-Supabase-Api-Version': '2024-01-01' } });

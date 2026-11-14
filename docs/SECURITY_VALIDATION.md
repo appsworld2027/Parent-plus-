@@ -18,3 +18,7 @@ Before production acceptance, apply only the missing database updates in order, 
 
 
 After hosted testing, the agent removed17 temporary access, browser-state, script and raw-response files. Its cleanup scan found no remaining share capability in its QA directory or isolated compatibility-test install and no capability/private browser state in tracked source. Sanitized test reports and app screenshots were retained. This cleanup does not claim to revoke the owner's Vercel Share link.
+
+## 0.6.0 private-photo and workflow delta
+
+007/008 tests emulate PostgreSQL Storage metadata/RLS with separate academy owners and anonymous callers. They cover private bucket configuration, valid owned paths, foreign/anonymous denial, revoked direct metadata writes, immutable objects, expected-path conflicts and an object-id foreign key that prevents deleting a referenced image. Receipt creation/payment is atomic and retry-safe; membership joins preserve profile/contact fields. Client checks selected image signatures/size and avoids logging photo content/URLs. Preview URLs last60seconds and may remain usable/cached briefly after sign-out. Interrupted unreferenced uploads have no automatic retention job yet. No real Storage byte upload/download or authenticated live two-account acceptance is claimed. Native configuration blocks camera/microphone permissions; the APK build now inspects the merged manifest as an additional gate.

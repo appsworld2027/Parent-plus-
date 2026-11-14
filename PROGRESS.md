@@ -1,5 +1,14 @@
 # Parent Plus Coach — development checkpoint
 
+## Coach workflow correction — candidate 0.6.0
+
+The owner has superseded the invoice-first presentation with a teaching-group workflow. Candidate0.6.0 (Android versionCode9) adds clickable student profiles showing age, coach-assessed proficiency, guardian and batches; grouped/spaced entry forms; batch rosters; existing-student selection and new-student creation inside a batch; inline batch creation during student entry; and membership-only joins from either direction. Fees now opens with monthly distinct-student, collected, pending and expected totals, then batch/student drilldown and direct manual receipt recording. The existing immutable ledger and correction history remain secondary. Student profile and observation photos are both implemented with private Storage policies, short-lived previews and protected metadata. See [workflow review](docs/COACH_WORKFLOW_REVIEW.md), [PRD](PRD.md) and the three fictional screenshots in docs/images/*-060.png.
+
+Local checks before publication: full earlier browser regression53/53, followed by the new direct-receipt restart/retry flow and12 focused roster/workflow flows including the latest profile changes. TypeScript and all136 automated tests across17 files pass. Database and export checks are recorded in [validation](docs/VALIDATION.md). Hosted/native0.6.0 checks are pending publication; the verified0.5.0 links below are historical. New migrations007/008 are prepared, not installed. Existing001–006 must not be repeated. [One combined missing-updates script](docs/UPDATE_007_008.md) includes profile fields, membership/direct-fee operations and private photos in one transaction. Actual authenticated API/Storage byte operations and two-account acceptance remain separate from local emulation and hosted fixture tests.
+
+The owner requests economical testing and immediate notification of an actual workspace disconnection. Commands are responding. A reported ChatGPT indicator fluctuation was checked against connected/running environment status; no runtime disconnection or cause was established.
+
+
 ## Module 6 build — 14 November 2026
 
 Development is active at the owner's request. Candidate **0.5.0** (Android versionCode 8) adds monthly invoices and manual payment records under FEE-01. [Fees workflow and setup](docs/FEES.md) covers immutable fee/name snapshots, full-month enrolment eligibility without automatic proration, due dates, derived unpaid/partial/paid/overdue states, manual receipts, attributed reversal/void history and replacement invoices. Unknown write outcomes retain one exact request in account/academy-scoped device storage for retry; failed storage prevents the write. Test gateway totals stay separate from real balances. No online collection, links, refunds, parent delivery or phone-control automation is enabled.

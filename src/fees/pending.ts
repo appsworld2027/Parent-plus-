@@ -12,6 +12,9 @@ export function parsePending(raw: string | null, owner: string, academy: string)
   let operation: FeeOperation;
   if (o.kind === 'invoice' && identifier(o.enrolment) && validDay(o.month) && o.month.endsWith('-01') && validDay(o.due) && money(o.amount)) {
     operation = { kind: 'invoice', id: o.id, enrolment: o.enrolment, month: o.month, due: o.due, amount: o.amount };
+  } else if (o.kind === 'collection' && identifier(o.enrolment) && (o.invoice === null || identifier(o.invoice)) && validDay(o.month) && o.month.endsWith('-01') && money(o.fee) && money(o.amount) && validDay(o.date)
+    && ['cash', 'bank', 'upi', 'other'].includes(o.method) && typeof o.reference === 'string' && o.reference.length <= 120) {
+    operation = { kind: 'collection', id: o.id, enrolment: o.enrolment, month: o.month, invoice: o.invoice, fee: o.fee, amount: o.amount, date: o.date, method: o.method, reference: o.reference };
   } else if (o.kind === 'payment' && identifier(o.invoice) && money(o.amount) && validDay(o.date)
     && ['cash', 'bank', 'upi', 'other'].includes(o.method) && typeof o.reference === 'string' && o.reference.length <= 120) {
     operation = { kind: 'payment', id: o.id, invoice: o.invoice, amount: o.amount, date: o.date, method: o.method, reference: o.reference };

@@ -3,9 +3,11 @@ import { login } from './support/backend';
 import { feesBackend } from './support/feesBackend';
 async function setup(page: Page) {
   await feesBackend(page); await login(page); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
-  await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toBeEnabled();
+  await expect(page.getByRole('heading',{ name: 'Fees overview',exact: true })).toBeVisible();
+  await expect(page.getByRole('button',{ name: 'Refresh fees',exact: true })).toBeEnabled();
 }
 async function issue(page: Page) {
+  if(await page.getByRole('button',{name:'Create invoice',exact:true}).count()===0) await page.getByRole('button',{name:'Invoice history and corrections',exact:true}).click();
   await page.getByRole('button',{ name: 'Create invoice',exact: true }).click();
   await page.getByRole('button',{ name: 'Fictional Ria · Fictional Clay Class · ₹2,500',exact: true }).click();
   await page.getByRole('button',{ name: 'Review invoice',exact: true }).click();
@@ -26,13 +28,14 @@ test('invoice and manual payments persist, show partial/paid balances, retain fe
   await expect(page.getByText('₹1,000 · Manual record',{ exact: true })).toBeVisible();
   await page.evaluate(() => { window.__coachFixture.roster.batches[0].monthly_fee_paise=300000; });
   await page.getByRole('button',{ name: 'Refresh invoice',exact: true }).click();
-  await expect(page.getByText(/Invoice: ₹2,500/)).toBeVisible();
+  await expect(page.getByText(/Monthly fee: ₹2,500/)).toBeVisible();
   await enterPayment(page,'1500'); await page.getByRole('button',{ name: 'Confirm fee save',exact: true }).click();
   await expect(page.getByText('Outstanding: ₹0',{ exact: true })).toBeVisible();
   await expect(page.getByRole('button',{ name: 'Record manual payment',exact: true })).toHaveCount(0);
   await expect(page.getByRole('button',{ name: 'Confirm fee save',exact: true })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('fees-paid.png'),fullPage: true });
   await page.reload(); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
+  await page.getByRole('button',{name:'Invoice history and corrections',exact:true}).click();
   await page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true }).click();
   await expect(page.getByText('Outstanding: ₹0',{ exact: true })).toBeVisible();
 });
@@ -63,7 +66,7 @@ test('manual correction retains original history, then unpaid invoice can be voi
   await page.getByRole('button',{ name: 'Review correction',exact: true }).click();
   await page.getByRole('button',{ name: 'Confirm fee save',exact: true }).click();
   await expect(page.getByText('Voided invoice',{ exact: true })).toBeVisible();
-  await page.getByRole('button',{ name: 'Back to invoices',exact: true }).click();
+  await page.getByRole('button',{ name: 'Back to fees',exact: true }).click();
   await issue(page); expect(await page.evaluate(() => window.__feeFixture.invoices.length)).toBe(2);
 });
 test('validation and navigation guards preserve entries; busy save blocks leaving and duplicate taps', async ({ page }) => {
@@ -88,7 +91,7 @@ test('validation and navigation guards preserve entries; busy save blocks leavin
 test('missing fees update is actionable and never looks like an empty successful list', async ({ page }) => {
   await feesBackend(page,{ missing: true }); await login(page); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('fees database update is needed');
-  await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toBeDisabled();
+  await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toHaveCount(0);
   await expect(page.getByText('No invoices for this billing month.',{ exact: true })).toHaveCount(0);
 });
 test('device storage failure sends no payment; retry and changed-balance rejection retain the editable form', async ({ page }) => {
@@ -107,6 +110,7 @@ test('device storage failure sends no payment; retry and changed-balance rejecti
   await page.getByRole('button',{ name: 'Keep editing',exact: true }).click();
   await expect(page.getByRole('button',{ name: 'Retry pending fee save',exact: true })).toBeEnabled();
   await page.reload(); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
+  await page.getByRole('button',{name:'Invoice history and corrections',exact:true}).click();
   await page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true }).click();
   await enterPayment(page,'2500');
   await page.evaluate(() => {
@@ -124,14 +128,14 @@ test('invoice pagination retains equal timestamps even when another device inser
     const base=window.__feeFixture.invoices[0];
     window.__feeFixture.invoices=Array.from({ length: 51 },(_,index) => ({ ...base,id: `20000000-0000-0000-0000-${String(index).padStart(12,'0')}`,created_at: '2026-11-14T10:00:00.000Z' }));
   });
-  await page.getByRole('button',{ name: 'Back to invoices',exact: true }).click();
-  await expect(page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true })).toHaveCount(50);
+  await page.getByRole('button',{ name: 'Back to fees',exact: true }).click();
+  await expect(page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true })).toHaveCount(51);
   await page.evaluate(() => {
     const base=window.__feeFixture.invoices[0];
     window.__feeFixture.invoices.push({ ...base,id: '30000000-0000-0000-0000-000000000099',created_at: '2026-11-14T11:00:00.000Z' });
   });
-  await page.getByRole('button',{ name: 'Load more invoices',exact: true }).click();
-  await expect(page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true })).toHaveCount(51);
+  await page.getByRole('button',{ name: 'Refresh fees',exact: true }).click();
+  await expect(page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true })).toHaveCount(52);
   await expect(page.getByRole('button',{ name: 'Load more invoices',exact: true })).toHaveCount(0);
 });
 test('unreadable recovery record blocks new fee writes instead of silently losing its retry identity', async ({ page }) => {
@@ -139,7 +143,7 @@ test('unreadable recovery record blocks new fee writes instead of silently losin
   await page.evaluate(() => sessionStorage.setItem('parentplus.coach.fee-pending.v1.00000000-0000-0000-0000-000000000001.academy-test','not-json'));
   await page.reload(); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('pending fee save on this device could not be read');
-  await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toBeDisabled();
+  await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => window.__feeFixture.writes)).toBe(0);
 });
 test('preserved manual and gateway test receipts are labelled TEST and excluded from real outstanding', async ({ page }) => {

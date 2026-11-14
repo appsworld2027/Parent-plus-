@@ -9,7 +9,8 @@ import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { billingOptions, invoiceStatus, operationSummary, paymentAmount, validDay, validMonth } from './model';
 import type { FeeContext, FeeDetail, FeeOperation, PendingFee } from './model';
 import { createPendingFees } from './pending';
-import { executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext } from './service';
+import { feeOverview, type StudentFee } from './summary';
+import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext } from './service';
 
 const pendingFees = createPendingFees(deviceStorage);
 function Button({ label, onPress, disabled = false, soft = false }: { label: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
@@ -31,10 +32,15 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [context, setContext] = useState<FeeContext | null>(null);
   const [list, setList] = useState<Awaited<ReturnType<typeof listInvoices>> | null>(null);
   const [detail, setDetail] = useState<FeeDetail | null>(null);
-  const [view, setView] = useState<'list' | 'create' | 'detail'>('list');
+  const [view, setView] = useState<'list' | 'create' | 'detail' | 'collect'>('list');
   const [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false), [discard, setDiscard] = useState(false);
   const [enrolment, setEnrolment] = useState(''), [due, setDue] = useState(`${month}-10`);
+  const [batchView, setBatchView] = useState<string | null>(null);
+  const [advanced, setAdvanced] = useState(false);
+  const [feeSearch, setFeeSearch] = useState('');
+  const [feeFilter, setFeeFilter] = useState<'all'|'pending'|'paid'>('all');
+  const [collectTarget, setCollectTarget] = useState<StudentFee | null>(null);
   const [form, setForm] = useState<'payment' | 'void' | 'reverse' | null>(null);
   const [amount, setAmount] = useState(''), [date, setDate] = useState(today);
   const [method, setMethod] = useState<'cash' | 'bank' | 'upi' | 'other'>('cash');
@@ -48,13 +54,15 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const disabled = busy || loading || storageBlocked || !!pending;
   const choices = context ? billingOptions(context, month) : [];
   const selected = choices.find(item => item.id === enrolment);
+  const overview = context && list ? feeOverview(context,list.invoices,filterMonth) : null;
+  const selectedBatch = overview?.batches.find(batch => batch.id === batchView);
 
   const reload = useCallback(async (targetMonth: string) => {
     const generation = ++version.current;
     setLoading(true); setList(null);
     try {
-      const [data, invoices] = await Promise.all([loadFeeContext(academy.id), listInvoices(academy.id, targetMonth)]);
-      if (alive.current && generation === version.current) { setContext(data); setList(invoices); return true; }
+      const [data, invoices] = await Promise.all([loadFeeContext(academy.id), allMonthInvoices(academy.id, targetMonth)]);
+      if (alive.current && generation === version.current) { setContext(data); setList({ invoices, more: false }); return true; }
     } catch (failure) { if (alive.current && generation === version.current) error(feeFailure(failure, 'Fees could not be loaded. Check your connection and retry.')); }
     finally { if (alive.current && generation === version.current) setLoading(false); }
     return false;
@@ -97,7 +105,12 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   }
   function review() {
     error(''); Keyboard.dismiss();
-    if (view === 'create') {
+    if (view === 'collect' && collectTarget) {
+      const paise=paymentAmount(amount,collectTarget.pending);
+      if(paise===null || !validDay(date) || date>today){error('Enter a positive amount within the pending fee and a valid received date.');return;}
+      setConfirmation({kind:'collection',id:randomUUID(),enrolment:collectTarget.enrolment,month:`${filterMonth}-01`,invoice:collectTarget.invoice?.id??null,
+        fee:collectTarget.expected,amount:paise,date,method,reference:reference.trim()});
+    } else if (view === 'create') {
       if (!validMonth(month) || !selected || !selected.id || selected.amount < 1 || !validDay(due)) {
         error('Choose a student and batch with a positive monthly fee. Enter the billing month as YYYY-MM and due date as YYYY-MM-DD.'); return;
       }
@@ -133,7 +146,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
       setPending(null); setPendingDurable(false); setDirty(false); setForm(null); setDetail(null);
       const o = snapshot.operation;
       notice(o.kind === 'invoice' ? 'Invoice created. Its amount is fixed. No payment request was sent.'
-        : o.kind === 'payment' ? 'Manual payment recorded. This app did not move money or verify a gateway payment.'
+        : (o.kind === 'payment' || o.kind === 'collection') ? 'Manual payment recorded. This app did not move money or verify a gateway payment.'
         : o.kind === 'reverse' ? 'Manual record reversed. The original entry and correction remain in history. No refund was made.'
         : 'Invoice voided. Its original details and reason remain in history.');
       setView('detail');
@@ -164,8 +177,8 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const invoice = detail?.invoice;
   return <View style={s.root}>
     <Text style={s.kicker}>FEES, WITH A CLEAR RECORD</Text>
-    <Text accessibilityRole="header" style={s.heading}>{view === 'create' ? 'Create an invoice' : view === 'detail' ? 'Invoice details' : 'Your invoices'}</Text>
-    <Text style={s.body}>Record invoices and payments received outside this app. Online collection and payment links are not enabled.</Text>
+    <Text accessibilityRole="header" style={s.heading}>{view === 'create' ? 'Create an invoice' : view === 'detail' ? 'Fee details' : view === 'collect' ? 'Record fee received' : selectedBatch ? selectedBatch.name : 'Fees overview'}</Text>
+    <Text style={s.body}>Your monthly fees at a glance. Open a batch to see each student’s fee and record payments received.</Text>
     {loading && <ActivityIndicator accessibilityLabel="Loading fees" color="#1F6F6B" />}
     {storageBlocked && <Button label="Retry reading pending fee save" disabled={busy} soft onPress={() => { void readPending(); }} />}
     {pending && <View style={s.pending}>
@@ -176,20 +189,60 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
         : 'This request is only in memory until device storage succeeds. Keep this screen open and retry; closing or reloading can lose these entries.'}</Text>
       <Button label="Retry pending fee save" disabled={busy || storageBlocked} onPress={() => { void run(pending); }} />
     </View>}
-    <ConfirmDialog visible={!!confirmation} title={confirmation?.kind === 'payment' ? 'Record this manual payment?' : confirmation?.kind === 'invoice' ? 'Create this invoice?' : 'Confirm this correction?'}
-      message={confirmation ? `${operationSummary(confirmation)}.${'amount' in confirmation ? ` Amount: ${formatFee(confirmation.amount)}.` : ` Reason: ${confirmation.reason}`}
-${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.batch ?? ''}. The amount is fixed once created.` : confirmation.kind === 'payment' ? 'Confirm you received this money outside the app. This is a manual record.' : 'This changes records only. No money is moved and no refund is made.'}` : ''}
+    <ConfirmDialog visible={!!confirmation} title={(confirmation?.kind === 'payment' || confirmation?.kind === 'collection') ? 'Record this manual payment?' : confirmation?.kind === 'invoice' ? 'Create this invoice?' : 'Confirm this correction?'}
+      message={confirmation ? `${operationSummary(confirmation)}.${'amount' in confirmation ? ` Amount: ${formatFee(confirmation.amount)}.` : ` Reason: ${'reason' in confirmation ? confirmation.reason : ''}`}
+${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.batch ?? ''}. The amount is fixed once created.` : (confirmation.kind === 'payment' || confirmation.kind === 'collection') ? 'Confirm you received this money outside the app. This is a manual record.' : 'This changes records only. No money is moved and no refund is made.'}` : ''}
       confirmLabel="Confirm fee save" cancelLabel="Keep editing" busy={busy} onCancel={() => setConfirmation(null)}
       onConfirm={() => { if (confirmation) void run({ version: 1, owner, academy: academy.id, operation: confirmation }); }} />
     <ConfirmDialog visible={discard} title="Discard unsaved fee entries?" message="This form is only on this screen. Keep editing to retain it, or discard it to go back."
       confirmLabel="Discard fee entries" cancelLabel="Keep editing" onConfirm={closeForm} onCancel={() => setDiscard(false)} />
     {view === 'list' ? <>
-      <Field label="Billing month (YYYY-MM)" value={month} max={7} disabled={disabled} onChange={setMonth} />
-      <Button label="Show month" soft disabled={disabled} onPress={() => {
-        if (!validMonth(month)) { error('Enter a valid billing month as YYYY-MM.'); return; }
-        setFilterMonth(month); void reload(month);
-      }} />
-      <Button label="Refresh invoices" soft disabled={loading || busy} onPress={() => { void reload(filterMonth); }} />
+      <View style={s.monthRow}>
+        <Field label="Billing month (YYYY-MM)" value={month} max={7} disabled={disabled} onChange={setMonth} />
+        <Button label="Show month" soft disabled={disabled} onPress={() => {
+          if (!validMonth(month)) { error('Enter a valid billing month as YYYY-MM.'); return; }
+          setFilterMonth(month); setBatchView(null); void reload(month);
+        }} />
+      </View>
+      {overview && <>
+        <View style={s.summaryHero}>
+          <Text style={s.heroLabel}>{filterMonth} · {selectedBatch ? selectedBatch.name : 'ALL BATCHES'}</Text>
+          <Text style={s.heroAmount}>{formatFee((selectedBatch ?? overview).collected)}</Text><Text style={s.heroLabel}>Collected for this month</Text>
+          <View style={s.metricRow}>
+            <View><Text style={s.metricValue}>{(selectedBatch ?? overview).students}</Text><Text style={s.heroLabel}>Students</Text></View>
+            <View><Text style={s.metricValue}>{formatFee((selectedBatch ?? overview).pending)}</Text><Text style={s.heroLabel}>Pending</Text></View>
+          </View>
+          <Text style={s.heroLabel}>Monthly fees: {formatFee((selectedBatch ?? overview).expected)}</Text>
+        </View>
+        <Text style={s.caption}>Received against {filterMonth} fees, including partial payments. Students are counted once overall; each batch has its own fee. Test payments are excluded.</Text>
+        {selectedBatch ? <>
+          <Button label="Back to fee overview" soft disabled={busy} onPress={() => {setBatchView(null);setFeeSearch('');setFeeFilter('all');}} />
+          <Field label="Find student in fees" max={100} value={feeSearch} disabled={busy} onChange={setFeeSearch} />
+          <View style={s.monthRow}>{(['all','pending','paid'] as const).map(filter => <Button key={filter} label={filter==='all'?'All students':filter==='pending'?'Pending fees':'Paid fees'} soft={feeFilter!==filter} disabled={busy} onPress={()=>setFeeFilter(filter)} />)}</View>
+          {selectedBatch.rows.filter(row=>row.student.toLowerCase().includes(feeSearch.toLowerCase()) && (feeFilter==='all'||(feeFilter==='pending'?row.pending>0:row.expected>0&&row.pending===0))).map(row => <View key={row.enrolment} style={s.card}>
+            <Text style={s.title}>{row.student}{row.archived?' · Archived':''}</Text>
+            <Text style={s.body}>Monthly fee {formatFee(row.expected)} · Collected {formatFee(row.collected)}</Text>
+            <Text style={s.badge}>{row.voided?'Cancelled fee':row.expected===0?'No fee due':row.pending===0?'Paid':`Pending ${formatFee(row.pending)}`}</Text>
+            {row.pending>0 && <Button label={`Record fee for ${row.student}`} disabled={disabled} onPress={()=>{
+              setCollectTarget(row);setView('collect');setAmount('');setDate(today);setMethod('cash');setReference('');setDirty(false);error('');notice('');
+            }} />}
+            {row.invoice && <Button label={`View fee history for ${row.student}`} soft disabled={busy} onPress={()=>{void openInvoice(row.invoice!.id);}} />}
+          </View>)}
+        </> : <>
+          <Text style={s.title}>Batch-wise fees</Text>
+          {!overview.batches.length && <Text style={s.body}>No students enrolled for this month. Add students to batches in Students to start tracking fees.</Text>}
+          {overview.batches.map(batch=><View key={batch.id} style={s.card}>
+            <View style={s.batchHeading}><Text style={s.title}>{batch.name}</Text><Text style={s.badge}>{batch.students} students</Text></View>
+            <View style={s.metricRow}><View><Text style={s.moneyValue}>{formatFee(batch.collected)}</Text><Text style={s.caption}>Collected</Text></View>
+              <View><Text style={s.moneyValue}>{formatFee(batch.pending)}</Text><Text style={s.caption}>Pending</Text></View></View>
+            <Text style={s.body}>Monthly total {formatFee(batch.expected)}</Text>
+            <Button label={`View fees for ${batch.name}`} soft disabled={busy} onPress={()=>{setBatchView(batch.id);setFeeSearch('');setFeeFilter('all');onViewChange();}} />
+          </View>)}
+        </>}
+      </>}
+      <Button label="Refresh fees" soft disabled={loading || busy} onPress={()=>{void reload(filterMonth);}} />
+      <Button label={advanced?'Hide invoice history':'Invoice history and corrections'} soft disabled={busy} onPress={()=>setAdvanced(value=>!value)} />
+      {advanced && <>
       <Button label="Create invoice" disabled={disabled || !list || month !== filterMonth} onPress={() => {
         setView('create'); setEnrolment(''); setDue(`${filterMonth}-10`); setDirty(false); error(''); notice('');
       }} />
@@ -203,6 +256,7 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
         <Button label={`Open invoice for ${row.student_name}`} soft disabled={busy} onPress={() => { void openInvoice(row.id); }} />
       </View>)}
       {list?.more && <Button label="Load more invoices" soft disabled={loading || busy} onPress={() => { void more(); }} />}
+      </>}
     </> : view === 'create' ? <View style={s.card}>
       <Text style={s.title}>Billing month: {month}</Text>
       <Text style={s.body}>Choose one enrolment active during this month. The full current monthly batch fee is used; there is no automatic proration.</Text>
@@ -212,19 +266,30 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
       <Field label="Due date (YYYY-MM-DD)" value={due} disabled={disabled} onChange={text => { setDue(text); setDirty(true); }} />
       <Text style={s.body}>Later batch-fee changes will not change this invoice. Correct an unpaid invoice by voiding it with a reason, then creating a replacement.</Text>
       <Button label="Review invoice" disabled={disabled} onPress={review} />
-      <Button label="Back to invoices" soft disabled={busy} onPress={back} />
+      <Button label="Back to fees" soft disabled={busy} onPress={back} />
+    </View> : view === 'collect' && collectTarget ? <View style={s.card}>
+      <Text style={s.title}>{collectTarget.student}</Text><Text style={s.body}>{collectTarget.batch} · {filterMonth}</Text>
+      <Text style={s.title}>Pending: {formatFee(collectTarget.pending)}</Text>
+      <Field label="Amount received (₹)" money max={13} value={amount} disabled={disabled} onChange={value=>{setAmount(value);setDirty(true);}} />
+      <Field label="Received date (YYYY-MM-DD)" value={date} disabled={disabled} onChange={value=>{setDate(value);setDirty(true);}} />
+      <Text style={s.label}>Received via</Text>
+      {(['cash','bank','upi','other'] as const).map(value=><Button key={value} label={`${value.toUpperCase()}${method===value?' · selected':''}`} soft={method!==value} disabled={disabled} onPress={()=>{setMethod(value);setDirty(true);}} />)}
+      <Field label="Receipt reference (optional)" max={120} value={reference} disabled={disabled} onChange={value=>{setReference(value);setDirty(true);}} />
+      <Text style={s.body}>Record money already received outside the app. The monthly charge and receipt are saved together; you do not need to create an invoice first.</Text>
+      <Button label="Review fee received" disabled={disabled} onPress={review} />
+      <Button label="Back to batch fees" soft disabled={busy} onPress={back} />
     </View> : <>
-      {!invoice && <Button label="Back to invoices" soft disabled={busy} onPress={back} />}
+      {!invoice && <Button label="Back to fees" soft disabled={busy} onPress={back} />}
       {invoice && <View style={s.card}>
         <Text style={s.title}>{invoice.student_name}</Text><Text style={s.body}>{invoice.batch_name} · {invoice.billing_month.slice(0, 7)}</Text>
         <Text style={s.badge}>{invoiceStatus(invoice, today)}</Text>
-        <Text style={s.body}>Invoice: {formatFee(invoice.amount_paise)} · Due {invoice.due_on}</Text>
+        <Text style={s.body}>Monthly fee: {formatFee(invoice.amount_paise)} · Due {invoice.due_on}</Text>
         <Text style={s.title}>{invoice.voided_at ? 'Voided invoice' : `Outstanding: ${formatFee(invoice.balance_paise)}`}</Text>
         <Text style={s.body}>Recorded received: {formatFee(invoice.paid_paise)}. Manual entries are not gateway verified.</Text>
         {invoice.test_paise > 0 && <Text style={s.body}>Test payment records: {formatFee(invoice.test_paise)}. Excluded from real balance.</Text>}
         {invoice.excess_paise > 0 && <Text style={s.warning}>Excess received: {formatFee(invoice.excess_paise)}. Review required; no automatic refund.</Text>}
-        <Text selectable style={s.caption}>Invoice reference: {invoice.id}</Text>
-        <Text style={s.caption}>Created {invoice.created_at} · {invoice.created_by === owner ? 'by you' : 'legacy record / other authorized actor'}</Text>
+        {advanced && <Text selectable style={s.caption}>Ledger reference: {invoice.id}</Text>}
+        {advanced && <Text style={s.caption}>Created {invoice.created_at.slice(0,10)} · {invoice.created_by === owner ? 'by you' : 'legacy record / other authorized actor'}</Text>}
         {invoice.voided_at && <Text style={s.body}>Voided {invoice.voided_at}. Reason: {invoice.void_reason}</Text>}
         {form === 'payment' ? <>
           <Text style={s.title}>Record a manual payment</Text>
@@ -245,7 +310,7 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           {!invoice.voided_at && detail.payments.every(p => !!p.reversal) && <Button label="Void unpaid invoice" soft disabled={disabled} onPress={() => beginForm('void')} />}
           <Button label="Refresh invoice" soft disabled={busy || loading} onPress={() => { void openInvoice(invoice.id); }} />
         </>}
-        <Button label={form ? 'Cancel fee entry' : 'Back to invoices'} soft disabled={busy} onPress={back} />
+        <Button label={form ? 'Cancel fee entry' : 'Back to fees'} soft disabled={busy} onPress={back} />
       </View>}
       {detail && !form && <View style={s.card}>
         <Text style={s.title}>Payment history</Text>
@@ -263,6 +328,7 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
   </View>;
 }
 const s = StyleSheet.create({
+  summaryHero: { backgroundColor: '#1F6F6B', padding: 24, borderRadius: 22, gap: 12 }, heroLabel: { color: '#D6EBE5', fontSize: 12, lineHeight: 19 }, heroAmount: { color: '#fff', fontSize: 38, fontWeight: '700' }, metricRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }, metricValue: { color: '#fff', fontSize: 23, fontWeight: '700' }, moneyValue: { color: '#22303A', fontSize: 22, fontWeight: '700' }, monthRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, alignItems: 'center' }, batchHeading: { gap: 6 },
   root: { gap: 16 }, kicker: { color: '#1F6F6B', fontSize: 10, fontWeight: '700', letterSpacing: 1.5 },
   heading: { color: '#22303A', fontSize: 30, fontWeight: '700' }, title: { color: '#22303A', fontSize: 17, fontWeight: '700' },
   body: { color: '#5C6B73', fontSize: 14, lineHeight: 22 }, caption: { color: '#63756F', fontSize: 11, lineHeight: 18 },

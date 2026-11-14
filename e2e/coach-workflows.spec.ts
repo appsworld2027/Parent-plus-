@@ -1,0 +1,117 @@
+import {expect,test,type Page} from '@playwright/test';
+import {backend,login} from './support/backend';
+import {feesBackend} from './support/feesBackend';
+import {photosBackend} from './support/photosBackend';
+async function roster(page:Page){await backend(page,{academy:true,readyClass:true});await login(page);await page.getByRole('tab',{name:'Students',exact:true}).click();await expect(page.getByRole('button',{name:'Add a student',exact:true})).toBeEnabled();}
+async function batches(page:Page){await page.getByRole('button',{name:'Batches',exact:true}).click();await page.getByRole('button',{name:'Open batch Fictional Clay Class',exact:true}).click();}
+test('batch lists its students, adds existing profiles without duplication, and creates a new student inside it',async({page},info)=>{
+  await roster(page);
+  await page.evaluate(()=>{window.__coachFixture.roster.students.push({id:'10000000-0000-0000-0000-000000000022',name:'Fictional Zoya',age_years:7,archived_at:null});});
+  await page.getByRole('button',{name:'Refresh roster',exact:true}).click();await batches(page);
+  await expect(page.getByText('Fictional Ria',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Add existing students',exact:true}).click();
+  await page.getByRole('checkbox',{name:'Add Fictional Zoya to batch',exact:true}).check();
+  await page.getByRole('button',{name:'Add selected students (1)',exact:true}).click();
+  await expect(page.getByText('Fictional Zoya',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Add new student to this batch',exact:true}).click();
+  await expect(page.getByRole('checkbox',{name:'Fictional Clay Class',exact:true})).toBeChecked();
+  await page.getByRole('textbox',{name:'Student name',exact:true}).fill('Fictional Kabir');
+  await page.getByRole('button',{name:'Save student',exact:true}).click();
+  await expect(page.getByText('Fictional Kabir',{exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>window.__coachFixture.roster.students.length)).toBe(3);
+  await page.reload();await page.getByRole('tab',{name:'Students',exact:true}).click();await batches(page);
+  await expect(page.getByText('3 students',{exact:true})).toBeVisible();
+  await page.screenshot({path:info.outputPath('batch-roster.png'),fullPage:true});
+});
+test('creating a batch inside a new student form preserves inputs and selects the new batch',async({page})=>{
+  await roster(page);await page.getByRole('button',{name:'Add a student',exact:true}).click();
+  await page.getByRole('textbox',{name:'Student name',exact:true}).fill('Fictional Meera');
+  await page.getByRole('button',{name:'Create a new batch',exact:true}).click();
+  await page.getByRole('textbox',{name:'Batch name',exact:true}).fill('Fictional Drawing');
+  await page.getByRole('textbox',{name:'Monthly fee (₹)',exact:true}).fill('1200');
+  await page.getByRole('button',{name:'Save batch',exact:true}).click();
+  await expect(page.getByRole('textbox',{name:'Student name',exact:true})).toHaveValue('Fictional Meera');
+  await expect(page.getByRole('checkbox',{name:'Fictional Drawing',exact:true})).toBeChecked();
+  await page.getByRole('button',{name:'Save student',exact:true}).click();
+  expect(await page.evaluate(()=>{const s=window.__coachFixture.roster.students.find(s=>s.name==='Fictional Meera')!;return window.__coachFixture.roster.enrolments.filter(e=>e.student_id===s.id).length;})).toBe(1);
+});
+test('fees starts with complete unbilled totals; batch/student payment needs no invoice creation and updates totals',async({page},info)=>{
+  await feesBackend(page);await login(page);await page.getByRole('tab',{name:'Fees',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Fees overview',exact:true})).toBeVisible();
+  await expect(page.getByText('Monthly fees: ₹2,500',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Create invoice',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'View fees for Fictional Clay Class',exact:true}).click();
+  await page.getByRole('button',{name:'Record fee for Fictional Ria',exact:true}).click();
+  await page.getByRole('textbox',{name:'Amount received (₹)',exact:true}).fill('1000');
+  await page.getByRole('button',{name:'Review fee received',exact:true}).click();
+  await page.getByRole('button',{name:'Confirm fee save',exact:true}).click();
+  await expect(page.getByText('Outstanding: ₹1,500',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Confirm fee save',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Back to fees',exact:true}).click();
+  await expect(page.getByText('Monthly fees: ₹2,500',{exact:true})).toBeVisible();
+  await expect(page.getByText('Pending ₹1,500',{exact:true})).toBeVisible();
+  await page.screenshot({path:info.outputPath('fee-overview.png'),fullPage:true});
+  expect(await page.evaluate(()=>({invoices:window.__feeFixture.invoices.length,payments:window.__feeFixture.payments.length}))).toEqual({invoices:1,payments:1});
+});
+async function choosePhoto(page:Page,label:string){const chooser=page.waitForEvent('filechooser');await page.getByRole('button',{name:label,exact:true}).click();await(await chooser).setFiles({name:'fictional.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=','base64')});}
+test('student photo saves privately and reopens; upload failure retains existing photo',async({page})=>{
+  await photosBackend(page);await login(page);await page.getByRole('tab',{name:'Students',exact:true}).click();
+  await page.getByRole('button',{name:'Edit Fictional Ria',exact:true}).click();
+  await choosePhoto(page,'Add photo');await expect(page.getByTestId('action-feedback')).toContainText('Photo saved privately');
+  await expect(page.getByRole('img',{name:'Student profile photo',exact:true})).toBeVisible();
+  await page.evaluate(()=>{window.__photoFixture.failUpload=true;});
+  await choosePhoto(page,'Replace photo');await expect(page.getByTestId('action-feedback')).toContainText('photo could not be confirmed');
+  expect(await page.evaluate(()=>Object.keys(window.__photoFixture.records).length)).toBe(1);
+});
+test('observation photo saves with draft and remains fixed after recording',async({page})=>{
+  await photosBackend(page);await login(page);await page.getByRole('tab',{name:'Post',exact:true}).click();
+  await page.getByRole('button',{name:'Write an observation',exact:true}).click();
+  await page.getByRole('button',{name:'Fictional Clay Class',exact:true}).click();
+  await page.getByRole('button',{name:'Fictional Ria',exact:true}).click();
+  await page.getByRole('textbox',{name:'Observation text',exact:true}).fill('Fictional clay bowl with photo');
+  await choosePhoto(page,'Save draft and add photo');await expect(page.getByTestId('action-feedback')).toContainText('Photo saved privately');
+  await page.getByRole('button',{name:'Record observation',exact:true}).click();await page.getByRole('button',{name:'Confirm save',exact:true}).click();
+  await expect(page.getByText('Recorded photo is fixed with this observation.',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Replace photo',exact:true})).toHaveCount(0);
+});
+test('direct fee receipt retries after restart without creating a second charge or receipt',async({page})=>{
+  await feesBackend(page);await login(page);await page.getByRole('tab',{name:'Fees',exact:true}).click();
+  await page.getByRole('button',{name:'View fees for Fictional Clay Class',exact:true}).click();
+  await page.getByRole('button',{name:'Record fee for Fictional Ria',exact:true}).click();
+  await page.getByRole('textbox',{name:'Amount received (₹)',exact:true}).fill('1000');
+  await page.getByRole('button',{name:'Review fee received',exact:true}).click();
+  await page.evaluate(()=>{window.__feeFixture.loseResponse=true;});
+  await page.getByRole('button',{name:'Confirm fee save',exact:true}).click();
+  await expect(page.getByTestId('action-feedback')).toContainText('save could not be confirmed');
+  await page.reload();await page.getByRole('tab',{name:'Fees',exact:true}).click();
+  await page.getByRole('button',{name:'Retry pending fee save',exact:true}).click();
+  await expect(page.getByText('Outstanding: ₹1,500',{exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>[window.__feeFixture.invoices.length,window.__feeFixture.payments.length])).toEqual([1,1]);
+});
+
+test('student profile shows age and proficiency, joins another batch, and retains details after reopening',async({page},info)=>{
+  await roster(page);await page.getByRole('button',{name:'Add a student',exact:true}).click();
+  await page.getByRole('textbox',{name:'Student name',exact:true}).fill('Fictional Tara');
+  await page.getByRole('textbox',{name:'Age (optional)',exact:true}).fill('9');
+  await page.getByRole('radio',{name:'Proficiency Intermediate',exact:true}).click();
+  await page.getByRole('textbox',{name:'Guardian name',exact:true}).fill('Fictional guardian');
+  await page.getByRole('checkbox',{name:'Fictional Clay Class',exact:true}).check();
+  await page.getByRole('button',{name:'Save student',exact:true}).click();
+  await page.getByRole('button',{name:'View profile for Fictional Tara',exact:true}).click();
+  await expect(page.getByText('9 years old',{exact:true})).toBeVisible();
+  await expect(page.getByText('Intermediate',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Open batch Fictional Clay Class',exact:true})).toBeVisible();
+  await page.evaluate(()=>{window.__coachFixture.roster.batches.push({id:'00000000-0000-0000-0000-000000000032',name:'Fictional Drawing',room:'Room 2',monthly_fee_paise:120000,archived_at:null});sessionStorage.setItem('__fictional_roster',JSON.stringify(window.__coachFixture.roster));});
+  await page.reload();await page.getByRole('tab',{name:'Students',exact:true}).click();
+  await page.getByRole('button',{name:'View profile for Fictional Tara',exact:true}).click();
+  await page.getByRole('button',{name:'Add batch to this student',exact:true}).click();
+  await page.getByRole('button',{name:'Join Fictional Drawing',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Open batch Fictional Drawing',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Open batch Fictional Clay Class',exact:true})).toBeVisible();
+  await expect(page.getByText('9 years old',{exact:true})).toBeVisible();
+  await expect(page.getByText('Intermediate',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Dismiss notification',exact:true}).click();
+  await page.getByRole('button',{name:'Edit student details',exact:true}).evaluate(el=>el.scrollIntoView({block:'end'}));
+  await page.getByRole('heading',{name:'Fictional Tara',exact:true}).evaluate(el=>el.scrollIntoView({block:'start'}));
+  await page.screenshot({path:info.outputPath('student-profile.png'),fullPage:true});
+});

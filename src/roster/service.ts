@@ -15,23 +15,31 @@ export function rosterFailure(error: unknown, fallback: string) {
 // requests, not one database snapshot; filters do not replace server ownership rules.
 export async function loadRoster(academy: string): Promise<Roster> {
   if (!supabase) throw new Error('Client unavailable');
-  const results = await Promise.all([
-    supabase.from('students').select('id,name,age_years,archived_at').eq('academy_id', academy).order('name'),
-    supabase.from('student_contacts').select('student_id,name,email,phone').eq('academy_id', academy).eq('is_primary', true),
-    supabase.from('batches').select('id,name,room,monthly_fee_paise,archived_at').eq('academy_id', academy).order('name'),
-    supabase.from('enrolments').select('student_id,batch_id,starts_on,ends_on').eq('academy_id', academy),
+  async function rows(table: string, columns: string, primary = false) {
+    const all: unknown[] = [];
+    for (let offset = 0; ; offset += 500) {
+      let query = supabase!.from(table).select(columns).eq('academy_id', academy).order('id').range(offset, offset + 499);
+      if (primary) query = query.eq('is_primary', true);
+      const result = await query;
+      if (result.error) throw result.error;
+      all.push(...(result.data ?? []));
+      if ((result.data?.length ?? 0) < 500) return all;
+    }
+  }
+  const [students, contacts, batches, enrolments] = await Promise.all([
+    rows('students','id,name,age_years,archived_at,proficiency_level').catch(error => {if(['42703','PGRST204'].includes(String(error?.code)))return rows('students','id,name,age_years,archived_at');throw error;}), rows('student_contacts','student_id,name,email,phone',true),
+    rows('batches','id,name,room,monthly_fee_paise,archived_at'), rows('enrolments','student_id,batch_id,starts_on,ends_on'),
   ]);
-  for (const result of results) if (result.error) throw result.error;
-  return { students: results[0].data ?? [], contacts: results[1].data ?? [], batches: results[2].data ?? [], enrolments: results[3].data ?? [] } as Roster;
+  return { students, contacts, batches, enrolments } as Roster;
 }
 // Migration 002 is required: one trusted transaction saves the student, primary
 // contact and added enrolments. Do not replace this with three independent writes.
 export async function saveStudent(academy: string, draft: StudentDraft) {
   if (!supabase) throw new Error('Client unavailable');
-  const result = await supabase.rpc('save_student', {
+  const result = await supabase.rpc('save_student_profile', {
     target_academy: academy, target_student: draft.id, student_name: draft.name.trim(),
     age_years: draft.age ? Number(draft.age) : null, guardian_name: draft.guardian.trim(),
-    guardian_email: draft.email.trim(), guardian_phone: draft.phone.trim(), batch_ids: [...new Set(draft.batches)],
+    guardian_email: draft.email.trim(), guardian_phone: draft.phone.trim(), batch_ids: [...new Set(draft.batches)], student_level: draft.proficiency ?? 'unassessed',
   });
   if (result.error) throw result.error;
 }
@@ -48,5 +56,11 @@ export async function saveBatch(academy: string, draft: BatchDraft) {
 export async function archiveStudent(id: string) {
   if (!supabase) throw new Error('Client unavailable');
   const result = await supabase.rpc('archive_student', { target_student: id });
+  if (result.error) throw result.error;
+}
+
+export async function addBatchStudents(academy: string, batch: string, students: string[]) {
+  if (!supabase) throw new Error('Client unavailable');
+  const result = await supabase.rpc('add_batch_students', { target_academy: academy, target_batch: batch, student_ids: [...new Set(students)] });
   if (result.error) throw result.error;
 }

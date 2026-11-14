@@ -3,6 +3,7 @@ import { AppState, Pressable, StyleSheet, Text, TextInput, View } from 'react-na
 import * as Crypto from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
 import { localParts } from '../classes/model';
+import { PhotoControl } from '../photos/PhotoControl';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { observationDrafts } from './localDrafts';
@@ -26,6 +27,7 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
   const [more, setMore] = useState(false);
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [, publish] = useFeedbackMessage('error', 'Observation needs attention');
   const [draft, setDraft] = useState<ObservationDraft | null>(null);
   const [versions, setVersions] = useState<ObservationVersion[]>([]);
@@ -87,7 +89,7 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
     return () => { mounted.current = false; onDirtyChange(false); onBusyChange(false); };
   }, [academy.id, owner]);
   useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
-  useEffect(() => { onBusyChange(busy); }, [busy, onBusyChange]);
+  useEffect(() => { onBusyChange(busy || photoBusy); }, [busy, photoBusy, onBusyChange]);
   useEffect(() => {
     if (busy || !dirty || !current.current) return;
     const value = current.current;
@@ -177,9 +179,9 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
   }
   const eligible = draft ? eligibleRecipients(context, draft.batch, draft.session, academy.timezone) : [];
   const names = (ids: string[]) => ids.map(id => context.students.find(student => student.id === id)?.name ?? 'Student no longer available').join(', ');
-  const disabled = busy || storageBlocked;
+  const disabled = busy || photoBusy || storageBlocked;
 
-  return <View style={s.stack}>
+  return <View style={s.stack} pointerEvents={photoBusy?'none':'auto'}>
     <Text accessibilityRole="header" style={s.heading}>Observations</Text>
     <Text style={s.body}>Private teaching notes. Recording saves a fixed student list. No parent messages are sent.</Text>
     {!draft && <>
@@ -245,6 +247,8 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
       <Text style={s.title}>Observation text</Text>
       <TextInput accessibilityLabel="Observation text" multiline maxLength={10000} editable={!disabled} value={draft.note} onChangeText={note => edit({ ...draft, note })} style={s.input} />
       <Text style={s.body}>{draft.note.length}/10,000 characters</Text>
+      <PhotoControl key={draft.id} academy={academy.id} kind="observation" id={draft.id} exists={draft.revision>0} disabled={busy||storageBlocked} locked={draft.status==='recorded'} onWorking={setPhotoBusy}
+        beforeUpload={async()=>{const invalid=validateObservation(draft,false);if(invalid){publish(invalid);throw new Error('Choose a batch first');}if(request.current)throw new Error('Save in progress');request.current=true;try{await save(false);}finally{request.current=false;}}} />
       {!!localState && <Text style={s.body}>{localState}</Text>}
       {dirty && <Button title="Retry device save" soft disabled={busy} action={() => { const value = current.current; if (value) void run(() => persist(value)); }} />}
       {draft.status === 'draft' && <Button title="Save draft to workspace" disabled={disabled} action={() => { void run(() => save(false)); }} />}
@@ -255,7 +259,7 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
         if (current.current) await persist(current.current); setDraft(null); setVersions([]); onViewChange();
       }); }} />
       {(stored || dirty) && <Button title="Discard device observation draft" soft disabled={busy} action={() => setPending('discard')} />}
-      {!!versions.length && <View style={s.stack}><Text style={s.title}>Recent saved versions (up to 5)</Text>{versions.map(version => <View key={version.revision} style={s.version}>
+      {!!versions.length && <View style={s.stack} pointerEvents={photoBusy?'none':'auto'}><Text style={s.title}>Recent saved versions (up to 5)</Text>{versions.map(version => <View key={version.revision} style={s.version}>
         <Text style={s.body}>Revision {version.revision} · {version.status} · {localParts(version.saved_at, academy.timezone).date}</Text><Text selectable style={s.body}>{version.note || 'No text'}</Text>
       </View>)}</View>}
     </View>}

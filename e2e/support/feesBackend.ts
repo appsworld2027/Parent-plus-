@@ -18,7 +18,7 @@ export async function feesBackend(page: Page, options: { missing?: boolean } = {
     window.fetch = async (input, init) => {
       const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url, window.location.origin);
       const path = url.pathname;
-      if (!url.hostname.endsWith('.supabase.co') || !/fee_invoice_balances|\/rpc\/(create_fee_invoice|record_manual_fee_payment|reverse_manual_fee_payment|void_fee_invoice|get_fee_invoice)$/.test(path)) return original(input,init);
+      if (!url.hostname.endsWith('.supabase.co') || !/fee_invoice_balances|\/rpc\/(create_fee_invoice|record_manual_fee_payment|reverse_manual_fee_payment|void_fee_invoice|get_fee_invoice|collect_student_fee)$/.test(path)) return original(input,init);
       const payload = JSON.parse(String(init?.body ?? '{}'));
       const response = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
       if (state.missing) return response({ code: 'PGRST205', message: 'Private missing schema detail' },404);
@@ -42,7 +42,23 @@ export async function feesBackend(page: Page, options: { missing?: boolean } = {
       while (state.hold) await new Promise(resolve => setTimeout(resolve,20));
       if (state.failWrite) return response({ message: 'Private billing backend failure' },500);
       let result: string;
-      if (path.endsWith('/create_fee_invoice')) {
+      if(path.endsWith('/collect_student_fee')) {
+        const prior=state.payments.find(p=>p.request_id===payload.payment_request);
+        if(prior)return response(prior.invoice_id);
+        let target=state.invoices.find(i=>i.enrolment_id===payload.target_enrolment&&i.billing_month===payload.month_start&&!i.voided_at);
+        if((target?.id??null)!==payload.expected_invoice)return response({code:'40001',message:'Changed charge'},409);
+        const enrolled=window.__coachFixture.roster.enrolments.find(e=>e.id===payload.target_enrolment)!;
+        const batch=window.__coachFixture.roster.batches.find(b=>b.id===enrolled.batch_id)!;
+        const child=window.__coachFixture.roster.students.find(s=>s.id===enrolled.student_id)!;
+        if(!target){
+          if(batch.monthly_fee_paise!==payload.expected_fee || payload.payment_amount>payload.expected_fee)return response({code:'40001',message:'Changed fee'},409);
+          target={id:payload.payment_request,academy_id:payload.target_academy,enrolment_id:payload.target_enrolment,billing_month:payload.month_start,due_on:payload.month_start,amount_paise:batch.monthly_fee_paise,student_name:child.name,batch_name:batch.name,created_at:new Date().toISOString(),created_by:'00000000-0000-0000-0000-000000000001',voided_at:null,voided_by:null,void_reason:null,paid_paise:0,balance_paise:batch.monthly_fee_paise,test_paise:0,excess_paise:0};
+          state.invoices.push(target);
+        }
+        if(payload.payment_amount>totals(target).balance_paise)return response({code:'40001',message:'Changed balance'},409);
+        state.payments.push({id:crypto.randomUUID(),invoice_id:target.id,request_id:payload.payment_request,amount_paise:payload.payment_amount,source:'manual',mode:'live',paid_on:payload.payment_date,method:payload.payment_method,reference:payload.payment_reference,recorded_at:new Date().toISOString(),recorded_by:'00000000-0000-0000-0000-000000000001',reversal:null});
+        result=target.id;
+      } else if (path.endsWith('/create_fee_invoice')) {
         if (!invoice) {
           if (state.invoices.some(i => i.enrolment_id === payload.target_enrolment && i.billing_month === payload.month_start && !i.voided_at)) return response({ code: '23505', message: 'Duplicate invoice' },409);
           const batch = window.__coachFixture.roster.batches[0];

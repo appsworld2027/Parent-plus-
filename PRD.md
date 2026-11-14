@@ -1,7 +1,7 @@
 # Product requirements: Parent Plus Coach
 
-Version: 1.0 · 11 November 2026
-Status: product requirement baseline. Reviewed 12 November 2026; requirements unchanged. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](docs/VALIDATION.md).
+Version: 1.1 · owner workflow revision, 14 November 2026
+Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](docs/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](docs/PRODUCT_DECISIONS.md) and [developer handover](docs/DEVELOPER_GUIDE.md).
 Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
 
@@ -43,19 +43,20 @@ Screens that merely show sample data or success messages do not satisfy these cr
 | AUTH-01 | P0 | Email/password registration, verification, sign-in, recovery, and sign-out | Real verification/recovery email flows work on Android; invalid/expired links are handled |
 | AUTH-02 | P0 | Secure session restoration and academy onboarding | Restart restores an authorized session; interrupted onboarding retries safely; sign-out removes private cached state |
 | ORG-01 | P0 | Owner creates academy name, timezone, and currency defaults | Ownership is enforced server-side; app cannot select another owner's academy |
-| STU-01 | P0 | Add/edit/archive students and guardian contacts | Saved values persist; history survives archiving; contact data alone grants no account access |
-| BAT-01 | P0 | Create/edit batches and enrol students | One student can attend multiple batches without duplicate identity records; duplicate active enrolment is prevented |
+| STU-01 | P0 | Add/edit/archive students and guardian contacts; select existing batches and create a batch inside the student form | Saved values persist; history survives archiving; contact data alone grants no account access |
+| STU-02 | P0 | Open a student profile showing photo, age, assessed proficiency, guardian and batches; add a batch from that profile | Age/level persist and remain visible after reopen; joining a batch retains other memberships and profile values; grouped form fields have clear labels and spacing |
+| BAT-01 | P0 | Create/edit batches; open a batch roster; add existing students or create a student directly in the batch | New students inherit the chosen batch; existing student profiles are not overwritten; one student can attend multiple batches without duplication |
 | SCH-01 | P0 | Create/edit/cancel dated sessions with start/end and location | Changes affect the selected occurrence; cancelled sessions remain distinguishable |
 | ATT-01 | P0 | Present/late/absent, mark all present, atomic attendance save | Save/reopen/retry returns one correct record per session/student; partial batch saves cannot silently succeed |
 | OBS-01 | P0 | Text observation for selected child or batch; draft and recorded states | Draft survives restart; recorded audience is fixed explicitly; failed save retains entered text |
-| FEE-01 | P0 | Monthly invoice, due date, amount snapshot, manual payment, balance | Partial/paid/overdue states calculate correctly; new batch fee does not rewrite prior invoices |
+| FEE-01 | P0 | Monthly overview of distinct students, expected/collected/pending fees, batch summaries and student drilldown; record receipts from a student row | Unbilled eligible students contribute to pending totals; no invoice-creation prerequisite; trusted charge/receipt save atomically; snapshots and corrections remain auditable |
 | PAY-01 | P0 | Authenticated server creates/reuses invoice payment link; coach shares explicitly | Guardian can use hosted test checkout without parent app; app cannot override trusted invoice amount |
 | PAY-02 | P0 | Verify payment server-side and reconcile pending state | Only validated provider paid/captured state creates a gateway payment; invalid/replayed events do not corrupt balances |
 | PAY-03 | P0 | Clearly distinguish test/live, manual/verified, and pending/paid | Test payment never appears as live collection; redirect alone cannot mark paid; refunds/excess payments are visible for review |
 | HOME-01 | P0 | Today dashboard from persisted data, with useful empty states | Sessions and figures match records; no fabricated attendance or engagement metrics |
 | SUP-01 | P0 | Diagnostic reference, build version, sanitized report export | Controlled error can be traced without logging personal content or credentials |
 | ACC-01 | P0 | Account/settings, privacy information, and deletion workflow for external distribution | Workflow is tested and retention consequences are explained; archiving is not represented as deletion |
-| MED-01 | P1 | One photo per observation with documented upload limits | Authorized private access and interrupted-upload recovery pass |
+| MED-01 | P0 | Student profile photos and one private photo per observation | Image-only selection,5MB limit, private account-scoped Storage, safe replacement/retry; recorded observation photo remains fixed; no microphone/camera permission required |
 | OBS-02 | P1 | Improvement, next focus, skills, milestone, home suggestion, preparation fields | Values persist and remain distinct from delivered parent content |
 | SCH-02 | P1 | Bounded recurring-session generation | Preview, duplicate prevention, and per-occurrence editing work |
 
@@ -65,7 +66,7 @@ Screens that merely show sample data or success messages do not satisfy these cr
 Sign in → create academy → create batch → add student and contact → enrol student → schedule session → save attendance → save/record observation → reopen app and inspect history.
 
 ### Fees
-Choose enrolment and billing month → create invoice → create gateway test link → share via Android's share sheet → guardian completes hosted checkout → backend verifies payment → invoice balance updates. Display Pending verification while the outcome remains uncertain.
+Open monthly students/collected/pending overview → choose batch → choose student → record a received payment (trusted monthly charge created underneath when needed). Gateway stage: create gateway test link → share via Android's share sheet → guardian completes hosted checkout → backend verifies payment → invoice balance updates. Display Pending verification while the outcome remains uncertain.
 
 ### Error recovery
 Action fails → preserve form/draft → show actionable message and reference → retry safely or export sanitized report → owner shares reference with Codex → reproduce/investigate → fix and add regression coverage → revalidate affected workflow.
@@ -142,3 +143,10 @@ Codex handles code, tests, diagnosis, migrations, build configuration, and docum
 Required dependencies: Supabase project, approved backend access or dashboard deployment route, functional email sender/redirects, gateway test access and webhook route, Android build/signing access, and a test phone. Start gateway verification early; do not block independent application work on pending live approval.
 
 Follow [STEP_0.md](STEP_0.md) to begin. Account/project creation does not establish that backend connectivity, tests, or application behavior work; verify them during implementation.
+
+
+## Owner workflow clarification
+
+The user rejected the invoice-first and batch-edit-only implementation after using the app. The monthly overview and navigable batch membership are core product behavior, not optional polish. Internal invoices remain an integrity mechanism and a secondary history/correction view. Collected means payments credited against the selected billing month; it is not a separate cashbook grouped by payment date. Count distinct students overall and memberships within each batch. Preserve issued fee amounts when defaults change. Unissued monthly fees remain visible as pending; a voided charge is not silently recreated as debt.
+
+The owner additionally requires a dedicated student profile, visible age and proficiency, direct batch joining from that profile, and improved form grouping/spacing. Both photo locations are explicitly confirmed by the owner. The original plan references ParentPlus_Coach_Tutor_App.html, but the reference HTML is absent from this checkout/history. Saved product notes and the owner’s explicit journeys govern this correction; exact prototype visual parity is not claimed without the original file.

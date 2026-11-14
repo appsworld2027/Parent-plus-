@@ -30,7 +30,7 @@ describe('trusted monthly billing and manual ledger', () => {
       create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
       grant usage on schema auth,public to authenticated,anon,service_role;
       grant execute on function auth.uid() to authenticated,anon,service_role;`);
-    const files = readdirSync('supabase/migrations').sort();
+    const files = readdirSync('supabase/migrations').filter(file=>file<='202611140006_fees.sql').sort();
     for (const file of [...files, files.at(-1)!]) await db.exec(readFileSync(`supabase/migrations/${file}`, 'utf8'));
     await db.query('insert into auth.users values($1),($2)', [owner,other]);
   }, 30_000);

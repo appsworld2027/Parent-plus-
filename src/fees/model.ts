@@ -12,6 +12,7 @@ export type FeePayment = { id: string; amount_paise: number; source: 'manual' | 
 export type FeeDetail = { invoice: Invoice; payments: FeePayment[] };
 export type FeeOperation =
   | { kind: 'invoice'; id: string; enrolment: string; month: string; due: string; amount: number }
+  | { kind: 'collection'; id: string; enrolment: string; month: string; invoice: string | null; fee: number; amount: number; date: string; method: 'cash' | 'bank' | 'upi' | 'other'; reference: string }
   | { kind: 'payment'; id: string; invoice: string; amount: number; date: string; method: 'cash' | 'bank' | 'upi' | 'other'; reference: string }
   | { kind: 'reverse'; id: string; invoice: string; payment: string; reason: string }
   | { kind: 'void'; id: string; invoice: string; reason: string };
@@ -48,6 +49,7 @@ export function paymentAmount(text: string, balance: number) {
 }
 export function operationSummary(operation: FeeOperation) {
   if (operation.kind === 'invoice') return `Create invoice for ${operation.month.slice(0, 7)}, due ${operation.due}`;
+  if (operation.kind === 'collection') return `Record monthly fee for ${operation.month.slice(0,7)} by ${operation.method}`;
   if (operation.kind === 'payment') return `Manual ${operation.method} payment dated ${operation.date}`;
   return operation.kind === 'reverse' ? 'Reverse a manual payment record' : 'Void an invoice';
 }

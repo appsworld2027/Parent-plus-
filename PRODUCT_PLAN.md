@@ -76,9 +76,9 @@ Keep the coach reference's five destinations: Today, Schedule, Post, Students, a
 
 - Today: actual sessions, attendance work remaining, and fee totals when available.
 - Schedule: date selection, sessions, create/edit/cancel actions, and batch management.
-- Post: choose batch/session, audience, text, and draft/record action; add photo and structured fields if shipped.
-- Students: batch filter, student editor, guardian contact details, enrolments, and history.
-- Fees: billing month, invoice list, due dates, manual payment entry, and balances.
+- Post: choose batch/session, audience, text, and draft/record action; include a private photo with a saved draft; structured extras follow later.
+- Students: batch filter, student editor with inline batch creation, profile photo, and batch roster pages that add existing or new students.
+- Fees: monthly students/collected/pending overview, batch cards, student drilldown and receipt entry; invoice history/corrections are secondary.
 - Account: sign-out, password recovery entry, privacy notice, and account-deletion workflow before external distribution.
 
 Use “Draft saved” and “Observation recorded.” Do not say “Parents notified,” “Receipt sent,” or show read/engagement percentages. No parent delivery occurs in this release.
@@ -166,3 +166,8 @@ Before declaring the pilot usable:
 Deliverables: GitHub source changes ready for review; versioned Supabase migrations; configuration instructions without secrets; an installable Android artifact when build prerequisites are available; validation evidence; and a prioritized follow-up backlog.
 
 Success is a narrow app a coach can actually use. It is not the number of prototype screens reproduced.
+
+
+### Owner correction after app review
+
+Batch rosters, membership from either entry point, summary-first monthly fees and both photo locations are now required. This overrides the earlier optional-photo cut line. Preserve the ledger and access controls while simplifying the visible journey. Implementations and current acceptance limits are in PROGRESS.md and COACH_WORKFLOW_REVIEW.md.
