@@ -48,7 +48,12 @@ test('a verified session loads its academy, survives reload, and clears on sign-
   await expect(page.getByText('Fictional Test Academy', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Open support and diagnostics' }).click();
   await expect(page.getByText('Workspace loaded', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Run safe error check' }).click();
+  if (process.env.PLAYWRIGHT_BASE_URL) {
+    // Production deployments intentionally omit developer failure controls.
+    await expect(page.getByRole('button', { name: 'Run safe error check' })).toHaveCount(0);
+  } else {
+    await page.getByRole('button', { name: 'Run safe error check' }).click();
+  }
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible();
   const remaining = await page.evaluate(() => Object.keys(sessionStorage).filter(key => key.includes('auth-token') && !key.includes('code-verifier')));
@@ -90,7 +95,7 @@ test('an unverified account cannot open the academy workspace', async ({ page })
   await expect(page.getByRole('tab', { name: 'Students' })).toHaveCount(0);
 });
 
-test('a recovery code opens password update and removes the code from browser history', async ({ page }) => {
+test('a recovery code opens password update and removes the code from browser history', async ({ page, baseURL }) => {
   await backend(page);
   await page.goto('/');
   await page.getByRole('button', { name: 'Forgot password?' }).click();
@@ -99,7 +104,7 @@ test('a recovery code opens password update and removes the code from browser hi
   await expect(page.getByRole('status')).toContainText('If an account exists');
   await page.goto('/auth/recovery?code=fictional-one-time-code');
   await expect(page.getByRole('heading', { name: 'Choose a new password.' })).toBeVisible();
-  await expect(page).toHaveURL('http://127.0.0.1:18081/');
+  await expect(page).toHaveURL(new URL('/', baseURL!).href);
   await page.getByLabel('New password', { exact: true }).fill('fictional-new-password');
   await page.getByLabel('Confirm password', { exact: true }).fill('fictional-new-password');
   await page.getByRole('button', { name: 'Save new password' }).click();
