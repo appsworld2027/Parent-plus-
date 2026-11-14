@@ -54,7 +54,7 @@ export function ScanRosterScreen({academy,roster,initialBatch,onDone,onCancel,on
       <Button label={busy?'Reading list…':Platform.OS==='web'?'Take or choose register photo':'Choose register photo'} disabled={busy} onPress={()=>{void pick();}}/>
       <Text style={s.caption}>10 scans per academy per UTC day. Failed AI attempts may use a scan. Scanning must be enabled for your academy; manual entry stays available.</Text>
     </View>:<>
-      <View style={s.card}><Text style={s.title}>Review {rows.length} extracted students</Text><Text style={s.body}>Nothing has been saved. Correct mistakes, skip unwanted rows, and choose existing students where a name matches.</Text>
+      <View style={s.card}><Text style={s.title}>Review {rows.length} extracted students</Text><Text style={s.body}>{uncertain?'An import may already have saved. Retry this same review to confirm it.':'Nothing has been saved. Correct mistakes, skip unwanted rows, and choose existing students where a name matches.'}</Text>
         {warnings.map((warning,i)=><Text key={i} style={s.warning}>{warning}</Text>)}
         <Text style={s.title}>Add selected students to</Text>
         <Button label={batch===null?'✓ No batch yet':'No batch yet'} soft disabled={busy||uncertain} onPress={()=>setBatch(null)}/>

@@ -51,6 +51,7 @@ test('a lost import response locks edits and retries without duplicate profiles'
  await page.getByRole('button',{name:'Review import (1)',exact:true}).click();await page.evaluate(()=>{window.__scanFixture.lose=true;});
  await page.getByRole('button',{name:'Confirm student import',exact:true}).click();
  await expect(page.getByRole('textbox',{name:'Student name row 1',exact:true})).not.toBeEditable();
+ await expect(page.getByText('An import may already have saved. Retry this same review to confirm it.',{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'Retry same student import',exact:true}).click();
  await expect(page.getByRole('button',{name:'View profile for Fictional Tara',exact:true})).toBeVisible();
  expect(await page.evaluate(()=>[window.__coachFixture.roster.students.length,window.__scanFixture.imports])).toEqual([2,2]);
