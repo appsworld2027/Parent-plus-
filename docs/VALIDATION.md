@@ -217,3 +217,8 @@ Full npm audit found one moderate underlying minimatch DoS advisory through Expo
 #### Final native result
 
 Run43625002448 completed successfully (about8m15s), exact sourcecdd321e, report18:17:12UTC. Packagecom.parentplus.coach.preview,0.5.0/versionCode8,development signed,43,606,218bytes. CI signature and ELF/ABI validation pass with17 libraries each forarm64-v8a andx86_64. APK SHA2566cdfff1270888c77c8be757faf69a5124a2b88badd722c9faf4e28f6cb9ddd40. [APK artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43625002448/artifacts/14126395027). The workspace artifact download received403 from the artifact-storage host, so no independent local binary/manifest inspection is claimed. Real settings-only check passed at18:11:37UTC. Monitoring ended on terminal success; cancelled predecessor builds are superseded. Actual native/app/API acceptance remains pending.
+
+
+### Owner-reported005 installation and independent API check
+
+After an initial editor42601 error, the owner reports Success, no rows returned. Read-only live probes changed from404 to401/42501 for observation_versions; a zero-row observations query selecting revision/audience/updated_at/updated_by/recorded_at also returns401. No private record body was fetched. Fee balances remain404/PGRST205. The original observation database suite was rerun:8 tests pass. Internal deployed configuration cannot be read with the public client key, so the owner is supplied the read-only verifier in VERIFY_OBSERVATIONS.md. Its8 correct-state checks and5 unsafe-fixture detections were verified locally. Live internal verification and authenticated persistence/isolation remain pending; no successful write is inferred from a fixture test.
