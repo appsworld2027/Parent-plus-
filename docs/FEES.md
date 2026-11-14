@@ -25,7 +25,7 @@ Before any write, the app saves the complete request and its unique ID in device
 
 These pending records survive navigation/restart and sign-out for reconciliation on the same account and academy. They are isolated by account/academy and use native SecureStore via the shared chunk adapter; browser preview uses sessionStorage and therefore does not promise recovery after closing the browser session. They contain record IDs, dates, amounts and entered references/reasons, not student names or credentials. A resolved request is removed. Unsent form edits are in memory and prompt before navigation; they are not durable drafts. Clearing app data or uninstalling loses device recovery records, so check saved invoice history before entering a payment again.
 
-If storage cannot save a request, no API write is sent. Unreadable recovery data blocks new writes rather than silently discarding it. Known transaction rejection returns to the retained form; network/unknown errors keep the exact pending request. If the saved-record refresh fails after a confirmed write, the app says that the write succeeded and asks for a refresh; it does not repeat the write with a new ID.
+If storage cannot save a request, no API write is sent. The in-memory pending request keeps the unsaved-navigation warning and is explicitly labelled as not yet durable. Unreadable recovery data blocks new writes rather than silently discarding it. Known transaction rejection returns to the retained form; network/unknown errors keep the exact pending request. If the saved-record refresh fails after a confirmed write, the app says that the write succeeded and asks for a refresh; it does not repeat the write with a new ID.
 
 ## One-time database update, when ready
 

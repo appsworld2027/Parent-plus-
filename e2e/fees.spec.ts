@@ -98,7 +98,13 @@ test('device storage failure sends no payment; retry and changed-balance rejecti
   });
   await page.getByRole('button',{ name: 'Confirm fee save',exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('No request was sent');
+  await expect(page.getByRole('button',{ name: 'Confirm fee save',exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => window.__feeFixture.payments.length)).toBe(0);
+  await expect(page.getByText('This request is only in memory until device storage succeeds. Keep this screen open and retry; closing or reloading can lose these entries.',{ exact: true })).toBeVisible();
+  await page.getByRole('tab',{ name: 'Students',exact: true }).click();
+  await expect(page.getByText('Leave your unsaved changes?',{ exact: true })).toBeVisible();
+  await page.getByRole('button',{ name: 'Keep editing',exact: true }).click();
+  await expect(page.getByRole('button',{ name: 'Retry pending fee save',exact: true })).toBeEnabled();
   await page.reload(); await page.getByRole('tab',{ name: 'Fees',exact: true }).click();
   await page.getByRole('button',{ name: 'Open invoice for Fictional Ria',exact: true }).click();
   await enterPayment(page,'2500');
@@ -134,4 +140,17 @@ test('unreadable recovery record blocks new fee writes instead of silently losin
   await expect(page.getByTestId('action-feedback')).toContainText('pending fee save on this device could not be read');
   await expect(page.getByRole('button',{ name: 'Create invoice',exact: true })).toBeDisabled();
   expect(await page.evaluate(() => window.__feeFixture.writes)).toBe(0);
+});
+test('preserved manual and gateway test receipts are labelled TEST and excluded from real outstanding', async ({ page }) => {
+  await setup(page); await issue(page);
+  await page.evaluate(() => {
+    const invoice=window.__feeFixture.invoices[0];
+    for(const source of ['manual','gateway'] as const) window.__feeFixture.payments.push({ id: `fictional-test-${source}`,invoice_id: invoice.id,request_id: `fictional-request-${source}`,
+      amount_paise: 10000,source,mode: 'test',paid_on: '2026-11-01',method: null,reference: null,recorded_at: new Date().toISOString(),recorded_by: null,reversal: null });
+  });
+  await page.getByRole('button',{ name: 'Refresh invoice',exact: true }).click();
+  await expect(page.getByText('Outstanding: ₹2,500',{ exact: true })).toBeVisible();
+  await expect(page.getByText('₹100 · Manual record · TEST',{ exact: true })).toBeVisible();
+  await expect(page.getByText('₹100 · Gateway · TEST',{ exact: true })).toBeVisible();
+  await expect(page.getByText('Test payment records: ₹200. Excluded from real balance.',{ exact: true })).toBeVisible();
 });

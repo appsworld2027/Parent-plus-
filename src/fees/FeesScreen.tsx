@@ -41,6 +41,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [reference, setReference] = useState(''), [reason, setReason] = useState(''), [payment, setPayment] = useState('');
   const [confirmation, setConfirmation] = useState<FeeOperation | null>(null);
   const [pending, setPending] = useState<PendingFee | null>(null), [storageBlocked, setStorageBlocked] = useState(true);
+  const [pendingDurable, setPendingDurable] = useState(false);
   const [, error] = useFeedbackMessage('error', 'Fees need attention');
   const [, notice] = useFeedbackMessage('success', 'Saved to your workspace');
   const alive = useRef(true), lock = useRef(false), version = useRef(0);
@@ -62,14 +63,19 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
     setStorageBlocked(true);
     try {
       const saved = await pendingFees.read(owner, academy.id);
-      if (alive.current) { setPending(saved); setStorageBlocked(false); }
+      if (alive.current) { setPending(saved); setPendingDurable(!!saved); setStorageBlocked(false); }
     } catch { error('The pending fee save on this device could not be read. New fee saves are paused to prevent duplicates. Retry reading it; ask your coding partner if it continues.'); }
   }
   useEffect(() => {
     alive.current = true; void readPending(); void reload(filterMonth);
     return () => { alive.current = false; version.current++; };
   }, [academy.id, owner, reload]);
-  useEffect(() => { onDirtyChange(dirty && !pending); return () => onDirtyChange(false); }, [dirty, pending, onDirtyChange]);
+  // A memory-only recovery request still needs the unsaved-change guard. Merely
+  // showing the pending panel does not prove device persistence succeeded.
+  useEffect(() => {
+    onDirtyChange((dirty && !pending) || (!!pending && !pendingDurable));
+    return () => onDirtyChange(false);
+  }, [dirty, pending, pendingDurable, onDirtyChange]);
   useEffect(() => { onBusyChange(busy); return () => onBusyChange(false); }, [busy, onBusyChange]);
   useEffect(onViewChange, [view, form, onViewChange]);
 
@@ -114,15 +120,17 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   async function run(snapshot: PendingFee) {
     if (lock.current) return;
     lock.current = true; setBusy(true); setConfirmation(null); error(''); notice(''); setPending(snapshot);
+    setPendingDurable(pendingDurable && JSON.stringify(pending) === JSON.stringify(snapshot));
     let sent = false, saved = false;
     try {
       await pendingFees.save(snapshot);
+      if (alive.current) setPendingDurable(true);
       sent = true;
       const id = await executeFee(academy.id, snapshot.operation);
       saved = true;
       await pendingFees.clear(snapshot);
       if (!alive.current) return;
-      setPending(null); setDirty(false); setForm(null); setDetail(null);
+      setPending(null); setPendingDurable(false); setDirty(false); setForm(null); setDetail(null);
       const o = snapshot.operation;
       notice(o.kind === 'invoice' ? 'Invoice created. Its amount is fixed. No payment request was sent.'
         : o.kind === 'payment' ? 'Manual payment recorded. This app did not move money or verify a gateway payment.'
@@ -133,7 +141,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
       catch (failure) { error(feeFailure(failure, 'The save is confirmed, but the updated invoice could not be loaded. Go back and refresh.')); }
     } catch (failure) {
       if (sent && !saved && feeRejected(failure)) {
-        try { await pendingFees.clear(snapshot); if (alive.current) setPending(null); }
+        try { await pendingFees.clear(snapshot); if (alive.current) { setPending(null); setPendingDurable(false); } }
         catch { error('The request was rejected, but its device record could not be cleared. Retry the pending save to resolve it safely.'); return; }
         error(feeFailure(failure, 'The save was rejected. Your form is retained. Refresh and review the saved records.'));
       } else error(saved ? 'The save succeeded, but its device record could not be cleared. Retry this same pending save to finish safely.'
@@ -163,7 +171,9 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
     {pending && <View style={s.pending}>
       <Text style={s.title}>Resolve pending fee save</Text><Text style={s.body}>{operationSummary(pending.operation)}</Text>
       {'amount' in pending.operation && <Text style={s.title}>{formatFee(pending.operation.amount)}</Text>}
-      <Text style={s.body}>Retry this exact request before adding another. It may already be saved. This recovery record is retained on this device, including after sign-out, for this account only.</Text>
+      <Text style={s.body}>{pendingDurable
+        ? 'Retry this exact request before adding another. It may already be saved. This recovery record is retained on this device, including after sign-out, for this account only.'
+        : 'This request is only in memory until device storage succeeds. Keep this screen open and retry; closing or reloading can lose these entries.'}</Text>
       <Button label="Retry pending fee save" disabled={busy || storageBlocked} onPress={() => { void run(pending); }} />
     </View>}
     <ConfirmDialog visible={!!confirmation} title={confirmation?.kind === 'payment' ? 'Record this manual payment?' : confirmation?.kind === 'invoice' ? 'Create this invoice?' : 'Confirm this correction?'}
@@ -211,7 +221,7 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
         <Text style={s.body}>Invoice: {formatFee(invoice.amount_paise)} · Due {invoice.due_on}</Text>
         <Text style={s.title}>{invoice.voided_at ? 'Voided invoice' : `Outstanding: ${formatFee(invoice.balance_paise)}`}</Text>
         <Text style={s.body}>Recorded received: {formatFee(invoice.paid_paise)}. Manual entries are not gateway verified.</Text>
-        {invoice.test_paise > 0 && <Text style={s.body}>Test gateway records: {formatFee(invoice.test_paise)}. Excluded from real balance.</Text>}
+        {invoice.test_paise > 0 && <Text style={s.body}>Test payment records: {formatFee(invoice.test_paise)}. Excluded from real balance.</Text>}
         {invoice.excess_paise > 0 && <Text style={s.warning}>Excess received: {formatFee(invoice.excess_paise)}. Review required; no automatic refund.</Text>}
         <Text selectable style={s.caption}>Invoice reference: {invoice.id}</Text>
         <Text style={s.caption}>Created {invoice.created_at} · {invoice.created_by === owner ? 'by you' : 'legacy record / other authorized actor'}</Text>
@@ -241,7 +251,7 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
         <Text style={s.title}>Payment history</Text>
         {!detail.payments.length && <Text style={s.body}>No payments recorded.</Text>}
         {detail.payments.map(entry => <View key={entry.id} style={s.ledger}>
-          <Text style={s.title}>{formatFee(entry.amount_paise)} · {entry.source === 'manual' ? 'Manual record' : entry.mode === 'test' ? 'Gateway · TEST' : 'Gateway · verified'}</Text>
+          <Text style={s.title}>{formatFee(entry.amount_paise)} · {entry.source === 'manual' ? 'Manual record' : entry.mode === 'test' ? 'Gateway' : 'Gateway · verified'}{entry.mode === 'test' ? ' · TEST' : ''}</Text>
           <Text style={s.body}>{entry.paid_on ?? entry.recorded_at.slice(0, 10)} · {entry.method?.toUpperCase() ?? entry.mode}</Text>
           {!!entry.reference && <Text style={s.body}>Reference: {entry.reference}</Text>}
           <Text style={s.caption}>Recorded {entry.recorded_at} · {entry.recorded_by === owner ? 'by you' : entry.source === 'gateway' ? 'by payment service' : 'legacy record'}</Text>
