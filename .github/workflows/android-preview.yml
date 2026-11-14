@@ -3,7 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: [codex/coach-foundation]
-    paths-ignore: ['**/*.md', 'docs/images/**']
+    # Hosting routes and browser-only checks do not change an Android APK.
+    paths-ignore: ['**/*.md', 'docs/images/**', 'vercel.json', 'playwright.config.ts', 'e2e/**']
 permissions:
   contents: write
 concurrency:

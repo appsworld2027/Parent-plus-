@@ -11,6 +11,7 @@ async function issue(page: Page) {
   await page.getByRole('button',{ name: 'Review invoice',exact: true }).click();
   await page.getByRole('button',{ name: 'Confirm fee save',exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('Invoice created.');
+  await expect(page.getByRole('button',{ name: 'Confirm fee save',exact: true })).toHaveCount(0);
 }
 async function enterPayment(page: Page, amount = '1000') {
   await page.getByRole('button',{ name: 'Record manual payment',exact: true }).click();
