@@ -22,7 +22,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
     const roster = JSON.parse(sessionStorage.getItem('__fictional_roster') ?? 'null') ?? (options.readyClass
       ? { students: [{ id: studentId, name: 'Fictional Ria', age_years: 6, archived_at: null }], contacts: [],
           batches: [{ id: batchId, name: 'Fictional Clay Class', room: 'Room 1', monthly_fee_paise: 250000, archived_at: null }],
-          enrolments: [{ student_id: studentId, batch_id: batchId, starts_on: '2020-01-01', ends_on: null }] }
+          enrolments: [{ id: '00000000-0000-0000-0000-000000000041', student_id: studentId, batch_id: batchId, starts_on: '2020-01-01', ends_on: null }] }
       : { students: [], contacts: [], batches: [], enrolments: [] });
     const teaching = JSON.parse(sessionStorage.getItem('__fictional_classes') ?? 'null') ?? {
       classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };

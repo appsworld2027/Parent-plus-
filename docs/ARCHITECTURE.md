@@ -1,6 +1,6 @@
 # How Parent Plus Coach works today
 
-Reviewed: 12 November 2026. Applies to candidate app version 0.4.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
+Reviewed: 14 November 2026. Applies to candidate app version 0.5.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system
 
@@ -64,7 +64,7 @@ flowchart TD
     Home --> Support["Support and sanitized report export"]
     Home --> Classes["Schedule: dated classes and attendance"]
     Home --> Notes["Post: private observations, device drafts and workspace history"]
-    Home --> Later["Fees shows pending-module information"]
+    Home --> Fees["Fees: monthly invoices and manual-payment history"]
 ```
 
 File responsibilities:
@@ -199,7 +199,7 @@ erDiagram
 
 One academy is owned per account in this version. Migration 002 permits at most one primary contact per student. Composite foreign keys prevent a child, batch and enrolment being connected across academies. Current enrolment uniqueness is per academy/student/batch pair, not a history of repeat enrolment periods.
 
-Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented and their installed versions are owner-confirmed; real app/API acceptance is pending. `observations` and `observation_recipients` now have Module 5 workflows, with private `observation_versions` added in migration 005 (deployment pending). `fee_invoices` and `fee_payments` remain later-module schema without complete user workflows. Gateway webhook/event processing is not implemented.
+Migration 003 adds attendance revisions and trusted class/attendance writes to `class_sessions` and `attendance`; the corresponding app workflows are implemented and their installed versions are owner-confirmed; real app/API acceptance is pending. `observations` and `observation_recipients` now have Module 5 workflows, with private `observation_versions` added in migration 005 (deployment pending). `fee_invoices` and `fee_payments` now have Module 6 invoice/manual-payment workflows, requiring migration 006 (deployment pending). Gateway webhook/event processing is not implemented.
 
 ## 7. Errors and diagnostics
 
@@ -249,8 +249,16 @@ GitHub builds provide the working preview route without Expo login. `eas.json` i
 
 ## 9. What is deliberately outside the current working flow
 
-Post implements private observations and drafts; see [its flow and recovery rules](OBSERVATIONS.md). Migration 005 is prepared but not deployed. Fees remains a pending-module screen. Schedule now manages classes and attendance; Today queries actual dated sessions and counts classes with an attendance save. It does not claim every later roster change has been reconciled, and fee/observation dashboard figures are not implemented. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.
+Post implements private observations and drafts; see [its flow and recovery rules](OBSERVATIONS.md). Migration 005 is prepared but not deployed. Fees implements monthly invoices and manual payment records; see [its workflow](FEES.md). Schedule now manages classes and attendance; Today queries actual dated sessions and counts classes with an attendance save. It does not claim every later roster change has been reconciled, and fee/observation dashboard figures are not implemented. There is no payment checkout, verified-payment backend, parent login/invitation, WhatsApp login, or parent-notification delivery. The larger parent app is deferred. Refer to [PROGRESS.md](../PROGRESS.md) before planning new work.
 
 ## Module 5: observations
 
 See [the complete observation flow](OBSERVATIONS.md#data-flow-and-recovery). The screen validates inputs and persists one scoped device snapshot, then explicitly calls `save_observation`. The function checks academy ownership, revision, batch/class and enrolments; one transaction writes the note, fixed recipient set and private version. Recorded scope cannot be changed. Exact retries return the existing version. Restart compares the snapshot with server state; conflicting text is copied only by an explicit new-draft action. Sign-out invalidates queued observation writers before removing device copies. No parent delivery exists.
+
+## Monthly invoices and manual-payment ledger — 0.5.0
+
+Fees now implements FEE-01; see [workflow, recovery and owner update](FEES.md). The screen calls trusted operations to create an invoice from a reviewed current batch fee, record a manual receipt, reverse a mistaken manual record, or void an invoice without active payments. Invoice amounts, names and original payment rows are retained; corrections add attributable history. Only one active invoice exists per enrolment/month. Voiding permits a replacement while preserving the old record.
+
+The app persists an immutable, account/academy-scoped pending request before calling the API. Unknown outcomes freeze that request until an exact retry confirms it; failed device persistence prevents sending it. Resolved requests are cleared. These recovery records intentionally survive sign-out for the same account; ordinary unsent fee form edits remain in memory with navigation guards. Financial references/reasons never enter diagnostics.
+
+Migration 006 serializes billing mutations per owned academy. The RLS-protected invoker view computes real received, test, outstanding and excess amounts from unreversed ledger entries; `get_fee_invoice` returns a consistent detail snapshot. Test gateway money cannot settle a real invoice. No payment-link service, provider credentials, webhook verification, online collection or refunds are implemented. Migrations 005/006 are prepared, not confirmed deployed. The parent app and native/live acceptance remain separate gates.

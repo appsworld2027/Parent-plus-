@@ -2,12 +2,12 @@ import { diagnosticBuild } from './version';
 import type { StorageDriver } from './auth/storage';
 
 export type ErrorCode = 'CONTROLLED_FAILURE' | 'SCREEN_FAILURE' | 'REPORT_SHARE_FAILED'
-  | 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACADEMY_FAILURE' | 'AUTH_CALLBACK_FAILURE' | 'ROSTER_FAILURE' | 'CLASS_FAILURE' | 'OBSERVATION_FAILURE';
+  | 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACADEMY_FAILURE' | 'AUTH_CALLBACK_FAILURE' | 'ROSTER_FAILURE' | 'CLASS_FAILURE' | 'OBSERVATION_FAILURE' | 'FEE_FAILURE';
 export type Diagnostic = Readonly<{
   reference: string;
   timestamp: string;
   code: ErrorCode;
-  action: 'diagnostic-check' | 'screen-render' | 'share-report' | 'auth-request' | 'session-restore' | 'academy-request' | 'email-link' | 'roster-request' | 'class-request' | 'observation-request';
+  action: 'diagnostic-check' | 'screen-render' | 'share-report' | 'auth-request' | 'session-restore' | 'academy-request' | 'email-link' | 'roster-request' | 'class-request' | 'observation-request' | 'fee-request';
   build: string;
 }>;
 
@@ -22,6 +22,7 @@ const allowedActions = {
   ROSTER_FAILURE: 'roster-request',
   CLASS_FAILURE: 'class-request',
   OBSERVATION_FAILURE: 'observation-request',
+  FEE_FAILURE: 'fee-request',
 } as const;
 
 const storageKey = 'parentplus.coach.diagnostics.v1';

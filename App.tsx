@@ -11,6 +11,7 @@ import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
 import { ClassesScreen } from './src/classes/ClassesScreen';
 import { ObservationsScreen } from './src/observations/ObservationsScreen';
+import { FeesScreen } from './src/fees/FeesScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
@@ -59,8 +60,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
-    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
-    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
+    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
+    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -97,7 +98,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       <ActionFeedback />
       <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
-        {(screen === 'Students' || screen === 'Schedule' || screen === 'Post') && !!notice && <Text style={styles.notice}>{notice}</Text>}
+        {(screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
@@ -105,7 +106,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <View style={styles.hero}>
             <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
             <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
-            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Record private student observations in Post. Fee collection follows in a later module.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
+            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Record private student observations in Post. Track invoices and manual payment records in Fees. Online collection is not enabled.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
             <Action label="View setup status" onPress={() => navigate('Support')} secondary />
           </View>
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} />}
@@ -148,7 +149,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

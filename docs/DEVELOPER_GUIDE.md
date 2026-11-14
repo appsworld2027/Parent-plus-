@@ -147,3 +147,8 @@ Explain what changed and why, point to the code/diagram and acceptance criterion
 ## Module 5 entry points
 
 Private observation code, transactional invariants and recovery paths are mapped in [OBSERVATIONS.md](OBSERVATIONS.md). Keep the UUID/revision and fixed-recipient guarantees intact when adding fields. Autosave uses inline feedback so typing does not dismiss the keyboard. Explicit server writes use the shared fixed notification row. Apply only migration 005 to the owner project already at 004.
+
+
+## Module 6 entry points
+
+[Fees](FEES.md) maps the immutable invoice/receipt ledger, four trusted write functions, durable exact-request recovery, correction rules and acceptance checks. Read it before editing `src/fees/` or migration 006. Pending fee recovery records intentionally survive sign-out, scoped to the same account/academy; do not add them to ordinary draft cleanup without a reconciliation design. Reusing a request with changed data must fail. Only manual receipts can use the manual correction operation. Keep test and real received totals separate. New checkouts still need the Git identity verification above for Vercel.

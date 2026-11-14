@@ -17,3 +17,10 @@ Recorded/reviewed: 12 November 2026. This captures existing choices and their co
 | PD-11 | One private observation device draft; explicit workspace saves and fixed recorded recipients | Protects unsent work, prevents silent audience expansion and distinguishes local persistence from recording. Conflicts require comparison or an explicit new draft. No parent delivery. | Candidate 0.4.0; migration 005 prepared; OBSERVATIONS.md and tests |
 
 For a new material decision, record: date, problem, recommendation, user benefit, cost/complexity, owner decision if required, affected requirement IDs, acceptance evidence and remaining uncertainty. Revisit assumptions when evidence changes. Do not silently reduce required pilot scope or promise a launch date before the remaining gates are assessed.
+
+
+### 14 November 2026 — Module 6 financial records
+
+FEE-01 is unchanged. Invoices use the reviewed current full monthly batch fee for an enrolment overlapping the billing month, without automatic proration. The server derives and snapshots the amount; if the fee changed since review, creation is rejected for another review. Arbitrary invoice editing would lose the original billing decision, so correction uses an attributed void and replacement, only after mistaken manual payment records are reversed. Original receipts remain in history. Reversals correct records and do not perform refunds.
+
+Uncertain financial writes retain the exact request in scoped device storage, including across sign-out, until resolved on the same account/academy. Dropping that identity on navigation/sign-out could turn a lost response into a duplicate receipt. Ordinary unsent fee form edits remain in memory with a navigation prompt. Native storage/API acceptance remains pending. See [fees recovery and limits](FEES.md).
