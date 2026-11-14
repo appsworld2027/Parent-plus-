@@ -5,6 +5,7 @@ import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } fr
 import { formatFee, parseFee, validateStudent, batchStudents, proficiencyLabels } from './model';
 import { addBatchStudents, archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
 import { studentPhotoThumbnails } from '../photos/service';
+import { ScanRosterScreen } from '../onboarding/ScanRosterScreen';
 import { PhotoControl } from '../photos/PhotoControl';
 import { localParts } from '../classes/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
@@ -21,6 +22,7 @@ function Field({ label, value, onChange, disabled, kind = 'text', max = 100 }: {
 }
 
 export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
+  const [scanOpen,setScanOpen]=useState(false);
   const [tab, setTab] = useState<'students' | 'batches'>('students');
   const [photoUrls,setPhotoUrls]=useState<Record<string,string>>({});
   const [data, setData] = useState<Roster | null>(null);
@@ -141,6 +143,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
     : profile ? profile.name : selectedBatch ? selectedBatch.name : tab === 'students' ? 'Your students' : 'Your batches';
   const list = data?.students.filter(student => (!!student.archived_at === showArchived) && student.name.toLowerCase().includes(search.toLowerCase())
     && (batchFilter === 'all' || data.enrolments.some(e => e.student_id === student.id && e.batch_id === batchFilter))) ?? [];
+  if(scanOpen&&data)return <ScanRosterScreen academy={academy} roster={data} initialBatch={activeBatch} onDirtyChange={setDirty} onBusyChange={setPhotoBusy} onCancel={()=>{setScanOpen(false);setDirty(false);onViewChange();}} onDone={async count=>{await reload();setScanOpen(false);setStudentDraft(null);setDirty(false);setNotice(`${count} students imported. Existing details retained.`);onViewChange();}}/>;
   return <View style={s.root} pointerEvents={photoBusy ? 'none' : 'auto'}>
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
     {/* Inline context stays available; ActionFeedback announces the result outside scrolling. */}
@@ -149,6 +152,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
     <ConfirmDialog visible={discard} title="Discard your unsaved changes?" message="Keep editing to retain this form, or discard it to go back."
       confirmLabel="Discard changes" cancelLabel="Keep editing" onConfirm={close} onCancel={() => setDiscard(false)} />
     {studentDraft && !batchDraft ? <View style={s.card}>
+      {!data?.students.some(x=>x.id===studentDraft.id)&&<Button label="Scan a student list instead" soft disabled={working||dirty} onPress={()=>{setScanOpen(true);onViewChange();}}/>}
       <Text style={s.formSectionTitle}>Student details</Text>
       <Text style={s.body}>Keep the student’s age and learning level easy to find.</Text>
       <Field label="Student name" value={studentDraft.name} onChange={value => updateStudent('name', value)} disabled={working} />
@@ -214,6 +218,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
       {loading && <ActivityIndicator accessibilityLabel="Loading roster" color="#1F6F6B" />}
       <Button label="Refresh roster" soft disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Roster refreshed.', { title: 'Refresh complete' }); }); }} />
       {tab === 'students' ? <>
+        <Button label="Scan student list" soft disabled={!data||loading||working} onPress={()=>{setScanOpen(true);onViewChange();}}/>
         <Button label="Add a student" disabled={!data || loading || working} onPress={() => editStudent()} />
         {data && <><Field label="Search students" value={search} disabled={working} onChange={setSearch} />
           <View style={s.chips}>{[{ id: 'all', name: 'All batches' }, ...batches].map(b => <Pressable key={b.id} accessibilityRole="button" onPress={() => setBatchFilter(b.id)} style={[s.chip, batchFilter === b.id && s.selected]}><Text style={s.label}>{b.name}</Text></Pressable>)}</View>
@@ -248,6 +253,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
           <Button label="Cancel adding students" soft disabled={working} onPress={back} />
         </View> : <>
           <Button label="Add existing students" disabled={working || loading} onPress={() => { setAddingMembers(true); setSelectedMembers([]); setMemberSearch(''); }} />
+          <Button label="Scan student list into this batch" soft disabled={working||loading} onPress={()=>{setScanOpen(true);onViewChange();}}/>
           <Button label="Add new student to this batch" soft disabled={working || loading} onPress={() => editStudent(undefined, selectedBatch.id)} />
           <Text style={s.title}>Students in this batch</Text>
           {!members.length && <Text style={s.body}>This batch has no students yet. Add an existing student or create a new student here.</Text>}

@@ -28,7 +28,8 @@ export const supabase = appConfig.configured ? createClient(appConfig.url!, appC
       const abort = () => controller.abort();
       if (init?.signal?.aborted) controller.abort();
       init?.signal?.addEventListener('abort', abort);
-      const timer = setTimeout(abort, 15_000);
+      const requestURL = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      const timer = setTimeout(abort, requestURL.endsWith('/functions/v1/scan-roster') ? 65_000 : 15_000);
       try { return await fetch(input, { ...init, signal: controller.signal }); }
       finally { clearTimeout(timer); init?.signal?.removeEventListener('abort', abort); }
     },

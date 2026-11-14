@@ -7,3 +7,7 @@ Supabase updates **001–008 are installed**. The owner screenshot shows both007
 Refresh the hosted app, then use fictional records to check save/reopen, a student in two batches, a direct fee receipt, and private profile/observation photos. Automated fixture tests do not establish real database or photo-storage acceptance. Keep login credentials out of chat. Online payments, refunds and parent delivery remain inactive; manual fee recording does not move money.
 
 Windows-emulator setup and physical-phone automation can wait. The [0.6.0 APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43633663760/artifacts/14129157425) build passed, including phone/emulator architecture and absent camera/microphone permission checks. Physical installation remains unverified.
+
+## New photo onboarding0.7.0
+
+The owner requested register-photo import. Source/review flow is being prepared; actual extraction requires a secure function, only update009 and a private OpenAI API key with separate API billing. Existing001–008 stay installed. Do not paste API keys in chat. Activation instructions will be guided one step at a time after publication; manual student entry remains available. [Feature/setup details](PHOTO_ONBOARDING.md).

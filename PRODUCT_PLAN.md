@@ -171,3 +171,7 @@ Success is a narrow app a coach can actually use. It is not the number of protot
 ### Owner correction after app review
 
 Batch rosters, membership from either entry point, summary-first monthly fees and both photo locations are now required. This overrides the earlier optional-photo cut line. Preserve the ledger and access controls while simplifying the visible journey. Implementations and current acceptance limits are in PROGRESS.md and COACH_WORKFLOW_REVIEW.md.
+
+### Photo-assisted onboarding
+
+Students/Add Student and batch pages must offer register/form capture or image selection, AI extraction, review/edit/skip, existing-name linking and explicit confirmed import. This is a required workflow addition; details and external activation dependencies are in [PHOTO_ONBOARDING.md](docs/PHOTO_ONBOARDING.md), PRDSTU-03 and migration009. No real AI service is activated by the source change alone.
