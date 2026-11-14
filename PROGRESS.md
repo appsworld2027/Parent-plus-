@@ -1,5 +1,13 @@
 # Parent Plus Coach — development checkpoint
 
+## Vercel deployment investigation — 14 November 2026
+
+Current task: repair deployment for `appsworld2027/parent-plus-varcel`; app version remains 0.4.0. Workspace commands and repository clone work. Inspected source `f791a32`, its GitHub author mapping and Vercel status before changes. GitHub returns `author: null` for the commit's configured author email; Vercel reports **Deployment was blocked** ([failed attempt](https://vercel.com/appsworld2027/parent-plus-varcel/EQ19jEQgtihu9Mcb2we86FW3WBwX)). The workspace inherited the same unmapped Git identity, explaining the author-identification failure.
+
+Authenticated GitHub account is `appsworld2027`, numeric ID `352282836`. Repository-local Git identity now uses its GitHub private address, `352282836+appsworld2027@users.noreply.github.com`. A new forward commit will retry the existing Vercel integration; no history rewrite is needed. Deployment outcome and checks will be recorded after verification. No product requirements changed in today's review; Module 5 acceptance gaps below remain open.
+
+Pre-commit checks: TypeScript and all 95 tests pass; web export passes (304 modules); generated SQL bundle matches its sources; `git diff --check` passes. The first sandboxed test run hit a subprocess `EPERM` on the bundle check (94 others passed); the full rerun outside that restriction passed all 95. Only Markdown handover files changed; app version, runtime code and database migrations are unchanged. Deployment success remains to be checked on the new commit.
+
 Date: 12 November 2026. **Feature development resumed at the owner's explicit request.** Current milestone: Module 5 private observations and durable drafts, candidate 0.4.0 (Android versionCode 7). The owner will set up the Windows emulator later. Physical-phone control/automation stays on hold. The parent app and live payment collection remain deferred.
 
 Branch: `codex/coach-foundation`. Latest verified APK: **0.4.0**, source `f8eb60a886d3ac6bcb8ea059cf6a5467232e4994`, containing ARM64 and x86_64. [Download APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808/artifacts/13948107259); [successful native build](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808). Source and documentation are saved on GitHub. Native installation and live observation operations are not yet accepted. No PR/merge to main is recorded.

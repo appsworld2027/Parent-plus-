@@ -140,6 +140,8 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 
 ## 9. Before handing off a change
 
+For this repository's Vercel integration, commits must map to a GitHub account with project access. The 14 November 2026 investigation found the inherited workspace author email was unmapped (`author: null` in GitHub's commit API), blocking `f791a32` before deployment. The authenticated repository owner is `appsworld2027` (ID `352282836`); this checkout uses its private GitHub email `352282836+appsworld2027@users.noreply.github.com` in repository-local Git configuration. On a new checkout, verify the authenticated account and `git var GIT_AUTHOR_IDENT` before committing; local Git configuration is not cloned. Preserve existing history and use a new commit for a retry. Verify GitHub's author mapping and the Vercel status on the new SHA; a successful local build alone does not prove deployment.
+
 Explain what changed and why, point to the code/diagram and acceptance criterion, list executed checks plus their limits, identify the source/build, record open issues and give the next concrete step. For comment/document-only edits, verify links, diagram syntax and that executable code is unchanged; a new APK is unnecessary. Run relevant checks for actual behavior changes rather than adding tests that merely repeat the code.
 
 ## Module 5 entry points
