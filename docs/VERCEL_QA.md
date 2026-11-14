@@ -1,3 +1,17 @@
+# Vercel hosted verification — version0.6.0
+
+Project `appsworld2027/parent-plus-varcel`; runtime source `00790839c85f9c9f54861f1dc9ab383e3ed0b891`. [Hosted app](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app) · [deployment](https://vercel.com/appsworld2027/parent-plus-varcel/28Gt28KXoE2kCxkqiLWmzSpf2NyF).
+
+**51/51 hosted browser flows pass**, zero failures/skips/flaky results,168.526seconds, started19:45:34.156UTC on14November2026. Groups: auth8, classes9, new coach workflows7, feedback4, fees9, observations9, roster5. These use fictional Supabase/Storage transport against the real deployed bundle. Four dev-only foundation cases are excluded here and pass in the full55-case GitHub suite.
+
+The testing agent confirmed deployed JS `index-ba97a58955091f7b3c383fd68e91fd4d.js` matches the local0.6.0 production export byte-for-byte, SHA256 `d9e891ed4891903677eb725497517bae3c3577b4a957750cb93770bf1663ef47`. Real mobile/desktop/recovery smoke passed, zero page errors and zero backend writes. Public auth settings respond; the existing fee view denies anonymous reads; new coach_photos is absent (008 not installed), as expected. The compiled bundle scan found no private-key, Supabase-secret, gateway-secret, webhook-secret or service-role-JWT patterns; expected public publishable configuration is present. This pattern scan is bounded evidence, not a guarantee against every possible leak.
+
+Visual review confirms the batch roster, fee totals and prominent age/proficiency. The profile screenshot's base roster fixture lacks photo metadata handling and shows a fixture-induced unavailable preview; dedicated photo flows passed. Temporary authorized Share capability/browser state stays outside source. Real authenticated saves and actual Storage bytes/signed URLs still require the single007/008 update and live acceptance. Deployment protection remains enabled.
+
+---
+
+The following0.5.0 report is historical.
+
 # Vercel hosted verification — 14 November 2026
 
 App version: **0.5.0**. Project: `appsworld2027/parent-plus-varcel`.
