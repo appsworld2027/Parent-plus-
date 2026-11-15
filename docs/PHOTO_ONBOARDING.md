@@ -35,3 +35,7 @@ No secret/deployment token is available in the coding workspace, so real provide
 Before image selection, coaches see that the register is transmitted to Google Cloud Vision. The app does not save the register as a profile/observation photo or into academy Storage. Google's [data-use policy](https://cloud.google.com/vision/docs/data-usage) describes online processing and says submitted content is not used to train/improve Vision. This is not a guarantee about every metadata record, device/OS cache or zero retention. The recognition response is no-store; only explicitly confirmed student fields enter the academy database and private retry receipt.
 
 Mocked provider, English/Hindi geometry/form fixtures, review/import browser flows and PostgreSQL quotas are tested independently. All test provider requests are mocked and spend no credits. Real Cloud configuration, recognition on representative handwriting, row/contact association, native camera behavior and two-account production import acceptance remain activation checks. The existing exact-request atomic import and duplicate checks are reused.
+
+## Published test evidence
+
+[Focused hosted report](CLOUD_VISION_QA.md) records5/5scan cases and minimal real smoke on0.8.0; the full GitHub pipeline passes. Fictional disclosure/fallback screenshots: [before choosing a photo](images/080-google-disclosure.png) and [recognised-text review](images/080-recognized-text-fallback.png). No real provider credentials/data were used and actual activation remains pending.

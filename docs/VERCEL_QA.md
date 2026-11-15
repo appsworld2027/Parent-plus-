@@ -1,3 +1,9 @@
+# Latest Vercel verification —0.8.0
+
+[Cloud Vision0.8report](CLOUD_VISION_QA.md): runtime3f7d4fc,5/5hosted scan cases plus minimal version/login/recovery/disclosure smoke pass. Full GitHub type/unit/browser/export pipeline passes. These are fixture/transport tests, not liveOCR acceptance: the private Google key, function and009/010 activation are pending. Prior reports below are historical.
+
+---
+
 # Latest Vercel verification —0.7.0
 
 [Focused0.7 report](ROSTER_SCAN_QA.md): final runtimea7c5170,3/3 new scan cases pass plus minimal real login/version/recovery smoke. No old51-flow hosted rerun, real AI calls or database writes. GitHub's full58browser/158automated checks and both exports pass. Scanning is not activated until009 and the private server function/provider setup are complete. Prior0.6 and0.5 reports below remain historical evidence.
