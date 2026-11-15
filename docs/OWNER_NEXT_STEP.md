@@ -11,3 +11,7 @@ The latest verified older0.7 build43637366483 passed;the0.8 full GitHub check pi
 ## Latest owner confirmation
 
 GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets after generating the Google credential. Its value was not accessed or posted in chat. Next apply only combined009/010 in one new SQL query, then deploy scan-roster and verify a fictional photo/import. Do not repeat001–008 or create another key. Provider/account acceptance is still pending.
+
+## Latest database confirmation
+
+Both202611150009 and202611150010 installed_update rows are owner-confirmed.001–010 are now installed; do not rerun scripts. The Google secret is saved. Next open Supabase Edge Functions and deploy scan-roster via the dashboard editor using the complete generated single-file source. The repo is private, so do not use a public raw-GitHub import shortcut. Function deployment/provider-call acceptance remain pending.

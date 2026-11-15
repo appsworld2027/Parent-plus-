@@ -1,5 +1,10 @@
 # Parent Plus Coach — development checkpoint
 
+## Activation database checkpoint
+
+The owner confirmed both installed_update rows202611150009 and202611150010 after running the combined SQL. Updates001–010 are now owner-confirmed installed; do not repeat them. GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets; its value was never shared/read here. Remaining activation: deploy the tested single-file scan-roster Edge Function, configure its gateway verification to match the handler's own Auth/owner checks, then test a fictional image/review/import. Repository visibility is private, so an unauthenticated raw-GitHub import is not a valid deployment shortcut. No real provider call has been made by this checkpoint.
+
+
 ## Cloud Vision activation checkpoint
 
 The owner reports creating/selecting the Google Cloud project, generating a credential through the Cloud Vision API-key flow, and saving GOOGLE_CLOUD_VISION_API_KEY in Supabase Edge Function Secrets. No key value was shared with or read by the coding workspace. This is owner-confirmed configuration, not a successful provider-call verification. Pending: apply only combined009/010, deploy the generated scan-roster function, then test a fictional register and confirmed import. Existing001–008 must not be repeated. No actual OCR call has been made by this checkpoint.
