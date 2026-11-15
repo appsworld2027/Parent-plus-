@@ -11,3 +11,7 @@ Windows-emulator setup and physical-phone automation can wait. The [0.6.0 APK](h
 ## New photo onboarding0.7.0
 
 Version0.7.0 is deployed with register-photo scan/review entry points in Students, Add Student and batch pages. 158 automated checks, 58 browser cases and 3 new hosted cases pass. Actual extraction requires a secure function, only update009 and a private OpenAI API key with separate API billing. Existing001–008 stay installed. Do not paste API keys in chat. Activation will be guided one step at a time; manual student entry remains available. The owner has been asked whether OpenAI API billing is already enabled; no answer or approval is assumed. Coaches will not need individual ChatGPT accounts or API keys. [Feature/setup details](PHOTO_ONBOARDING.md).
+
+## OCR choice before paid API setup
+
+Pause the OpenAI-key setup while choosing the lower-cost OCR route. [Dedicated OCR findings](OCR_OPTIONS.md) recommend evaluating Cloud Vision document OCR and explain the published free allowance, billing account requirement, private/on-device alternatives and handwriting/language limits. The owner has been asked whether lists are English, Hindi or both. No answer, provider activation or real-scan accuracy is assumed. The0.7 Android build43637366483 now succeeds; its earlier pending state is historical.

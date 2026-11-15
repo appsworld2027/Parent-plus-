@@ -27,3 +27,7 @@ The import RPC locks the academy, validates1–50reviewed rows and100KB payload 
 ## Verification boundaries
 
 Unit, PostgreSQL, handler and browser tests use fictional records and a mocked provider; none spend API credits. Full handler authentication/quota/payload tests do not replace deployed Edge Function and real camera acceptance. Live extraction quality, real provider billing, camera behavior, signed-in import/reopen and cross-account isolation must be checked after activation with fictional data.
+
+## Dedicated OCR alternative —15November2026
+
+The owner now prioritizes no/low recurring scan cost. [OCR_OPTIONS.md](OCR_OPTIONS.md) compares dedicated OCR routes and their actual limits. A general LLM is optional: recognition/layout plus reviewed field mapping can reuse this UI/import pipeline. The current OpenAI reader is inactive; no replacement OCR service is embedded yet. Cloud Vision is the recommended benchmark candidate, with an app-wide monthly usage reservation needed before any free-mode claim. No quota/provider account or handwriting accuracy has been verified on real documents.
