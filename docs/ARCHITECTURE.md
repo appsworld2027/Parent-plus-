@@ -1,6 +1,6 @@
 # How Parent Plus Coach works today
 
-Reviewed: 14 November 2026. Applies to candidate app version 0.5.0. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
+Reviewed: 15 November 2026. Current candidate0.8.0 uses the Cloud Vision flow appended below; earlier module descriptions are historical. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system
 
@@ -273,3 +273,7 @@ Private profile and observation media use `coach_photos` metadata and the privat
 ## 0.7.0 register onboarding
 
 The scanner is the first custom server feature: authenticated app → Supabase Edge Function → Auth/owner check → service-only quota reservation → OpenAI image extraction → editable client review → owner-scoped atomic import RPC. AI never writes student records. Vercel continues serving the web bundle; scans call Supabase directly so protected Vercel previews do not obstruct Android. No server credentials enter the bundle. This server is prepared but not deployed; [activation and limits](PHOTO_ONBOARDING.md) are explicit. The earlier statement that no custom server exists describes deployed0.6 behavior.
+
+## 0.8.0 Cloud Vision reader
+
+App capture/choose → authenticated scan-roster Edge Function → Auth and academy ownership → new010 shared monthly plus009 daily/cooldown reservation → exactly one Cloud Vision DOCUMENT_TEXT_DETECTION call → explicit-label/word-position mapping → editable coach review → confirmed atomic import. Credentials remain in the server x-goog-api-key header; no GPT/Gemini or image-storage service is invoked. Unclear layouts return recognised lines; names-only fallback is local and does not invoke the provider again. The provider-aware client marker prevents old OpenAI-disclosing versions reaching Google. Actual deployment/key and missing009/010 remain pending; source implementation is not live activation. See PHOTO_ONBOARDING.md.

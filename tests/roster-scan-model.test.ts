@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {parseScan,validateReview,importPayload,type ReviewStudent} from '../src/onboarding/model';
+import {parseScan,validateReview,importPayload,namesFromLines,type ReviewStudent} from '../src/onboarding/model';
 import type {Roster} from '../src/roster/model';
 const roster:Roster={students:[{id:'existing',name:'Ria  Shah',age_years:8,archived_at:null}],batches:[],contacts:[],enrolments:[]};
 const row:ReviewStudent={key:'one',id:'new',name:'Tara',age:'9',guardian:'',email:'',phone:'',proficiency:'unassessed',warnings:[],mode:'new',selected:true};
@@ -21,4 +21,15 @@ it('sends only reviewed selected fields; linking cannot overwrite a profile',()=
  expect(importPayload([{...row,mode:'existing',id:'existing'}, {...row,selected:false}])).toEqual([{id:'existing',mode:'existing'}]);
  expect(importPayload([row])[0]).not.toHaveProperty('warnings');
  expect(importPayload([row])[0]).not.toHaveProperty('key');
+});
+
+it('keeps bounded recognised text available for review without storing it in imports',()=>{
+ const result=parseScan({students:[],warnings:[],rawLines:['Name','Fictional Meera',null,'x'.repeat(600)]});
+ expect(result.rawLines).toHaveLength(3);expect(result.rawLines[2]).toHaveLength(500);
+ expect(importPayload([row])[0]).not.toHaveProperty('rawLines');
+});
+it('names-only mode strips numbering, leaves details blank and rejects contact/age lines',()=>{
+ const result=namesFromLines(['Name','Teacher name','Parent name','1. Fictional Meera','२) रिया शाह','Age: 9','9876543210','meera@example.test']);
+ expect(result.map(r=>r.name)).toEqual(['Fictional Meera','रिया शाह']);
+ expect(result[0]).toMatchObject({age:'',guardian:'',email:'',phone:'',proficiency:'unassessed'});
 });

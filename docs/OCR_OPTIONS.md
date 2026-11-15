@@ -43,3 +43,7 @@ Recognition reads words; app code maps them to name/age/guardian/contact columns
 - PaddleOCR: https://github.com/PaddlePaddle/PaddleOCR
 - TrOCR model card: https://huggingface.co/microsoft/trocr-base-handwritten
 - Tesseract FAQ: https://tesseract-ocr.github.io/tessdoc/FAQ.html
+
+## Selected implementation —0.8.0
+
+The owner selected Cloud Vision and explicitly requested implementation. The reader is now coded in handler.ts/vision.ts with server-only credentials, one document-OCR feature, deterministic field mapping and the existing confirmation/import UI. A new010 reserves900sharedmonthly attempts before provider calls, in addition to009 daily/cooldown controls. This supersedes the earlier statement that no replacement is embedded. Real activation and handwriting-quality acceptance remain pending; see [PHOTO_ONBOARDING.md](PHOTO_ONBOARDING.md).

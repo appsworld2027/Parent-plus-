@@ -175,3 +175,7 @@ Batch rosters, membership from either entry point, summary-first monthly fees an
 ### Photo-assisted onboarding
 
 Students/Add Student and batch pages must offer register/form capture or image selection, AI extraction, review/edit/skip, existing-name linking and explicit confirmed import. This is a required workflow addition; details and external activation dependencies are in [PHOTO_ONBOARDING.md](docs/PHOTO_ONBOARDING.md), PRDSTU-03 and migration009. No real AI service is activated by the source change alone.
+
+### Cloud Vision implementation selected
+
+The owner chose Cloud Vision for capture→auto-fill→confirmation. Candidate0.8.0 replaces the unactivated GPT reader, reuses confirmed imports and adds conservative text/table mapping plus a shared monthly attempt limit. [Current behavior and activation](docs/PHOTO_ONBOARDING.md) supersedes the initial provider choice; no real scans are accepted until the private function/key and missing009/010 are configured.

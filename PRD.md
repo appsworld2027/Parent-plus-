@@ -1,6 +1,6 @@
 # Product requirements: Parent Plus Coach
 
-Version: 1.3 · cost-aware OCR onboarding, 15 November 2026
+Version: 1.4 · Cloud Vision implementation, 15 November 2026
 Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](docs/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](docs/PRODUCT_DECISIONS.md) and [developer handover](docs/DEVELOPER_GUIDE.md).
 Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
@@ -161,3 +161,9 @@ The register image is not saved in app Storage or as a profile photo. It is tran
 ## OCR cost clarification —15November2026
 
 The owner requires investigation of dedicated text/handwriting-to-field tools rather than assuming paid chatbot APIs. A general LLM is not a mandatory dependency: recognition plus coach-reviewed column/field mapping may implementSTU-03. [OCR options](docs/OCR_OPTIONS.md) records current official pricing/privacy/language evidence and recommends evaluating Cloud Vision document OCR, with on-device ML Kit for appropriate printed/native cases. Cloud allowances are shared service/account quotas, not per-coach entitlements; a free-mode integration requires an enforced provider-wide usage stop as well as academy limits. Hindi handwritten support/accuracy must be tested separately from printed Hindi. Provider selection/real-sample accuracy remain open; the current OpenAI implementation is prepared but inactive. No OCR replacement is claimed built by this research update.
+
+## Cloud Vision integration —0.8.0
+
+The owner explicitly selected Google Cloud Vision: choosing/capturing a register must send it to the secure recognition service, populate supported fields and request coach confirmation. Replace the inactive OpenAI reader with DOCUMENT_TEXT_DETECTION (one image/one feature); no GPT/Gemini fallback or provider key in clients. Explicit labelled admission forms and recognisable table headers are mapped to student/age/guardian/contact/learning-level fields. Keep original scripts, explicit ages only and unassessed levels when missing. Show recognised text and a coach-selected names-only fallback for unclear layouts; this reuses OCR output without another provider call. Existing imported/profile values are preserved and no records save until confirmation.
+
+Per-academy10/day/10second spacing remains; add an atomic app-wide900attempts per UTC month reservation before Google calls, counting failed/unknown provider outcomes. This limits app requests; free entitlement is governed by Google's billing rules/other usage and must be checked at activation. Recognition accuracy and row/contact association still need real-register acceptance. Google Cloud billing/API enablement, private GOOGLE_CLOUD_VISION_API_KEY, function deployment and missing009/010 are external activation dependencies. Existing001–008 must not be repeated. The0.7 OpenAI setup instructions are historical.

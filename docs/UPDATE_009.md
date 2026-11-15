@@ -1,4 +1,6 @@
-# Only update009 — reviewed roster imports and scan quota
+# Historical update009 — reviewed roster imports and scan quota
+
+For Cloud Vision0.8, use [combined009/010](UPDATE_009_010.md).009 alone does not include the shared monthly limit and cannot activate the new reader.
 
 For the existing project with001–008 installed. Do not repeat those updates. This update alone does not activate image recognition: the secure Edge Function and private provider credential must also be deployed. The script preserves existing records and is transactional. Import receipts stay in a private schema for retry comparison; register images are not stored.
 

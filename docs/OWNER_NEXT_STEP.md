@@ -1,17 +1,9 @@
-# Current owner steps
+# Current owner steps —0.8.0 Cloud Vision candidate
 
-Candidate **0.6.0** implements the requested student profiles, age/proficiency, batch rosters, two-way assignment, clearer monthly fees and both kinds of photo upload. The [Vercel preview](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app) follows the branch; check version0.6.0 before reviewing. The agent passed51 hosted fixture checks; GitHub passed136 automated checks and55 browser flows. [Evidence](VERCEL_QA.md).
+The owner selected Cloud Vision OCR. The code sends captured/chosen registers through an authenticated server function, populates editable supported fields and saves only after explicit confirmation. OpenAI/Gemini keys are no longer needed. [Flow and setup](PHOTO_ONBOARDING.md).
 
-Supabase updates **001–008 are installed**. The owner screenshot shows both007/008 success markers. Do not repeat the script. Focused live zero-row API checks deny anonymous photo metadata/profile reads without missing-schema errors. Full authenticated saves and actual photo bytes remain separate acceptance checks.
+Existing Supabase001–008 remain installed. Do not repeat them. Missing009/010 are prepared as [one combined transaction](UPDATE_009_010.md); Google Cloud Vision enablement/billing, a server-side GOOGLE_CLOUD_VISION_API_KEY and function deployment are also required before real scans work. No key or deployment token is available in the coding workspace. These are activation steps, not claimed complete by source/fixture tests. Never paste provider keys in chat.
 
-Refresh the hosted app, then use fictional records to check save/reopen, a student in two batches, a direct fee receipt, and private profile/observation photos. Automated fixture tests do not establish real database or photo-storage acceptance. Keep login credentials out of chat. Online payments, refunds and parent delivery remain inactive; manual fee recording does not move money.
+The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. This is not900free scans per coach or a guarantee against charges from other Google Cloud usage. Verify the account's free entitlement before enabling real calls. Recognised text never imports automatically; unclear layouts are reviewed manually. Start with fictional/anonymised registers and check row/contact alignment after activation. Native camera and real provider accuracy remain separate acceptance checks.
 
-Windows-emulator setup and physical-phone automation can wait. The [0.6.0 APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43633663760/artifacts/14129157425) build passed, including phone/emulator architecture and absent camera/microphone permission checks. Physical installation remains unverified.
-
-## New photo onboarding0.7.0
-
-Version0.7.0 is deployed with register-photo scan/review entry points in Students, Add Student and batch pages. 158 automated checks, 58 browser cases and 3 new hosted cases pass. Actual extraction requires a secure function, only update009 and a private OpenAI API key with separate API billing. Existing001–008 stay installed. Do not paste API keys in chat. Activation will be guided one step at a time; manual student entry remains available. The owner has been asked whether OpenAI API billing is already enabled; no answer or approval is assumed. Coaches will not need individual ChatGPT accounts or API keys. [Feature/setup details](PHOTO_ONBOARDING.md).
-
-## OCR choice before paid API setup
-
-Pause the OpenAI-key setup while choosing the lower-cost OCR route. [Dedicated OCR findings](OCR_OPTIONS.md) recommend evaluating Cloud Vision document OCR and explain the published free allowance, billing account requirement, private/on-device alternatives and handwriting/language limits. The owner has been asked whether lists are English, Hindi or both. No answer, provider activation or real-scan accuracy is assumed. The0.7 Android build43637366483 now succeeds; its earlier pending state is historical.
+The latest verified older0.7 build43637366483 passed;0.8 compilation/publication evidence will be recorded in [progress](../PROGRESS.md). Manual student entry remains available while recognition is unconfigured.

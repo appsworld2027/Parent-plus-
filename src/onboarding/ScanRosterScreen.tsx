@@ -6,15 +6,16 @@ import type {Roster,Proficiency} from '../roster/model';
 import {proficiencyLabels} from '../roster/model';
 import {ConfirmDialog} from '../ui/ConfirmDialog';
 import {scanRoster,importRoster} from './service';
-import {matches,validateReview,type ReviewStudent} from './model';
+import {matches,validateReview,namesFromLines,type ReviewStudent} from './model';
 function Button({label,onPress,disabled=false,soft=false}:{label:string;onPress:()=>void;disabled?:boolean;soft?:boolean}){return <Pressable accessibilityRole="button" accessibilityState={{disabled}} disabled={disabled} onPress={onPress} style={[s.button,soft&&s.soft,disabled&&s.disabled]}><Text style={[s.buttonText,soft&&s.softText]}>{label}</Text></Pressable>;}
 export function ScanRosterScreen({academy,roster,initialBatch,onDone,onCancel,onDirtyChange,onBusyChange}:{academy:string;roster:Roster;initialBatch:string|null;onDone:(count:number)=>Promise<void>;onCancel:()=>void;onDirtyChange:(value:boolean)=>void;onBusyChange:(value:boolean)=>void}){
+  const [rawLines,setRawLines]=useState<string[]>([]),[showRaw,setShowRaw]=useState(false);
   const [expanded,setExpanded]=useState<string[]>([]);
   const [rows,setRows]=useState<ReviewStudent[]>([]),[warnings,setWarnings]=useState<string[]>([]),[batch,setBatch]=useState(initialBatch);
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[confirm,setConfirm]=useState(false),[discard,setDiscard]=useState(false),[uncertain,setUncertain]=useState(false),[completed,setCompleted]=useState(false);
   const lock=useRef(false),request=useRef(randomUUID());
   const selected=rows.filter(row=>row.selected).length;
-  useEffect(()=>{onDirtyChange(rows.length>0&&!completed);return()=>onDirtyChange(false);},[rows,completed,onDirtyChange]);
+  useEffect(()=>{onDirtyChange((rows.length>0||rawLines.length>0)&&!completed);return()=>onDirtyChange(false);},[rows,rawLines,completed,onDirtyChange]);
   useEffect(()=>{onBusyChange(busy);return()=>onBusyChange(false);},[busy,onBusyChange]);
   function update(key:string,change:Partial<ReviewStudent>){if(!uncertain&&!busy)setRows(items=>items.map(row=>row.key===key?{...row,...change}:row));setError('');}
   async function pick(camera=false){
@@ -29,7 +30,8 @@ export function ScanRosterScreen({academy,roster,initialBatch,onDone,onCancel,on
       const image=camera&&Platform.OS!=='web'?await ImagePicker.launchCameraAsync(options):await ImagePicker.launchImageLibraryAsync(options);
       if(image.canceled)return;
       const extracted=await scanRoster(academy,image.assets[0].uri);
-      if(!extracted.students.length)throw new Error('No readable students found. Try a clearer photo.');
+      if(!extracted.students.length&&!extracted.rawLines.length)throw new Error('No readable students found. Try a clearer photo.');
+      setRawLines(extracted.rawLines);setShowRaw(!extracted.students.length);
       setWarnings(extracted.warnings);setRows(extracted.students.map(row=>{const key=randomUUID();return {...row,key,id:key,mode:'new',selected:!!row.name&&!matches(row,roster).length};}));
     }catch(failure){setError(failure instanceof Error?failure.message:'The photo could not be read. Please retry.');}
     finally{lock.current=false;setBusy(false);}
@@ -46,16 +48,22 @@ export function ScanRosterScreen({academy,roster,initialBatch,onDone,onCancel,on
     <Text accessibilityRole="header" style={s.heading}>Scan student list</Text>
     <Text style={s.body}>Photograph a register or admission form. Review the readable names and details before anything is saved. Missing details stay blank.</Text>
     {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-    {!rows.length?<View style={s.card}>
+    {!rows.length&&!rawLines.length?<View style={s.card}>
       <Text style={s.title}>A quicker way to get started</Text>
       <Text style={s.body}>Use one clear page, up to 50 students. Printed and readable handwritten lists are supported; recognition can make mistakes.</Text>
-      <Text style={s.body}>This sends the selected image to OpenAI for text extraction. We do not save the register image in your photo library or academy Storage. Provider processing policies apply. Only send a register you are permitted to process.</Text>
+      <Text style={s.body}>This sends the selected image to Google Cloud Vision for text recognition. We do not save the register image in your photo library or academy Storage. Provider processing policies apply. Only send a register you are permitted to process.</Text>
       {Platform.OS!=='web'&&<Button label="Take register photo" disabled={busy} onPress={()=>{void pick(true);}}/>}
       <Button label={busy?'Reading list…':Platform.OS==='web'?'Take or choose register photo':'Choose register photo'} disabled={busy} onPress={()=>{void pick();}}/>
-      <Text style={s.caption}>10 scans per academy per UTC day. Failed AI attempts may use a scan. Scanning must be enabled for your academy; manual entry stays available.</Text>
+      <Text style={s.caption}>10 scans per academy per UTC day. Failed OCR attempts may use a scan. The app also stops at 900 attempts per UTC month shared across academies. Scanning must be enabled for your academy; manual entry stays available.</Text>
     </View>:<>
-      <View style={s.card}><Text style={s.title}>Review {rows.length} extracted students</Text><Text style={s.body}>{uncertain?'An import may already have saved. Retry this same review to confirm it.':'Nothing has been saved. Correct mistakes, skip unwanted rows, and choose existing students where a name matches.'}</Text>
+      <View style={s.card}><Text style={s.title}>{rows.length?`Review ${rows.length} extracted students`:'Review recognised text'}</Text><Text style={s.body}>{uncertain?'An import may already have saved. Retry this same review to confirm it.':'Nothing has been saved. Correct mistakes, skip unwanted rows, and choose existing students where a name matches.'}</Text>
         {warnings.map((warning,i)=><Text key={i} style={s.warning}>{warning}</Text>)}
+        {!!rawLines.length&&<><Button label={showRaw?'Hide recognised text':'Show recognised text'} soft disabled={busy} onPress={()=>setShowRaw(value=>!value)}/>{showRaw&&<Text selectable style={s.body}>{rawLines.join('\n')}</Text>}</>}
+        {!rows.length&&<><Text style={s.body}>Column labels were unclear. If this is a names-only list, treat each readable line as a name and check every row. Other details stay blank.</Text>
+          <Button label="Use recognised lines as names" soft disabled={busy} onPress={()=>{const found=namesFromLines(rawLines);if(!found.length){setError('No names-only lines found. Use manual entry or try a clearer photo.');return;}setRows(found.map(row=>{const key=randomUUID();return {...row,key,id:key,mode:'new',selected:!matches(row,roster).length};}));setWarnings(current=>[...current,'Names-only mode: headings and guardian names can be mistaken for students. Check all rows.']);}}/>
+          <Button label={busy?'Reading list…':'Try a clearer register photo'} soft disabled={busy} onPress={()=>{void pick();}}/>
+        </>}
+
         <Text style={s.title}>Add selected students to</Text>
         <Button label={batch===null?'✓ No batch yet':'No batch yet'} soft disabled={busy||uncertain} onPress={()=>setBatch(null)}/>
         {roster.batches.filter(b=>!b.archived_at).map(b=><Button key={b.id} label={`${batch===b.id?'✓ ':''}${b.name}`} soft disabled={busy||uncertain} onPress={()=>setBatch(b.id)}/>)}
@@ -76,7 +84,7 @@ export function ScanRosterScreen({academy,roster,initialBatch,onDone,onCancel,on
       {uncertain&&<Text style={s.warning}>This review is locked because the save outcome is uncertain. Retry the same import. If you close, check the roster before importing again; matching names cannot be created twice through this importer.</Text>}
       <Button label={busy?'Saving students…':uncertain?'Retry same student import':`Review import (${selected})`} disabled={busy||!selected||completed} onPress={()=>{const invalid=validateReview(rows,roster);if(invalid)setError(invalid);else if(uncertain)void save();else setConfirm(true);}}/>
     </>}
-    <Button label={initialBatch?'Back to batch':'Back to student entry'} soft disabled={busy} onPress={()=>rows.length&&!completed?setDiscard(true):onCancel()}/>
+    <Button label={initialBatch?'Back to batch':'Back to student entry'} soft disabled={busy} onPress={()=>(rows.length||rawLines.length)&&!completed?setDiscard(true):onCancel()}/>
     <ConfirmDialog visible={confirm} title={`Import ${selected} students?`} message={`${batch?`Add them to ${roster.batches.find(b=>b.id===batch)?.name}.`:'Save without a batch.'} Existing profiles will not be overwritten. No invitations, fees or messages are sent.`} confirmLabel="Confirm student import" cancelLabel="Keep reviewing" onConfirm={()=>{void save();}} onCancel={()=>setConfirm(false)}/>
     <ConfirmDialog visible={discard} title="Leave this scan review?" message={uncertain?'An import may already have saved. Check the roster before scanning again.':'Unsaved extracted details will be discarded.'} confirmLabel="Leave scan review" cancelLabel="Keep reviewing" onConfirm={onCancel} onCancel={()=>setDiscard(false)}/>
   </View>;
