@@ -6,4 +6,4 @@ Existing Supabase001–008 remain installed. Do not repeat them. Missing009/010 
 
 The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. This is not900free scans per coach or a guarantee against charges from other Google Cloud usage. Verify the account's free entitlement before enabling real calls. Recognised text never imports automatically; unclear layouts are reviewed manually. Start with fictional/anonymised registers and check row/contact alignment after activation. Native camera and real provider accuracy remain separate acceptance checks.
 
-The latest verified older0.7 build43637366483 passed;the0.8 full GitHub check pipeline passed while its native APK build43673787088 is still running. See [progress](../PROGRESS.md). Manual student entry remains available while recognition is unconfigured.
+The latest verified older0.7 build43637366483 passed;the0.8 full GitHub check pipeline passed and its native APK build43673787088 has now completed successfully. See [progress](../PROGRESS.md). Manual student entry remains available while recognition is unconfigured.
