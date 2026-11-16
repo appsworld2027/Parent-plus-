@@ -1,6 +1,6 @@
-# Current owner step — candidate0.11.2 / Parent0.1
+# Current owner step — website0.11.2 / Parent0.1
 
-**The source review and tests are complete for the current one-household model.** After this candidate is published, use the new011–013 package below. Do not repeat existing setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
+**The source review and tests are complete for the current one-household model.** Website0.11.2 is published and hosted signup checks pass3/3. Use the new011–013 package below. Do not repeat existing setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
 
 New entry: **Sign up as a Coach** and **Sign up as a Parent** open their own registration forms. Existing credentials remain shared; signing in opens the existing workspace or the appropriate academy/family setup. Signed-in space links remain navigation for testing and existing accounts.
 

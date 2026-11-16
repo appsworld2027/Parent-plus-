@@ -1,6 +1,8 @@
 # Parent Plus Coach — development checkpoint
 
-## Role-specific signup and relationship review — candidate0.11.2
+## Published signup0.11.2 and database relationship review
+
+Published runtime **91ea632fa0f193acbea5a4cd320f4e593df4b4ff**, Vercel deploymentKT6cTDLyHZ2TfmQjBXy7WtUnSHk4 succeeded. [Independent hosted signup QA](docs/SIGNUP_HOSTED_QA.md) passes3/3 in15.287seconds with clean mobile screens. No real writes/emails/OCR/messages; private test access state removed. App checks43837546001 and Android43837546056 were still running at this checkpoint; no native result is claimed. Only new live activation remaining for this supported single-household slice is the owner-run supabase/update_011_013.sql transaction. The review hold can be lifted for that package; multi-guardian expansion remains pending separate privacy decisions.
 
 Owner requires production signup choices leading to Coach/Parent profiles, plus a comprehensive review of Supabase relationships. Auth entry now says “Sign up as a Coach” / “Sign up as a Parent”, opening /coach/signup or /parent/signup directly in registration mode. Shared credentials, returning-user sign in, verified-email requirements and existing-profile routing remain. Signed-in switches remain navigation and never grant permissions. Busy/password-recovery navigation is disabled.
 
@@ -8,7 +10,7 @@ Owner requires production signup choices leading to Coach/Parent profiles, plus 
 
 Forward migration013 closes the confirmed archived-student invitation gap: shared academy locking, unused-invite revocation, first-claim rejection, child-row locking/archive protection, canonical per-academy child-link uniqueness, preserved existing approved text history, and exact successful-claim retry. Existing011/012 migration sources are unchanged. New generated owner package is supabase/update_011_013.sql; it replaces the011/012-only package for this candidate. Live001–010/Google/scan-roster must not repeat. Live Parent activation remains unconfirmed; no production SQL/private records/provider calls occurred here. The owner has been told to hold new SQL during this review.
 
-Verification: full TypeScript/automated suite passed206/206 in58.49seconds before the last duplicate/archive additions. Final exact-package Parent/media database checks pass19/19 in20.27seconds, including12Parent cases; all16focused signup/login/recovery/Parent browser journeys pass in47.9seconds. The long combined Parent journey has a60-second total budget after traces showed cumulative30-second exhaustion, with no new arbitrary sleeps. An independent read-only agent review found no material defect in final013; actual competing-transaction/live Storage acceptance is still separate. Final web export passes. Publication follows. Workspace commands work; no disconnection observed.
+Verification: full TypeScript/automated suite passed206/206 in58.49seconds before the last duplicate/archive additions. Final exact-package Parent/media database checks pass19/19 in20.27seconds, including12Parent cases; all16focused signup/login/recovery/Parent browser journeys pass in47.9seconds. The long combined Parent journey has a60-second total budget after traces showed cumulative30-second exhaustion, with no new arbitrary sleeps. An independent read-only agent review found no material defect in final013; actual competing-transaction/live Storage acceptance is still separate. Final web export passes. Hosted publication is confirmed above. Workspace commands work; no disconnection observed.
 
 
 ## Parent entry repair — candidate0.11.1
