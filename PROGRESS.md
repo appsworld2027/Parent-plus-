@@ -1,5 +1,10 @@
 # Parent Plus Coach — development checkpoint
 
+## Live scanning-function checkpoint —16November2026
+
+Fresh read-only checks against /functions/v1/scan-roster using the app's public connection key now return OPTIONS200{} and unsigned POST401{code:UNAUTHORIZED}, both Cache-Control:no-store. This matches the deployed custom scanning handler and replaces the previously observed default @supabase/server Hello response. Owner-side paste/deployment is therefore confirmed at the endpoint-response level; do not ask the owner to repeat code replacement or SQL setup. The owner also confirmed the legacy JWT setting saved OFF. No photo, bearer user session, provider key or real OCR request was used in these probes; Google credential validity and actual OCR/import behavior are still unverified. Existing001–010 are owner-confirmed installed and GOOGLE_CLOUD_VISION_API_KEY owner-confirmed saved. Next: one signed-in fictional register scan → coach review/confirmation → reopen the student, followed by remaining live/native/isolation acceptance.
+
+
 ## Activation database checkpoint
 
 The owner confirmed both installed_update rows202611150009 and202611150010 after running the combined SQL. Updates001–010 are now owner-confirmed installed; do not repeat them. GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets; its value was never shared/read here. Remaining activation: deploy the tested single-file scan-roster Edge Function, configure its gateway verification to match the handler's own Auth/owner checks, then test a fictional image/review/import. Repository visibility is private, so an unauthenticated raw-GitHub import is not a valid deployment shortcut. No real provider call has been made by this checkpoint.

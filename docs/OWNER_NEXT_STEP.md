@@ -1,17 +1,18 @@
-# Current owner steps —0.8.0 Cloud Vision candidate
+# Current owner steps —0.8.0
 
-The owner selected Cloud Vision OCR. The0.8.0 Vercel website is deployed and5/5hosted scan cases pass. The code sends captured/chosen registers through an authenticated server function, populates editable supported fields and saves only after explicit confirmation. OpenAI/Gemini keys are no longer needed. [Flow and setup](PHOTO_ONBOARDING.md).
+The website and Android build0.8.0 pass. Cloud Vision review/import code is built;181automated checks,60browser flows and5hosted scan fixture cases pass. [Evidence](CLOUD_VISION_QA.md).
 
-Existing Supabase001–008 remain installed. Do not repeat them. Missing009/010 are prepared as [one combined transaction](UPDATE_009_010.md); Google Cloud Vision enablement/billing, a server-side GOOGLE_CLOUD_VISION_API_KEY and function deployment are also required before real scans work. No key or deployment token is available in the coding workspace. These are activation steps, not claimed complete by source/fixture tests. Never paste provider keys in chat.
+## Completed activation steps
 
-The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. This is not900free scans per coach or a guarantee against charges from other Google Cloud usage. Verify the account's free entitlement before enabling real calls. Recognised text never imports automatically; unclear layouts are reviewed manually. Start with fictional/anonymised registers and check row/contact alignment after activation. Native camera and real provider accuracy remain separate acceptance checks.
+- Google project/credential setup is owner-reported complete; GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets. Its value was never shared or inspected here.
+- Supabase001–010 are owner-confirmed installed. Do not rerun scripts.
+- scan-roster is deployed at the correct endpoint and the owner confirmed the legacy JWT toggle saved OFF.
+- Fresh16November endpoint checks return OPTIONS200{} and unsigned POST401UNAUTHORIZED with no-store headers, matching the custom handler instead of the old Hello template. Do not repeat the code-paste/deployment steps without new evidence of a problem.
 
-The latest verified older0.7 build43637366483 passed;the0.8 full GitHub check pipeline passed and its native APK build43673787088 has now completed successfully. See [progress](../PROGRESS.md). Manual student entry remains available while recognition is unconfigured.
+## Immediate next step
 
-## Latest owner confirmation
+Refresh the Vercel app to0.8.0, sign in and scan one fictional register from Students → Scan student list. Review names/age/guardian/contact associations before confirming import; reopen the saved student to check persistence. This is the first real Cloud Vision acceptance test and will consume an OCR attempt. Credential validity/provider access/handwriting quality are not proved by the unsigned endpoint checks.
 
-GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets after generating the Google credential. Its value was not accessed or posted in chat. Next apply only combined009/010 in one new SQL query, then deploy scan-roster and verify a fictional photo/import. Do not repeat001–008 or create another key. Provider/account acceptance is still pending.
+The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. Provider free entitlement and other account usage remain separate. No OpenAI/Gemini or individual coach Google key is required. Manual entry remains available.
 
-## Latest database confirmation
-
-Both202611150009 and202611150010 installed_update rows are owner-confirmed.001–010 are now installed; do not rerun scripts. The Google secret is saved. Next open Supabase Edge Functions and deploy scan-roster via the dashboard editor using the complete generated single-file source. The repo is private, so do not use a public raw-GitHub import shortcut. Function deployment/provider-call acceptance remain pending.
+Later acceptance: actual profile/observation Storage behavior, two-account isolation, fee/class/attendance save/reopen, phone installation/camera/session restart/sign-out and final owner usability review. No claim of complete live acceptance is made by fixture tests. Keep credentials out of chat.
