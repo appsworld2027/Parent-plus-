@@ -277,3 +277,7 @@ The scanner is the first custom server feature: authenticated app → Supabase E
 ## 0.8.0 Cloud Vision reader
 
 App capture/choose → authenticated scan-roster Edge Function → Auth and academy ownership → new010 shared monthly plus009 daily/cooldown reservation → exactly one Cloud Vision DOCUMENT_TEXT_DETECTION call → explicit-label/word-position mapping → editable coach review → confirmed atomic import. Credentials remain in the server x-goog-api-key header; no GPT/Gemini or image-storage service is invoked. Unclear layouts return recognised lines; names-only fallback is local and does not invoke the provider again. The provider-aware client marker prevents old OpenAI-disclosing versions reaching Google. Actual deployment/key and missing009/010 remain pending; source implementation is not live activation. See PHOTO_ONBOARDING.md.
+
+## 0.9.0 first-run roster flow
+
+Today now reads the owner's roster for real student/batch counts and offers direct setup. RosterScreen consumes a one-time launch signal; ScanRosterScreen owns inline batch creation, common batch/proficiency dropdowns and automatic candidate review. Successful import IDs trigger a separate backend refresh; navigation into saved batch/profiles is enabled only when records/memberships are readable. Known-success refresh failures retry only the read. Backend Cloud Vision/SQL001–010 remain unchanged. See PHOTO_ONBOARDING.md.

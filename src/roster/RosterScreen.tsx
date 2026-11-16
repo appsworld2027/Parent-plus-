@@ -5,7 +5,7 @@ import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } fr
 import { formatFee, parseFee, validateStudent, batchStudents, proficiencyLabels } from './model';
 import { addBatchStudents, archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
 import { studentPhotoThumbnails } from '../photos/service';
-import { ScanRosterScreen } from '../onboarding/ScanRosterScreen';
+import { ScanRosterScreen, type SavedRosterImport } from '../onboarding/ScanRosterScreen';
 import { PhotoControl } from '../photos/PhotoControl';
 import { localParts } from '../classes/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
@@ -21,8 +21,8 @@ function Field({ label, value, onChange, disabled, kind = 'text', max = 100 }: {
     keyboardType={kind === 'email' ? 'email-address' : kind === 'phone' ? 'phone-pad' : kind === 'number' ? 'number-pad' : kind === 'money' ? 'decimal-pad' : 'default'} style={s.input} /></View>;
 }
 
-export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
-  const [scanOpen,setScanOpen]=useState(false);
+export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan = false, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; startWithScan?: boolean; onLaunchHandled?: () => void; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
+  const [scanOpen,setScanOpen]=useState(startWithScan);
   const [tab, setTab] = useState<'students' | 'batches'>('students');
   const [photoUrls,setPhotoUrls]=useState<Record<string,string>>({});
   const [data, setData] = useState<Roster | null>(null);
@@ -55,10 +55,11 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
   const reload = useCallback(async () => {
     const version = ++loadVersion.current;
     setLoading(true); setError('');
-    try { const result = await loadRoster(academy); if (loadVersion.current === version) { setData(result); return true; } return false; }
-    catch (failure) { if (loadVersion.current === version) setError(rosterFailure(failure, 'Your roster could not be loaded. Check the connection and retry.')); return false; }
+    try { const result = await loadRoster(academy); if (loadVersion.current === version) { setData(result); return result; } return null; }
+    catch (failure) { if (loadVersion.current === version) setError(rosterFailure(failure, 'Your roster could not be loaded. Check the connection and retry.')); return null; }
     finally { if (loadVersion.current === version) setLoading(false); }
   }, [academy]);
+  useEffect(()=>{if(startWithScan){setScanOpen(true);onLaunchHandled?.();}},[startWithScan,onLaunchHandled]);
   useEffect(() => { void reload(); return () => { loadVersion.current++; }; }, [reload]);
   useEffect(() => { onDirtyChange(dirty); return () => onDirtyChange(false); }, [dirty, onDirtyChange]);
   useEffect(() => { onBusyChange(working); return () => onBusyChange(false); }, [working, onBusyChange]);
@@ -143,7 +144,15 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', onDirtyChange
     : profile ? profile.name : selectedBatch ? selectedBatch.name : tab === 'students' ? 'Your students' : 'Your batches';
   const list = data?.students.filter(student => (!!student.archived_at === showArchived) && student.name.toLowerCase().includes(search.toLowerCase())
     && (batchFilter === 'all' || data.enrolments.some(e => e.student_id === student.id && e.batch_id === batchFilter))) ?? [];
-  if(scanOpen&&data)return <ScanRosterScreen academy={academy} roster={data} initialBatch={activeBatch} onDirtyChange={setDirty} onBusyChange={setPhotoBusy} onCancel={()=>{setScanOpen(false);setDirty(false);onViewChange();}} onDone={async count=>{await reload();setScanOpen(false);setStudentDraft(null);setDirty(false);setNotice(`${count} students imported. Existing details retained.`);onViewChange();}}/>;
+  async function refreshImported(result:SavedRosterImport){
+    const fresh=await reload();setStudentDraft(null);setDirty(false);setSearch('');setBatchFilter('all');setShowArchived(false);
+    return !!fresh&&result.ids.every(id=>fresh.students.some(student=>student.id===id))&&(!result.batchId||result.ids.every(id=>fresh.enrolments.some(enrolment=>enrolment.student_id===id&&enrolment.batch_id===result.batchId)));
+  }
+  if(scanOpen&&data)return <ScanRosterScreen academy={academy} roster={data} initialBatch={tab==='batches'?activeBatch:null} onDirtyChange={setDirty} onBusyChange={setPhotoBusy} onViewChange={onViewChange}
+    onCancel={()=>{setScanOpen(false);setDirty(false);void reload();onViewChange();}}
+    onSaved={refreshImported}
+    onOpenBatch={id=>{setScanOpen(false);setProfileId(null);setStudentDraft(null);setTab('batches');setActiveBatch(id);setAddingMembers(false);setDirty(false);onViewChange();}}
+    onOpenStudent={id=>{setScanOpen(false);setStudentDraft(null);setTab('students');setProfileId(id);setProfileAddBatch(false);setDirty(false);onViewChange();}}/>;
   return <View style={s.root} pointerEvents={photoBusy ? 'none' : 'auto'}>
     <Text style={s.kicker}>THE PEOPLE BEHIND YOUR TEACHING</Text><Text accessibilityRole="header" style={s.heading}>{heading}</Text>
     {/* Inline context stays available; ActionFeedback announces the result outside scrolling. */}

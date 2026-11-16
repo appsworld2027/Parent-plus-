@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {parseScan,validateReview,importPayload,namesFromLines,type ReviewStudent} from '../src/onboarding/model';
+import {parseScan,validateReview,importPayload,namesFromLines,needsManualNameSelection,type ReviewStudent} from '../src/onboarding/model';
 import type {Roster} from '../src/roster/model';
 const roster:Roster={students:[{id:'existing',name:'Ria  Shah',age_years:8,archived_at:null}],batches:[],contacts:[],enrolments:[]};
 const row:ReviewStudent={key:'one',id:'new',name:'Tara',age:'9',guardian:'',email:'',phone:'',proficiency:'unassessed',warnings:[],mode:'new',selected:true};
@@ -32,4 +32,11 @@ it('names-only mode strips numbering, leaves details blank and rejects contact/a
  const result=namesFromLines(['Name','Teacher name','Parent name','1. Fictional Meera','२) रिया शाह','Age: 9','9876543210','meera@example.test']);
  expect(result.map(r=>r.name)).toEqual(['Fictional Meera','रिया शाह']);
  expect(result[0]).toMatchObject({age:'',guardian:'',email:'',phone:'',proficiency:'unassessed'});
+});
+
+it('requires name selection when unassigned contact or age columns are present',()=>{
+ expect(needsManualNameSelection(['1. Fictional Meera','२) रिया शाह'])).toBe(false);
+ expect(needsManualNameSelection(['Fictional Ria','8','Fictional Meera','9876543210'])).toBe(true);
+ expect(needsManualNameSelection(['Name Age Parent Phone','Fictional Ria','8','Meera','9876543210'])).toBe(true);
+ expect(namesFromLines(['Name Age Parent Phone','Fictional Ria']).map(r=>r.name)).toEqual(['Fictional Ria']);
 });

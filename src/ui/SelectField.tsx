@@ -1,0 +1,13 @@
+import React,{useState} from 'react';
+import {Modal,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
+export type SelectOption={value:string;label:string};
+export function SelectField({label,value,options,onChange,disabled=false}:{label:string;value:string;options:SelectOption[];onChange:(value:string)=>void;disabled?:boolean}){
+ const [open,setOpen]=useState(false);
+ return <View style={s.field}><Text style={s.label}>{label}</Text>
+  {Platform.OS==='web'?React.createElement('select',{'aria-label':label,value,disabled,onChange:(event:React.ChangeEvent<HTMLSelectElement>)=>onChange(event.target.value),style:{minHeight:48,width:'100%',minWidth:0,border:'1px solid #CED8CC',borderRadius:12,padding:12,fontSize:16,color:'#22303A',backgroundColor:disabled?'#F1F3F1':'#fff'}},options.map(option=>React.createElement('option',{key:option.value,value:option.value},option.label))):<>
+   <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled,expanded:open}} disabled={disabled} onPress={()=>setOpen(true)} style={s.button}><Text style={s.value}>{options.find(option=>option.value===value)?.label??'Choose an option'}</Text><Text>⌄</Text></Pressable>
+   <Modal visible={open&&!disabled} transparent animationType="fade" onRequestClose={()=>setOpen(false)}><View style={s.backdrop}><View accessibilityViewIsModal style={s.panel}><Text accessibilityRole="header" style={s.title}>{label}</Text><ScrollView style={s.choices}>{options.map(option=><Pressable key={option.value} accessibilityRole="radio" accessibilityLabel={option.label} accessibilityState={{selected:option.value===value}} onPress={()=>{onChange(option.value);setOpen(false);}} style={s.option}><Text style={s.value}>{option.value===value?'✓ ':''}{option.label}</Text></Pressable>)}</ScrollView><Pressable accessibilityRole="button" onPress={()=>setOpen(false)} style={s.option}><Text style={s.label}>Cancel</Text></Pressable></View></View></Modal>
+  </>}
+ </View>;
+}
+const s=StyleSheet.create({field:{gap:8,minWidth:0},label:{fontSize:14,fontWeight:'600',color:'#22303A'},button:{minHeight:48,padding:13,borderWidth:1,borderColor:'#CED8CC',borderRadius:12,backgroundColor:'#fff',flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},value:{fontSize:16,color:'#22303A',flexShrink:1},backdrop:{flex:1,justifyContent:'center',padding:24,backgroundColor:'#22303A88'},panel:{borderRadius:20,backgroundColor:'#fff',padding:18,gap:12},title:{fontSize:20,fontWeight:'700',color:'#22303A'},choices:{maxHeight:360},option:{minHeight:50,padding:14,borderBottomWidth:1,borderBottomColor:'#E3E8E2'}});

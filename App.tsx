@@ -13,6 +13,7 @@ import { ClassesScreen } from './src/classes/ClassesScreen';
 import { ObservationsScreen } from './src/observations/ObservationsScreen';
 import { FeesScreen } from './src/fees/FeesScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
+import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
@@ -41,6 +42,8 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
 function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
+  const [launchRosterSetup,setLaunchRosterSetup]=useState(false);
+  const rosterLaunchHandled=useCallback(()=>setLaunchRosterSetup(false),[]);
   const [report, setReport] = useState('');
   const [notice, setNotice] = useFeedbackMessage('info', 'Update');
   const [crash, setCrash] = useState(false);
@@ -100,6 +103,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
         {(screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
+          {auth.academy&&<CoachSetupCard academy={auth.academy.id} onStart={()=>{setLaunchRosterSetup(true);navigate('Students');}}/>}
           <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
           <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
           <Text style={styles.subtitle}>A calmer home for your classes, your students, and the little wins along the way.</Text>
@@ -149,7 +153,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

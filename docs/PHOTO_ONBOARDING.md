@@ -1,3 +1,17 @@
+# First-batch photo onboarding —0.9.0
+
+Today → Create batch and scan students → choose a batch dropdown or create one inline → photograph register → automatically populated editable list → review batch and details → confirm → saved student list → open batch/profile. Counts on Today come from real owner data. Creating a batch is its own explicit save and retains student-review edits; cancelling the scan keeps that batch.
+
+Name/age/proficiency are visible in the review, with dropdowns for common batch assignment and proficiency. Guardian/contact fields expand for editing. Readable names-only OCR automatically becomes candidates for coach review; source text is secondary rather than a blocking first screen. Possible existing matches require explicit linking; existing profile values are preserved. Missing/unreadable details are not invented.
+
+A successful import returns confirmed IDs. The app separately refreshes profiles/memberships and enables View batch/Open saved profile only after those records are readable. A failed refresh preserves known-success status and offers a read-only retry; it does not submit the import again. Unknown write outcomes retain the locked exact retry behavior. Profiles and batch membership must survive reload.
+
+This release uses the existing deployed Cloud Vision function, saved secret and installed001–010. No server/SQL/provider configuration needs repeating for the frontend workflow correction. Current live recognition evidence is the owner's report that names appear; real field accuracy, confirmed saves/reopening and native acceptance still need owner acceptance.
+
+---
+
+The following0.8 provider/security/deployment details remain applicable; their original pending-setup language is historical, superseded by the activation checkpoints in PROGRESS.md.
+
 # Cloud Vision register onboarding —0.8.0
 
 Students → Scan student list; Add Student → Scan a student list instead; or Batch → Scan student list into this batch. Capture/choose a register photo and the app immediately sends it to its authenticated Supabase function. That function calls Google Cloud Vision DOCUMENT_TEXT_DETECTION, then deterministic mapping fills supported student fields. Coach reviews/corrects/skips, chooses the target batch and explicitly confirms. No provider can create students, issue fees, invite guardians or send messages. Existing profiles are linked without edits.

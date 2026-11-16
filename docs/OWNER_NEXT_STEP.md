@@ -16,3 +16,7 @@ Refresh the Vercel app to0.8.0, sign in and scan one fictional register from Stu
 The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. Provider free entitlement and other account usage remain separate. No OpenAI/Gemini or individual coach Google key is required. Manual entry remains available.
 
 Later acceptance: actual profile/observation Storage behavior, two-account isolation, fee/class/attendance save/reopen, phone installation/camera/session restart/sign-out and final owner usability review. No claim of complete live acceptance is made by fixture tests. Keep credentials out of chat.
+
+## Current development correction —0.9.0
+
+The owner requested a first-run batch/photo/review/save workflow after seeing names from a real scan. A frontend correction is being built/tested. Do not repeat Google Cloud, secrets, SQL001–010 or function deployment for this work. After publication the next owner step is Today → Create batch and scan students, then confirm a small fictional roster and reopen its batch/profiles. No additional paid OCR tests are made during automated verification.

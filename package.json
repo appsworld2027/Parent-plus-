@@ -1,6 +1,6 @@
 {
   "name": "parentplus-coach",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "main": "index.ts",
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

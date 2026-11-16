@@ -35,6 +35,14 @@ export function importPayload(rows:ReviewStudent[]){return rows.filter(r=>r.sele
 export function namesFromLines(lines:string[]):ScanStudent[]{
   return lines.map(line=>line.replace(/^\s*[0-9०-९]+[.)-]?\s*/u,'').trim())
     .filter(name=>name.length>0&&name.length<=100&&/\p{L}/u.test(name)&&!/[0-9०-९:@=]/u.test(name)
+      &&((name.toLowerCase().match(/\b(name|student|age|guardian|parent|phone|mobile|email|level)\b/g)?.length??0)<2)
       &&!/^((?:student|guardian|parent|teacher|coach)\s+names?|names?|guardian|parent|age|phone|mobile|total|नाम|आयु|उम्र|मोबाइल)$/iu.test(name))
     .slice(0,50).map(name=>({name,age:'',guardian:'',email:'',phone:'',proficiency:'unassessed',warnings:['Names-only interpretation: verify this line is a student name, not a heading or guardian.']}));
+}
+
+export function needsManualNameSelection(lines:string[]):boolean{
+ return lines.some(line=>{
+  const text=line.replace(/^\s*[0-9०-९]+[.)-]?\s*(?=\p{L})/u,'').trim();
+  return /[0-9०-९:@=]/u.test(text)||/\b(guardian|parent|father|mother|phone|mobile|email|age)\b/iu.test(text)||/अभिभावक|पिता|माता|मोबाइल|फोन|आयु|उम्र/u.test(text);
+ });
 }
