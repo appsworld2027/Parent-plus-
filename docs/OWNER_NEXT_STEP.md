@@ -1,6 +1,6 @@
 # Current owner step — candidate0.12.0 / Parent0.2
 
-**Database updates011–013 are installed (owner screenshot confirmed).** Website0.11.2 is published and hosted signup checks pass3/3. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
+**Database updates011–013 are installed (owner screenshot confirmed).** The0.12.0 same-login feedback journey is the current release candidate; hosted baseline journey checks pass5/5. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
 
 New entry: **Sign up as a Coach** and **Sign up as a Parent** open their own registration forms. Existing credentials remain shared; signing in opens the existing workspace or the appropriate academy/family setup. Signed-in space links remain navigation for testing and existing accounts.
 
@@ -10,7 +10,7 @@ https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/p
 Coach stays at:
 https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
 
-Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.11.2; Parent module0.1.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
+Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.12.0; Parent module0.2.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
 
 ## Database activation complete
 

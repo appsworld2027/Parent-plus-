@@ -51,11 +51,22 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   const refresh=useCallback(async()=>{
     if(!owner){setLoading(false);return false;}
     const version=++generation.current;setLoading(true);
-    try{const next=await loadFamily(owner);const records=next?await loadParentData(next.id):null;if(version!==generation.current)return;setFamily(next);setData(records);setError('');return true;}
+    try{const next=await loadFamily(owner);const records=next?await loadParentData(next.id):null;if(version!==generation.current)return;setFamily(next);setData(records);
+      if(next&&records)setSelected(current=>{
+        const active=records.children.filter(item=>!item.archived_at);
+        if(active.some(item=>item.id===current))return current;
+        try{const saved=JSON.parse(globalThis.sessionStorage.getItem('parentplus.family-child.v1')??'null');if(saved?.owner===owner&&saved.family===next.id&&active.some(item=>item.id===saved.child))return saved.child;}catch{}
+        return '';
+      });
+      setError('');return true;}
     catch(failure){if(version===generation.current)setError(parentFailure(failure));return false;}
     finally{if(version===generation.current)setLoading(false);}
   },[owner]);
   useEffect(()=>{alive.current=true;void refresh();return()=>{alive.current=false;generation.current++;};},[refresh]);
+  useEffect(()=>{
+    if(Platform.OS!=='web'||!owner||!family||!child)return;
+    try{globalThis.sessionStorage.setItem('parentplus.family-child.v1',JSON.stringify({owner,family:family.id,child:child.id}));}catch{}
+  },[owner,family?.id,child?.id]);
   useEffect(()=>{
     if(!journey||!data||loading)return;
     const connected=data.links.find(link=>link.active&&link.academy_id===journey.academy&&link.student_id===journey.student);

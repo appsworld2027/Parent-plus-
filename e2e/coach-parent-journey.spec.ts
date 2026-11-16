@@ -40,6 +40,7 @@ test('existing own connection selects the linked child without another invitatio
   await page.getByRole('button',{name:'Open Fictional Ria’s update in Parent',exact:true}).click();
   await expect(page.getByText(note,{exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Your shared class update',exact:true})).toBeVisible();
   expect(await page.evaluate(()=>Object.keys(window.__parentFixture.invites).length)).toBe(0);
+  await page.reload();await expect(page.getByText(note,{exact:true})).toBeVisible();
   await page.getByRole('tab',{name:'Choose child Sibling',exact:true}).click();await expect(page.getByText(note,{exact:true})).toHaveCount(0);
 });
 test('same-login shortcut cannot open or replace another parent’s connection',async({page})=>{
@@ -62,8 +63,11 @@ test('opening Parent locks sibling actions and cancellation until the connection
 test('sign-out clears a pending feedback connection and requires normal authentication again',async({page})=>{
   await parentBackend(page);await login(page);
   await page.evaluate(()=>sessionStorage.setItem('parentplus.feedback-journey.v1',JSON.stringify({owner:'00000000-0000-0000-0000-000000000001',academy:'academy-test',student:window.__coachFixture.roster.students[0].id,name:'Fictional Ria',handoff:'test-handoff',code:'a'.repeat(64),expires:Date.now()+60000})));
+  await page.evaluate(()=>sessionStorage.setItem('parentplus.family-child.v1',JSON.stringify({owner:'00000000-0000-0000-0000-000000000001',family:'old-family',child:'previous-child'})));
   await page.goto('/parent');await expect(page.getByRole('heading',{name:'View Fictional Ria’s class update',exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>sessionStorage.getItem('parentplus.family-child.v1'))).not.toBeNull();
   await page.getByRole('button',{name:'My family setup',exact:true}).click();await page.getByRole('button',{name:'Sign out',exact:true}).click();
   await expect(page.getByRole('button',{name:'Sign in',exact:true})).toBeVisible();
   expect(await page.evaluate(()=>sessionStorage.getItem('parentplus.feedback-journey.v1'))).toBeNull();
+  expect(await page.evaluate(()=>sessionStorage.getItem('parentplus.family-child.v1'))).toBeNull();
 });

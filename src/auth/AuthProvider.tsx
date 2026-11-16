@@ -49,7 +49,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (!active) return;
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
-        if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); } catch { /* Account ownership is still checked before use. */ } }
+        if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
         diagnostics.clear(); setAcademy(null); setRecovery(false);
         // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
