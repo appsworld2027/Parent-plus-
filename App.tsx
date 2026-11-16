@@ -13,6 +13,7 @@ import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
 import { ClassesScreen } from './src/classes/ClassesScreen';
 import { ObservationsScreen } from './src/observations/ObservationsScreen';
+import { ParentConnectionApprovals } from './src/parent/ParentConnectionApprovals';
 import ParentApp from './src/parent/ParentApp';
 import { FeesScreen } from './src/fees/FeesScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
@@ -74,7 +75,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
-    if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
+    if (formBusy) { setNotice('Please wait for the save to finish.'); return; }
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     if (next !== 'Schedule') setClassLaunch(null);
     if (next !== 'Post') setFeedbackLaunch(null);
@@ -120,6 +121,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text accessibilityRole="header" style={styles.heading}>{coachGreeting(auth.academy?.timezone??'Asia/Kolkata')}</Text>
           <Text style={styles.subtitle}>{new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',timeZone:auth.academy?.timezone??'Asia/Kolkata'})}</Text>
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
+          {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
           {auth.academy && <View style={styles.card}>
             <Action label="Write feedback for parents" onPress={() => navigate('Post')} />

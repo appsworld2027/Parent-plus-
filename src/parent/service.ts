@@ -21,15 +21,17 @@ export async function loadParentData(family:string):Promise<ParentData> {
       const result=await query;if(result.error)throw result.error;all.push(...(result.data??[]));if((result.data?.length??0)<500)return all;
     }
   }
-  const [children,moments,todos,events,links,feedback,permissions]=await Promise.all([
+  const [children,moments,todos,events,links,feedback,permissions,requests]=await Promise.all([
     rows('family_children','id,family_id,name,born_on,color,archived_at'),rows('family_moments','id,family_id,child_id,note,minutes,kind,occurred_on'),
     rows('family_todos','id,family_id,child_id,title,done'),rows('family_events','id,family_id,child_id,title,starts_at,ends_at,location'),
     supabase.rpc('get_parent_coach_connections'),rows('parent_feedback_feed','id,child_id,snapshot,reviewed_at',false),
-    supabase.rpc('get_parent_media_permissions'),
+    supabase.rpc('get_parent_media_permissions'),supabase.rpc('get_parent_connection_requests'),
   ]);
   if(permissions.error)throw permissions.error;
   if(links.error)throw links.error;
-  return {children,moments,todos,events,links:links.data??[],feedback,permissions:permissions.data??[]} as ParentData;
+  const identityReady=!requests.error;
+  if(requests.error&&!['PGRST202','PGRST205','42P01'].includes(requests.error.code))throw requests.error;
+  return {children,moments,todos,events,identityReady,connectionRequests:requests.data??[],links:identityReady?links.data??[]:[],feedback:identityReady?feedback:[],permissions:identityReady?permissions.data??[]:[]} as ParentData;
 }
 export async function saveFamilyRecord(table:'family_children'|'family_moments'|'family_todos'|'family_events',value:object) {
   if(!supabase)throw new Error('Unavailable');const result=await supabase.from(table).upsert(value,{onConflict:'id'});if(result.error)throw result.error;

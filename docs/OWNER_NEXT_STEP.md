@@ -1,38 +1,26 @@
-# Current owner step — website0.12.0 / Parent0.2
+# Current owner step — candidate0.13.0 / Parent0.3
 
-**Database updates011–013 are installed (owner screenshot confirmed).** The0.12.0 same-login journey is published; hosted baseline checks pass5/5 and the final refresh/logout follow-up passes2/2. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
+## Required new security activation
 
-New entry: **Sign up as a Coach** and **Sign up as a Parent** open their own registration forms. Existing credentials remain shared; signing in opens the existing workspace or the appropriate academy/family setup. Signed-in space links remain navigation for testing and existing accounts.
+Owner explicitly authorised closing the guardian identity gap. The verified-email + Coach approval flow is built and being verified for0.13.0. It needs **only supabase/update_014.sql**, after already installed001–013. Do not repeat the old combined scripts, Google key or scanning-function setup.
 
-The owner has supplied both original prototypes. The separate Parent workspace is built at:
-https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/parent
+The exact file matches migration014 and is exercised in disposable PostgreSQL tests. It revokes old unbound invitations, disconnects legacy unapproved links and cancels their shared copies in retained history. Students/classes/original saved feedback/family records are preserved. Existing connections must reconnect and receive Coach approval, then original feedback can be reviewed/shared again. Re-running014 preserves connections approved under014.
 
-Coach stays at:
-https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
+After publication, first open this file and tap Copy raw file:
+https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/update_014.sql
 
-Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.12.0; Parent module0.2.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
+Then guide the owner one step at a time to paste the whole file into the existing SQL editor and Run:
+https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql/new
 
-## Database activation complete
+Success shows installed_update202611160014. No live014 installation has been performed by this workspace; it has no authorised admin connection. Source/hosted fixture success is not live enforcement. The new frontend pauses linking/feed if014 is absent, retaining private family records.
 
-Owner screenshot confirms202611160011,202611160012 and202611160013 installed. Fresh read-only zero-row API checks on all nine Parent/media tables return401/42501 for anonymous clients; none returns the former missing-table error. This checks relation availability and anonymous table privileges, not signed-in account isolation. No real records were read or written by the workspace.
+## Owner acceptance after installation
 
-Do not rerun any database update, Google key or scanning-function setup. Both App checks43837546001 and Android43837546056 succeeded for runtime91ea632.
+Coach profile: intended guardian email → confirm recipient → create invitation. Parent signs in with that exact verified email → selects child → requests Coach approval. Coach Today → Parent connection approvals → check guardian/child details → confirm match → Approve. Only then does shared feedback appear in Parent.
 
-## Next owner action
+Same-login test: class → saved attendance → feedback → review/share → Open child update in Parent → family/child setup → request approval → Open Coach to approve → explicit match checkbox/Approve → Open Parent to view approved update. No second account is required for this test, and no approval is skipped.
 
-Use the Coach website with the existing login. Open a class, save attendance, then Write feedback for this class → Save feedback → Confirm save → Review and share to Parent → confirm the review → Share approved feedback to Parent. Press “Open [child]’s update in Parent”. The same session opens the linked child or guides family/child creation and explicit confirmation. No new login or database script is needed. Full flow and auth/retry rules: SAME_LOGIN_FEEDBACK_FLOW.md.
+Coach: https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
+Parent: https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/parent
 
-## Then one small acceptance journey
-
-Use fictional records and the owner's own test number. Parent: sign in→create family→add child. Coach: student profile→Create Parent invitation. Parent: Explore→Connect a coach→review the identity and select the child. Coach: save feedback→review for Parent→approve. Parent: Refresh and reopen the approved note. Separately test guardian photo/video/sharing choices and a small class media item. No external notification is sent automatically, and no real parent should receive a test message.
-
-Later gates include real distinct-account isolation, native phone installation/camera/session behavior, media format/large-upload checks, retention/deletion/backup and broader prototype features. Current Parent deliverable is mobile web, not a separate installed Parent APK. Fee collection stays shelved.
-
-
-## Published verification
-
-Runtimeb014c0a is published;201automated checks,76browser cases,14focused hosted cases and the native Coach build all pass. The verified Coach APK is [here](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994/artifacts/14208786600); this is not a Parent APK. The remaining new-data activation is the single combined SQL file above, followed by real account/device acceptance.
-
-Relationship audit and explicit limits: [DATABASE_RELATIONSHIP_REVIEW.md](DATABASE_RELATIONSHIP_REVIEW.md). Migration013 adds archive/invitation lifecycle protection without rewriting011/012. The old011/012-only package is retained as historical source; the new candidate uses011–013.
-
-Before using invitations with real parents: current links are not bound to verified guardian email/phone and the child match is self-confirmed. Contact-bound invitation and Coach match approval remain to be built. The same-login test is ready; it is not guardian identity proof.
+Full identity/lifecycle rules: [PARENT_IDENTITY.md](PARENT_IDENTITY.md). This verifies email control plus a recorded Coach match, not independent legal custody. Multiple guardians and academy staff remain separate work.

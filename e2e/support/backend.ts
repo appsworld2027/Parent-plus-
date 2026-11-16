@@ -89,7 +89,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         const student = state.roster.students.find(s => s.id === payload.target_student);
         if (student) student.archived_at = new Date().toISOString();
         persistRoster(); data = true;
-      } else if (url.pathname.endsWith('/rpc/save_class_session')) {
+      } else if (url.pathname.endsWith('/rpc/get_coach_parent_requests')) { data = []; } else if (url.pathname.endsWith('/rpc/save_class_session')) {
         const index = state.classes.findIndex(c => c.id === payload.target_session);
         if (state.failClass) { status = 500; data = { message: 'Private class backend failure' }; }
         else if (index >= 0 && state.classes[index].attendance_revision > 0 && (state.classes[index].starts_at !== payload.begins_at || state.classes[index].ends_at !== payload.finishes_at || state.classes[index].batch_id !== payload.target_batch)) {

@@ -1,5 +1,6 @@
+import type { ParentRequest } from './identity';
 import { localParts } from '../classes/model';
-export const parentVersion='0.2.0';
+export const parentVersion='0.3.0';
 export const parentColors = { sun:'#FFD23F',rose:'#FF5D8F',sky:'#3ABEFF',mint:'#2EE6A6',grape:'#A27BFF',tang:'#FF8A3D' };
 export type Family = { id:string;owner_id:string;parent_name:string;name:string;timezone:string };
 export type Child = { id:string;family_id:string;name:string;born_on:string|null;color:keyof typeof parentColors;archived_at:string|null };
@@ -9,7 +10,7 @@ export type FamilyEvent = { id:string;family_id:string;child_id:string;title:str
 export type CoachLink = { id:string;academy_id:string;student_id:string;child_id:string;active:boolean;academy_name:string;student_name:string };
 export type ParentPermission = { link_id:string;allow_photos:boolean;allow_videos:boolean;allow_parent_sharing:boolean;source:string;recorded_at:string };
 export type ParentFeedback = { id:string;child_id:string;reviewed_at:string;snapshot:{schema_version:number;note:string;academy_name:string;student_name:string;recorded_at:string;session_id:string|null;media_ids:string[]} };
-export type ParentData = { children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:CoachLink[];permissions:ParentPermission[];feedback:ParentFeedback[] };
+export type ParentData = { identityReady:boolean;connectionRequests:ParentRequest[]; children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:CoachLink[];permissions:ParentPermission[];feedback:ParentFeedback[] };
 export function parentToday(timezone:string) { return localParts(new Date().toISOString(),timezone).date; }
 export function weekStart(today:string) { const date=new Date(`${today}T12:00:00Z`);date.setUTCDate(date.getUTCDate()-((date.getUTCDay()+6)%7));return date.toISOString().slice(0,10); }
 export function parentWeek(data:ParentData,child:string,today:string) {

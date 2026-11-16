@@ -1,5 +1,7 @@
 # Developer handover and working agreement
 
+**Guardian identity hardening0.13:** owner explicitly authorised “Close the Gap.” See [PARENT_IDENTITY.md](PARENT_IDENTITY.md). Only new SQL014 is required after installed001–013; previous no-new-SQL wording refers to0.12. It binds verified guardian email and requires Coach approval before feedback release, including same-login tests. Live014 is not installed by this workspace.
+
 **Same-login feedback journey0.12:** see [SAME_LOGIN_FEEDBACK_FLOW.md](SAME_LOGIN_FEEDBACK_FLOW.md). Reuses installed001–013 and existing verified Auth/RLS/invitation RPCs; do not request another Supabase script. Parent web guides profile/child selection from the Coach’s saved review and rejects another account’s link.
 
 **Signup/relationship follow-up,16November2026:** role-specific /coach/signup and /parent/signup entry; shared Auth remains. Read [database relationship review](DATABASE_RELATIONSHIP_REVIEW.md) for supported combinations, migration013 lifecycle constraints and remaining guardian/staff limits. The candidate owner package is now supabase/update_011_013.sql; never send the superseded011/012-only package for this candidate. Live011–013 installation is owner-confirmed by screenshot; anonymous API reads are denied on all nine new tables. Do not rerun SQL. Next: actual signed-in save/reopen and reviewed feedback acceptance.

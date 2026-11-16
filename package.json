@@ -1,6 +1,6 @@
 {
   "name": "parentplus-coach",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "main": "index.ts",
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
@@ -39,7 +39,8 @@
     "export:web": "expo export --platform web",
     "export:android": "expo export --platform android",
     "prepare:owner-sql": "node scripts/prepare-owner-sql.mjs",
-    "prepare:parent-sql": "node scripts/prepare-parent-sql.mjs"
+    "prepare:parent-sql": "node scripts/prepare-parent-sql.mjs",
+    "prepare:identity-sql": "node scripts/prepare-identity-sql.mjs"
   },
   "private": true,
   "overrides": {

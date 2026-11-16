@@ -23,7 +23,13 @@ test('one login: class feedback → review/share → family and child setup → 
   expect(await page.evaluate(()=>window.__parentFixture.links.length)).toBe(0);
   await page.getByRole('button',{name:'Connect child and view update',exact:true}).click();await expect(page.getByRole('combobox',{name:'Child receiving this feedback',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Review coach invitation',exact:true}).click();await expect(page.getByText('Coach student: Fictional Ria → Your child: My child Ria',{exact:true})).toBeVisible();
-  await page.getByRole('checkbox',{name:'This is the right coach and child',exact:true}).check();await page.getByRole('button',{name:'Confirm coach connection',exact:true}).click();
+  await page.getByRole('checkbox',{name:'This is the right coach and child',exact:true}).check();await page.getByRole('button',{name:'Request coach approval',exact:true}).click();
+  await expect(page.getByText('Waiting for coach approval',{exact:true})).toBeVisible();
+  await expect(page.getByText(note,{exact:true})).toHaveCount(0);
+  await page.getByRole('link',{name:'Open Coach to approve this connection',exact:true}).click();
+  await page.getByRole('checkbox',{name:'I verified the guardian and child match for Fictional Ria',exact:true}).check();
+  await page.getByRole('button',{name:'Approve Parent connection for Fictional Ria',exact:true}).click();
+  await page.getByRole('link',{name:'Open Parent to view approved update',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Your shared class update',exact:true})).toBeVisible();await expect(page.getByText(note,{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>sessionStorage.getItem('parentplus.feedback-journey.v1'))).toBeNull();
   await page.reload();await expect(page.getByText(note,{exact:true})).toBeVisible();
