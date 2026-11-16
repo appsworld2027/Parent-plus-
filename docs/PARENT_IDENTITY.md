@@ -1,6 +1,6 @@
 # Verified guardian and child connection — update014
 
-Candidate Coach0.13.0 / Parent0.3.0. The owner explicitly requested closing the guardian-identity gap. This replaces invitation-possession/self-confirmation as the access gate. It verifies control of an intended email account and records the owning Coach’s match decision; it does not independently prove legal custody.
+Published Coach0.13.0 / Parent0.3.0. The owner explicitly requested closing the guardian-identity gap. This replaces invitation-possession/self-confirmation as the access gate. It verifies control of an intended email account and records the owning Coach’s match decision; it does not independently prove legal custody.
 
 ## Connection and authentication
 
@@ -34,3 +34,5 @@ The new client pauses linking/feed display if the014 request API is absent while
 Actual SQL tests cover wrong verified email/forwarding, unverified account, pending isolation, explicit approval and NULL rejection, rejection, child/email changes, foreign-family/Coach denial, cancellation/archive, same-login gate, group-media permissions and withdrawal, legacy upgrade, stale replay after disconnect and migration rerun. Browser checks cover pending/approve/reject, wrong-email refusal before details, missing014 client fail-closed behavior and normal authentication. Real email receipt, owner account save/reopen and live cross-account acceptance remain separate from fictional browser transport.
 
 Live Auth configuration check on16November2026: email provider is enabled and mailer_autoconfirm=false (confirmation required). This read-only settings check sent no email and read no account data. Keep email confirmation enabled; actual inbox receipt remains a live acceptance check.
+
+Hosted bundle verification: [PARENT_IDENTITY_HOSTED_QA.md](PARENT_IDENTITY_HOSTED_QA.md),4/4 in41.577s on source0791763. Tests use fictional transport; update014 still needs owner live installation.

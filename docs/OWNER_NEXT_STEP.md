@@ -1,12 +1,12 @@
-# Current owner step — candidate0.13.0 / Parent0.3
+# Current owner step — website0.13.0 / Parent0.3
 
 ## Required new security activation
 
-Owner explicitly authorised closing the guardian identity gap. The verified-email + Coach approval flow is built and being verified for0.13.0. It needs **only supabase/update_014.sql**, after already installed001–013. Do not repeat the old combined scripts, Google key or scanning-function setup.
+Owner explicitly authorised closing the guardian identity gap. The verified-email + Coach approval flow is published in0.13.0; hosted fixture checks pass4/4. Live server enforcement remains pending014 installation. It needs **only supabase/update_014.sql**, after already installed001–013. Do not repeat the old combined scripts, Google key or scanning-function setup.
 
 The exact file matches migration014 and is exercised in disposable PostgreSQL tests. It revokes old unbound invitations, disconnects legacy unapproved links and cancels their shared copies in retained history. Students/classes/original saved feedback/family records are preserved. Existing connections must reconnect and receive Coach approval, then original feedback can be reviewed/shared again. Re-running014 preserves connections approved under014.
 
-After publication, first open this file and tap Copy raw file:
+First open this file and tap Copy raw file:
 https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/update_014.sql
 
 Then guide the owner one step at a time to paste the whole file into the existing SQL editor and Run:

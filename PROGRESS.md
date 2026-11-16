@@ -1,6 +1,8 @@
 # Parent Plus Coach — development checkpoint
 
-## Verified guardian/child approval — candidate0.13.0 / Parent0.3.0
+## Published guardian/child approval0.13.0 / Parent0.3.0 — live014 activation pending
+
+Published source **0791763ca15888024eb888689b21c0b0213c6472**, Vercel deployment8ntkcG7wDtxTYTbAqEQKmH94Nhka succeeded. [Hosted identity QA](docs/PARENT_IDENTITY_HOSTED_QA.md) passes4/4 in41.577s: no feedback while pending, explicit Coach approval then Parent update/reload, wrong-email refusal without student details, rejection, and missing014 warning/private records. Fictional transport only; temporary access state removed. GitHub43859794515 has completed its TypeScript/automated step successfully; full browser/export run and Android43859794507 were still running at this checkpoint. The protection is NOT live in Supabase until the owner runs only supabase/update_014.sql. Give one action at a time: Copy raw file from GitHub, then paste whole file in existing SQL editor and Run; expect202611160014. Do not repeat001–013 or Google setup.
 
 Owner said “Close the Gap.” New forward update014 binds each invitation to the Coach-confirmed intended guardian email. Preview/claim read verified email from auth.users; wrong-email forwarding and unverified accounts are denied. Claim creates an immutable pending request and releases no link, media authority or feedback. Coach Today/student profile shows the verified email, Parent name and child name/optional DOB for an explicit approve/reject action. Approval rechecks current email/identity snapshot under child/academy locks, writes the approval audit, activates the link and releases reviewed held snapshots. Same-login testing uses the same separate Coach approval; it does not auto-approve.
 
