@@ -1,6 +1,6 @@
 # Database relationship review — 16 November 2026
 
-This review describes source through migration013. It does not certify live Supabase installation or every possible relationship. The live Parent schema was unavailable through its API in the last zero-row metadata probe; the owner has not confirmed installing011/012. No production data or SQL was changed by this review.
+This review describes source through migration013. It does not certify live Supabase installation or every possible relationship. Activation follow-up: the owner has now supplied a screenshot confirming011–013 installed. All nine Parent/media table endpoints return401/42501 to anonymous zero-row requests, replacing the old missing-table error. No production records were read/written by this review; signed-in save/reopen and account-isolation acceptance remain pending.
 
 ## Identity and boundaries
 
@@ -37,6 +37,6 @@ Academy students and family children are independent UUID records. A coach-issue
 
 New source uses signup entry links at /coach/signup and /parent/signup. Returning-user login remains available; already signed-in users proceed to their existing profile or setup. Signed-in workspace switching is navigation only.
 
-The replacement owner package is supabase/update_011_013.sql. It adds011–013 after installed001–010 in one transaction and preserves existing teaching/family records. Do not run the old011/012-only package for this candidate. Owner activation remains on hold while privacy choices and this review are communicated. Never ask for the service role key in chat.
+The replacement owner package is supabase/update_011_013.sql. It adds011–013 after installed001–010 in one transaction and preserves existing teaching/family records. Do not run the old011/012-only package for this candidate. Owner installation is confirmed; do not rerun this package. Future multi-guardian expansion still awaits privacy choices. Never ask for the service role key in chat.
 
 Before calling this comprehensive for production: resolve the multi-guardian and archive lifecycle decisions, implement remaining guardian membership/delivery constraints/RPCs/UI, add group-media and multi-academy revocation scenarios, test actual conflicting transactions, then perform controlled live two-account acceptance. Passing automated checks alone is not evidence these remaining features exist.

@@ -1,6 +1,6 @@
 # Developer handover and working agreement
 
-**Signup/relationship follow-up,16November2026:** role-specific /coach/signup and /parent/signup entry; shared Auth remains. Read [database relationship review](DATABASE_RELATIONSHIP_REVIEW.md) for supported combinations, migration013 lifecycle constraints and remaining guardian/staff limits. The candidate owner package is now supabase/update_011_013.sql; never send the superseded011/012-only package for this candidate. Live activation is still owner-run and unconfirmed.
+**Signup/relationship follow-up,16November2026:** role-specific /coach/signup and /parent/signup entry; shared Auth remains. Read [database relationship review](DATABASE_RELATIONSHIP_REVIEW.md) for supported combinations, migration013 lifecycle constraints and remaining guardian/staff limits. The candidate owner package is now supabase/update_011_013.sql; never send the superseded011/012-only package for this candidate. Live011–013 installation is owner-confirmed by screenshot; anonymous API reads are denied on all nine new tables. Do not rerun SQL. Next: actual signed-in save/reopen and reviewed feedback acceptance.
 
 **Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [PARENT_PRD.md](PARENT_PRD.md) and [PARENT_MODULE.md](PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
 

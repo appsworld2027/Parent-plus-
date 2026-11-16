@@ -1,5 +1,11 @@
 # Parent Plus Coach — development checkpoint
 
+## Live database activation confirmed — 16 November 2026
+
+Owner screenshot confirms all three installed_update markers202611160011,202611160012 and202611160013 after the combined transaction. Do not request rerunning this update or001–010/Google/scan-roster. A fresh read-only API check with only the public publishable key and limit=0 against all nine new Parent/media tables returns401/PostgreSQL42501 permission denied for each, replacing the former parent_families404. No records were read or written. This confirms API-visible relations and blocked anonymous table access; it does not verify signed-in cross-account isolation or real save/reopen/delivery.
+
+Next required acceptance: owner signs in to /parent with existing credentials, creates/reopens a family/child, then exercises explicit Coach invite and reviewed feedback with accounts under their control. Actual signup email receipt and WhatsApp Send remain separate live acceptance. No private owner session/admin connection is available in this workspace. App checks43837546001 and Android preview43837546056 for runtime91ea632 have both completed successfully. Existing hosted signup3/3 evidence remains valid.
+
 ## Published signup0.11.2 and database relationship review
 
 Published runtime **91ea632fa0f193acbea5a4cd320f4e593df4b4ff**, Vercel deploymentKT6cTDLyHZ2TfmQjBXy7WtUnSHk4 succeeded. [Independent hosted signup QA](docs/SIGNUP_HOSTED_QA.md) passes3/3 in15.287seconds with clean mobile screens. No real writes/emails/OCR/messages; private test access state removed. App checks43837546001 and Android43837546056 were still running at this checkpoint; no native result is claimed. Only new live activation remaining for this supported single-household slice is the owner-run supabase/update_011_013.sql transaction. The review hold can be lifted for that package; multi-guardian expansion remains pending separate privacy decisions.

@@ -1,6 +1,6 @@
 # Current owner step — website0.11.2 / Parent0.1
 
-**The source review and tests are complete for the current one-household model.** Website0.11.2 is published and hosted signup checks pass3/3. Use the new011–013 package below. Do not repeat existing setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
+**Database updates011–013 are installed (owner screenshot confirmed).** Website0.11.2 is published and hosted signup checks pass3/3. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
 
 New entry: **Sign up as a Coach** and **Sign up as a Parent** open their own registration forms. Existing credentials remain shared; signing in opens the existing workspace or the appropriate academy/family setup. Signed-in space links remain navigation for testing and existing accounts.
 
@@ -12,24 +12,15 @@ https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
 
 Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.11.2; Parent module0.1.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
 
-## Current blocker
+## Database activation complete
 
-The candidate offers role-specific signup entry points and signed-in workspace links. Parent records remain blocked because011–013 has not been confirmed installed; a relevant zero-row API probe still returns missing parent_families. Activation requires one owner run of the new prepared package. Do not substitute repeated refreshes or old setup scripts.
+Owner screenshot confirms202611160011,202611160012 and202611160013 installed. Fresh read-only zero-row API checks on all nine Parent/media tables return401/42501 for anonymous clients; none returns the former missing-table error. This checks relation availability and anonymous table privileges, not signed-in account isolation. No real records were read or written by the workspace.
 
-## Only new setup: one combined update
+Do not rerun any database update, Google key or scanning-function setup. Both App checks43837546001 and Android43837546056 succeeded for runtime91ea632.
 
-Existing database001–010, Google key and scan-roster are complete. Do not repeat them. The new family/consent/reviewed-delivery capabilities require only `supabase/update_011_013.sql` (all three new versions in one transaction). It contains no credentials, sample children or payment activation. The exact file is exercised twice in disposable database tests and checked against all three versioned migration sources.
+## Next owner action
 
-Guide one action at a time. First open the prepared file on GitHub and use **Copy raw file**; do not copy surrounding chat instructions or manually edit code. Then open a new blank query in the existing Supabase SQL editor and run the complete copied file. Success ends with three installed_update rows:
-
-- 202611160011
-- 202611160012
-- 202611160013
-
-File: https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/update_011_013.sql
-Editor: https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql/new
-
-This workspace has not run new SQL on the live project. Until this single new update is installed, new Parent/media capabilities show an activation message; existing ordinary Coach feedback/WhatsApp and teaching flows remain available. No extra Google/WhatsApp provider key or new Supabase project is required.
+Open the Parent website above and sign in with the existing account. Confirm whether the family setup or an existing family dashboard appears. Then guide one actual save/reopen journey; a hosted transport-fixture pass is not live database acceptance.
 
 ## Then one small acceptance journey
 
