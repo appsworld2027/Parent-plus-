@@ -1,4 +1,4 @@
-# Current owner step — website0.11.2 / Parent0.1
+# Current owner step — candidate0.12.0 / Parent0.2
 
 **Database updates011–013 are installed (owner screenshot confirmed).** Website0.11.2 is published and hosted signup checks pass3/3. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
 
@@ -18,9 +18,9 @@ Owner screenshot confirms202611160011,202611160012 and202611160013 installed. Fr
 
 Do not rerun any database update, Google key or scanning-function setup. Both App checks43837546001 and Android43837546056 succeeded for runtime91ea632.
 
-## Next owner action
+## Next owner action after candidate publication
 
-Open the Parent website above and sign in with the existing account. Confirm whether the family setup or an existing family dashboard appears. Then guide one actual save/reopen journey; a hosted transport-fixture pass is not live database acceptance.
+Use the Coach website with the existing login. Open a class, save attendance, then Write feedback for this class → Save feedback → Confirm save → Review and share to Parent → confirm the review → Share approved feedback to Parent. Press “Open [child]’s update in Parent”. The same session opens the linked child or guides family/child creation and explicit confirmation. No new login or database script is needed. Full flow and auth/retry rules: SAME_LOGIN_FEEDBACK_FLOW.md.
 
 ## Then one small acceptance journey
 

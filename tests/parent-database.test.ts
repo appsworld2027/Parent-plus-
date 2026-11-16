@@ -159,3 +159,16 @@ it('requires disconnect before family-child archive, preserving a clear consent 
   await db.query('update public.family_children set archived_at=now() where id=$1',[child]);
   const next=await issue();await as(parent);await reject('select public.claim_parent_link($1,$2)',[next,child],'42501');
 });
+
+it('one verified login can own both profiles and see only explicitly reviewed feedback after connecting its child',async()=>{
+  const ownFamily=id(63),ownChild=id(74);
+  await as(coach);
+  await db.query("insert into public.parent_families(id,owner_id,parent_name,name) values($1,$2,'Coach testing Parent','My family')",[ownFamily,coach]);
+  await db.query("insert into public.family_children(id,family_id,name) values($1,$2,'Family child with independent name')",[ownChild,ownFamily]);
+  expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(0);
+  await queue();const code=await issue();await claim(code,ownChild);
+  const feed=(await db.query<{child_id:string;snapshot:{note:string}}>('select * from public.parent_feedback_feed')).rows;
+  expect(feed).toHaveLength(1);expect(feed[0].child_id).toBe(ownChild);expect(feed[0].snapshot.note).toBe('Approved learning update');
+  expect((await db.query('select id from public.family_children')).rows).toEqual([{id:ownChild}]);
+  await as(parent);expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(0);
+});

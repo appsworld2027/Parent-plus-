@@ -3,6 +3,7 @@ import { AppState, Linking, Platform } from 'react-native';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './client';
 import { parseAuthLink } from './rules';
+import { clearFeedbackJourney } from '../parent/feedbackJourney';
 import { diagnostics } from '../diagnostics';
 import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
@@ -48,6 +49,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (!active) return;
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
+        if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); } catch { /* Account ownership is still checked before use. */ } }
         diagnostics.clear(); setAcademy(null); setRecovery(false);
         // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.

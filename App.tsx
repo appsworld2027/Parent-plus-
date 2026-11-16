@@ -33,7 +33,7 @@ const tabs: { name: Screen; glyph: string }[] = [
 ];
 const stages: Record<string, { title: string; body: string; detail: string }> = {
   Schedule: { title: 'A little structure. More room to teach.', body: 'Your batches and dated class sessions will live here.', detail: 'Scheduling follows account and academy setup. No classes have been loaded.' },
-  Post: { title: 'Small observations. Meaningful progress.', body: 'Write an update for a child or your whole batch.', detail: 'The observation editor follows student setup. Parent delivery is planned for a later release.' },
+  Post: { title: 'Small observations. Meaningful progress.', body: 'Write an update for a child or your whole batch.', detail: 'Open a class, write feedback, review it and share the child’s update to Parent.' },
   Students: { title: 'Every child has their own story.', body: 'Keep your students, guardian contacts, and batches together.', detail: 'Student management follows secure account setup. No student records have been loaded.' },
   Fees: { title: 'A clearer picture of your fees.', body: 'Invoices, balances, and verified payment updates in one place.', detail: 'Fee tracking and hosted payment links are planned. Live collection is not enabled.' },
 };

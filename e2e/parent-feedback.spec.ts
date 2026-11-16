@@ -30,15 +30,15 @@ async function feedback(page:Page,linked=false) {
   await page.getByLabel('Observation text',{exact:true}).fill('Fictional Ria shaped a bowl independently. Practise a smooth rim.');
   await page.getByRole('button',{name:'Save feedback',exact:true}).click();
   await page.getByRole('button',{name:'Confirm save',exact:true}).click();
-  await expect(page.getByRole('button',{name:'Review for Parent module',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:'Review and share to Parent',exact:true})).toBeEnabled();
 }
 async function prepare(page:Page) {
-  await page.getByRole('button',{name:'Review for Parent module',exact:true}).click();
+  await page.getByRole('button',{name:'Review and share to Parent',exact:true}).click();
   await expect(page.getByRole('checkbox',{name:'Parent handoff for Fictional Ria',exact:true})).toBeChecked();
 }
 async function approve(page:Page) {
   await page.getByRole('checkbox',{name:'I reviewed the feedback, recipients and media for parents',exact:true}).check();
-  await page.getByRole('button',{name:'Approve and hold for Parent module',exact:true}).click();
+  await page.getByRole('button',{name:'Share approved feedback to Parent',exact:true}).click();
 }
 
 test('media capture is blocked before consent; a lost video-upload result retries one immutable object',async({page},info)=>{
@@ -102,7 +102,7 @@ test('missing new database update blocks media/parent holding and leaves ordinar
   await page.getByRole('button',{name:'Class photos, videos and consent',exact:true}).click();
   await expect(page.getByRole('alert')).toContainText('not enabled for this workspace yet');
   await expect(page.getByRole('button',{name:'Choose consented class video',exact:true})).toHaveCount(0);
-  await feedback(page);await page.getByRole('button',{name:'Review for Parent module',exact:true}).click();
+  await feedback(page);await page.getByRole('button',{name:'Review and share to Parent',exact:true}).click();
   await expect(page.getByRole('alert').filter({hasText:'Existing feedback and WhatsApp remain available'})).toBeVisible();
   expect(await page.evaluate(()=>window.__mediaFixture.handoffs.length)).toBe(0);
 });

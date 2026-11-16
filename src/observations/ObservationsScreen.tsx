@@ -198,7 +198,7 @@ export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandl
 
   return <View style={s.stack} pointerEvents={photoBusy?'none':'auto'}>
     <Text accessibilityRole="header" style={s.heading}>Feedback for parents</Text>
-    <Text style={s.body}>Write feedback, save it for your students, then review and share it with each parent on WhatsApp.</Text>
+    <Text style={s.body}>Write feedback, save it for your students, then review and share it to the Parent app or WhatsApp.</Text>
     {!draft && <>
       <Button title="Refresh observations" disabled={busy} soft action={() => { void run(async () => { await refresh(); publish('Observations refreshed.', { kind: 'success', title: 'Refreshed' }); }); }} />
       {(stored || storageBlocked) && <View style={s.card}>

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import type { Child, CoachLink, Family, FamilyEvent, Moment, ParentPermission, Todo } from '../../src/parent/model';
 import { classMediaBackend } from './classMediaBackend';
-type ParentFixture={families:Family[];children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:CoachLink[];permissions:ParentPermission[];invites:Record<string,{student:string;used:boolean}>;loseMoment:boolean;missing:boolean;writes:string[]};
+type ParentFixture={holdConnections?:boolean;connectionReads?:number;families:Family[];children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:(CoachLink&{parent_user_id?:string})[];permissions:ParentPermission[];invites:Record<string,{student:string;used:boolean}>;loseMoment:boolean;missing:boolean;writes:string[]};
 declare global {interface Window {__parentFixture:ParentFixture;}}
 export async function parentBackend(page:Page){
   await classMediaBackend(page);
@@ -29,7 +29,7 @@ export async function parentBackend(page:Page){
       }
       if(endpoint==='get_parent_coach_connections')return reply(state.links.filter(value=>value.active));
       if(endpoint==='get_parent_media_permissions')return reply(state.permissions);
-      if(endpoint==='parent_coach_links')return reply(state.links.filter(value=>value.active));
+      if(endpoint==='parent_coach_links'){state.connectionReads=(state.connectionReads??0)+1;while(state.holdConnections)await new Promise(resolve=>setTimeout(resolve,20));return reply(state.links.filter(link=>link.active&&(!url.searchParams.has('student_id')||link.student_id===url.searchParams.get('student_id')?.slice(3))&&(!url.searchParams.has('academy_id')||link.academy_id===url.searchParams.get('academy_id')?.slice(3))));}
       if(endpoint==='parent_feedback_feed'){
         window.__coachFixture.calls.push(url.pathname);
         return reply(window.__mediaFixture.handoffs.filter(item=>item.state!=='cancelled').flatMap(item=>state.links.filter(link=>link.active&&link.student_id===item.student_id).map(link=>({id:item.id,child_id:link.child_id,reviewed_at:new Date().toISOString(),snapshot:{schema_version:1,note:item.snapshot.note,academy_name:link.academy_name,student_name:link.student_name,recorded_at:new Date().toISOString(),session_id:null,media_ids:item.media_ids}}))));
@@ -42,7 +42,7 @@ export async function parentBackend(page:Page){
         if(endpoint==='preview_parent_link'||endpoint==='claim_parent_link'){
           const invite=state.invites[p.invite_code];if(!invite||invite.used)return reply({code:'22023'},400);
           if(endpoint==='preview_parent_link')return reply({academy_name:'Fictional Test Academy',student_name:window.__coachFixture.roster.students.find(child=>child.id===invite.student)?.name??'Student'});
-          const link={id:crypto.randomUUID(),academy_id:'academy-test',student_id:invite.student,child_id:p.target_child,active:true,academy_name:'Fictional Test Academy',student_name:window.__coachFixture.roster.students.find(child=>child.id===invite.student)?.name??'Student'};
+          const link={parent_user_id:'00000000-0000-0000-0000-000000000001',id:crypto.randomUUID(),academy_id:'academy-test',student_id:invite.student,child_id:p.target_child,active:true,academy_name:'Fictional Test Academy',student_name:window.__coachFixture.roster.students.find(child=>child.id===invite.student)?.name??'Student'};
           state.links.push(link);invite.used=true;state.permissions.push({link_id:link.id,allow_photos:false,allow_videos:false,allow_parent_sharing:false,source:'parent_account',recorded_at:new Date().toISOString()});persist();return reply(link.id);
         }
         if(endpoint==='parent_media_permission'){

@@ -1,3 +1,4 @@
+import { OpenParentFeedback } from './OpenParentFeedback';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
@@ -14,11 +15,12 @@ type Request = { id: string; revision: number; students: string[]; media: string
 function Button({title,action,disabled=false}:{title:string;action:()=>void;disabled?:boolean}) {return <Pressable accessibilityRole="button" disabled={disabled} onPress={action} style={[s.button,disabled&&s.disabled]}><Text style={s.label}>{title}</Text></Pressable>;}
 function Check({title,checked,action,disabled=false}:{title:string;checked:boolean;action:()=>void;disabled?:boolean}) {return <Pressable accessibilityRole="checkbox" accessibilityLabel={title} accessibilityState={{checked,disabled}} aria-checked={checked} disabled={disabled} onPress={action} style={s.check}><Text style={s.label}>{checked?'☑':'☐'} {title}</Text></Pressable>;}
 
-// Persist approved snapshots; no Parent identity is inferred and no delivery
-// worker is invoked. A future worker must recheck verified links and consent.
+// Save reviewed snapshots; verified links and fresh consent control Parent access.
 export function ParentModuleReview({academy,observation,revision,disabled,onWorking}:{academy:string;observation:string;revision:number;disabled:boolean;onWorking:(busy:boolean)=>void}) {
   const [review,setReview]=useState<Review|null>(null),[students,setStudents]=useState<string[]>([]),[media,setMedia]=useState<string[]>([]);
   const [confirmed,setConfirmed]=useState(false),[busy,setBusy]=useState(false),[uncertain,setUncertain]=useState(false),[saved,setSaved]=useState(false);
+  const [opening,setOpening]=useState(false);
+  const shortcutLock=useRef(false);
   const [approvedIds,setApprovedIds]=useState<string[]>([]);
   const [handoffs,setHandoffs]=useState<Handoff[]>([]),[error,setError]=useState('');
   const generation=useRef(0),lock=useRef(false),request=useRef<Request|null>(null);
@@ -30,7 +32,7 @@ export function ParentModuleReview({academy,observation,revision,disabled,onWork
     setHandoffs((result.data??[]) as Handoff[]);
   }
   async function prepare() {
-    if(lock.current||disabled)return;lock.current=true;setBusy(true);setError('');const version=++generation.current;
+    if(lock.current||shortcutLock.current||disabled)return;lock.current=true;setBusy(true);setError('');const version=++generation.current;
     try{
       const detail=await getObservation(academy,observation);
       if(!detail.observation||detail.observation.status!=='recorded'||detail.observation.revision!==revision)throw new Error('Reopen the latest saved feedback.');
@@ -45,7 +47,7 @@ export function ParentModuleReview({academy,observation,revision,disabled,onWork
     finally{lock.current=false;if(version===generation.current)setBusy(false);}
   }
   async function approve() {
-    if(lock.current||disabled||!review||(!uncertain&&(!confirmed||!students.length))||!supabase)return;
+    if(lock.current||shortcutLock.current||disabled||!review||(!uncertain&&(!confirmed||!students.length))||!supabase)return;
     const payload=request.current??{id:randomUUID(),revision:review.revision,students:[...students],media:[...media]};
     request.current=payload;lock.current=true;setBusy(true);onWorking(true);setError('');
     let keepLocked=false;
@@ -62,17 +64,17 @@ export function ParentModuleReview({academy,observation,revision,disabled,onWork
     }finally{lock.current=false;setBusy(false);onWorking(keepLocked);}
   }
   async function cancel(id:string) {
-    if(lock.current||disabled||!supabase)return;lock.current=true;setBusy(true);onWorking(true);setError('');
+    if(lock.current||shortcutLock.current||disabled||!supabase)return;lock.current=true;setBusy(true);onWorking(true);setError('');
     try{const result=await supabase.rpc('cancel_parent_feedback',{target_academy:academy,target_handoff:id});if(result.error)throw result.error;await readHandoffs();}
     catch(failure){setError(mediaSetupError(failure));}
     finally{lock.current=false;setBusy(false);onWorking(false);}
   }
-  const frozen=busy||disabled||uncertain||saved;
+  const frozen=busy||opening||disabled||uncertain||saved;
   const awaiting=approvedIds.length>0&&approvedIds.every(id=>handoffs.some(item=>item.id===id&&item.state==='awaiting_parent_link'));
   return <View style={s.card}>
-    <Text style={s.title}>Ready for the Parent module</Text>
+    <Text style={s.title}>Share to Parent</Text>
     <Text style={s.body}>Keep a reviewed copy for each selected child, with optional consented class media. After approval, connected parents can read it in their separate workspace. Unconnected copies are held for a verified invitation. No WhatsApp or device notification is sent automatically.</Text>
-    <Button title="Review for Parent module" disabled={disabled||busy||uncertain} action={()=>{void prepare();}} />
+    <Button title="Review and share to Parent" disabled={disabled||busy||opening||uncertain} action={()=>{void prepare();}} />
     {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
     {review&&!disabled&&<>
       <Text style={s.label}>Saved feedback · revision {review.revision}</Text><Text selectable style={s.body}>{review.note}</Text>
@@ -86,11 +88,11 @@ export function ParentModuleReview({academy,observation,revision,disabled,onWork
         return <View key={item.id}><Check title={`Include class ${item.kind} ${index+1}`} checked={media.includes(item.id)} disabled={frozen||!allowed} action={()=>{setMedia(values=>values.includes(item.id)?values.filter(id=>id!==item.id):[...values,item.id]);setConfirmed(false);}} />{!allowed&&<Text style={s.body}>Everyone pictured needs current sharing permission, and each recipient must appear.</Text>}</View>;
       })}
       <Check title="I reviewed the feedback, recipients and media for parents" checked={confirmed} disabled={frozen} action={()=>setConfirmed(value=>!value)} />
-      {!saved&&<Button title={uncertain?'Retry same Parent approval':'Approve and hold for Parent module'} disabled={busy||disabled||(!uncertain&&(!confirmed||!students.length))} action={()=>{void approve();}} />}
-      {saved&&<Text accessibilityRole="header" style={s.title}>{awaiting?'Reviewed and saved — awaiting parent connection':'Reviewed copy saved — check status below'}</Text>}
+      {!saved&&<Button title={uncertain?'Retry same Parent approval':'Share approved feedback to Parent'} disabled={busy||opening||disabled||(!uncertain&&(!confirmed||!students.length))} action={()=>{void approve();}} />}
+      {saved&&<Text accessibilityRole="header" style={s.title}>{awaiting?'Reviewed and saved — awaiting parent connection':'Shared — check each child’s status below'}</Text>}
       {uncertain&&<Text style={s.body}>Outcome unknown. Your exact approval is locked on this screen for retry. Keep it open; after a reload check the held records before approving again.</Text>}
       <Text style={s.label}>Held feedback and review history</Text>
-      {handoffs.map(item=><View key={item.id} style={s.item}><Text style={s.body}>{review.recipients.find(child=>child.id===item.student_id)?.name??'Student'} · revision {item.observation_revision} · {item.state==='cancelled'?'Cancelled — retained in history':item.state==='available_to_parent'?'Available in the Parent workspace':'Awaiting verified parent connection'}</Text>{item.state!=='cancelled'&&<Button title={`Cancel Parent handoff for ${review.recipients.find(child=>child.id===item.student_id)?.name??'Student'}`} disabled={busy||disabled||uncertain} action={()=>{void cancel(item.id);}} />}</View>)}
+      {handoffs.map(item=><View key={item.id} style={s.item}><Text style={s.body}>{review.recipients.find(child=>child.id===item.student_id)?.name??'Student'} · revision {item.observation_revision} · {item.state==='cancelled'?'Cancelled — retained in history':item.state==='available_to_parent'?'Available in the Parent workspace':'Awaiting verified parent connection'}</Text>{item.state!=='cancelled'&&<OpenParentFeedback academy={academy} student={item.student_id} name={review.recipients.find(child=>child.id===item.student_id)?.name??'Student'} handoff={item.id} acquire={()=>{if(shortcutLock.current||lock.current)return false;shortcutLock.current=true;return true;}} disabled={busy||opening||disabled||uncertain} onWorking={value=>{shortcutLock.current=value;setOpening(value);onWorking(value);}} />}{item.state!=='cancelled'&&<Button title={`Cancel Parent handoff for ${review.recipients.find(child=>child.id===item.student_id)?.name??'Student'}`} disabled={busy||opening||disabled||uncertain} action={()=>{void cancel(item.id);}} />}</View>)}
     </>}
   </View>;
 }
