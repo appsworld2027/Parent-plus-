@@ -277,3 +277,9 @@ Final runtimeb014c0a: [App checks43829864988](https://github.com/appsworld2027/P
 ##0.11.1 visible workspace entry
 
 TypeScript and8focused browser checks pass (42.9seconds): Coach/Parent selection from the login page, signed-in same-session round-trip, no silent unsaved-form loss, plus all5Parent workspace/recovery/feedback cases. No new SQL or real writes. A single zero-row parent_families API probe returns404/PGRST205, supporting the unresolved new-schema activation blocker. This is an entry/navigation repair, not proof of live Parent persistence.
+
+## Role-specific signup and relationship follow-up0.11.2
+
+TypeScript and the complete automated suite passed206/206 (27files,58.49s) before the last canonical-child/archive guard additions. Final focused database verification passes19/19 (12Parent,7reviewed-media,20.27s) against the exact combined011–013 package applied twice. Covers sibling separation, multiple batches/academies, anonymous/forged writes, stale guardian calls, duplicate active child mapping, archive invitation invalidation and disconnect-before-family-child archive. A read-only independent agent review found no material defect; real transaction contention remains untested.
+
+All16focused browser checks pass47.9s: explicit role signup and profile routing, existing-session navigation, unsaved Coach-form guard, login/signup/recovery/email verification, Parent private records and reviewed feed. The long multi-stage Parent journey gets60seconds overall after two30-second total-budget failures with normal progress in traces; no UI/request timeout was relaxed. No live records, provider calls or messages were used. See DATABASE_RELATIONSHIP_REVIEW.md for remaining multi-guardian/staff/production limits. Vercel publication and live Supabase activation remain separate evidence.

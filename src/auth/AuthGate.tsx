@@ -24,9 +24,9 @@ function Field({ label, value, onChange, password = false, email = false }: { la
     secureTextEntry={password} autoCapitalize={password || email ? 'none' : 'words'} autoCorrect={false}
     keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput]} maxLength={password ? 200 : email ? 320 : 100} /></View>;
 }
-function Page({ children }: React.PropsWithChildren) {
+function Page({ children, signup = false, disabled = false }: React.PropsWithChildren<{ signup?: boolean; disabled?: boolean }>) {
   const parent = useAuth().module === 'parent';
-  return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><WorkspaceSwitcher current={parent?'parent':'coach'} /><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+  return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><WorkspaceSwitcher current={parent?'parent':'coach'} signup={signup} disabled={disabled} /><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.page}>
       <Text style={[s.logo,parent&&s.parentText]}>✦  {parent ? 'Parent Plus' : 'Parent Plus Coach'}</Text>{children}<Text style={s.footer}>A little more connected.</Text>
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;
@@ -38,7 +38,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const auth = useAuth();
   const parent = auth.module === 'parent';
   const feedback = useFeedback();
-  const [selected, setSelected] = useState<AuthMode>('login');
+  const [selected, setSelected] = useState<AuthMode>(() => Platform.OS === 'web' && /\/(coach|parent)\/signup\/?$/.test(globalThis.location?.pathname ?? '') ? 'signup' : 'login');
   const mode = forceRecovery ? 'updatePassword' : selected;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -89,7 +89,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       setFailure(safeAuthFailure('AUTH_FAILURE', text));
     } finally { setBusy(false); }
   }
-  return <Page>
+  return <Page signup disabled={busy || forceRecovery}>
     <Text style={[s.kicker,parent&&s.parentText]}>{parent?'YOUR FAMILY WORKSPACE':'YOUR COACH WORKSPACE'}</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>{titles[mode]}</Text>
     <Text style={[s.body,parent&&s.parentText]}>{mode === 'login' ? parent ? 'Sign in to your private family workspace.' : 'Sign in to keep your classes and parent feedback together.' : mode === 'signup' ? parent ? 'Create your account, verify your email, then set up your family.' : 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}

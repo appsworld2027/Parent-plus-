@@ -5,6 +5,9 @@ async function loginParent(page:Page){await page.goto('/parent');await expect(pa
 async function family(page:Page){await page.getByLabel('Your parent name',{exact:true}).fill('Fictional Parent');await page.getByLabel('Family name',{exact:true}).fill('Fictional Family');await page.getByRole('button',{name:'Create my family workspace',exact:true}).click();await page.getByRole('button',{name:'Add my first child',exact:true}).click();await page.getByLabel('Child name',{exact:true}).fill('Fictional Family Ria');await page.getByLabel('Birth date (optional)',{exact:true}).fill('2018-04-12');await page.getByRole('button',{name:'Save child',exact:true}).click();await expect(page.getByRole('tab',{name:'Choose child Fictional Family Ria',exact:true})).toBeVisible();}
 
 test('Aurora Parent workspace creates family and children, logs real private time/reminders and persists across reload',async({page},info)=>{
+  // This complete onboarding + sibling/profile + plans journey includes a reload
+  // and screenshot. Keep individual locator limits; allow the combined steps 60s.
+  test.setTimeout(60_000);
   await parentBackend(page);await loginParent(page);await family(page);
   expect(await page.evaluate(()=>window.__coachFixture.calls.some(path=>path.endsWith('/academies')))).toBe(false);
   await page.getByRole('tab',{name:'Parent Together',exact:true}).click();await page.getByRole('button',{name:'Try Paper boat race',exact:true}).click();

@@ -23,8 +23,8 @@ beforeAll(async()=>{
     create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text not null references storage.buckets(id),name text not null,metadata jsonb,unique(bucket_id,name));
     alter table storage.objects enable row level security;grant usage on schema storage to anon,authenticated,service_role;grant select on storage.objects to anon;grant select,insert,update,delete on storage.objects to authenticated;grant all on storage.objects,storage.buckets to service_role;`);
   for(const file of readdirSync('supabase/migrations').filter(file=>file.endsWith('.sql')&&file<='202611150010_vision_monthly_limit.sql').sort())await db.exec(readFileSync(`supabase/migrations/${file}`,'utf8'));
-  await db.exec(readFileSync('supabase/update_011_012.sql','utf8'));
-  await db.exec(readFileSync('supabase/update_011_012.sql','utf8'));
+  await db.exec(readFileSync('supabase/update_011_013.sql','utf8'));
+  await db.exec(readFileSync('supabase/update_011_013.sql','utf8'));
   await db.query('insert into auth.users values($1),($2),($3)',[coach,parent,other]);
 },30000);
 beforeEach(async()=>{
@@ -75,6 +75,7 @@ it('disconnecting revokes feed access and does not transfer old approvals to a r
   expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(0);
   await queue(92);await as(other);expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(1);
   await as(parent);await db.query('select public.disconnect_parent_link($1)',[link]);
+  await reject('select public.parent_media_permission($1,true,true,true)',[link],'42501');
   await as(other);expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(1);
 });
 it('parent media access needs approved media and current permission; a coach cannot overrule a parent refusal',async()=>{
@@ -93,4 +94,68 @@ it('invalid or revoked invites and foreign-child claims cannot change a family c
   await reject('select public.claim_parent_link($1,$2)',[fresh,foreignChild],'42501');
   await db.exec('reset role');await db.query("update coach_private.parent_link_invites set expires_at=now()-interval '1 second'");await as(parent);
   await reject('select public.claim_parent_link($1,$2)',[fresh,child],'22023');
+});
+
+it('archive revokes outstanding invites, rejects first claims and preserves existing approved text history',async()=>{
+  const unused=await issue();
+  await db.query('select public.archive_student($1)',[student]);
+  await as(parent);await reject('select public.claim_parent_link($1,$2)',[unused,child],'22023');
+  await reject('select public.preview_parent_link($1)',[unused],'22023');
+  await as(coach);await reject('select public.issue_parent_link_invite($1,$2)',[academy,student],'42501');
+  // Simulate a pre013 pending invitation on an already archived student.
+  await db.exec('reset role');await db.exec('update coach_private.parent_link_invites set revoked=false');
+  await as(parent);await reject('select public.claim_parent_link($1,$2)',[unused,child],'22023');
+});
+it('archive does not erase connected family history or break exact claim retry',async()=>{
+  await queue();const code=await issue();await as(parent);const link=await claim(code);
+  await as(other);await reject('select public.archive_student($1)',[student],'42501');
+  await as(coach);await db.query('select public.archive_student($1)',[student]);
+  await as(parent);expect(await claim(code)).toBe(link);
+  expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(1);
+  await db.query('select public.disconnect_parent_link($1)',[link]);
+  expect((await db.query('select * from public.parent_feedback_feed')).rows).toHaveLength(0);
+});
+
+it('keeps siblings separate while a child attends multiple batches',async()=>{
+  const sibling=id(73),secondBatch=id(32);
+  await db.query("insert into public.family_children(id,family_id,name) values($1,$2,'Sibling')",[sibling,family]);
+  const first=await issue();await as(parent);const firstLink=await claim(first);
+  await reject('select public.claim_parent_link($1,$2)',[first,sibling],'22023');
+  await as(coach);const second=(await db.query<{code:string}>('select public.issue_parent_link_invite($1,$2) as code',[academy,outsider])).rows[0].code;
+  await as(parent);await reject('select public.claim_parent_link($1,$2)',[second,child],'22023');await claim(second,sibling);
+  await as(coach);await db.query("insert into public.batches(id,academy_id,name) values($1,$2,'Music')",[secondBatch,academy]);
+  await db.query('select public.add_batch_students($1,$2,$3::uuid[])',[academy,secondBatch,[student]]);
+  expect((await db.query('select batch_id from public.enrolments where student_id=$1',[student])).rows).toHaveLength(2);
+  await queue();await as(parent);
+  const rows=(await db.query<{child_id:string}>('select child_id from public.parent_feedback_feed')).rows;
+  expect(rows).toEqual([{child_id:child}]);
+  await db.query('select public.disconnect_parent_link($1)',[firstLink]);
+  expect((await db.query<{child_id:string}>('select child_id from public.get_parent_coach_connections()')).rows).toEqual([{child_id:sibling}]);
+});
+it('links one family child to independent coaches without exposing private family records',async()=>{
+  const secondAcademy=id(12),secondStudent=id(23);
+  const first=await issue();await as(parent);await claim(first);
+  await db.exec('reset role');
+  await db.query("insert into public.academies(id,owner_id,name) values($1,$2,'Other coach')",[secondAcademy,other]);
+  await db.query("insert into public.students(id,academy_id,name) values($1,$2,'Same child at another coach')",[secondStudent,secondAcademy]);
+  await as(other);const code=(await db.query<{code:string}>('select public.issue_parent_link_invite($1,$2) as code',[secondAcademy,secondStudent])).rows[0].code;
+  await as(parent);await claim(code);
+  expect((await db.query('select * from public.get_parent_coach_connections()')).rows).toHaveLength(2);
+  await as(other);expect((await db.query('select id from public.family_children')).rows).toEqual([{id:foreignChild}]);
+  expect((await db.query('select id from public.parent_coach_links')).rows).toHaveLength(1);
+});
+it('rejects anonymous family access, untrusted link creation and a second active household',async()=>{
+  await db.exec('reset role;set role anon');await reject('select * from public.family_children',[],'42501');
+  await as(parent);await reject('insert into public.parent_coach_links(academy_id,student_id,family_id,child_id,parent_user_id) values($1,$2,$3,$4,$5)',[academy,student,family,child,parent],'42501');
+  const code=await issue();await as(parent);await claim(code);
+  await as(coach);await reject('select public.issue_parent_link_invite($1,$2)',[academy,student],'22023');
+});
+
+it('requires disconnect before family-child archive, preserving a clear consent lifecycle',async()=>{
+  const code=await issue();await as(parent);const link=await claim(code);
+  await reject('update public.family_children set archived_at=now() where id=$1',[child],'22023');
+  expect((await db.query('select * from public.get_parent_coach_connections()')).rows).toHaveLength(1);
+  await db.query('select public.disconnect_parent_link($1)',[link]);
+  await db.query('update public.family_children set archived_at=now() where id=$1',[child]);
+  const next=await issue();await as(parent);await reject('select public.claim_parent_link($1,$2)',[next,child],'42501');
 });

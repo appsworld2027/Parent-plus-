@@ -1,5 +1,16 @@
 # Parent Plus Coach — development checkpoint
 
+## Role-specific signup and relationship review — candidate0.11.2
+
+Owner requires production signup choices leading to Coach/Parent profiles, plus a comprehensive review of Supabase relationships. Auth entry now says “Sign up as a Coach” / “Sign up as a Parent”, opening /coach/signup or /parent/signup directly in registration mode. Shared credentials, returning-user sign in, verified-email requirements and existing-profile routing remain. Signed-in switches remain navigation and never grant permissions. Busy/password-recovery navigation is disabled.
+
+[Relationship review](docs/DATABASE_RELATIONSHIP_REVIEW.md) records supported combinations and explicit gaps. Siblings, multiple batches and independent academies are covered; multiple simultaneous guardian accounts, shared family membership, staff roles and duplicate-resolution UI are not yet implemented.013 prevents duplicate active child/student mapping within an academy and requires disconnect before Parent-child archive. Guardian privacy/consent preferences were asked and remain unanswered. Never call the whole production schema comprehensive from the first slice.
+
+Forward migration013 closes the confirmed archived-student invitation gap: shared academy locking, unused-invite revocation, first-claim rejection, child-row locking/archive protection, canonical per-academy child-link uniqueness, preserved existing approved text history, and exact successful-claim retry. Existing011/012 migration sources are unchanged. New generated owner package is supabase/update_011_013.sql; it replaces the011/012-only package for this candidate. Live001–010/Google/scan-roster must not repeat. Live Parent activation remains unconfirmed; no production SQL/private records/provider calls occurred here. The owner has been told to hold new SQL during this review.
+
+Verification: full TypeScript/automated suite passed206/206 in58.49seconds before the last duplicate/archive additions. Final exact-package Parent/media database checks pass19/19 in20.27seconds, including12Parent cases; all16focused signup/login/recovery/Parent browser journeys pass in47.9seconds. The long combined Parent journey has a60-second total budget after traces showed cumulative30-second exhaustion, with no new arbitrary sleeps. An independent read-only agent review found no material defect in final013; actual competing-transaction/live Storage acceptance is still separate. Final web export passes. Publication follows. Workspace commands work; no disconnection observed.
+
+
 ## Parent entry repair — candidate0.11.1
 
 The owner reports no Parent space/clickable entry/dashboard on the Vercel website and confirms no/not-sure installation of011/012. Inspection found Parent was only reachable by typing /parent or a student-specific invitation link; Coach login/dashboard lacked a visible module entry. Added visible Coach space / Parent space links on both login and signed-in web workspaces. Navigation stays in the same tab and uses the existing Auth session. Switching is disabled while an unsaved form/save is active; it grants no permissions and does not create an academy/family automatically.

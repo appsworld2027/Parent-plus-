@@ -16,3 +16,9 @@ Version0.1 ·16November2026. Authorised directly by the owner after re-sharing `
 First target is mobile web in the existing Vercel project; source remains React Native for later separate native packaging. One family owner and one active family connection per academy student are explicit first-slice limits. Existing Coach use does not depend on Parent onboarding.
 
 Later feature phases: authorised Coach schedule/attendance mirror; richer progress/skills and milestones; private family multimedia capture; discovery/admissions/health; push/read receipts; caregivers and public release/retention/deletion/backup gates. `PARENT_MODULE.md` records exact data/access/activation behavior and current evidence limits. No payment/gateway development is part of this milestone.
+
+## Signup and relationship clarification — 16 November 2026
+
+The main website entry must offer “Sign up as a Coach” and “Sign up as a Parent”, each opening the matching registration and post-verification profile setup. Keep returning-user sign in and the same Auth credentials. Existing profiles reopen; navigation never grants ownership or creates duplicate profiles.
+
+Relationship acceptance and remaining limits are recorded in [DATABASE_RELATIONSHIP_REVIEW.md](DATABASE_RELATIONSHIP_REVIEW.md). Support siblings, multiple batches, and independent coaches with child-scoped approved feedback. Archiving a Coach student revokes unused invitations, blocks first claims and preserves existing approved text history until explicit disconnect. Multiple authenticated guardians/shared family membership remain an explicit extension requiring privacy and consent decisions; do not represent stored contact rows as authenticated guardians.

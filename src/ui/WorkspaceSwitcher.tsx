@@ -3,8 +3,8 @@ import { Platform } from 'react-native';
 
 // Same-tab navigation preserves the shared Auth session. Workspace ownership
 // remains enforced by Supabase; selecting a space does not grant access.
-export function WorkspaceSwitcher({ current, disabled = false }: {
-  current: 'coach' | 'parent'; disabled?: boolean;
+export function WorkspaceSwitcher({ current, disabled = false, signup = false }: {
+  current: 'coach' | 'parent'; disabled?: boolean; signup?: boolean;
 }) {
   if (Platform.OS !== 'web') return null;
   const dark = current === 'parent';
@@ -19,9 +19,11 @@ export function WorkspaceSwitcher({ current, disabled = false }: {
       ...(['coach', 'parent'] as const).map(space => {
         const selected = space === current, label = space === 'coach' ? 'Coach space' : 'Parent space';
         const style = { ...item, backgroundColor: selected ? (dark ? '#253A4D' : '#DCEDEA') : (dark ? '#151A20' : '#FFF'), opacity: !selected && disabled ? 0.5 : 1 };
-        if (selected) return React.createElement('span', { key: space, 'aria-current': 'page', style }, label);
-        if (disabled) return React.createElement('span', { key: space, role: 'link', 'aria-label': `Open ${label}`, 'aria-disabled': true, style }, label);
-        return React.createElement('a', { key: space, href: space === 'parent' ? '/parent' : '/', 'aria-label': `Open ${label}`, style }, label);
+        const text = signup ? `Sign up as a ${space === 'coach' ? 'Coach' : 'Parent'}` : label;
+        const accessibleName = signup ? text : `Open ${label}`;
+        if (selected && !signup) return React.createElement('span', { key: space, 'aria-current': 'page', style }, label);
+        if (disabled) return React.createElement('span', { key: space, role: 'link', 'aria-label': accessibleName, 'aria-disabled': true, style }, text);
+        return React.createElement('a', { key: space, href: signup ? `/${space}/signup` : space === 'parent' ? '/parent' : '/', 'aria-label': accessibleName, style }, text);
       })),
     disabled && React.createElement('p', { style: { margin: '7px 0 0', fontSize: 12, color: dark ? '#A9B3BF' : '#5C6B73' } }, 'Save or close your current form before switching spaces.'));
 }
