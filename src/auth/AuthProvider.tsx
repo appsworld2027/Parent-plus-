@@ -10,6 +10,7 @@ import { useFeedback } from '../ui/ActionFeedback';
 
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
+  module: 'coach' | 'parent';
   session: Session | null; loading: boolean; academy: Academy | null;
   academyLoading: boolean; error: string; recovery: boolean;
   reload: () => void; logout: () => Promise<string | null>;
@@ -25,7 +26,7 @@ export function safeAuthFailure(code: 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACAD
 
 // Single owner of authentication and academy state. See docs/ARCHITECTURE.md.
 // Keep SDK lifecycle work here so screens cannot create competing auth subscriptions.
-export function AuthProvider({ children }: React.PropsWithChildren) {
+export function AuthProvider({ children, module = 'coach' }: React.PropsWithChildren<{ module?: 'coach' | 'parent' }>) {
   const { show, dismiss } = useFeedback();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +82,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
           if (active) setError('Please verify your email address before continuing.');
           return;
         }
+        if (module === 'parent') return;
         const result = await supabase.from('academies').select('id,name,timezone,currency').eq('owner_id', user.data.user.id).maybeSingle();
         if (result.error) throw result.error;
         if (active) setAcademy(result.data);
@@ -89,7 +91,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
       } finally { if (active) { setCheckedSession(session.access_token); setAcademyLoading(false); } }
     })();
     return () => { active = false; };
-  }, [session?.access_token, revision]);
+  }, [session?.access_token, revision, module]);
 
   useEffect(() => {
     if (!supabase || Platform.OS === 'web') return;
@@ -114,7 +116,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
         if (parsed.code === lastCode) return;
         lastCode = parsed.code;
         // Remove code from browser history before doing a network operation.
-        if (Platform.OS === 'web') globalThis.history.replaceState({}, '', '/');
+        if (Platform.OS === 'web') globalThis.history.replaceState({}, '', module === 'parent' ? '/parent' : '/');
         const result = await supabase!.auth.exchangeCodeForSession(parsed.code);
         if (result.error) throw result.error;
         if (active) { setRecovery(parsed.recovery); setError(''); }
@@ -146,7 +148,7 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
   }, [show, dismiss]);
 
-  return <Context.Provider value={{ session, loading, academy,
+  return <Context.Provider value={{ module, session, loading, academy,
     academyLoading: academyLoading || (!!session && checkedSession !== session.access_token), error, recovery,
     reload: () => { setLoading(true); setRevision(x => x + 1); }, logout,
     finishRecovery: () => setRecovery(false), refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;

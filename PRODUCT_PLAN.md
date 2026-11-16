@@ -1,5 +1,11 @@
 # Parent Plus Coach — two-day pilot product plan
 
+**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [docs/PARENT_PRD.md](docs/PARENT_PRD.md) and [docs/PARENT_MODULE.md](docs/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
+
+
+**Current owner priority (16November2026):** feedback-first, easy batch/class setup, coach-reviewed WhatsApp, held Parent snapshots and consented class media. Fee collection/gateway work is shelved. This supersedes older payment-first sequencing and no-parent-sharing exclusions below. See [current reset](docs/COACH_FEEDBACK_RESET.md) and PRD1.6. Exact prototype styling is blocked by the missing original Coach reference.
+
+
 Status: revised implementation baseline. See [BUILD_PLAN.md](BUILD_PLAN.md) for the module sequence, testing gates, diagnostics, payment approach, and owner setup steps. That document governs the revised two-day scope.
 Prepared: 11 November 2026. Target: an installable Android pilot within 1–2 days of implementation starting, assuming Supabase configuration and device testing are available promptly.
 

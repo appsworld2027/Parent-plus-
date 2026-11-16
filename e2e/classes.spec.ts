@@ -15,11 +15,9 @@ async function attendance(page: Page) {
 test('creates, edits and cancels a dated class without deleting the occurrence', async ({ page }, testInfo) => {
   await openClasses(page);
   await page.getByRole('button', { name: 'Create a class', exact: true }).click();
-  await page.getByRole('button', { name: 'Save class', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('Choose a batch');
-  await page.getByRole('radio', { name: 'Class batch Fictional Clay Class', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Start time (HH:MM, 24 hour)', exact: true }).fill('18:00');
-  await page.getByRole('textbox', { name: 'End time (HH:MM, 24 hour)', exact: true }).fill('19:00');
+  await expect(page.getByRole('combobox', { name: 'Class batch', exact: true })).toHaveValue(await page.evaluate(() => window.__coachFixture.roster.batches[0].id));
+  await page.getByLabel('Start time (HH:MM, 24 hour)', { exact: true }).fill('18:00');
+  await page.getByLabel('End time (HH:MM, 24 hour)', { exact: true }).fill('19:00');
   await page.getByRole('textbox', { name: 'Class room or location', exact: true }).fill('Fictional Room 2');
   await page.getByRole('button', { name: 'Save class', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Class saved');

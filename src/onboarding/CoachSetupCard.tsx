@@ -1,5 +1,6 @@
 import React,{useEffect,useState} from 'react';
-import {Pressable,StyleSheet,Text,View} from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import {loadRoster} from '../roster/service';
 export function CoachSetupCard({academy,onStart}:{academy:string;onStart:()=>void}){
  const [counts,setCounts]=useState<{students:number;batches:number}|null>(null);

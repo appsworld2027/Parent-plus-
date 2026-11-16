@@ -1,6 +1,7 @@
 import { SignOutButton } from './SignOutButton';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -10,20 +11,23 @@ import { AuthMode, validateAuth } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
 
 function Button({ title, onPress, disabled = false, soft = false }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
+  const parent = useAuth().module === 'parent';
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
-    style={[s.button, soft && s.soft, disabled && { opacity: 0.55 }]}>
-    <Text style={[s.buttonLabel, soft && s.softLabel]}>{title}</Text>
+    style={[s.button, soft && s.soft, parent && (soft ? s.parentSoft : s.parentButton), disabled && { opacity: 0.55 }]}>
+    <Text style={[s.buttonLabel, soft && s.softLabel, parent && (soft ? s.parentText : s.parentButtonText)]}>{title}</Text>
   </Pressable>;
 }
 function Field({ label, value, onChange, password = false, email = false }: { label: string; value: string; onChange: (value: string) => void; password?: boolean; email?: boolean }) {
-  return <View style={s.field}><Text style={s.label}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={onChange}
+  const parent = useAuth().module === 'parent';
+  return <View style={s.field}><Text style={[s.label,parent&&s.parentText]}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={onChange}
     secureTextEntry={password} autoCapitalize={password || email ? 'none' : 'words'} autoCorrect={false}
-    keyboardType={email ? 'email-address' : 'default'} style={s.input} maxLength={password ? 200 : email ? 320 : 100} /></View>;
+    keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput]} maxLength={password ? 200 : email ? 320 : 100} /></View>;
 }
 function Page({ children }: React.PropsWithChildren) {
-  return <SafeAreaView style={s.safe}><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+  const parent = useAuth().module === 'parent';
+  return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.page}>
-      <Text style={s.logo}>✦  Parent Plus Coach</Text>{children}<Text style={s.footer}>A little more connected.</Text>
+      <Text style={[s.logo,parent&&s.parentText]}>✦  {parent ? 'Parent Plus' : 'Parent Plus Coach'}</Text>{children}<Text style={s.footer}>A little more connected.</Text>
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
 
@@ -31,6 +35,7 @@ function Page({ children }: React.PropsWithChildren) {
 // but unsaved values are not durable across app termination. Never log form contents.
 function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void; forceRecovery?: boolean }) {
   const auth = useAuth();
+  const parent = auth.module === 'parent';
   const feedback = useFeedback();
   const [selected, setSelected] = useState<AuthMode>('login');
   const mode = forceRecovery ? 'updatePassword' : selected;
@@ -40,7 +45,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useFeedbackMessage('info', 'Email request completed');
   const [failure, setFailure] = useFeedbackMessage('error', 'Action needs attention');
-  const titles = { login: 'Welcome back.', signup: 'A calmer teaching day starts here.', recover: 'Let’s get you back in.', updatePassword: 'Choose a new password.' };
+  const titles = { login: 'Welcome back.', signup: parent ? 'More time for the little things.' : 'A calmer teaching day starts here.', recover: 'Let’s get you back in.', updatePassword: 'Choose a new password.' };
   function choose(next: AuthMode) { setSelected(next); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
   async function submit() {
     if (busy) return;
@@ -59,12 +64,12 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
         if (result.error) throw result.error;
         feedback.show({ kind: 'success', title: 'Signed in', message: 'Your account is connected. Opening your workspace…', source: 'auth-sign-in' });
       } else if (mode === 'signup') {
-        const result = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: authRedirect() } });
+        const result = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: authRedirect(false,auth.module) } });
         if (result.error) throw result.error;
         setMessage('If registration is available for this email, a confirmation message will arrive. Open it on this device, then sign in.');
         setPassword(''); setConfirm('');
       } else if (mode === 'recover') {
-        const result = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authRedirect(true) });
+        const result = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authRedirect(true,auth.module) });
         if (result.error) throw result.error;
         setMessage('If an account exists, a recovery email will arrive. Open the newest link on this device.');
       } else {
@@ -84,14 +89,14 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     } finally { setBusy(false); }
   }
   return <Page>
-    <Text style={s.kicker}>YOUR COACH WORKSPACE</Text><Text accessibilityRole="header" style={s.title}>{titles[mode]}</Text>
-    <Text style={s.body}>{mode === 'login' ? 'Sign in to keep your classes, observations, and fees together.' : mode === 'signup' ? 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
+    <Text style={[s.kicker,parent&&s.parentText]}>{parent?'YOUR FAMILY WORKSPACE':'YOUR COACH WORKSPACE'}</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>{titles[mode]}</Text>
+    <Text style={[s.body,parent&&s.parentText]}>{mode === 'login' ? parent ? 'Sign in to your private family workspace.' : 'Sign in to keep your classes and parent feedback together.' : mode === 'signup' ? parent ? 'Create your account, verify your email, then set up your family.' : 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}
     {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
-    <View style={s.card}>
+    <View style={[s.card,parent&&s.parentCard]}>
       {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
-      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={s.hint}>Use at least 10 characters.</Text></>}
+      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 10 characters.</Text></>}
       {!!failure && <Text style={s.error}>{failure}</Text>}
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}
@@ -102,7 +107,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       </>}
     </View>
     {appConfig.environment !== 'production' && !forceRecovery && <View style={s.preview}>
-      <Text style={s.hint}>Development preview only. No signed-in records are loaded.</Text>
+      <Text style={[s.hint,parent&&s.parentText]}>Development preview only. No signed-in records are loaded.</Text>
       <Button title="Explore interface preview" onPress={onPreview} soft />
     </View>}
   </Page>;
@@ -141,20 +146,22 @@ function AcademySetup() {
 // The database still enforces ownership; hiding a screen is not an access policy.
 export function AuthGate({ render }: { render: (exitPreview?: () => void) => React.ReactNode }) {
   const auth = useAuth();
+  const parent = auth.module === 'parent';
   const [preview, setPreview] = useState(false);
   const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
   useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
-  if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color="#1F6F6B" size="large" /><Text style={s.body}>Opening your workspace…</Text></Page>;
+  if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color="#1F6F6B" size="large" /><Text style={[s.body,parent&&s.parentText]}>Opening your workspace…</Text></Page>;
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;
   if (!auth.session) return <AuthForm onPreview={() => setPreview(true)} />;
-  if (auth.error) return <Page><Text accessibilityRole="header" style={s.title}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
+  if (auth.error) return <Page><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
     <Button title="Retry connection" onPress={auth.reload} /><SignOutButton /></Page>;
-  if (!auth.academy) return <AcademySetup />;
+  if (auth.module === 'coach' && !auth.academy) return <AcademySetup />;
   return <ErrorBoundary>{render()}</ErrorBoundary>;
 }
 
 const s = StyleSheet.create({
+  parentSafe:{backgroundColor:'#060A0E'},parentText:{color:'#F9FBFC'},parentCard:{backgroundColor:'#151A20',borderColor:'#313A45'},parentInput:{backgroundColor:'#20262F',borderColor:'#313A45',color:'#F9FBFC'},parentButton:{backgroundColor:'#2EE6A6'},parentButtonText:{color:'#06251B'},parentSoft:{backgroundColor:'#20262F'},
   safe: { flex: 1, backgroundColor: '#F3F5F1' }, fill: { flex: 1 },
   page: { width: '100%', maxWidth: 520, alignSelf: 'center', padding: 25, gap: 20, flexGrow: 1, justifyContent: 'center' },
   logo: { color: '#1F6F6B', fontSize: 20, fontWeight: '700', marginVertical: 12 },

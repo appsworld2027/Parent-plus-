@@ -1,5 +1,11 @@
 # Developer handover and working agreement
 
+**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [PARENT_PRD.md](PARENT_PRD.md) and [PARENT_MODULE.md](PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
+
+
+**Current owner priority (16November2026):** feedback-first, easy batch/class setup, coach-reviewed WhatsApp, held Parent snapshots and consented class media. Fee collection/gateway work is shelved. This supersedes older payment-first sequencing and no-parent-sharing exclusions below. See [current reset](COACH_FEEDBACK_RESET.md) and PRD1.6. The owner has now provided the original Coach and Aurora references in docs/prototypes/; use these for visual alignment.
+
+
 Reviewed: 12 November 2026. Start with [current progress](../PROGRESS.md), then [how the system works](ARCHITECTURE.md). The owner has explicitly resumed feature development while postponing Windows-emulator setup. Phone-control automation remains on hold. Read the current checkpoint before taking action; development resumes do not authorize payment activation or parent delivery.
 
 ## 1. Read in this order
@@ -175,3 +181,8 @@ Read current [PHOTO_ONBOARDING.md](PHOTO_ONBOARDING.md). handler.ts now invokes 
 ## 0.9.0 first-run review map
 
 CoachSetupCard loads real roster counts on Today and opens RosterScreen through a consumed one-shot launch prop. SelectField provides native HTML select on web and an accessible modal picker on native, without another SDK dependency. ScanRosterScreen owns batch draft/create, automatic names-only candidates, explicit review/import and a confirmed-success/refresh state. RosterScreen reloads actual students/memberships before saved navigation. Do not call import_roster_scan again merely because refresh failed. Existing001–010, Google secret and deployed scan-roster do not need redeployment for this release. e2e/roster-scan.spec.ts covers the seven full-flow/recovery cases.
+
+
+## Parent0.1 and shared typography
+
+The new src/parent root is selected by /parent, with shared AuthProvider module=parent. Never route Parent-only users through AcademySetup or infer family links from contacts. Parent interface reads only family tables, whitelisted connections/permissions and approved feed. Migrations011/012 and delivered update_011_012.sql must stay consistent (npm run prepare:parent-sql and --check). Parent database tests execute the exact combined owner file twice. The source is React Native, not the prototype scripts. Typography.tsx uses the SDK-compatible expo-font and local OFL Bricolage asset; failure falls back to system text. New source/map and limits: PARENT_MODULE.md.

@@ -1,7 +1,7 @@
 import { supabase } from '../auth/client';
 import { diagnostics } from '../diagnostics';
 import type { BatchDraft, Roster, StudentDraft } from './model';
-import { parseFee } from './model';
+import { parseBatchFee } from './model';
 
 export function rosterFailure(error: unknown, fallback: string) {
   const code = typeof error === 'object' && error && 'code' in error ? error.code : '';
@@ -47,7 +47,7 @@ export async function saveStudent(academy: string, draft: StudentDraft) {
 // save, one upsert is enough. Amounts cross the API boundary as integer paise.
 export async function saveBatch(academy: string, draft: BatchDraft) {
   if (!supabase) throw new Error('Client unavailable');
-  const amount = parseFee(draft.fee);
+  const amount = parseBatchFee(draft.fee);
   if (amount === null) throw new Error('Invalid fee');
   const result = await supabase.from('batches').upsert({ id: draft.id, academy_id: academy, name: draft.name.trim(), room: draft.room.trim(), monthly_fee_paise: amount }, { onConflict: 'id' });
   if (result.error) throw result.error;

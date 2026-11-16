@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from './ui/Typography';
 import { diagnostics } from './diagnostics';
 
 // Recovers React render failures. Event-handler/async errors need their own catches;

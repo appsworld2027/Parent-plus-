@@ -41,3 +41,13 @@ The owner explicitly requested Cloud Vision integration after reviewing alternat
 ## First-run roster ownership — owner correction16November
 
 The coach's own names, batches and persisted profiles must be visible early in setup. Put the batch/photo flow on Today, show real counts, create/select batches inline, auto-populate names-only candidates and review through dropdowns before explicit save. Source text is supporting evidence, not the primary student list. Known-success write/read-refresh failure is a distinct state from unknown write outcome: never re-import because a read failed. Reuse existing server/API configuration and preserve existing profiles when linking matches.
+
+
+## PD-20 —16November2026: feedback-first reset
+
+Owner correction overrides PD-06/payment-first release sequencing and the prior exclusion of coach-reviewed parent sharing. Prioritise easy batch/class operation and saved feedback→reviewed WhatsApp. Hold approved per-child snapshots for a future verified Parent link; do not build a parent app or claim push delivery now. Capture/upload photos or existing video clips only after purpose-specific guardian permission is recorded for all pictured subjects. Consent recording is a coach attestation with evidence, not remote guardian verification. Fee collection is shelved without deleting the existing ledger. Exact visual fidelity awaits the absent Coach prototype. Evidence/acceptance boundaries: COACH_FEEDBACK_RESET.md and PROGRESS.md.
+
+
+## PD-21 —16November2026: separate Aurora Parent workspace
+
+Owner explicitly starts Parent from scratch on the existing Supabase/Auth project and supplies both prototypes. Rebuild native components with separate /parent branding/navigation and family ownership; never embed mock HTML or seed its example children. Shared credentials do not merge family/academy records. Initial1familyowner per academy student connects only by an explicit48-hour single-use coach invitation; parent reviews the student mapping. Only reviewed snapshots and freshly authorised media reach the Parent feed. Account-recorded parent media refusals are authoritative. First deliverable is mobile web; separate Parent APK, push and wider prototype tooling remain later. Exact combined011/012 is prepared for one owner transaction; no old setup repeat.

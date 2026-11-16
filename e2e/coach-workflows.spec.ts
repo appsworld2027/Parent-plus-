@@ -63,14 +63,19 @@ test('student photo saves privately and reopens; upload failure retains existing
   await choosePhoto(page,'Replace photo');await expect(page.getByTestId('action-feedback')).toContainText('photo could not be confirmed');
   expect(await page.evaluate(()=>Object.keys(window.__photoFixture.records).length)).toBe(1);
 });
-test('observation photo saves with draft and remains fixed after recording',async({page})=>{
-  await photosBackend(page);await login(page);await page.getByRole('tab',{name:'Post',exact:true}).click();
-  await page.getByRole('button',{name:'Write an observation',exact:true}).click();
-  await page.getByRole('button',{name:'Fictional Clay Class',exact:true}).click();
-  await page.getByRole('button',{name:'Fictional Ria',exact:true}).click();
+test('historical observation photo stays private and read-only while new media uses consented classes',async({page})=>{
+  await photosBackend(page);await login(page);await page.getByRole('tab',{name:'Feedback',exact:true}).click();
+  await page.getByRole('button',{name:'Write feedback',exact:true}).click();
+  await page.getByRole('combobox',{name:'Feedback batch',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.batches[0].id));
+  await page.getByRole('combobox',{name:'Student for this feedback',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.students[0].id));
   await page.getByRole('textbox',{name:'Observation text',exact:true}).fill('Fictional clay bowl with photo');
-  await choosePhoto(page,'Save draft and add photo');await expect(page.getByTestId('action-feedback')).toContainText('Photo saved privately');
-  await page.getByRole('button',{name:'Record observation',exact:true}).click();await page.getByRole('button',{name:'Confirm save',exact:true}).click();
+  await page.getByRole('button',{name:'Save draft to workspace',exact:true}).click();
+  await expect(page.getByTestId('action-feedback')).toContainText('Draft saved in your workspace');
+  await page.evaluate(()=>{const note=window.__coachFixture.observations[0];window.__photoFixture.records[`observation:${note.id}`]={object_path:`academy-test/observation/${note.id}/fictional.jpg`};sessionStorage.setItem('__fictional_photos',JSON.stringify(window.__photoFixture.records));});
+  await page.reload();await page.getByRole('tab',{name:'Feedback',exact:true}).click();await page.getByRole('button',{name:'Open draft observation',exact:true}).click();
+  await expect(page.getByRole('img',{name:'Private observation photo',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Save draft and add photo',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Save feedback',exact:true}).click();await page.getByRole('button',{name:'Confirm save',exact:true}).click();
   await expect(page.getByText('Recorded photo is fixed with this observation.',{exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'Replace photo',exact:true})).toHaveCount(0);
 });

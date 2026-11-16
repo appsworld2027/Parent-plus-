@@ -80,7 +80,7 @@ test('unsaved forms require confirmation before leaving through navigation', asy
   await expect(page.getByRole('textbox', { name: 'Student name', exact: true })).toHaveValue('Unsaved Fictional Child');
   await page.getByRole('tab', { name: 'Today', exact: true }).click();
   await page.getByRole('button', { name: 'Discard and leave', exact: true }).click();
-  await expect(page.getByRole('heading', { name: /More teaching/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening)/ })).toBeVisible();
   expect(await page.evaluate(() => window.__coachFixture.roster.students.length)).toBe(0);
 });
 

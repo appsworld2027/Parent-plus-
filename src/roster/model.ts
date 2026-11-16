@@ -16,6 +16,8 @@ export function parseFee(rupees: string): number | null {
   const value = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));
   return Number.isSafeInteger(value) && value <= 100000000000 ? value : null;
 }
+// A teaching batch needs no billing setup. Keep financial input parsing strict.
+export function parseBatchFee(value: string): number | null { return parseFee(value.trim() || '0'); }
 export function validateStudent(draft: StudentDraft): string | null {
   if (draft.proficiency && !Object.hasOwn(proficiencyLabels,draft.proficiency)) return 'Choose a valid proficiency level.';
   if (!draft.name.trim() || draft.name.trim().length > 100) return 'Enter a student name, up to 100 characters.';

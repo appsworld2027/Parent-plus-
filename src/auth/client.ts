@@ -29,14 +29,17 @@ export const supabase = appConfig.configured ? createClient(appConfig.url!, appC
       if (init?.signal?.aborted) controller.abort();
       init?.signal?.addEventListener('abort', abort);
       const requestURL = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-      const timer = setTimeout(abort, requestURL.endsWith('/functions/v1/scan-roster') ? 65_000 : 15_000);
+      const timer = setTimeout(abort, requestURL.endsWith('/functions/v1/scan-roster') ? 65_000 : requestURL.includes('/storage/v1/object/parentplus-class-media/') ? 90_000 : 15_000);
       try { return await fetch(input, { ...init, signal: controller.signal }); }
       finally { clearTimeout(timer); init?.signal?.removeEventListener('abort', abort); }
     },
   },
 }) : null;
 
-export function authRedirect(recovery = false) {
+export function authRedirect(recovery = false, module?: 'coach' | 'parent') {
+  if (Platform.OS === 'web') {
+    try { if (module === 'parent' || (!module && globalThis.location.pathname.startsWith('/parent'))) globalThis.sessionStorage.setItem('parentplus.auth.return-module','parent'); else globalThis.sessionStorage.removeItem('parentplus.auth.return-module'); } catch { /* Login remains available if return intent cannot persist. */ }
+  }
   const root = Platform.OS === 'web' ? `${globalThis.location.origin}/auth` : 'parentplus-coach://auth';
   return `${root}/${recovery ? 'recovery' : 'callback'}`;
 }

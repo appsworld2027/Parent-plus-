@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Image,Pressable,StyleSheet,Text,View} from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import * as ImagePicker from 'expo-image-picker';
 import {loadPhoto,removePhoto,savePhoto,type CoachPhoto,type PhotoKind} from './service';
 import {useFeedbackMessage} from '../ui/ActionFeedback';

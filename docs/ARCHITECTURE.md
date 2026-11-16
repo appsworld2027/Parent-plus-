@@ -1,5 +1,8 @@
 # How Parent Plus Coach works today
 
+Current0.11 architecture: separate React Native Parent root at /parent and light Coach root at /. Shared Auth credentials/public config; separate academy/family ownership. Parent sessions skip academy creation. Coach-reviewed snapshots reach the per-child Parent feed only through explicit expiring invitation links and current media permission. Details: [Parent module](PARENT_MODULE.md), [feedback reset](COACH_FEEDBACK_RESET.md) and current PROGRESS.md. Older dated sections below are historical.
+
+
 Reviewed: 15 November 2026. Current candidate0.8.0 uses the Cloud Vision flow appended below; earlier module descriptions are historical. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../PROGRESS.md) is the status record; [PRD](../PRD.md) defines the intended product.
 
 ## 1. The whole system

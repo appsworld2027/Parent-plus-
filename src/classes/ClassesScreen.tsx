@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
+import { ClassMediaPanel } from '../class-media/ClassMediaPanel';
+import { SelectField } from '../ui/SelectField';
+import { saveBatch } from '../roster/service';
+import type { BatchDraft } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
@@ -13,20 +18,25 @@ function Button({ title, onPress, disabled = false }: { title: string; onPress: 
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={[s.button, disabled && s.disabled]}><Text style={s.buttonText}>{title}</Text></Pressable>;
 }
 function Field({ label, value, onChange, disabled = false }: { label: string; value: string; onChange: (text: string) => void; disabled?: boolean }) {
-  return <View style={s.field}><Text style={s.label}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={onChange} editable={!disabled} autoCapitalize="none" autoCorrect={false} maxLength={100} style={s.input} /></View>;
+  return <View style={s.field}><Text style={s.label}>{label}</Text>{Platform.OS === 'web' && /date|time/.test(label.toLowerCase()) ? React.createElement('input', { type: /date/i.test(label) ? 'date' : 'time', 'aria-label': label, value, disabled, onChange: (event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value), style: { minHeight: 48, width: '100%', boxSizing: 'border-box', border: '1px solid #CCD4CF', borderRadius: 12, padding: 12, fontSize: 16, backgroundColor: '#fff', color: '#22303A' } }) : <TextInput accessibilityLabel={label} value={value} onChangeText={onChange} editable={!disabled} autoCapitalize="none" autoCorrect={false} maxLength={100} style={s.input} />}</View>;
 }
 type Active = { session: ClassSession; marks: Marks; saved: Marks; local: boolean };
 
 // Form state stays here; model/service/draft modules own conversion, API access
 // and device persistence. One active device draft prevents silent replacement.
-export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onViewChange }: {
-  academy: Academy; owner: string; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void;
+export function ClassesScreen({ academy, owner, initialBatch, initialSession, onWriteFeedback, startWithCreate = false, onDirtyChange, onBusyChange, onViewChange }: {
+  academy: Academy; owner: string; initialBatch?: string; initialSession?: string; onWriteFeedback?: (session:ClassSession,students:string[])=>void; startWithCreate?: boolean; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void;
 }) {
   const today = localParts(new Date().toISOString(), academy.timezone).date;
   const [date, setDate] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today);
   const [context, setContext] = useState<ClassContext | null>(null);
   const [draft, setDraft] = useState<ClassDraft | null>(null);
+  const [advanced, setAdvanced] = useState(false);
+  const [batchDraft, setBatchDraft] = useState<BatchDraft | null>(null);
+  const launch = useRef(startWithCreate);
+  const sessionLaunch=useRef(initialSession);
+  const saving = useRef(false);
   const [active, setActive] = useState<Active | null>(null);
   const [deviceDraft, setDeviceDraft] = useState<AttendanceDraft | null>(null);
   const [conflict, setConflict] = useState<AttendanceDraft | null>(null);
@@ -57,27 +67,44 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     finally { if (version === generation.current) setLoading(false); }
   }, [academy.id, academy.timezone, owner, selectedDate]);
   useEffect(() => { void reload(); return () => { generation.current++; }; }, [reload]);
-  useEffect(() => { onDirtyChange(dirty); return () => onDirtyChange(false); }, [dirty, onDirtyChange]);
+  useEffect(() => {
+    if (context && launch.current) { launch.current = false; edit(); }
+    if (context && sessionLaunch.current) {const id=sessionLaunch.current;sessionLaunch.current=undefined;void openAttendance({id});}
+  }, [context]);
+  useEffect(() => { onDirtyChange(dirty || !!batchDraft); return () => onDirtyChange(false); }, [dirty, batchDraft, onDirtyChange]);
   useEffect(() => { onBusyChange(busy); return () => onBusyChange(false); }, [busy, onBusyChange]);
   useEffect(onViewChange, [draft?.id, active?.session.id, onViewChange]);
 
-  function close() { setDraft(null); setActive(null); setConflict(null); setDirty(false); setDiscard(false); setError(''); onViewChange(); }
-  function back() { if (dirty) setDiscard(true); else { close(); void reload(); } }
+  function close() { setBatchDraft(null); setDraft(null); setActive(null); setConflict(null); setDirty(false); setDiscard(false); setError(''); onViewChange(); }
+  function back() { if (dirty || batchDraft) setDiscard(true); else { close(); void reload(); } }
   function edit(session?: ClassSession) {
     const start = session ? localParts(session.starts_at, academy.timezone) : { date: selectedDate, time: '16:00' };
     const end = session ? localParts(session.ends_at, academy.timezone) : { date: selectedDate, time: '17:00' };
-    setDraft({ id: session?.id ?? randomUUID(), batch: session?.batch_id ?? '', startDate: start.date, startTime: start.time,
-      endDate: end.date, endTime: end.time, room: session?.room ?? '', status: session?.status ?? 'scheduled' });
-    setDirty(false); setNotice(''); setError('');
+    setDraft({ id: session?.id ?? randomUUID(), batch: session?.batch_id ?? initialBatch ?? (context?.batches.filter(b => !b.archived_at).length === 1 ? context.batches.find(b => !b.archived_at)!.id : ''), startDate: start.date, startTime: start.time,
+      endDate: end.date, endTime: end.time, room: session?.room ?? context?.batches.find(b => b.id === (initialBatch ?? (context.batches.filter(b => !b.archived_at).length === 1 ? context.batches.find(b => !b.archived_at)!.id : '')))?.room ?? '', status: session?.status ?? 'scheduled' });
+    setAdvanced(!!session); setBatchDraft(null); setDirty(false); setNotice(''); setError('');
   }
   function update(field: keyof ClassDraft, value: string) { setDraft(current => current ? { ...current, [field]: value } : current); setDirty(true); }
+  async function createTeachingBatch() {
+    if (!batchDraft || saving.current) return;
+    if (!batchDraft.name.trim() || batchDraft.name.trim().length > 100) { setError('Enter a batch name, up to 100 characters.'); return; }
+    saving.current = true; setBusy(true); setError('');
+    try {
+      await saveBatch(academy.id, batchDraft);
+      const created = { id: batchDraft.id, name: batchDraft.name.trim(), room: batchDraft.room.trim(), monthly_fee_paise: 0, archived_at: null };
+      setContext(value => value ? { ...value, batches: [...value.batches.filter(b => b.id !== created.id), created] } : value);
+      setDraft(value => value ? { ...value, batch: created.id, room: value.room || created.room } : value);
+      setDirty(true); setBatchDraft(null); setNotice('Batch created and selected. Choose the class time and save.');
+    } catch { setError('The batch save could not be confirmed. Keep your entries and retry.'); }
+    finally { saving.current = false; setBusy(false); }
+  }
   async function saveSession() {
-    if (!draft || busy) return;
+    if (!draft || busy || saving.current) return;
     try { classValues(draft, academy.timezone); } catch (failure) { setError(failure instanceof Error ? failure.message : 'Check class details.'); onViewChange(); return; }
-    setBusy(true); setError(''); setNotice('');
+    saving.current = true; setBusy(true); setError(''); setNotice('');
     try { await saveClass(academy.id, draft, academy.timezone); const nextDate = draft.startDate; close(); setNotice(`Class saved. ${draft.startDate} ${draft.startTime} – ${draft.endDate} ${draft.endTime} (${academy.timezone}).`, { kind: 'success', title: 'Class saved' }); setDate(nextDate); setSelectedDate(nextDate); await reload(); }
     catch (failure) { setError(classFailure(failure, 'The class save could not be confirmed. Keep your entries and retry. Once attendance is recorded, class times are protected.')); onViewChange(); }
-    finally { setBusy(false); }
+    finally { saving.current = false; setBusy(false); }
   }
   function visibleMarks(session: ClassSession, marks: Marks, data = context) {
     const ids = new Set(data ? eligibleStudents(data, session, academy.timezone).map(s => s.id) : []);
@@ -172,21 +199,29 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
     {!!notice && <Text style={s.notice}>{notice}</Text>}
     {!!error && <Text style={s.error}>{error}</Text>}
     {draft ? <View style={s.card}>
-      <Text style={s.label}>Batch</Text>
-      {context?.batches.filter(b => !b.archived_at || b.id === draft.batch).map(batch => <Pressable key={batch.id} accessibilityRole="radio" accessibilityLabel={`Class batch ${batch.name}`} accessibilityState={{ checked: draft.batch === batch.id, disabled: busy }} aria-checked={draft.batch === batch.id} disabled={busy} onPress={() => update('batch', batch.id)} style={s.choice}><Text>{draft.batch === batch.id ? '●' : '○'} {batch.name}</Text></Pressable>)}
-      {!context?.batches.some(b => !b.archived_at) && <Text style={s.body}>Create a batch under Students before scheduling a class.</Text>}
-      <Field label="Start date (YYYY-MM-DD)" value={draft.startDate} onChange={v => update('startDate', v)} disabled={busy} />
+      <SelectField label="Class batch" value={draft.batch} disabled={busy || !!batchDraft} options={[{ value: '', label: 'Choose a batch' }, ...(context?.batches ?? []).filter(b => !b.archived_at || b.id === draft.batch).map(b => ({ value: b.id, label: b.name }))]} onChange={id => { update('batch', id); setDraft(value => value ? { ...value, room: context?.batches.find(b => b.id === id)?.room ?? value.room } : value); }} />
+      {!batchDraft ? <Button title="Create a batch here" disabled={busy} onPress={() => setBatchDraft({ id: randomUUID(), name: '', room: '', fee: '' })} /> : <View style={s.card}>
+        <Field label="New teaching batch name" value={batchDraft.name} disabled={busy} onChange={name => setBatchDraft(value => value ? { ...value, name } : value)} />
+        <Text style={s.body}>No fee setup required. Your class details stay here.</Text>
+        <Button title="Create batch and use for class" disabled={busy} onPress={() => { void createTeachingBatch(); }} />
+        <Button title="Cancel new batch" disabled={busy} onPress={() => setBatchDraft(null)} />
+      </View>}
+      <Field label="Start date (YYYY-MM-DD)" value={draft.startDate} onChange={v => { setDraft(value => value ? { ...value, startDate: v, endDate: value.endDate === value.startDate ? v : value.endDate } : value); setDirty(true); }} disabled={busy} />
       <Field label="Start time (HH:MM, 24 hour)" value={draft.startTime} onChange={v => update('startTime', v)} disabled={busy} />
-      <Field label="End date (YYYY-MM-DD)" value={draft.endDate} onChange={v => update('endDate', v)} disabled={busy} />
       <Field label="End time (HH:MM, 24 hour)" value={draft.endTime} onChange={v => update('endTime', v)} disabled={busy} />
       <Field label="Class room or location" value={draft.room} onChange={v => update('room', v)} disabled={busy} />
+      <Button title={advanced ? 'Hide extra class settings' : 'More class settings'} disabled={busy} onPress={() => setAdvanced(value => !value)} />
+      {advanced && <>
+      <Field label="End date (YYYY-MM-DD)" value={draft.endDate} onChange={v => update('endDate', v)} disabled={busy} />
       <Text style={s.label}>Class status</Text>
       {(['scheduled', 'completed', 'cancelled'] as const).map(status => <Pressable key={status} accessibilityRole="radio" accessibilityLabel={`Class status ${status}`} accessibilityState={{ checked: draft.status === status, disabled: busy }} aria-checked={draft.status === status} disabled={busy} onPress={() => update('status', status)} style={s.choice}><Text>{draft.status === status ? '●' : '○'} {status}</Text></Pressable>)}
       <Text style={s.body}>After attendance is recorded, class times are protected. Cancel the class and create a replacement to change its timing.</Text>
-      <Button title={busy ? 'Saving…' : 'Save class'} disabled={busy} onPress={() => { void saveSession(); }} />
+      </>}
+      <Button title={busy ? 'Saving…' : 'Save class'} disabled={busy || !!batchDraft} onPress={() => { void saveSession(); }} />
       <Button title="Back to classes" disabled={busy} onPress={back} />
     </View> : active ? <View style={s.card}>
       <Text style={s.title}>{batchName(active.session.batch_id)}</Text><Text style={s.body}>{caption(active.session)}</Text>
+      <ClassMediaPanel key={active.session.id} academy={academy.id} session={active.session.id} students={students} disabled={busy || !!conflict} onWorking={setBusy} />
       <Text style={s.body}>{active.local ? 'Unsent device draft' : 'Showing saved class attendance'} · {Object.keys(active.marks).length}/{students.length} marked</Text>
       {!students.length && <Text style={s.body}>No active students are enrolled for this class date.</Text>}
       <Button title="Mark all present" disabled={busy || !students.length || students.length > 500 || !!conflict} onPress={() => { void changeMarks(Object.fromEntries(students.map(student => [student.id, 'present']))); }} />
@@ -194,6 +229,7 @@ export function ClassesScreen({ academy, owner, onDirtyChange, onBusyChange, onV
         <View style={s.row}>{(['present', 'late', 'absent'] as Mark[]).map(mark => <Pressable key={mark} accessibilityRole="radio" accessibilityLabel={`${student.name}: ${mark}`} accessibilityState={{ checked: active.marks[student.id] === mark, disabled: busy || !!conflict }} aria-checked={active.marks[student.id] === mark} disabled={busy || !!conflict} onPress={() => { void changeMarks({ ...active.marks, [student.id]: mark }); }} style={[s.choice, active.marks[student.id] === mark && s.selected]}><Text>{mark}</Text></Pressable>)}</View>
       </View>)}
       <Button title={busy ? 'Please wait…' : 'Save attendance to class'} disabled={busy || !students.length || !!conflict} onPress={() => { void submitAttendance(); }} />
+      {onWriteFeedback&&<Button title="Write feedback for this class" disabled={busy||active.local||!!conflict||active.session.attendance_revision<1} onPress={()=>onWriteFeedback(active.session,students.filter(student=>active.saved[student.id]==='present'||active.saved[student.id]==='late').map(student=>student.id))} />}
       <Button title="Reopen saved attendance" disabled={busy} onPress={() => { void openAttendance(active.session); }} />
       <Button title="Back to classes" disabled={busy || !!conflict} onPress={back} />
     </View> : <>

@@ -1,22 +1,29 @@
-# Current owner steps —0.8.0
+# Current owner step — Coach0.11 / Parent0.1
 
-The website and Android build0.8.0 pass. Cloud Vision review/import code is built;181automated checks,60browser flows and5hosted scan fixture cases pass. [Evidence](CLOUD_VISION_QA.md).
+The owner has supplied both original prototypes. The separate Parent workspace is built at:
+https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/parent
 
-## Completed activation steps
+Coach stays at:
+https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
 
-- Google project/credential setup is owner-reported complete; GOOGLE_CLOUD_VISION_API_KEY is owner-confirmed saved in Supabase Secrets. Its value was never shared or inspected here.
-- Supabase001–010 are owner-confirmed installed. Do not rerun scripts.
-- scan-roster is deployed at the correct endpoint and the owner confirmed the legacy JWT toggle saved OFF.
-- Fresh16November endpoint checks return OPTIONS200{} and unsigned POST401UNAUTHORIZED with no-store headers, matching the custom handler instead of the old Hello template. Do not repeat the code-paste/deployment steps without new evidence of a problem.
+Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.11.0; Parent module0.1.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
 
-## Immediate next step
+## Only new setup: one combined update
 
-Refresh the Vercel app to0.8.0, sign in and scan one fictional register from Students → Scan student list. Review names/age/guardian/contact associations before confirming import; reopen the saved student to check persistence. This is the first real Cloud Vision acceptance test and will consume an OCR attempt. Credential validity/provider access/handwriting quality are not proved by the unsigned endpoint checks.
+Existing database001–010, Google key and scan-roster are complete. Do not repeat them. The new family/consent/reviewed-delivery capabilities require only `supabase/update_011_012.sql` (both new versions in one transaction). It contains no credentials, sample children or payment activation. The exact file is exercised twice in disposable database tests and checked against both versioned migration sources.
 
-The app enforces900shared attempts/UTCmonth plus10peracademy/day and10second spacing. Provider free entitlement and other account usage remain separate. No OpenAI/Gemini or individual coach Google key is required. Manual entry remains available.
+Guide one action at a time. First open the prepared file on GitHub and use **Copy raw file**; do not copy surrounding chat instructions or manually edit code. Then open a new blank query in the existing Supabase SQL editor and run the complete copied file. Success ends with two installed_update rows:
 
-Later acceptance: actual profile/observation Storage behavior, two-account isolation, fee/class/attendance save/reopen, phone installation/camera/session restart/sign-out and final owner usability review. No claim of complete live acceptance is made by fixture tests. Keep credentials out of chat.
+-202611160011
+-202611160012
 
-## Current development correction —0.9.0
+File: https://github.com/appsworld2027/Parent-plus-/blob/codex/coach-foundation/supabase/update_011_012.sql
+Editor: https://supabase.com/dashboard/project/zcgcnycnanqkbdlwojln/sql/new
 
-The owner requested a first-run batch/photo/review/save workflow after seeing names from a real scan. The frontend correction is published as0.9.0;182automated checks,62browser cases and7focused hosted cases passed. Do not repeat Google Cloud, secrets, SQL001–010 or function deployment for this work. Refresh https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app and check0.9.0. The next owner step is Today → Create batch and scan students, then confirm a small fictional roster and reopen its batch/profiles. No additional paid OCR tests are made during automated verification.
+This workspace has not run new SQL on the live project. Until this single new update is installed, new Parent/media capabilities show an activation message; existing ordinary Coach feedback/WhatsApp and teaching flows remain available. No extra Google/WhatsApp provider key or new Supabase project is required.
+
+## Then one small acceptance journey
+
+Use fictional records and the owner's own test number. Parent: sign in→create family→add child. Coach: student profile→Create Parent invitation. Parent: Explore→Connect a coach→review the identity and select the child. Coach: save feedback→review for Parent→approve. Parent: Refresh and reopen the approved note. Separately test guardian photo/video/sharing choices and a small class media item. No external notification is sent automatically, and no real parent should receive a test message.
+
+Later gates include real distinct-account isolation, native phone installation/camera/session behavior, media format/large-upload checks, retention/deletion/backup and broader prototype features. Current Parent deliverable is mobile web, not a separate installed Parent APK. Fee collection stays shelved.

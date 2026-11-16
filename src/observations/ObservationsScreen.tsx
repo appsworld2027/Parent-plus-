@@ -1,9 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import * as Crypto from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
+import type { ClassSession } from '../classes/model';
 import { localParts } from '../classes/model';
+import { ParentModuleReview } from './ParentModuleReview';
+import { WhatsAppReview } from './WhatsAppReview';
 import { PhotoControl } from '../photos/PhotoControl';
+import { SelectField } from '../ui/SelectField';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { observationDrafts } from './localDrafts';
@@ -18,8 +23,8 @@ function Button({ title, action, disabled = false, soft = false }: { title: stri
 
 // A single device draft prevents accidental silent replacement. Each save carries
 // its own UUID and revision, so a lost response can be retried without duplication.
-export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange, onViewChange }: {
-  academy: Academy; owner: string; onDirtyChange: (dirty: boolean) => void;
+export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: {
+  academy: Academy; owner: string; initialClass?: {session:ClassSession;students:string[]}|null; onLaunchHandled?:()=>void; onDirtyChange: (dirty: boolean) => void;
   onBusyChange: (busy: boolean) => void; onViewChange: () => void;
 }) {
   const [context, setContext] = useState(emptyContext);
@@ -28,6 +33,7 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [parentBusy, setParentBusy] = useState(false);
   const [, publish] = useFeedbackMessage('error', 'Observation needs attention');
   const [draft, setDraft] = useState<ObservationDraft | null>(null);
   const [versions, setVersions] = useState<ObservationVersion[]>([]);
@@ -88,8 +94,17 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
     })();
     return () => { mounted.current = false; onDirtyChange(false); onBusyChange(false); };
   }, [academy.id, owner]);
+  useEffect(()=>{
+    if(!ready||busy||!initialClass)return;
+    onLaunchHandled?.();
+    if(stored||storageBlocked||draft){publish('Resume or remove your existing device feedback draft first. Your class attendance is saved; no draft was replaced.');return;}
+    const next=context.sessions.some(value=>value.id===initialClass.session.id)?context:{...context,sessions:[initialClass.session,...context.sessions]};
+    setContext(next);
+    const eligible=new Set(eligibleRecipients(next,initialClass.session.batch_id,initialClass.session.id,academy.timezone).map(student=>student.id));
+    open({id:Crypto.randomUUID(),batch:initialClass.session.batch_id,session:initialClass.session.id,audience:'batch',recipients:initialClass.students.filter(id=>eligible.has(id)),note:'',revision:0,status:'draft'});
+  },[ready,busy,initialClass,stored,storageBlocked]);
   useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
-  useEffect(() => { onBusyChange(busy || photoBusy); }, [busy, photoBusy, onBusyChange]);
+  useEffect(() => { onBusyChange(busy || photoBusy || parentBusy); }, [busy, photoBusy, parentBusy, onBusyChange]);
   useEffect(() => {
     if (busy || !dirty || !current.current) return;
     const value = current.current;
@@ -179,20 +194,20 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
   }
   const eligible = draft ? eligibleRecipients(context, draft.batch, draft.session, academy.timezone) : [];
   const names = (ids: string[]) => ids.map(id => context.students.find(student => student.id === id)?.name ?? 'Student no longer available').join(', ');
-  const disabled = busy || photoBusy || storageBlocked;
+  const disabled = busy || photoBusy || parentBusy || storageBlocked;
 
   return <View style={s.stack} pointerEvents={photoBusy?'none':'auto'}>
-    <Text accessibilityRole="header" style={s.heading}>Observations</Text>
-    <Text style={s.body}>Private teaching notes. Recording saves a fixed student list. No parent messages are sent.</Text>
+    <Text accessibilityRole="header" style={s.heading}>Feedback for parents</Text>
+    <Text style={s.body}>Write feedback, save it for your students, then review and share it with each parent on WhatsApp.</Text>
     {!draft && <>
       <Button title="Refresh observations" disabled={busy} soft action={() => { void run(async () => { await refresh(); publish('Observations refreshed.', { kind: 'success', title: 'Refreshed' }); }); }} />
       {(stored || storageBlocked) && <View style={s.card}>
         <Text style={s.title}>Observation draft on this device</Text>
         <Text style={s.body}>Resume your unsent work or explicitly remove the device copy.</Text>
         {stored && <Button title="Resume observation draft" disabled={busy || !ready} action={() => { void run(resume); }} />}
-        <Button title="Discard device observation draft" soft disabled={busy} action={() => setPending('discard')} />
+        <Button title="Discard device observation draft" soft disabled={busy || parentBusy} action={() => setPending('discard')} />
       </View>}
-      <Button title="Write an observation" disabled={disabled || !ready || !!stored} action={create} />
+      <Button title="Write feedback" disabled={disabled || !ready || !!stored} action={create} />
       <Text style={s.title}>Workspace history</Text>
       {ready && !history.length && <Text style={s.body}>No observations saved yet.</Text>}
       {history.map(row => <View key={row.id} style={s.card}>
@@ -227,19 +242,14 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
         <Button title={`Batch students${draft.audience === 'batch' ? ' · selected' : ''}`} soft disabled={disabled} action={() => {
           if (draft.audience !== 'batch') { if (draft.note.trim()) setPending('widen'); else changeScope(draft.batch, draft.session, 'batch'); }
         }} />
-        <Text style={s.title}>Batch</Text>
-        {context.batches.filter(batch => !batch.archived_at || batch.id === draft.batch).map(batch => <Button key={batch.id} title={`${batch.name}${draft.batch === batch.id ? ' · selected' : ''}`} soft disabled={disabled} action={() => { if (batch.id !== draft.batch) changeScope(batch.id, ''); }} />)}
+        <SelectField label="Feedback batch" value={draft.batch} disabled={disabled} options={[{value:'',label:'Choose a batch'},...context.batches.filter(batch=>!batch.archived_at||batch.id===draft.batch).map(batch=>({value:batch.id,label:batch.name}))]} onChange={id=>{if(id!==draft.batch)changeScope(id,'');}} />
         {!context.batches.some(batch => !batch.archived_at) && <Text style={s.body}>Create an active batch and enrol students in Students first.</Text>}
         {!!draft.batch && <>
-          <Text style={s.title}>Optional class</Text>
-          <Text style={s.body}>Showing the latest 100 classes. Without a class, students must be enrolled today in {academy.timezone}.</Text>
-          <Button title={`No linked class${!draft.session ? ' · selected' : ''}`} soft disabled={disabled} action={() => { if (draft.session) changeScope(draft.batch, ''); }} />
-          {context.sessions.filter(value => value.batch_id === draft.batch && value.status !== 'cancelled').map(value => {
-            const date = localParts(value.starts_at, academy.timezone);
-            return <Button key={value.id} title={`${date.date} ${date.time}${draft.session === value.id ? ' · selected' : ''}`} soft disabled={disabled} action={() => { if (value.id !== draft.session) changeScope(draft.batch, value.id); }} />;
-          })}
-          <Text style={s.title}>Students for this note</Text>
-          {eligible.map(student => <Button key={student.id} title={`${student.name}${draft.recipients.includes(student.id) ? ' · selected' : ''}`} soft disabled={disabled} action={() => edit({ ...draft, recipients: draft.audience === 'student' ? [student.id] : draft.recipients.includes(student.id) ? draft.recipients.filter(id => id !== student.id) : [...draft.recipients, student.id] })} />)}
+          <SelectField label="Linked class (optional)" value={draft.session} disabled={disabled} options={[{value:'',label:'No linked class'},...context.sessions.filter(value=>value.batch_id===draft.batch&&value.status!=='cancelled').map(value=>{const date=localParts(value.starts_at,academy.timezone);return {value:value.id,label:`${date.date} ${date.time}`};})]} onChange={id=>{if(id!==draft.session)changeScope(draft.batch,id);}} />
+          {draft.audience === 'student' ? <SelectField label="Student for this feedback" value={draft.recipients[0]??''} disabled={disabled} options={[{value:'',label:'Choose a student'},...eligible.map(student=>({value:student.id,label:student.name}))]} onChange={id=>edit({...draft,recipients:id?[id]:[]})} /> : <>
+            <Text style={s.title}>Students for this feedback</Text>
+            {eligible.map(student => <Button key={student.id} title={`${student.name}${draft.recipients.includes(student.id) ? ' · selected' : ''}`} soft disabled={disabled} action={() => edit({ ...draft, recipients: draft.recipients.includes(student.id) ? draft.recipients.filter(id => id !== student.id) : [...draft.recipients, student.id] })} />)}
+          </>}
           {!eligible.length && <Text style={s.body}>No eligible students. Check batch enrolments and the class date.</Text>}
         </>}
       </> : <Text style={s.body}>Batch: {context.batches.find(batch => batch.id === draft.batch)?.name ?? 'Unavailable'}</Text>}
@@ -247,18 +257,21 @@ export function ObservationsScreen({ academy, owner, onDirtyChange, onBusyChange
       <Text style={s.title}>Observation text</Text>
       <TextInput accessibilityLabel="Observation text" multiline maxLength={10000} editable={!disabled} value={draft.note} onChangeText={note => edit({ ...draft, note })} style={s.input} />
       <Text style={s.body}>{draft.note.length}/10,000 characters</Text>
-      <PhotoControl key={draft.id} academy={academy.id} kind="observation" id={draft.id} exists={draft.revision>0} disabled={busy||storageBlocked} locked={draft.status==='recorded'} onWorking={setPhotoBusy}
+      <PhotoControl key={`photo:${draft.id}`} academy={academy.id} kind="observation" id={draft.id} exists={draft.revision>0} disabled={busy||storageBlocked} locked={true} onWorking={setPhotoBusy}
         beforeUpload={async()=>{const invalid=validateObservation(draft,false);if(invalid){publish(invalid);throw new Error('Choose a batch first');}if(request.current)throw new Error('Save in progress');request.current=true;try{await save(false);}finally{request.current=false;}}} />
+      <Text style={s.body}>For new class photos and videos, record guardian permission and capture/upload from the class attendance screen. Link that class here to review media for the Parent module. Older attached photos remain private and unchanged.</Text>
       {!!localState && <Text style={s.body}>{localState}</Text>}
       {dirty && <Button title="Retry device save" soft disabled={busy} action={() => { const value = current.current; if (value) void run(() => persist(value)); }} />}
       {draft.status === 'draft' && <Button title="Save draft to workspace" disabled={disabled} action={() => { void run(() => save(false)); }} />}
-      <Button title={draft.status === 'recorded' ? 'Save recorded text' : 'Record observation'} disabled={disabled} action={() => {
+      <Button title={draft.status === 'recorded' ? 'Save feedback changes' : 'Save feedback'} disabled={disabled} action={() => {
         const invalid = validateObservation(draft, true); if (invalid) publish(invalid); else setPending('record');
       }} />
-      <Button title="Back to observation history" soft disabled={busy} action={() => { void run(async () => {
+      {draft.status === 'recorded' && <WhatsAppReview key={`whatsapp:${draft.id}`} academy={academy.id} academyName={academy.name} observation={draft.id} revision={draft.revision} disabled={disabled || dirty || draft.note !== versions[0]?.note} />}
+      {draft.status === 'recorded' && <ParentModuleReview key={`parent:${draft.id}`} academy={academy.id} observation={draft.id} revision={draft.revision} disabled={busy || photoBusy || storageBlocked || dirty || draft.note !== versions[0]?.note} onWorking={setParentBusy} />}
+      <Button title="Back to feedback history" soft disabled={busy || parentBusy} action={() => { void run(async () => {
         if (current.current) await persist(current.current); setDraft(null); setVersions([]); onViewChange();
       }); }} />
-      {(stored || dirty) && <Button title="Discard device observation draft" soft disabled={busy} action={() => setPending('discard')} />}
+      {(stored || dirty) && <Button title="Discard device observation draft" soft disabled={busy || parentBusy} action={() => setPending('discard')} />}
       {!!versions.length && <View style={s.stack} pointerEvents={photoBusy?'none':'auto'}><Text style={s.title}>Recent saved versions (up to 5)</Text>{versions.map(version => <View key={version.revision} style={s.version}>
         <Text style={s.body}>Revision {version.revision} · {version.status} · {localParts(version.saved_at, academy.timezone).date}</Text><Text selectable style={s.body}>{version.note || 'No text'}</Text>
       </View>)}</View>}

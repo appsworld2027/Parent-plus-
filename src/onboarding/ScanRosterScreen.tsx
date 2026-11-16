@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Platform,Pressable,StyleSheet,Text,TextInput,View} from 'react-native';
+import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import * as ImagePicker from 'expo-image-picker';
 import {randomUUID} from 'expo-crypto';
 import type {Batch,BatchDraft,Roster,Proficiency} from '../roster/model';

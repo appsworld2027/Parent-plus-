@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { BackHandler, Keyboard, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { BackHandler, Keyboard, Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { Text } from './src/ui/Typography';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from './src/config';
@@ -11,13 +13,17 @@ import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
 import { ClassesScreen } from './src/classes/ClassesScreen';
 import { ObservationsScreen } from './src/observations/ObservationsScreen';
+import ParentApp from './src/parent/ParentApp';
 import { FeesScreen } from './src/fees/FeesScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
 import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
+import { FontLicense } from './src/ui/FontLicense';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
+
+function coachGreeting(timezone:string) { const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:timezone}).format(new Date())); return hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'; }
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
@@ -43,7 +49,11 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
   const [launchRosterSetup,setLaunchRosterSetup]=useState(false);
-  const rosterLaunchHandled=useCallback(()=>setLaunchRosterSetup(false),[]);
+  const [launchBatch,setLaunchBatch]=useState(false);
+  const [classLaunch,setClassLaunch]=useState<{batch?:string;session?:string}|null>(null);
+  const [feedbackLaunch,setFeedbackLaunch]=useState<{session:import('./src/classes/model').ClassSession;students:string[]}|null>(null);
+  const feedbackLaunchHandled=useCallback(()=>setFeedbackLaunch(null),[]);
+  const rosterLaunchHandled=useCallback(()=>{setLaunchRosterSetup(false);setLaunchBatch(false);},[]);
   const [report, setReport] = useState('');
   const [notice, setNotice] = useFeedbackMessage('info', 'Update');
   const [crash, setCrash] = useState(false);
@@ -65,6 +75,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   function navigate(next: Screen) {
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && formBusy) { setNotice('Please wait for the save to finish.'); return; }
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
+    if (next !== 'Schedule') setClassLaunch(null);
+    if (next !== 'Post') setFeedbackLaunch(null);
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -94,7 +106,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       <View style={styles.header}>
         <View style={styles.brandRow}>
           <View style={styles.brandIcon}><Text style={styles.brandStar}>✦</Text></View>
-          <View><Text style={styles.brand}>Parent Plus Coach</Text><Text style={styles.brandSub}>A little more connected.</Text></View>
+          <View><Text style={styles.brand}>Parent Plus Coach</Text><Text style={styles.brandSub}>{auth.academy?.name??'A little more connected.'}</Text></View>
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
       </View>
@@ -103,29 +115,17 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
         {(screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
+          <Text accessibilityRole="header" style={styles.heading}>{coachGreeting(auth.academy?.timezone??'Asia/Kolkata')}</Text>
+          <Text style={styles.subtitle}>{new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',timeZone:auth.academy?.timezone??'Asia/Kolkata'})}</Text>
+          {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
+          <Text style={styles.sectionTitle}>Your teaching workspace</Text>
+          {auth.academy && <View style={styles.card}>
+            <Action label="Write feedback for parents" onPress={() => navigate('Post')} />
+            <Action label="Create a batch" onPress={() => { setLaunchBatch(true); navigate('Students'); }} secondary />
+            <Action label="Schedule a class" onPress={() => { setClassLaunch({}); navigate('Schedule'); }} secondary />
+          </View>}
           {auth.academy&&<CoachSetupCard academy={auth.academy.id} onStart={()=>{setLaunchRosterSetup(true);navigate('Students');}}/>}
-          <Text style={styles.eyebrow}>YOUR TEACHING DAY, TOGETHER</Text>
-          <Text accessibilityRole="header" style={styles.heading}>More teaching.{ '\n' }Less juggling.</Text>
-          <Text style={styles.subtitle}>A calmer home for your classes, your students, and the little wins along the way.</Text>
-          <View style={styles.hero}>
-            <Text style={styles.heroKicker}>WELCOME TO YOUR WORKSPACE</Text>
-            <Text style={styles.heroTitle}>{auth.academy?.name ?? 'Let’s lay the foundation.'}</Text>
-            <Text style={styles.heroBody}>{auth.academy ? 'Your academy workspace is connected. Manage your students, batches, classes and attendance. Record private student observations in Post. Track invoices and manual payment records in Fees. Online collection is not enabled.' : 'We’re building your coach app one tested module at a time. Your records will appear after secure account setup.'}</Text>
-            <Action label="View setup status" onPress={() => navigate('Support')} secondary />
-          </View>
-          {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} />}
-          <Text style={styles.sectionTitle}>A place for everything</Text>
-          <View style={styles.grid}>
-            {[
-              { title: 'Your classes', body: 'A plan for every teaching day', color: '#DCEDEA', target: 'Schedule' },
-              { title: 'Your students', body: 'Every child, thoughtfully seen', color: '#E9E2F5', target: 'Students' },
-              { title: 'Class updates', body: 'Capture the small breakthroughs', color: '#F8EBC6', target: 'Post' },
-              { title: 'Fee clarity', body: 'Know what’s paid and pending', color: '#DCECF7', target: 'Fees' },
-            ].map(item => <Pressable accessibilityRole="button" key={item.target} onPress={() => navigate(item.target as Screen)} style={[styles.tile, { backgroundColor: item.color }]}>
-              <Text style={styles.tileTitle}>{item.title}</Text><Text style={styles.tileBody}>{item.body}</Text><Text style={styles.tileArrow}>{'>'}</Text>
-            </Pressable>)}
-          </View>
-          <View style={styles.note}><Text style={styles.noteTitle}>Built around trust</Text><Text style={styles.small}>No sample students or pretend payments. This preview shows what is available today.</Text></View>
+          {!auth.academy&&<View style={styles.card}><Text style={styles.sectionTitle}>Your classes and students belong here</Text><Text style={styles.small}>Sign in to load your workspace. No sample students, attendance or parent engagement figures are shown.</Text></View>}
         </> : screen === 'Support' ? <>
           <Text style={styles.eyebrow}>HERE TO HELP</Text>
           <Text accessibilityRole="header" style={styles.heading}>Setup & support</Text>
@@ -152,8 +152,9 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <Action label="Test screen recovery" secondary onPress={() => setCrash(true)} />
           </View>}
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
+          <FontLicense />
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
@@ -167,14 +168,14 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         <Text style={styles.footer}>Thoughtful teaching starts with the little things.</Text>
       </ScrollView>
       <View accessibilityRole="tablist" style={styles.nav}>
-        {tabs.map(tab => <Pressable key={tab.name} accessibilityRole="tab" accessibilityLabel={tab.name} accessibilityState={{ selected: screen === tab.name }} onPress={() => navigate(tab.name)} style={styles.navItem}>
+        {tabs.map(tab => <Pressable key={tab.name} accessibilityRole="tab" accessibilityLabel={tab.name === 'Post' ? 'Feedback' : tab.name} accessibilityState={{ selected: screen === tab.name }} onPress={() => navigate(tab.name)} style={styles.navItem}>
           <View style={[styles.navGlyph, screen === tab.name && styles.navActive, tab.name === 'Post' && styles.postGlyph]}><Text style={[styles.navSymbol, (screen === tab.name || tab.name === 'Post') && styles.navSymbolActive]}>{tab.glyph}</Text></View>
-          <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name}</Text>
+          <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name === 'Post' ? 'Feedback' : tab.name}</Text>
         </Pressable>)}
       </View>
       <ConfirmDialog visible={pendingNavigation !== null} title="Leave your unsaved changes?" message={screen === 'Post' ? 'Your latest edits have not been saved on this device. Keep editing and retry saving, or leave and lose these latest edits. Any earlier device draft is retained.' : screen === 'Schedule' ? 'Unsaved edits will be discarded. Attendance drafts already saved on this device are retained.' : 'Your changes have not been saved. Keep editing or discard this form before leaving.'}
         confirmLabel="Discard and leave" cancelLabel="Keep editing" onCancel={() => setPendingNavigation(null)}
-        onConfirm={() => { if (pendingNavigation) { setFormDirty(false); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
+        onConfirm={() => { if (pendingNavigation) { setFormDirty(false); if (pendingNavigation !== 'Schedule') setClassLaunch(null); setScreen(pendingNavigation); setPendingNavigation(null); } }} />
     </View>
   </SafeAreaView>;
 }
@@ -182,7 +183,15 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
 // AuthProvider owns identity/data readiness; AuthGate decides which screen is safe to show.
 // This React error boundary cannot catch every Android native crash.
 export default function App() {
+  const [fontsLoaded,fontError] = useFonts({Bricolage:require('./assets/fonts/BricolageGrotesque.ttf')});
   useEffect(() => { void diagnostics.connect(deviceStorage); }, []);
+  let parentRoute = process.env.EXPO_PUBLIC_APP_MODULE === 'parent';
+  if (Platform.OS === 'web') {
+    parentRoute = parentRoute || globalThis.location.pathname.startsWith('/parent');
+    if (globalThis.location.pathname.startsWith('/auth')) { try { parentRoute = parentRoute || globalThis.sessionStorage.getItem('parentplus.auth.return-module') === 'parent'; } catch { /* A normal sign-in remains available. */ } }
+  }
+  if (!fontsLoaded && !fontError) return <View style={{flex:1,backgroundColor:parentRoute?'#060A0E':'#F3F5F1',alignItems:'center',justifyContent:'center'}}><Text style={{color:parentRoute?'#F9FBFC':'#22303A'}}>Loading Parent Plus…</Text></View>;
+  if (parentRoute) return <ParentApp />;
   return <SafeAreaProvider><ErrorBoundary><FeedbackProvider><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></FeedbackProvider></ErrorBoundary></SafeAreaProvider>;
 }
 
@@ -194,10 +203,10 @@ const styles = StyleSheet.create({
   brandIcon: { width: 38, height: 38, borderRadius: 13, backgroundColor: '#1F6F6B', alignItems: 'center', justifyContent: 'center' },
   brandStar: { color: '#fff', fontSize: 24 }, brand: { fontSize: 16, color: '#22303A', fontWeight: '700' }, brandSub: { fontSize: 11, color: '#5C6B73', marginTop: 3 },
   supportIcon: { width: 44, height: 44, borderRadius: 15, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E3E8E2' }, supportSymbol: { fontSize: 20, color: '#1F6F6B', fontWeight: '600' },
-  content: { padding: 24, paddingBottom: 24, gap: 18 },
+  content: { padding: 18, paddingBottom: 24, gap: 14 },
   releaseRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, release: { fontSize: 9, fontWeight: '700', letterSpacing: 1.2, color: '#63756F', backgroundColor: '#E6ECE4', paddingVertical: 6, paddingHorizontal: 9, borderRadius: 5 }, version: { fontSize: 11, color: '#63756F' },
   eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 1.8, color: '#1F6F6B', marginTop: 10 },
-  heading: { fontSize: 38, lineHeight: 43, fontWeight: '700', letterSpacing: -1.5, color: '#22303A' },
+  heading: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: -1.5, color: '#22303A' },
   subtitle: { fontSize: 15, lineHeight: 24, color: '#5C6B73' },
   hero: { backgroundColor: '#1F6F6B', padding: 23, borderRadius: 23, gap: 14 }, heroKicker: { color: '#BBDAD4', fontSize: 9, fontWeight: '700', letterSpacing: 1.3 }, heroTitle: { color: '#fff', fontSize: 24, fontWeight: '600', letterSpacing: -0.5 }, heroBody: { color: '#E0EEEA', fontSize: 14, lineHeight: 23 },
   button: { backgroundColor: '#1F6F6B', padding: 15, minHeight: 48, borderRadius: 13, alignItems: 'center' }, buttonLabel: { color: '#fff', fontSize: 14, fontWeight: '700' }, secondary: { backgroundColor: '#EDF1EC' }, secondaryLabel: { color: '#22303A' }, pressed: { opacity: 0.75 },

@@ -2,25 +2,25 @@ import { expect, test, type Page } from '@playwright/test';
 import { backend, login } from './support/backend';
 async function setup(page: Page) {
   await backend(page, { academy: true, readyClass: true }); await login(page);
-  await page.getByRole('tab', { name: 'Post', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Write an observation', exact: true })).toBeEnabled();
+  await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Write feedback', exact: true })).toBeEnabled();
 }
 async function compose(page: Page) {
   await setup(page);
-  await page.getByRole('button', { name: 'Write an observation', exact: true }).click();
-  await page.getByRole('button', { name: 'Fictional Clay Class', exact: true }).click();
-  await page.getByRole('button', { name: 'Fictional Ria', exact: true }).click();
+  await page.getByRole('button', { name: 'Write feedback', exact: true }).click();
+  await page.getByRole('combobox',{name:'Feedback batch',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.batches[0].id));
+  await page.getByRole('combobox',{name:'Student for this feedback',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.students[0].id));
   await page.getByRole('textbox', { name: 'Observation text', exact: true }).fill('Fictional child practised shaping a clay bowl.');
 }
 async function record(page: Page) {
-  await page.getByRole('button', { name: 'Record observation', exact: true }).click();
+  await page.getByRole('button', { name: 'Save feedback', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm save', exact: true }).click();
 }
 test('private note autosaves locally, survives restart, records and retains immutable students on text edits', async ({ page }, info) => {
   await compose(page);
   await expect(page.getByText('Draft saved on this device. Not yet saved to your workspace.', { exact: true })).toBeVisible();
   expect(await page.evaluate(() => window.__coachFixture.observations.length)).toBe(0);
-  await page.reload(); await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await page.getByRole('button', { name: 'Resume observation draft', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Observation text' })).toHaveValue('Fictional child practised shaping a clay bowl.');
   await record(page);
@@ -28,7 +28,7 @@ test('private note autosaves locally, survives restart, records and retains immu
   await expect(page.getByRole('button', { name: 'Batch students', exact: true })).toHaveCount(0);
   await expect(page.getByText('Recent saved versions (up to 5)', { exact: true })).toBeVisible();
   await page.getByRole('textbox', { name: 'Observation text' }).fill('Fictional corrected note about the same child.');
-  await page.getByRole('button', { name: 'Save recorded text', exact: true }).click();
+  await page.getByRole('button', { name: 'Save feedback changes', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm save', exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('Observation recorded in your workspace');
   await expect.poll(() => page.evaluate(() => window.__coachFixture.observations[0]?.revision)).toBe(2);
@@ -52,7 +52,7 @@ test('lost record response restores the confirmed server copy without duplicate 
   await page.evaluate(() => { window.__coachFixture.loseObservationResponse = true; });
   await record(page);
   await expect(page.getByTestId('action-feedback')).toContainText('could not be confirmed');
-  await page.reload(); await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await page.getByRole('button', { name: 'Resume observation draft', exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('already recorded');
   expect(await page.evaluate(() => window.__coachFixture.observations.length)).toBe(1);
@@ -65,7 +65,7 @@ test('failure retains draft and shows safe persistent feedback; sign-out warns a
   await expect(page.getByRole('button', { name: 'Confirm save', exact: true })).toHaveCount(0);
   await expect(page.getByRole('alert')).toContainText('Your device draft is retained');
   await expect(page.getByRole('alert')).not.toContainText('Private note backend failure');
-  await page.getByRole('button', { name: 'Back to observation history', exact: true }).click();
+  await page.getByRole('button', { name: 'Back to feedback history', exact: true }).click();
   await page.getByRole('button', { name: 'Open support and diagnostics', exact: true }).click();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.getByText('Remove unsent device drafts and sign out?', { exact: true })).toBeVisible();
@@ -86,7 +86,7 @@ test('changed server revision requires comparison and can copy device text to a 
     const state = window.__coachFixture; state.observations[0].revision++; state.observations[0].note = 'Fictional change from another device.';
     sessionStorage.setItem('__fictional_observations', JSON.stringify({ observations: state.observations, recipients: state.observationRecipients, versions: state.observationVersions }));
   });
-  await page.reload(); await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await page.getByRole('button', { name: 'Resume observation draft', exact: true }).click();
   await expect(page.getByText('Compare before continuing', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Copy device text to a new draft', exact: true }).click();
@@ -96,9 +96,9 @@ test('changed server revision requires comparison and can copy device text to a 
 });
 test('missing database update explains setup without showing a false empty history', async ({ page }) => {
   await backend(page, { academy: true, readyClass: true, missingObservationMigration: true }); await login(page);
-  await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('observations database update is needed');
-  await expect(page.getByRole('button', { name: 'Write an observation', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Write feedback', exact: true })).toBeDisabled();
   await expect(page.getByText('No observations saved yet.', { exact: true })).toHaveCount(0);
 });
 test('device storage failure never claims a saved draft or sends an unprotected request', async ({ page }) => {
@@ -117,12 +117,12 @@ test('device storage failure never claims a saved draft or sends an unprotected 
 test('an unreadable private draft blocks replacement until explicitly discarded', async ({ page }) => {
   await setup(page);
   await page.evaluate(() => sessionStorage.setItem('parentplus.coach.observation-draft.v1','not-json'));
-  await page.reload(); await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await expect(page.getByTestId('action-feedback')).toContainText('could not be read');
-  await expect(page.getByRole('button', { name: 'Write an observation', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Write feedback', exact: true })).toBeDisabled();
   await page.getByRole('button', { name: 'Discard device observation draft', exact: true }).click();
   await page.getByRole('button', { name: 'Remove device draft', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Write an observation', exact: true })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Write feedback', exact: true })).toBeEnabled();
 });
 test('history pagination retains equal-timestamp notes and roster reads cross the response cap', async ({ page }) => {
   await backend(page, { academy: true, readyClass: true }); await login(page);
@@ -135,12 +135,14 @@ test('history pagination retains equal-timestamp notes and roster reads cross th
       session_id: null, note: `Fictional note ${index}`, status: 'draft', audience: 'student', revision: 1, author_id: '00000000-0000-0000-0000-000000000001',
       created_at: '2026-11-12T10:00:00.000Z', updated_at: '2026-11-12T10:00:00.000Z', recorded_at: null }));
   });
-  await page.getByRole('tab', { name: 'Post', exact: true }).click();
+  await page.getByRole('tab', { name: 'Feedback', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Open draft observation', exact: true })).toHaveCount(30);
   await page.getByRole('button', { name: 'Load older observations', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Open draft observation', exact: true })).toHaveCount(31);
   await expect(page.getByRole('button', { name: 'Load older observations', exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Write an observation', exact: true }).click();
-  await page.getByRole('button', { name: 'Fictional Clay Class', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Fictional Student 500', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Write feedback', exact: true }).click();
+  await page.getByRole('combobox',{name:'Feedback batch',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.batches[0].id));
+  await page.getByRole('combobox',{name:'Student for this feedback',exact:true}).selectOption({label:'Fictional Student 500'});
+  await expect(page.getByText('Selected students: 1',{exact:true})).toBeVisible();
+  await expect(page.getByRole('combobox',{name:'Student for this feedback',exact:true})).toHaveValue('10000000-0000-0000-0000-000000000500');
 });

@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
-import {Modal,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from './Typography';
 export type SelectOption={value:string;label:string};
 export function SelectField({label,value,options,onChange,disabled=false}:{label:string;value:string;options:SelectOption[];onChange:(value:string)=>void;disabled?:boolean}){
  const [open,setOpen]=useState(false);

@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } from './model';
-import { formatFee, parseFee, validateStudent, batchStudents, proficiencyLabels } from './model';
+import { formatFee, parseBatchFee, validateStudent, batchStudents, proficiencyLabels } from './model';
 import { addBatchStudents, archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
+import { ParentLinkCard } from './ParentLinkCard';
 import { studentPhotoThumbnails } from '../photos/service';
 import { ScanRosterScreen, type SavedRosterImport } from '../onboarding/ScanRosterScreen';
 import { PhotoControl } from '../photos/PhotoControl';
@@ -21,9 +23,10 @@ function Field({ label, value, onChange, disabled, kind = 'text', max = 100 }: {
     keyboardType={kind === 'email' ? 'email-address' : kind === 'phone' ? 'phone-pad' : kind === 'number' ? 'number-pad' : kind === 'money' ? 'decimal-pad' : 'default'} style={s.input} /></View>;
 }
 
-export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan = false, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; startWithScan?: boolean; onLaunchHandled?: () => void; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
+export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan = false, startWithBatch = false, onScheduleBatch, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; startWithScan?: boolean; startWithBatch?: boolean; onScheduleBatch?: (batch: string) => void; onLaunchHandled?: () => void; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
+  const openedDirectly = useRef(startWithBatch);
   const [scanOpen,setScanOpen]=useState(startWithScan);
-  const [tab, setTab] = useState<'students' | 'batches'>('students');
+  const [tab, setTab] = useState<'students' | 'batches'>(startWithBatch ? 'batches' : 'students');
   const [photoUrls,setPhotoUrls]=useState<Record<string,string>>({});
   const [data, setData] = useState<Roster | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,7 +39,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
   const [batchFilter, setBatchFilter] = useState('all');
   const [showArchived, setShowArchived] = useState(false);
   const [studentDraft, setStudentDraft] = useState<StudentDraft | null>(null);
-  const [batchDraft, setBatchDraft] = useState<BatchDraft | null>(null);
+  const [batchDraft, setBatchDraft] = useState<BatchDraft | null>(() => startWithBatch ? { id: randomUUID(), name: '', room: '', fee: '' } : null);
   const [profileId,setProfileId]=useState<string|null>(null);
   const [profileAddBatch,setProfileAddBatch]=useState(false);
   const [activeBatch, setActiveBatch] = useState<string | null>(null);
@@ -59,6 +62,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
     catch (failure) { if (loadVersion.current === version) setError(rosterFailure(failure, 'Your roster could not be loaded. Check the connection and retry.')); return null; }
     finally { if (loadVersion.current === version) setLoading(false); }
   }, [academy]);
+  useEffect(()=>{if(startWithBatch) onLaunchHandled?.();},[startWithBatch,onLaunchHandled]);
   useEffect(()=>{if(startWithScan){setScanOpen(true);onLaunchHandled?.();}},[startWithScan,onLaunchHandled]);
   useEffect(() => { void reload(); return () => { loadVersion.current++; }; }, [reload]);
   useEffect(() => { onDirtyChange(dirty); return () => onDirtyChange(false); }, [dirty, onDirtyChange]);
@@ -98,7 +102,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
   async function save() {
     if (writeLock.current) return;
     const invalid = batchDraft
-      ? !batchDraft.name.trim() ? 'Enter a batch name.' : parseFee(batchDraft.fee) === null ? 'Enter a monthly fee in rupees, with up to two decimal places.' : null : studentDraft ? validateStudent(studentDraft) : 'Open a record first.';
+      ? !batchDraft.name.trim() ? 'Enter a batch name.' : parseBatchFee(batchDraft.fee) === null ? 'Enter a monthly fee in rupees, with up to two decimal places.' : null : studentDraft ? validateStudent(studentDraft) : 'Open a record first.';
     if (invalid) { setError(invalid); onViewChange(); return; }
     writeLock.current = true; setBusy(true); setError(''); setNotice('');
     try {
@@ -108,7 +112,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
           setStudentDraft(value => value ? { ...value, batches: [...new Set([...value.batches, batchDraft.id])] } : value);
           setBatchDraft(null); setDirty(true);
           setNotice('Batch created and selected. Save the student to finish.');
-        } else { close(); setNotice('Batch saved.'); }
+        } else { close(); if (openedDirectly.current) { setActiveBatch(batchDraft.id); setTab('batches'); openedDirectly.current = false; } setNotice('Batch saved.'); }
       } else if (studentDraft) { await saveStudent(academy, studentDraft); close(); setNotice('Student saved.'); }
       await reload();
     } catch (failure) { setError(rosterFailure(failure, 'The save could not be confirmed. Your entries are still here. Retry safely.')); onViewChange(); }
@@ -189,6 +193,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
     </View> : batchDraft ? <View style={s.card}>
       <Field label="Batch name" value={batchDraft.name} disabled={working} onChange={value => updateBatch('name', value)} />
       <Field label="Room or location" value={batchDraft.room} disabled={working} onChange={value => updateBatch('room', value)} />
+      <Text style={s.body}>Only a batch name is required. Fees can be set later.</Text>
       <Field label="Monthly fee (₹)" kind="money" max={12} value={batchDraft.fee} disabled={working} onChange={value => updateBatch('fee', value)} />
       <Text style={s.body}>This sets a default fee. It does not issue an invoice or collect money.</Text>
       <Button label={busy ? 'Saving…' : 'Save batch'} disabled={working} onPress={() => { void save(); }} />
@@ -220,6 +225,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
           <Button label="Create a batch for this student" soft disabled={working} onPress={()=>{editStudent(profile);editBatch();setDirty(true);}} />
         </>}
       </View>
+      {!profile.archived_at && <ParentLinkCard key={profile.id} academy={academy} student={profile.id} name={profile.name} disabled={working} onWorking={setBusy} />}
       <Button label={activeBatch?'Back to batch roster':'Back to students'} soft disabled={working} onPress={()=>{setProfileId(null);setProfileAddBatch(false);onViewChange();}} />
     </> : <>
       <View style={s.tabs}><Button label="Students" soft={tab !== 'students'} disabled={working} onPress={() => { setTab('students'); setError(''); }} />
@@ -245,6 +251,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
         <View style={s.batchHero}>
           <Text style={s.heroTitle}>{members.length} students</Text>
           <Text style={s.heroBody}>{selectedBatch.room || 'Location not set'} · {formatFee(selectedBatch.monthly_fee_paise)} per student / month</Text>
+          {onScheduleBatch && <Button label="Schedule a class for this batch" disabled={working} onPress={() => onScheduleBatch(selectedBatch.id)} />}
           <Button label={`Edit ${selectedBatch.name}`} soft disabled={working} onPress={() => editBatch(selectedBatch)} />
         </View>
         {addingMembers ? <View style={s.card}>

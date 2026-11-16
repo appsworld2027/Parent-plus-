@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import { localParts } from '../classes/model';
 import { deviceStorage } from '../deviceStorage';

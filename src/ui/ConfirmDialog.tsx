@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Text } from './Typography';
 
 export function ConfirmDialog({ visible, title, message, confirmLabel, cancelLabel, onConfirm, onCancel, busy = false }: {
   visible: boolean; title: string; message: string; confirmLabel: string; cancelLabel: string;

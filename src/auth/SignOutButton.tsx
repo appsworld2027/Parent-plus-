@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { Text } from '../ui/Typography';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { observationDrafts } from '../observations/localDrafts';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
