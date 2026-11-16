@@ -20,6 +20,7 @@ import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
+import { WorkspaceSwitcher } from './src/ui/WorkspaceSwitcher';
 import { FontLicense } from './src/ui/FontLicense';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 
@@ -110,6 +111,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
       </View>
+      <WorkspaceSwitcher current="coach" disabled={formDirty||formBusy} />
       <ActionFeedback />
       <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>

@@ -272,3 +272,8 @@ TypeScript and182automated checks/22files pass in42.69seconds. New automatic-nam
 
 
 Final runtimeb014c0a: [App checks43829864988](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864988) succeeded201tests/27files,76browser cases, both web369/Android741module exports. [Hosted checks](DUAL_WORKSPACE_HOSTED_QA.md) pass14/14in64.697seconds on VercelHn8KZD6cmj98RG4Xe8T9j7MYLUWx; manifest0.11.0/Parent0.1.0 and asset digest verified. Valid hosted received-feed/classes/WhatsApp screenshots inspected. Four temporary access/config/cookie/bundle files removed;0remaining capability matches. No live011/012 installation or real writes/provider calls. Coach Android43829864994 completed successfully with verified APK artifact14208786600; separate Parent APK not built.
+
+
+##0.11.1 visible workspace entry
+
+TypeScript and8focused browser checks pass (42.9seconds): Coach/Parent selection from the login page, signed-in same-session round-trip, no silent unsaved-form loss, plus all5Parent workspace/recovery/feedback cases. No new SQL or real writes. A single zero-row parent_families API probe returns404/PGRST205, supporting the unresolved new-schema activation blocker. This is an entry/navigation repair, not proof of live Parent persistence.

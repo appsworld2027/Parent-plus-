@@ -1,5 +1,15 @@
 # Parent Plus Coach — development checkpoint
 
+## Parent entry repair — candidate0.11.1
+
+The owner reports no Parent space/clickable entry/dashboard on the Vercel website and confirms no/not-sure installation of011/012. Inspection found Parent was only reachable by typing /parent or a student-specific invitation link; Coach login/dashboard lacked a visible module entry. Added visible Coach space / Parent space links on both login and signed-in web workspaces. Navigation stays in the same tab and uses the existing Auth session. Switching is disabled while an unsaved form/save is active; it grants no permissions and does not create an academy/family automatically.
+
+A single relevant live metadata probe selected zero rows from parent_families and returned404/PGRST205: the Parent relation is not available through the current API. Combined with the owner's answer, new-schema activation remains the real-record blocker. No table/private records were read. Do not claim Parent data is usable until the owner runs the existing prepared011/012 transaction and completes actual save/reopen. Do not rerun001–010/Google/function setup.
+
+Patch TypeScript passes;8focused browser checks pass in42.9seconds, covering visible entry, same-session switching, dirty-form guard and all5Parent journeys with fictional transport. No SQL changes or backend activation are included in this navigation patch. Publication/CI follow.
+
+
+
 ## Published workspaces0.11 / Parent0.1 — new database activation pending
 
 Published runtime **b014c0a2f815bf38f4a493091879347ba6ed145b** is ready on Vercel deploymentHn8KZD6cmj98RG4Xe8T9j7MYLUWx; GitHub author maps toappsworld2027. [App checks43829864988](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864988) succeeded with201automated checks/27files,76browser cases and both exports(web369modules,Android741modules). [Focused hosted QA](docs/DUAL_WORKSPACE_HOSTED_QA.md) independently passes14/14in64.697seconds on the served0.11.0/Parent0.1.0 bundle. No real data writes/provider calls; temporary capabilities/state/config were removed with0remaining matches. Native Coach build43829864994 completed successfully, including APK signature/native ABI verification (artifact14208786600). No separate Parent APK is claimed. The only external activation remaining for new Parent/media data is one owner run ofsupabase/update_011_012.sql;001–010/Google/function must not repeat.

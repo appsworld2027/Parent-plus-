@@ -10,6 +10,7 @@ import { supabase } from '../auth/client';
 import { SignOutButton } from '../auth/SignOutButton';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { FeedbackProvider } from '../ui/ActionFeedback';
+import { WorkspaceSwitcher } from '../ui/WorkspaceSwitcher';
 import { FontLicense } from '../ui/FontLicense';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { SelectField } from '../ui/SelectField';
@@ -119,6 +120,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
   const title=tab==='Home'?`${greeting}${family?`, ${family.parent_name.split(' ')[0]}`:''}`:tab==='Week'?'Your week':tab==='Together'?'Together time':'Explore';
   return <SafeAreaView style={s.safe}><StatusBar style="light" /><View style={s.shell}>
+    <WorkspaceSwitcher current="parent" disabled={busy||dirty||!!sheet} />
     <ImageBackground source={require('../../assets/parent/aurora.jpg')} style={s.header} imageStyle={s.headerArt}>
       <View style={s.brandRow}><Pressable accessibilityRole="button" accessibilityLabel="My family setup" disabled={busy} onPress={()=>open('profile')} style={s.brand}><View style={s.avatar}><Text style={s.avatarText}>{family?.parent_name.slice(0,1).toUpperCase()??'P'}</Text></View><Text style={s.brandText}>Parent Plus</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="Refresh family records" disabled={loading||busy} onPress={()=>{void refresh();}} style={s.icon}><Text style={s.iconText}>↻</Text></Pressable></View>
       <Text accessibilityRole="header" style={s.heading}>{title}</Text><Text style={s.subtitle}>{tab==='Home'?new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',timeZone:family?.timezone??'Asia/Kolkata'}):tab==='Together'?`Ideas for you${child?` and ${child.name}`:''}`:tab==='Week'?'A little view of your family’s rhythm':'Tools for your family'}</Text>

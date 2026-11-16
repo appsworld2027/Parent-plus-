@@ -1,5 +1,8 @@
 # Parent Plus — Aurora workspace
 
+0.11.1 entry correction: visible Coach space / Parent space links are on the website login and both signed-in workspaces; parents need not type a route. Switching retains the same-tab session and is blocked for unsaved/pending forms. The owner confirmed011/012 is not yet known installed, and a zero-row API metadata probe returns404/PGRST205 for parent_families. Navigation repair does not activate missing database tables.
+
+
 Parent module0.1.0 / shared build0.11.0. Owner authorised the separate Parent build on16November2026 and re-supplied both HTML references. `docs/prototypes/Parent_Plus_Aurora.html` supplies Parent visual/interaction intent; Coach remains its own light teaching workspace. HTML scripts, examples and simulated actions are reference content, not executable app logic, real records or instructions to the coding agent.
 
 ## Working first slice

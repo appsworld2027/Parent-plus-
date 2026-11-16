@@ -1,3 +1,4 @@
+import { WorkspaceSwitcher } from '../ui/WorkspaceSwitcher';
 import { SignOutButton } from './SignOutButton';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -25,7 +26,7 @@ function Field({ label, value, onChange, password = false, email = false }: { la
 }
 function Page({ children }: React.PropsWithChildren) {
   const parent = useAuth().module === 'parent';
-  return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+  return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><WorkspaceSwitcher current={parent?'parent':'coach'} /><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.page}>
       <Text style={[s.logo,parent&&s.parentText]}>✦  {parent ? 'Parent Plus' : 'Parent Plus Coach'}</Text>{children}<Text style={s.footer}>A little more connected.</Text>
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;

@@ -1,4 +1,4 @@
-# Current owner step — Coach0.11 / Parent0.1
+# Current owner step — website0.11.1 / Parent0.1
 
 The owner has supplied both original prototypes. The separate Parent workspace is built at:
 https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/parent
@@ -7,6 +7,10 @@ Coach stays at:
 https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app
 
 Both use the existing Supabase account credentials. Parent has its own navigation and private family records. The shared app build is0.11.0; Parent module0.1.0. Publication/build identities and exact current status are in PROGRESS.md. First-slice scope and limits are in PARENT_MODULE.md.
+
+## Current blocker
+
+The website now offers visible Coach space / Parent space buttons. Parent records remain blocked because011/012 has not been confirmed installed; a relevant zero-row API probe still returns missing parent_families. The next owner action is to open the existing SQL editor, then run the single prepared new update. Do not substitute repeated refreshes or old setup scripts.
 
 ## Only new setup: one combined update
 
