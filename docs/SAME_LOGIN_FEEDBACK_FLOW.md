@@ -1,6 +1,6 @@
 # Class feedback to Parent — same-login web journey
 
-Candidate shared version0.12.0 / Parent0.2.0. Uses already installed database001–013; no SQL update, new provider or credential is required. There is no automatic external message or device push.
+Published shared version0.12.0 / Parent0.2.0. Uses already installed database001–013; no SQL update, new provider or credential is required. There is no automatic external message or device push.
 
 ## Coach journey
 
@@ -34,3 +34,11 @@ Class photos/videos still need current purpose-specific permission for every pic
 ## Verification boundary
 
 Automated browser tests use fictional transport, not real contacts or messages. Real PostgreSQL tests exercise one account owning both profiles, explicit claim, approved feed visibility and unrelated-account denial. Owner live acceptance must still save and reopen a class update with their own account on Vercel. No private signed-in owner session is available in the development workspace, so live receipt is never inferred from fixture passes.
+
+## Intended guardian and child identity — not yet guaranteed
+
+Current Auth verifies account access, and claim verifies possession of a valid student-specific invitation plus ownership of the selected family child. It does not bind the invitation to the saved guardian contact or independently verify the real-world child match. A forwarded valid invitation can be claimed by an unintended signed-in account. Names/phones are not automatically matched, but explicit self-confirmation is not proof either.
+
+Required before real-parent rollout: bind invitation to an intended verified guardian contact (verified email can reuse current Auth; phone OTP needs separate provider configuration), require Coach approval of the proposed child match, and release held feedback only after approval. These requirements are documented, not implemented. Existing same-login navigation is for the authorised test journey and must not be represented as guardian identity verification.
+
+Published automated evidence: [CLASS_PARENT_HOSTED_QA.md](CLASS_PARENT_HOSTED_QA.md). Owner live save/reopen/receipt remains a distinct next step.

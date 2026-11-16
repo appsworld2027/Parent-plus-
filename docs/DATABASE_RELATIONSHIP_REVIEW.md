@@ -26,6 +26,8 @@ Academy students and family children are independent UUID records. A coach-issue
 
 ## Limits requiring further implementation
 
+**Guardian identity gap:** invitation possession and Parent self-confirmation are not proof of intended guardian/child identity. Current invitations are not bound to guardian verified contact; a forwarded invite can be claimed by a different account. Contact-bound invitation and Coach match approval before releasing feedback are required before real-parent rollout; neither is implemented. Same-login testing cannot establish this real-world identity.
+
 - Multiple guardian accounts are not supported concurrently for one academy student. Do not drop the unique link constraint alone: current consent is a single student stream and disconnect cancellation is student-scoped. A safe extension needs per-guardian authority, consent aggregation, per-link delivery/revocation and explicit replacement rules.
 - Whether guardians get separate private families or an explicitly shared family is awaiting the owner's choice. Whether every guardian's refusal blocks media is also awaiting their choice. A guardian's private content must not become visible merely because they share a child.
 - Family-child archival now requires disconnecting active coaches first. There is no archive control in the Parent UI; add a guided disconnect/archive flow before exposing one.

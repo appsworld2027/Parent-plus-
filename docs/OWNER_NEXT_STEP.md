@@ -1,6 +1,6 @@
-# Current owner step — candidate0.12.0 / Parent0.2
+# Current owner step — website0.12.0 / Parent0.2
 
-**Database updates011–013 are installed (owner screenshot confirmed).** The0.12.0 same-login feedback journey is the current release candidate; hosted baseline journey checks pass5/5. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
+**Database updates011–013 are installed (owner screenshot confirmed).** The0.12.0 same-login journey is published; hosted baseline checks pass5/5 and the final refresh/logout follow-up passes2/2. Do not repeat setup. Multiple-guardian expansion still awaits privacy/consent choices and is not included.
 
 New entry: **Sign up as a Coach** and **Sign up as a Parent** open their own registration forms. Existing credentials remain shared; signing in opens the existing workspace or the appropriate academy/family setup. Signed-in space links remain navigation for testing and existing accounts.
 
@@ -18,7 +18,7 @@ Owner screenshot confirms202611160011,202611160012 and202611160013 installed. Fr
 
 Do not rerun any database update, Google key or scanning-function setup. Both App checks43837546001 and Android43837546056 succeeded for runtime91ea632.
 
-## Next owner action after candidate publication
+## Next owner action
 
 Use the Coach website with the existing login. Open a class, save attendance, then Write feedback for this class → Save feedback → Confirm save → Review and share to Parent → confirm the review → Share approved feedback to Parent. Press “Open [child]’s update in Parent”. The same session opens the linked child or guides family/child creation and explicit confirmation. No new login or database script is needed. Full flow and auth/retry rules: SAME_LOGIN_FEEDBACK_FLOW.md.
 
@@ -34,3 +34,5 @@ Later gates include real distinct-account isolation, native phone installation/c
 Runtimeb014c0a is published;201automated checks,76browser cases,14focused hosted cases and the native Coach build all pass. The verified Coach APK is [here](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994/artifacts/14208786600); this is not a Parent APK. The remaining new-data activation is the single combined SQL file above, followed by real account/device acceptance.
 
 Relationship audit and explicit limits: [DATABASE_RELATIONSHIP_REVIEW.md](DATABASE_RELATIONSHIP_REVIEW.md). Migration013 adds archive/invitation lifecycle protection without rewriting011/012. The old011/012-only package is retained as historical source; the new candidate uses011–013.
+
+Before using invitations with real parents: current links are not bound to verified guardian email/phone and the child match is self-confirmed. Contact-bound invitation and Coach match approval remain to be built. The same-login test is ready; it is not guardian identity proof.
