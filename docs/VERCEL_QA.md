@@ -1,5 +1,7 @@
 # Latest Vercel verification —0.8.0
 
+Latest16November2026: runtime ccb5d246 publishes0.9.0. [First-run coach setup QA](COACH_SETUP_QA.md) verifies7/7 focused hosted cases plus minimal real login/recovery smoke. CI43794966145 passes182automated and62browser cases. No real provider calls or records were used; older reports below are historical.
+
 [Cloud Vision0.8report](CLOUD_VISION_QA.md): runtime3f7d4fc,5/5hosted scan cases plus minimal version/login/recovery/disclosure smoke pass. Full GitHub type/unit/browser/export pipeline passes. These are fixture/transport tests, not liveOCR acceptance: the private Google key, function and009/010 activation are pending. Prior reports below are historical.
 
 ---
