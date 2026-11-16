@@ -27,3 +27,8 @@ This workspace has not run new SQL on the live project. Until this single new up
 Use fictional records and the owner's own test number. Parent: sign in→create family→add child. Coach: student profile→Create Parent invitation. Parent: Explore→Connect a coach→review the identity and select the child. Coach: save feedback→review for Parent→approve. Parent: Refresh and reopen the approved note. Separately test guardian photo/video/sharing choices and a small class media item. No external notification is sent automatically, and no real parent should receive a test message.
 
 Later gates include real distinct-account isolation, native phone installation/camera/session behavior, media format/large-upload checks, retention/deletion/backup and broader prototype features. Current Parent deliverable is mobile web, not a separate installed Parent APK. Fee collection stays shelved.
+
+
+## Published verification
+
+Runtimeb014c0a is published;201automated checks,76browser cases,14focused hosted cases and the native Coach build all pass. The verified Coach APK is [here](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994/artifacts/14208786600); this is not a Parent APK. The remaining new-data activation is the single combined SQL file above, followed by real account/device acceptance.

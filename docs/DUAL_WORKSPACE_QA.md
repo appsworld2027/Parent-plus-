@@ -26,3 +26,6 @@ New011/012 is not installed on the real Supabase project by this workspace. Real
 ## Fictional mobile visual evidence
 
 Root inspected the Aurora Home and received-feedback screenshots at412px width. New evidence is preserved in docs/images/011-*: [Parent Home](images/011-parent-home.png), [received coach feedback](images/011-parent-feedback.png), [class setup](images/011-class-setup.png), [WhatsApp review](images/011-whatsapp-review.png), [held Parent review](images/011-parent-review.png) and [class media](images/011-class-media.png). All names/records are test fixtures, not real family information.
+
+
+Publication: runtimeb014c0a is ready on VercelHn8KZD6cmj98RG4Xe8T9j7MYLUWx. GitHubAppchecks43829864988 independently reruns201automated/76browser checks and both exports successfully. [Focused hosted evidence](DUAL_WORKSPACE_HOSTED_QA.md) passes14/14; no real new SQL/data/provider calls occurred. Coach Android43829864994 also completed successfully with verified APK artifact14208786600. Physical phone acceptance and a separate Parent APK remain separate.

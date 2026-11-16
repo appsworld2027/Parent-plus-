@@ -1,62 +1,25 @@
-# Parent Plus Coach
+# Parent Plus — Coach and Parent
 
-Native Android coach app using React Native, Expo SDK 58, and TypeScript. The parent app is deferred. See [PRD](PRD.md) and [build plan](BUILD_PLAN.md).
+Two separate React Native workspaces on the existing Supabase/Auth project:
 
-Development is stopped at the owner’s request. Current progress has been saved; resume only when requested. Physical-phone automation is also on hold. See [the current progress checkpoint and journey chart](PROGRESS.md).
+- [Coach](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app): teaching batches, students, classes/attendance, saved feedback, reviewed WhatsApp and consented class media.
+- [Parent](https://parent-plus-varcel-git-codex-coach-foundation-appsworld2027.vercel.app/parent): Aurora family/child profiles, private plans/reminders/memories, together time and explicitly connected, coach-reviewed feedback.
 
-Version 0.3.2 has a successful native Android build with signature verification and verified ARM64 + x86_64 native libraries. It supports packaging for phones and standard Windows Intel/AMD emulators; actual emulator runtime acceptance is pending. The owner installed 0.2.0 and reports email confirmation/login. Version 0.2.1 repairs unsupported Android success-message accessibility props; device acceptance remains pending.
+Current shared build **0.11.0**, Parent module **0.1.0**, branch `codex/coach-foundation`, runtime source `b014c0a`. Development is active. The owner supplied both original prototypes under `docs/prototypes/`; the working app is built from native components, not their mock scripts. Fee collection is shelved. The first Parent deliverable is mobile web; a separate Parent APK and broader prototype features are later work.
 
-Modules 0–3: app foundation, initial database schema, email authentication/academy onboarding, and students/guardian contacts/batches are implemented to varying verification levels. Migration versions 001–004 are owner-confirmed installed; real app/API and roster device checks remain pending. Latest local checks for candidate 0.3.0: TypeScript, 79 automated tests and 26 browser tests passed.
+**New data activation remains:** run only the prepared [combined011/012 update](supabase/update_011_012.sql) in the existing Supabase project. Existing001–010, Google key and scan-roster are already complete and must not be repeated. New Parent/media features fail closed until this one new update is installed. [One-step owner guide](docs/OWNER_NEXT_STEP.md).
 
-Version 0.3.0 adds classes/attendance, a real-record Today class summary and device-persisted diagnostics. [Phone acceptance](docs/CLASS_SETUP.md) remains pending; the migrations are installed. Observations, invoices/manual payments, gateway integration and remaining release/privacy/backup/native-monitoring gates remain open. This is an internal preview, not a complete teaching or payment pilot. See [roster setup](docs/ROSTER_SETUP.md) and [Android preview](docs/ANDROID_PREVIEW.md).
+[App checks43829864988](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864988) passed201automated checks,76browser cases and web/Android JS exports. [Focused hosted QA](docs/DUAL_WORKSPACE_HOSTED_QA.md) passed14/14 on the published bundle with fictional records. [Coach Android build43829864994](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994) passed compilation and verification; phone installation/acceptance and real distinct-account/new-schema testing remain open. This is a development preview, not a public release or a universal security certification.
 
-Version 0.3.1 adds [fixed action feedback](docs/ACTION_FEEDBACK.md) so results remain visible while scrolling. Database versions 001–004 are already confirmed installed; no SQL change is needed for this patch.
-
-- [Windows Intel emulator setup](docs/WINDOWS_EMULATOR.md): verified compatible APK and manual testing steps.
-
-## Start here
-
-- [How the app actually works](docs/ARCHITECTURE.md): system, login, roster-save, data and build diagrams.
-- [Product decisions](docs/PRODUCT_DECISIONS.md): scope choices, tradeoffs and current assumptions.
-- [Developer handover](docs/DEVELOPER_GUIDE.md): file map, setup, tests, security boundaries and the working agreement.
-- [Current progress](PROGRESS.md): completed work, verification limits and the next acceptance steps.
-
-Update affected technical docs after substantial changes. Review PRD/progress once per active working day; flag important blockers and product decisions immediately. This is an active-session practice, not an unattended scheduled service.
-
-## Local development
-
-Use Node 24 and npm. From this repository:
+Start with [current progress](PROGRESS.md), [Coach requirements](PRD.md), [Parent requirements](docs/PARENT_PRD.md), [Parent architecture/access](docs/PARENT_MODULE.md) and [developer guide](docs/DEVELOPER_GUIDE.md). [Local and browser evidence](docs/DUAL_WORKSPACE_QA.md) distinguishes automated fixtures from actual account/device acceptance.
 
 ```sh
 npm ci
-cp .env.example .env.local
-npm start
-```
-
-Public project defaults are now bundled in `config/public-client.json` so connected previews can build without manual account setup. `.env.local` can override them. These are client-visible URL/publishable settings, not privileged credentials. Never add service-role, database, SMTP, gateway, or signing secrets there or in an `EXPO_PUBLIC_` variable. Config presence does not establish a working backend.
-
-For this restricted cloud workspace, use `npm_config_cache=/tmp/parentplus-npm-cache` for npm and `EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1` for Expo commands. Offline mode skips external Expo metadata calls; package versions were selected from the installed official SDK compatibility map. It does not disable TLS or package integrity verification.
-
-Each cloud task already has an isolated checkout. Use it directly; do not create a worktree unless requested.
-
-## Checks
-
-```sh
 npm run check
-npx playwright install chromium
 npm run test:e2e
-npm run export:android
 npm run export:web
+npm run export:android
+node scripts/prepare-parent-sql.mjs --check
 ```
 
-On machines with system Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:e2e`. Browser tests start their own local Expo server on port 18081 and refuse an existing server. Authentication tests install a simulated transport before app startup; they do not send real emails or call live Supabase. They verify the React Native web target and SDK/UI behavior, not Android device behavior or actual provider delivery.
-
-`export:android` verifies Metro's Android bundle; it does not create an installable APK. A native APK requires build/signing setup and validation on a device. `eas.json` defines an internal APK profile and a production AAB profile; no Expo account/project has been linked or build submitted.
-
-GitHub Actions app checks run from `.github/workflows/checks.yml`; the native preview uses `.github/workflows/android-preview.yml`. Successful APK build evidence is saved in [validation](docs/VALIDATION.md). Treat automated checks, native builds and actual phone acceptance as separate results.
-
-## Diagnostics
-
-Support is available through the question-mark button. Reports accept only known error codes and safe metadata, are capped at 30 events, and persist on the device when storage is available. Restoring strips unknown fields and removes events older than 14 days; sign-out clears reports. Report sharing is deliberate; remote monitoring is not enabled. Development/test mode includes controlled failure checks; unset/unknown environments default to production and hide them.
-
-See [validation](docs/VALIDATION.md), [issue record](docs/ISSUES.md), and [your next step](docs/OWNER_NEXT_STEP.md).
+Family and academy records are independently protected. A coach-issued expiring invitation links a family child explicitly to a student; contact/name matching grants no access. Parent sees only reviewed per-child snapshots and currently authorised media. API/service secrets never belong in public app configuration or GitHub.

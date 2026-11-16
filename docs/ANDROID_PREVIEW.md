@@ -1,5 +1,8 @@
 # Android preview build and real login checklist
 
+Latest16November2026: Coach0.11.0(versionCode14), sourceb014c0a, passes [native build43829864994](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994). [Verified preview APK artifact14208786600](https://github.com/appsworld2027/Parent-plus-/actions/runs/43829864994/artifacts/14208786600). This updates Coach; the separate Parent0.1 workspace is mobile web at /parent, with no separate Parent APK yet. Physical phone/runtime/new-schema acceptance is separate from compilation/signature/ABI checks.
+
+
 ## Build/download links
 
 Current checkpoint: version **0.3.2** built successfully in [run 43186145925](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925) from `21cb70a0e8769c92a8e8743c78051029b65f442b`. [Download its artifact](https://github.com/appsworld2027/Parent-plus-/actions/runs/43186145925/artifacts/13928512623). It retains 0.3.1 app behavior and includes both ARM64 phone and x86_64 emulator native libraries. Signature and ELF/header checks passed for all 17 libraries per architecture. See [Windows Intel setup](WINDOWS_EMULATOR.md). Versions 001–004 are already installed; **no SQL update is needed**. Actual emulator/phone acceptance remains pending.
