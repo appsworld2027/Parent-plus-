@@ -2,6 +2,8 @@
 
 ## Current development work: robust foundation
 
+Next slice implemented: private workspace-authorized student/batch/class saves and profile/roster reads, with atomic contacts/enrolments, stale-edit checks and safe retries. [What this changes](../../ai-workspace/validation/WORKSPACE_ROSTER_QA.md). These are tested backend candidates; there is no new website flow or Supabase paste step from017. Existing accounts and installed001–014 remain.
+
 Latest execution: the private server permission kernel and owner-only revocations are implemented and tested in disposable databases. See [what was tested](../../ai-workspace/validation/WORKSPACE_AUTHORIZATION_QA.md). This does not change the website yet. No SQL to copy/run: the remaining API/storage conversion and real Supabase staging must precede activation.
 
 Owner authorised continuing multi-workspace work after clarification that Supabase staging and eventual schema/permission activation are required. F0contract and45case matrix are written; F1private storage candidate is tested only in disposable PostgreSQL. There is no production015 install script or workspace picker yet. Do not ask the owner to run supabase/candidates/ SQL or repeat001–014. First finish F2authorisation/APIs, then onboarding/UI and a rehearsed staging/cutover plan. Owner account setup/provisioning is needed later for real Supabase staging and production execution; no admin connection is present now. Their live test with a colleague is separate and has not been reported complete.

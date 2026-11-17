@@ -40,7 +40,7 @@ export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandl
   const [stored, setStored] = useState<DeviceObservation | null>(null);
   const [storageBlocked, setStorageBlocked] = useState(false);
   const [localState, setLocalState] = useState('');
-  const [pending, setPending] = useState<'record' | 'widen' | 'discard' | null>(null);
+  const [pending, setPending] = useState<'widen' | 'discard' | null>(null);
   const [conflict, setConflict] = useState<ObservationDraft | null>(null);
   const mounted = useRef(true);
   const writer = useRef(observationDrafts.token());
@@ -263,8 +263,9 @@ export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandl
       {!!localState && <Text style={s.body}>{localState}</Text>}
       {dirty && <Button title="Retry device save" soft disabled={busy} action={() => { const value = current.current; if (value) void run(() => persist(value)); }} />}
       {draft.status === 'draft' && <Button title="Save draft to workspace" disabled={disabled} action={() => { void run(() => save(false)); }} />}
+      {draft.status === 'draft' && <Text style={s.body}>Saving fixes the class and selected students for this note. Review and share with parents after saving.</Text>}
       <Button title={draft.status === 'recorded' ? 'Save feedback changes' : 'Save feedback'} disabled={disabled} action={() => {
-        const invalid = validateObservation(draft, true); if (invalid) publish(invalid); else setPending('record');
+        void run(() => save(true));
       }} />
       {draft.status === 'recorded' && <WhatsAppReview key={`whatsapp:${draft.id}`} academy={academy.id} academyName={academy.name} observation={draft.id} revision={draft.revision} disabled={disabled || dirty || draft.note !== versions[0]?.note} />}
       {draft.status === 'recorded' && <ParentModuleReview key={`parent:${draft.id}`} academy={academy.id} observation={draft.id} revision={draft.revision} disabled={busy || photoBusy || storageBlocked || dirty || draft.note !== versions[0]?.note} onWorking={setParentBusy} />}
@@ -276,13 +277,12 @@ export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandl
         <Text style={s.body}>Revision {version.revision} · {version.status} · {localParts(version.saved_at, academy.timezone).date}</Text><Text selectable style={s.body}>{version.note || 'No text'}</Text>
       </View>)}</View>}
     </View>}
-    <ConfirmDialog visible={pending !== null} title={pending === 'widen' ? 'Change to a batch observation?' : pending === 'discard' ? 'Remove this device draft?' : 'Confirm observation save'}
-      message={pending === 'widen' ? 'This replaces the individual student selection with eligible students in the chosen batch. Review every selected student before recording.' : pending === 'discard' ? 'The unsent device copy will be removed. Workspace observations and their history are kept.' : `Save this note for ${draft?.recipients.length ?? 0} selected student(s): ${names(draft?.recipients ?? [])}. The student list becomes fixed once recorded. No parent message will be sent.`}
-      confirmLabel={pending === 'widen' ? 'Change and review students' : pending === 'discard' ? 'Remove device draft' : 'Confirm save'} cancelLabel="Keep editing" onCancel={() => setPending(null)} onConfirm={() => {
+    <ConfirmDialog visible={pending !== null} title={pending === 'widen' ? 'Change to a batch observation?' : 'Remove this device draft?'}
+      message={pending === 'widen' ? 'This replaces the individual student selection with eligible students in the chosen batch. Review every selected student before recording.' : 'The unsent device copy will be removed. Workspace observations and their history are kept.'}
+      confirmLabel={pending === 'widen' ? 'Change and review students' : 'Remove device draft'} cancelLabel="Keep editing" onCancel={() => setPending(null)} onConfirm={() => {
         const action = pending; setPending(null);
         if (action === 'widen' && draft) changeScope(draft.batch, draft.session, 'batch');
         else if (action === 'discard') void run(discard);
-        else if (action === 'record') void run(() => save(true));
       }} />
   </View>;
 }

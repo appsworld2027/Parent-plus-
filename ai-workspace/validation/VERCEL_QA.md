@@ -24,7 +24,25 @@ Hosted CI run 44059620662 passed foundation, workspace-concurrency, parent-atten
 
 [Verified code CI](https://github.com/appsworld2027/Parent-plus-/actions/runs/44059620662). [Latest branch runs](https://github.com/appsworld2027/Parent-plus-/actions?query=branch%3AAM%2Fconsolidated). Historical reports below retain their own source/build scope.
 
-# Latest Vercel verification —0.8.0
+
+
+# Public Vercel entry point —17November2026
+
+**Normal app: https://parent-plus-varcel.vercel.app.** This public production alias opens ParentPlus directly; use the usual ParentPlus account. Developer branch/PR addresses can redirect to Vercel account sign-in. A protected preview is not evidence the normal app is down. Check the production alias before sending another preview URL or asking the owner to change account settings.
+
+The earlier PR11 preview redirected to `vercel.com/login`, so its testing agent could not reach the app. The owner had been given that protected preview instead of the working production address. No Vercel protection, account, Supabase or app configuration needed changing to restore access.
+
+The public alias serves Coach0.13.1 / Parent0.3.0 with the one-press private feedback save. Its asset `index-514e86401d7f934595d7a0af03722c66.js` has SHA256 `7abe5c630f1c851d3dfcc39cdbd5a0d05720ceabdf78eb9f36f7720e42210934`, byte-identical to the tested local0.13.1 export. Main28ff036 has the same runtime tree as tested source2b7cab57. The bundle does not embed a source SHA; this is an asset comparison, not an embedded revision claim.
+
+Read-only smoke checks at412×915 and1440×1000 verify root and `/auth/recovery` return200, stay on the production origin and display the app login, without horizontal overflow, page errors, console errors or backend/provider requests. A bounded secret-pattern scan found no matches; this is not an exhaustive security guarantee.
+
+Full production-compatible hosted regression passes **84/84** in283.739seconds, with0failures,0skips and0flaky outcomes. The84per-test guard records show0real Supabase/external/provider network attempts,0page errors and0console errors. This run starts at14:56:25UTC on17November2026 and uses the actual public Vercel bundle with fictional Supabase transport and a temporary external-network guard. Coverage includes authentication/onboarding/recovery, class attendance, Coach→Parent review/connection, feedback save/retry/history, profiles/photos, roster import and existing fee behavior. The four development-only `foundation.spec.ts` cases are deliberately excluded because production omits those controls; their separate local/CI coverage remains88browser cases overall.
+
+Aggregate/run/smoke evidence was independently read back from `/tmp/parentplus-public-0131/summary.json`, `results.json`, `public-smoke.json` and the84per-test guard records. These are workspace artifacts, not permanent download links. The served asset hash and aggregate results are retained here for the next developer. No Vercel/Supabase configuration was changed, no production account was signed in and no real record/message/upload/provider operation occurred. Real inbox delivery, user credentials, live writes, native device behavior and private workspace-candidate activation remain separate acceptance work.
+
+---
+
+# Historical Vercel verification —0.8.0
 
 Latest16November2026: runtimeb014c0a deploys0.11.0 with separate Parent0.1.0 at/parent. [Hosted two-workspace QA](DUAL_WORKSPACE_HOSTED_QA.md) passes14/14; GitHub43829864988 passes201automated and76browser checks. New data needs the prepared011/012 activation; all hosted new-data journeys were fictional transport. Older reports below are history.
 

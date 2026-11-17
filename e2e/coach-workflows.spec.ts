@@ -75,7 +75,7 @@ test('historical observation photo stays private and read-only while new media u
   await page.reload();await page.getByRole('tab',{name:'Feedback',exact:true}).click();await page.getByRole('button',{name:'Open draft observation',exact:true}).click();
   await expect(page.getByRole('img',{name:'Private observation photo',exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'Save draft and add photo',exact:true})).toHaveCount(0);
-  await page.getByRole('button',{name:'Save feedback',exact:true}).click();await page.getByRole('button',{name:'Confirm save',exact:true}).click();
+  await page.getByRole('button',{name:'Save feedback',exact:true}).click();
   await expect(page.getByText('Recorded photo is fixed with this observation.',{exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'Replace photo',exact:true})).toHaveCount(0);
 });

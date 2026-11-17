@@ -1,5 +1,7 @@
 # ParentPlus — Coach and Parent
 
+**[Open the app](https://parent-plus-varcel.vercel.app)** — use this normal production address. Branch/PR preview links can require a separate Vercel account sign-in. [Latest hosted verification](ai-workspace/validation/VERCEL_QA.md).
+
 ParentPlus is a mobile-first Expo/React Native application with two workspaces:
 
 - **Coach:** manage academies, batches, students, sessions, attendance, feedback, and consented class media.

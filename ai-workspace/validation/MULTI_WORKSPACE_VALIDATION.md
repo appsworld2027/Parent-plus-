@@ -79,6 +79,10 @@ PGlite is useful for actual SQL/constraints/role fixtures but serial fixtures do
 6. Owner schedules/reviews the concrete tested activation and completes authorised admin execution when required. Never request admin keys/passwords in chat.
 7. Controlled live accounts/monitoring/performance evidence, then broader rollout. No production-capacity or zero-leak guarantee is inferred from schema existence or fixture test counts.
 
+## F2 roster/class slice evidence —17November2026
+
+Candidate017 implements private scoped student/contact/enrolment, batch and class transactions plus management-profile and teaching-roster projections. All31new SQL cases pass within the full TypeScript/330test/33file suite (146.84s). Twelve independent PostgreSQL17 cases pass, including actual new API writes versus revocation, optimistic edit conflict, concurrent idempotent save and roster read versus class transfer. [Roster QA](WORKSPACE_ROSTER_QA.md) states exact contracts, review fixes and remaining gates. These results do not mark every MW scenario complete: no production client/API grant, independent records, legacy mixed-write compatibility, full staff lifecycle or Supabase/provider acceptance is enabled.
+
 ## F1 execution evidence —17November2026
 
 The isolated candidate tests/workspace-foundation.test.ts passes20/20 in10.99s against001–014 plus supabase/candidates/202611170015_workspace_foundation.sql. It applies twice, preserves original class/feedback IDs and014Parent links, creates no fictional Coach/teacher attribution, keeps new private tables inaccessible to anon/authenticated/service_role, preserves old runtime isolation despite a staged second membership, and checks workspace/branch/resource/invite/audit composite references and expected invalid states. Four fresh-database cases reject untracked candidate table, empty marker, function and index. Rerun does not restore revoked staged legacy memberships/grants; ownership drift fails safely.

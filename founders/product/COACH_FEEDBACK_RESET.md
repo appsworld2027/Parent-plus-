@@ -1,5 +1,7 @@
 # Coach feedback-first reset —16November2026
 
+17November follow-up: candidate0.13.1 removes the separate save-confirmation modal, keeps selected students/context visible with inline guidance, and retains reviewed Parent/WhatsApp sharing. See PRD1.8 and PROGRESS.md for current implementation and verification; older dated candidate/status statements below are historical.
+
 Coach reset started as candidate0.10.0; current combined candidate0.11.0 / PRD1.7. This dated decision overrides the old invoice/gateway-first pilot gate. The owner clarified that batch/class operations are cumbersome, not producing errors. Automated tests did not establish that this was a usable product. Fee collection is shelved; retain the existing financial records and access controls.
 
 ## The coach journey
@@ -7,7 +9,7 @@ Coach reset started as candidate0.10.0; current combined candidate0.11.0 / PRD1.
 1. Today offers Create a batch, Schedule a class and Write feedback for parents.
 2. Batch name is sufficient; room and fee are optional. A direct new-batch save opens its roster. Schedule a class from that batch carries the selection and location forward.
 3. Class form defaults to the only active batch when appropriate. One date, start/end time and optional room are primary; status and a different end date are secondary. Create a missing batch inline without losing the date/times. Web has native date/time inputs; native date/time text inputs remain a usability gap.
-4. Save feedback to the workspace for fixed students. Review a WhatsApp message for one intended parent, with full international number, editable text and confirmation. A separate click opens WhatsApp; the coach presses Send there. Do not mark it Sent or Delivered. Text only; no private image links are included.
+4. Save feedback to the workspace for fixed students with one press. Selected names and the effect of saving appear inline; no second save-confirmation modal. Review a WhatsApp message for one intended parent, with full international number, editable text and confirmation. A separate click opens WhatsApp; the coach presses Send there. Do not mark it Sent or Delivered. Text only; no private image links are included.
 5. Optionally review the recorded feedback for the Parent module. Select recipients and eligible class media; approve a per-child snapshot. It stays Awaiting verified parent connection. Reopen/cancel held records; cancellation keeps history.
 
 ## Parent handoff contract

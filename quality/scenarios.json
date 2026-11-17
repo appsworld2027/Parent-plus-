@@ -3593,6 +3593,910 @@
       "tests": [
         "e2e/classes.spec.ts::attendance includes an enrolled student beyond the API response cap"
       ]
+    },
+    {
+      "id": "SC-0E43A7A1AA11",
+      "status": "implemented",
+      "criteria": "one tap saves reviewed student feedback privately and enables sharing without another save approval",
+      "tests": [
+        "e2e/observations.spec.ts::one tap saves reviewed student feedback privately and enables sharing without another save approval"
+      ]
+    },
+    {
+      "id": "SC-003237E12598",
+      "status": "implemented",
+      "criteria": "allows admin-only roster inspection without creating a teaching identity or permitting marks",
+      "tests": [
+        "tests/workspace-attendance.test.ts::allows admin-only roster inspection without creating a teaching identity or permitting marks"
+      ]
+    },
+    {
+      "id": "SC-12B9124D81A9",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 1",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 1"
+      ]
+    },
+    {
+      "id": "SC-0C87584FB686",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 2",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 2"
+      ]
+    },
+    {
+      "id": "SC-D472BD5782B8",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 5",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 5"
+      ]
+    },
+    {
+      "id": "SC-6CC49E8A30EB",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 6",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 6"
+      ]
+    },
+    {
+      "id": "SC-0E28117BAA97",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 7",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 7"
+      ]
+    },
+    {
+      "id": "SC-0FC6C4C17F87",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 8",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 8"
+      ]
+    },
+    {
+      "id": "SC-C60B4CFC50DB",
+      "status": "implemented",
+      "criteria": "denies revoked assignments, expired write windows, cancelled classes and archived batches even for retries",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies revoked assignments, expired write windows, cancelled classes and archived batches even for retries"
+      ]
+    },
+    {
+      "id": "SC-A274E2BB1966",
+      "status": "implemented",
+      "criteria": "detects a roster addition/removal after review and preserves previous revisions on failure",
+      "tests": [
+        "tests/workspace-attendance.test.ts::detects a roster addition/removal after review and preserves previous revisions on failure"
+      ]
+    },
+    {
+      "id": "SC-084A12B67260",
+      "status": "implemented",
+      "criteria": "keeps submissions and operations private without inventing legacy attribution or changing the live ledger",
+      "tests": [
+        "tests/workspace-attendance.test.ts::keeps submissions and operations private without inventing legacy attribution or changing the live ledger"
+      ]
+    },
+    {
+      "id": "SC-74B3082BDDB6",
+      "status": "implemented",
+      "criteria": "lets an assigned instructor mark the complete class roster without impersonating its owner",
+      "tests": [
+        "tests/workspace-attendance.test.ts::lets an assigned instructor mark the complete class roster without impersonating its owner"
+      ]
+    },
+    {
+      "id": "SC-4AA1400833BC",
+      "status": "implemented",
+      "criteria": "rejects a foreign or unassigned branch class and does not leak its roster",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects a foreign or unassigned branch class and does not leak its roster"
+      ]
+    },
+    {
+      "id": "SC-FCABCB92A8C0",
+      "status": "implemented",
+      "criteria": "rejects changed request payloads, stale revisions and stale class context atomically",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects changed request payloads, stale revisions and stale class context atomically"
+      ]
+    },
+    {
+      "id": "SC-93CAC9530A0D",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 0",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 0"
+      ]
+    },
+    {
+      "id": "SC-AC027D97A370",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 1",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 1"
+      ]
+    },
+    {
+      "id": "SC-0EE77C3963B9",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 2",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 2"
+      ]
+    },
+    {
+      "id": "SC-7410E2CAA4BC",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 3",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 3"
+      ]
+    },
+    {
+      "id": "SC-D98FCEED1A29",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 4",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 4"
+      ]
+    },
+    {
+      "id": "SC-BF68CC11C48D",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 5",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 5"
+      ]
+    },
+    {
+      "id": "SC-A3651585A96C",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 6",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 6"
+      ]
+    },
+    {
+      "id": "SC-381B71AE9439",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 7",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 7"
+      ]
+    },
+    {
+      "id": "SC-3DAD447AEB77",
+      "status": "implemented",
+      "criteria": "retains old snapshot attribution after another instructor updates attendance",
+      "tests": [
+        "tests/workspace-attendance.test.ts::retains old snapshot attribution after another instructor updates attendance"
+      ]
+    },
+    {
+      "id": "SC-0C30FBFE2322",
+      "status": "implemented",
+      "criteria": "returns the original receipt for reordered exact retries without undoing later attendance edits",
+      "tests": [
+        "tests/workspace-attendance.test.ts::returns the original receipt for reordered exact retries without undoing later attendance edits"
+      ]
+    },
+    {
+      "id": "SC-376D50F67947",
+      "status": "implemented",
+      "criteria": "uses the academy-local class date and ended enrolments when checking every student",
+      "tests": [
+        "tests/workspace-attendance.test.ts::uses the academy-local class date and ended enrolments when checking every student"
+      ]
+    },
+    {
+      "id": "SC-2629B42688A8",
+      "status": "implemented",
+      "criteria": "corrects recorded feedback with a reason and actual editor while keeping original teaching identity",
+      "tests": [
+        "tests/workspace-feedback.test.ts::corrects recorded feedback with a reason and actual editor while keeping original teaching identity"
+      ]
+    },
+    {
+      "id": "SC-93371ECA0BC0",
+      "status": "implemented",
+      "criteria": "creates a teacher-authored class draft, records it and preserves membership attribution",
+      "tests": [
+        "tests/workspace-feedback.test.ts::creates a teacher-authored class draft, records it and preserves membership attribution"
+      ]
+    },
+    {
+      "id": "SC-C0590BC5C0C6",
+      "status": "implemented",
+      "criteria": "denies old receipt/edit after assignment revocation and never treats rehire as the original membership",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies old receipt/edit after assignment revocation and never treats rehire as the original membership"
+      ]
+    },
+    {
+      "id": "SC-227CE2A14881",
+      "status": "implemented",
+      "criteria": "denies unrelated draft reads and returns only whitelisted feedback fields with five latest versions",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies unrelated draft reads and returns only whitelisted feedback fields with five latest versions"
+      ]
+    },
+    {
+      "id": "SC-2DBBC846ED35",
+      "status": "implemented",
+      "criteria": "denies wrong branch/foreign class and locks recorded context, audience, recipients and status",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies wrong branch/foreign class and locks recorded context, audience, recipients and status"
+      ]
+    },
+    {
+      "id": "SC-2A591952A710",
+      "status": "implemented",
+      "criteria": "does not let a co-instructor or manager edit another teacher draft or inherit its authorship",
+      "tests": [
+        "tests/workspace-feedback.test.ts::does not let a co-instructor or manager edit another teacher draft or inherit its authorship"
+      ]
+    },
+    {
+      "id": "SC-DF2D8704D273",
+      "status": "implemented",
+      "criteria": "enforces a nonnull correction reason in the audit table as well as the operation",
+      "tests": [
+        "tests/workspace-feedback.test.ts::enforces a nonnull correction reason in the audit table as well as the operation"
+      ]
+    },
+    {
+      "id": "SC-B1B1662B644C",
+      "status": "implemented",
+      "criteria": "keeps legacy authorship unknown at membership level when an owner corrects an older recorded note",
+      "tests": [
+        "tests/workspace-feedback.test.ts::keeps legacy authorship unknown at membership level when an owner corrects an older recorded note"
+      ]
+    },
+    {
+      "id": "SC-36C61E55B4BD",
+      "status": "implemented",
+      "criteria": "keeps private feedback operations and submissions inaccessible to app/service roles",
+      "tests": [
+        "tests/workspace-feedback.test.ts::keeps private feedback operations and submissions inaccessible to app/service roles"
+      ]
+    },
+    {
+      "id": "SC-44E0E4E3BAEB",
+      "status": "implemented",
+      "criteria": "leaves an already-approved Parent snapshot unchanged when the source note is corrected",
+      "tests": [
+        "tests/workspace-feedback.test.ts::leaves an already-approved Parent snapshot unchanged when the source note is corrected"
+      ]
+    },
+    {
+      "id": "SC-4B1FE2B1E6C9",
+      "status": "implemented",
+      "criteria": "moves an authorized draft across batches atomically and hides old branch versions from a current branch manager",
+      "tests": [
+        "tests/workspace-feedback.test.ts::moves an authorized draft across batches atomically and hides old branch versions from a current branch manager"
+      ]
+    },
+    {
+      "id": "SC-C1481A9391AB",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 1",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 1"
+      ]
+    },
+    {
+      "id": "SC-8D8BABEF2C1A",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 2",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 2"
+      ]
+    },
+    {
+      "id": "SC-60E13802D63B",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 5",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 5"
+      ]
+    },
+    {
+      "id": "SC-28ED15BB83C3",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 6",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 6"
+      ]
+    },
+    {
+      "id": "SC-B6611CD423FB",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 7",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 7"
+      ]
+    },
+    {
+      "id": "SC-95D1F3D8A031",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 8",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 8"
+      ]
+    },
+    {
+      "id": "SC-7E68F4DB357C",
+      "status": "implemented",
+      "criteria": "preserves stable receipts and does not undo a newer note when an older response is retried",
+      "tests": [
+        "tests/workspace-feedback.test.ts::preserves stable receipts and does not undo a newer note when an older response is retried"
+      ]
+    },
+    {
+      "id": "SC-F6B3553C0AC1",
+      "status": "implemented",
+      "criteria": "preserves the original shared teacher name after a rename and later correction",
+      "tests": [
+        "tests/workspace-feedback.test.ts::preserves the original shared teacher name after a rename and later correction"
+      ]
+    },
+    {
+      "id": "SC-AA6173520BA2",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[21,21]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[21,21]}"
+      ]
+    },
+    {
+      "id": "SC-4D680100ADFE",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[23]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[23]}"
+      ]
+    },
+    {
+      "id": "SC-7554C51CC7E5",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[]}"
+      ]
+    },
+    {
+      "id": "SC-778BA35BC8F3",
+      "status": "implemented",
+      "criteria": "requires explicit correction authority, recorded status and a nonblank reason",
+      "tests": [
+        "tests/workspace-feedback.test.ts::requires explicit correction authority, recorded status and a nonblank reason"
+      ]
+    },
+    {
+      "id": "SC-B11903C40AC0",
+      "status": "implemented",
+      "criteria": "adds batch memberships without dropping earlier relationships or duplicating the primary contact",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::adds batch memberships without dropping earlier relationships or duplicating the primary contact"
+      ]
+    },
+    {
+      "id": "SC-1C4E184B113E",
+      "status": "implemented",
+      "criteria": "allows ordinary profile edits when approved Parent email differs from unchanged contact ",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows ordinary profile edits when approved Parent email differs from unchanged contact "
+      ]
+    },
+    {
+      "id": "SC-B97C49B0A3BD",
+      "status": "implemented",
+      "criteria": "allows ordinary profile edits when approved Parent email differs from unchanged contact different@example.test",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows ordinary profile edits when approved Parent email differs from unchanged contact different@example.test"
+      ]
+    },
+    {
+      "id": "SC-760A21C4E612",
+      "status": "implemented",
+      "criteria": "allows status/room edits without changing recorded context or inventing teacher attribution",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows status/room edits without changing recorded context or inventing teacher attribution"
+      ]
+    },
+    {
+      "id": "SC-790AD37E59BA",
+      "status": "implemented",
+      "criteria": "binds request receipts to membership periods, not a global account request ID",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::binds request receipts to membership periods, not a global account request ID"
+      ]
+    },
+    {
+      "id": "SC-9FB3633B60FF",
+      "status": "implemented",
+      "criteria": "canonicalizes class retry payloads across server session timezones",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::canonicalizes class retry payloads across server session timezones"
+      ]
+    },
+    {
+      "id": "SC-902280C374AC",
+      "status": "implemented",
+      "criteria": "denies new edits to archived students/batches and classes in archived batches",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies new edits to archived students/batches and classes in archived batches"
+      ]
+    },
+    {
+      "id": "SC-A6702BECC33E",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 3",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 3"
+      ]
+    },
+    {
+      "id": "SC-7AF74EF680E5",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 4",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 4"
+      ]
+    },
+    {
+      "id": "SC-795AF816DF43",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 5",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 5"
+      ]
+    },
+    {
+      "id": "SC-E13679640F3B",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 6",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 6"
+      ]
+    },
+    {
+      "id": "SC-32A296B6FE01",
+      "status": "implemented",
+      "criteria": "does not silently replace the verified email on an existing approved Parent connection",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::does not silently replace the verified email on an existing approved Parent connection"
+      ]
+    },
+    {
+      "id": "SC-A252AC1C7877",
+      "status": "implemented",
+      "criteria": "keeps every new function private, fixed-search-path, and every new table protected by RLS",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps every new function private, fixed-search-path, and every new table protected by RLS"
+      ]
+    },
+    {
+      "id": "SC-752010C23E00",
+      "status": "implemented",
+      "criteria": "keeps mutations in the selected workspace even when the same account has authority in both",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps mutations in the selected workspace even when the same account has authority in both"
+      ]
+    },
+    {
+      "id": "SC-6CA986C1D160",
+      "status": "implemented",
+      "criteria": "keeps operations and receipt/version tables inaccessible to app roles and leaves live migration history unchanged",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps operations and receipt/version tables inaccessible to app roles and leaves live migration history unchanged"
+      ]
+    },
+    {
+      "id": "SC-78A005F43464",
+      "status": "implemented",
+      "criteria": "opens a complete student profile only for workspace owner/admin with contact and enrolment fields whitelisted",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::opens a complete student profile only for workspace owner/admin with contact and enrolment fields whitelisted"
+      ]
+    },
+    {
+      "id": "SC-9C9F564E7EE5",
+      "status": "implemented",
+      "criteria": "permits delegated global admin management without fabricating a Coach or ownership",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::permits delegated global admin management without fabricating a Coach or ownership"
+      ]
+    },
+    {
+      "id": "SC-D6541F96E125",
+      "status": "implemented",
+      "criteria": "preserves existing fees and prohibits an unauthorized branch move even with a new request",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::preserves existing fees and prohibits an unauthorized branch move even with a new request"
+      ]
+    },
+    {
+      "id": "SC-908A40525657",
+      "status": "implemented",
+      "criteria": "protects class history and session-specific teaching assignments when editing context",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::protects class history and session-specific teaching assignments when editing context"
+      ]
+    },
+    {
+      "id": "SC-DBA19A69682F",
+      "status": "implemented",
+      "criteria": "rechecks revocation and expiry before allowing a receipt replay",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rechecks revocation and expiry before allowing a receipt replay"
+      ]
+    },
+    {
+      "id": "SC-9C867F1B5ECD",
+      "status": "implemented",
+      "criteria": "rejects changed requests, stale revisions and resource-type substitution",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects changed requests, stale revisions and resource-type substitution"
+      ]
+    },
+    {
+      "id": "SC-FE9F64810D3E",
+      "status": "implemented",
+      "criteria": "rejects foreign workspace IDs, foreign resource IDs and foreign branches",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects foreign workspace IDs, foreign resource IDs and foreign branches"
+      ]
+    },
+    {
+      "id": "SC-189F70E552FB",
+      "status": "implemented",
+      "criteria": "rejects invalid revisions, identifiers, names and class intervals without partial state",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects invalid revisions, identifiers, names and class intervals without partial state"
+      ]
+    },
+    {
+      "id": "SC-FCA5CB98C394",
+      "status": "implemented",
+      "criteria": "reruns the candidate without resetting resource versions or erasing prior receipts",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::reruns the candidate without resetting resource versions or erasing prior receipts"
+      ]
+    },
+    {
+      "id": "SC-5D056751AF39",
+      "status": "implemented",
+      "criteria": "restricts branch managers to their branch and denies global student-profile changes",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::restricts branch managers to their branch and denies global student-profile changes"
+      ]
+    },
+    {
+      "id": "SC-606D9532114B",
+      "status": "implemented",
+      "criteria": "retries exactly once and returns the original receipt after later edits without overwriting them",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::retries exactly once and returns the original receipt after later edits without overwriting them"
+      ]
+    },
+    {
+      "id": "SC-2A0E8F5B2C87",
+      "status": "implemented",
+      "criteria": "returns a minimum teaching roster with no contacts, billing, private family or unassigned students",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::returns a minimum teaching roster with no contacts, billing, private family or unassigned students"
+      ]
+    },
+    {
+      "id": "SC-24BBABF7503B",
+      "status": "implemented",
+      "criteria": "rolls student, resource map and receipt back when a contact write fails after validation",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rolls student, resource map and receipt back when a contact write fails after validation"
+      ]
+    },
+    {
+      "id": "SC-96FE1BE4517A",
+      "status": "implemented",
+      "criteria": "rolls the whole student operation back for an invalid batch or ended enrolment",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rolls the whole student operation back for an invalid batch or ended enrolment"
+      ]
+    },
+    {
+      "id": "SC-01F163A99FD3",
+      "status": "implemented",
+      "criteria": "saves a batch, student/contact/enrolment and class under explicit workspace authority",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::saves a batch, student/contact/enrolment and class under explicit workspace authority"
+      ]
+    },
+    {
+      "id": "SC-E17B2EA95DCF",
+      "status": "implemented",
+      "criteria": "uses the class date and academy timezone for enrolments, excluding archived students",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::uses the class date and academy timezone for enrolments, excluding archived students"
+      ]
+    },
+    {
+      "id": "SC-15B0C1257AA5",
+      "status": "implemented",
+      "criteria": "accepts ownership for an existing indefinite staff member without rewriting their teaching identity",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::accepts ownership for an existing indefinite staff member without rewriting their teaching identity"
+      ]
+    },
+    {
+      "id": "SC-66809CD68C30",
+      "status": "implemented",
+      "criteria": "binds a neutral owner-issued offer to one verified recipient, with no access before acceptance",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::binds a neutral owner-issued offer to one verified recipient, with no access before acceptance"
+      ]
+    },
+    {
+      "id": "SC-006020945059",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 2",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 2"
+      ]
+    },
+    {
+      "id": "SC-28C05DF07330",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 3",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 3"
+      ]
+    },
+    {
+      "id": "SC-5C66FB7691FA",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 4",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 4"
+      ]
+    },
+    {
+      "id": "SC-3221D1560F71",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 5",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 5"
+      ]
+    },
+    {
+      "id": "SC-338A4A278F97",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 6",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 6"
+      ]
+    },
+    {
+      "id": "SC-C801457F5213",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 7",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 7"
+      ]
+    },
+    {
+      "id": "SC-A7BFD2AC2A7E",
+      "status": "implemented",
+      "criteria": "caps new membership and grants at the issuer authority ceiling",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::caps new membership and grants at the issuer authority ceiling"
+      ]
+    },
+    {
+      "id": "SC-8C723DDCE584",
+      "status": "implemented",
+      "criteria": "creates admin-only membership without inventing a Coach identity",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::creates admin-only membership without inventing a Coach identity"
+      ]
+    },
+    {
+      "id": "SC-0BAA95A07728",
+      "status": "implemented",
+      "criteria": "creates explicit bounded assignments only for the accepted instructor and correct branch",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::creates explicit bounded assignments only for the accepted instructor and correct branch"
+      ]
+    },
+    {
+      "id": "SC-9BC584C4F33B",
+      "status": "implemented",
+      "criteria": "does not grant retrospective classes or arbitrary history through a new assignment",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not grant retrospective classes or arbitrary history through a new assignment"
+      ]
+    },
+    {
+      "id": "SC-3A5E2AA0A7BC",
+      "status": "implemented",
+      "criteria": "does not hand permanent ownership to an existing temporary owner grant",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not hand permanent ownership to an existing temporary owner grant"
+      ]
+    },
+    {
+      "id": "SC-6432295E8C9A",
+      "status": "implemented",
+      "criteria": "does not let old acceptance or pre-offboarding offers revive a removed membership",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not let old acceptance or pre-offboarding offers revive a removed membership"
+      ]
+    },
+    {
+      "id": "SC-6B54BDF63AC6",
+      "status": "implemented",
+      "criteria": "does not let temporary owners delegate assignment access beyond their own authority",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not let temporary owners delegate assignment access beyond their own authority"
+      ]
+    },
+    {
+      "id": "SC-590944C83FE0",
+      "status": "implemented",
+      "criteria": "does not revive a pending invitation when its issuer regains ownership later",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not revive a pending invitation when its issuer regains ownership later"
+      ]
+    },
+    {
+      "id": "SC-971AB528D2E0",
+      "status": "implemented",
+      "criteria": "does not treat a bounded membership as an instructor grant after teaching authority is removed",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not treat a bounded membership as an instructor grant after teaching authority is removed"
+      ]
+    },
+    {
+      "id": "SC-AE4A165BF549",
+      "status": "implemented",
+      "criteria": "keeps every offer/profile/event function and table private, with no production ledger change",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::keeps every offer/profile/event function and table private, with no production ledger change"
+      ]
+    },
+    {
+      "id": "SC-6114968C82D9",
+      "status": "implemented",
+      "criteria": "makes accept retries harmless after later role removal without restoring grants",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::makes accept retries harmless after later role removal without restoring grants"
+      ]
+    },
+    {
+      "id": "SC-25ED0DFCD9A6",
+      "status": "implemented",
+      "criteria": "never bypasses a suspended membership or silently upgrades another active membership",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::never bypasses a suspended membership or silently upgrades another active membership"
+      ]
+    },
+    {
+      "id": "SC-EC0E2313C879",
+      "status": "implemented",
+      "criteria": "rechecks issuer ownership and eligibility before acceptance",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rechecks issuer ownership and eligibility before acceptance"
+      ]
+    },
+    {
+      "id": "SC-F54A5038A6E0",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"admin\",\"branch\":\"00000000-0000-0000-0000-000000000061\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"admin\",\"branch\":\"00000000-0000-0000-0000-000000000061\"}]}"
+      ]
+    },
+    {
+      "id": "SC-C41C1916C9B0",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"branch_manager\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"branch_manager\"}]}"
+      ]
+    },
+    {
+      "id": "SC-944E1D3CE749",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"instructor\",\"branch\":\"00000000-0000-0000-0000-000000000063\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"instructor\",\"branch\":\"00000000-0000-0000-0000-000000000063\"}]}"
+      ]
+    },
+    {
+      "id": "SC-BFB57E6C6C52",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"owner\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"owner\"}]}"
+      ]
+    },
+    {
+      "id": "SC-284282F11F3F",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"superadmin\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"superadmin\"}]}"
+      ]
+    },
+    {
+      "id": "SC-DBAB285FB0A8",
+      "status": "implemented",
+      "criteria": "rejects self-transfer and bounded owner transfers",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects self-transfer and bounded owner transfers"
+      ]
+    },
+    {
+      "id": "SC-02AD3B96FC18",
+      "status": "implemented",
+      "criteria": "rejects wrong recipients, missing/changed verification, disabled recipients and unknown tokens uniformly",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects wrong recipients, missing/changed verification, disabled recipients and unknown tokens uniformly"
+      ]
+    },
+    {
+      "id": "SC-61820170F6E4",
+      "status": "implemented",
+      "criteria": "replaces only an earlier pending ownership offer and never revives it by retry",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::replaces only an earlier pending ownership offer and never revives it by retry"
+      ]
+    },
+    {
+      "id": "SC-DFCC2F718AFD",
+      "status": "implemented",
+      "criteria": "requires explicit teaching profile acceptance for a new instructor",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::requires explicit teaching profile acceptance for a new instructor"
+      ]
+    },
+    {
+      "id": "SC-A2A5F75CB1A2",
+      "status": "implemented",
+      "criteria": "returns workspace-local staff profiles without other employment, auth IDs or family data",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::returns workspace-local staff profiles without other employment, auth IDs or family data"
+      ]
+    },
+    {
+      "id": "SC-28241DA4CB4E",
+      "status": "implemented",
+      "criteria": "revokes pending invitations without granting membership and blocks expired offers",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::revokes pending invitations without granting membership and blocks expired offers"
+      ]
+    },
+    {
+      "id": "SC-2DCE8B70C921",
+      "status": "implemented",
+      "criteria": "stores only token digests and returns the same offer for exact issue retries",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::stores only token digests and returns the same offer for exact issue retries"
+      ]
+    },
+    {
+      "id": "SC-00C62D8771DD",
+      "status": "implemented",
+      "criteria": "transfers ownership only after a different verified recipient accepts, and preserves a current owner",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::transfers ownership only after a different verified recipient accepts, and preserves a current owner"
+      ]
     }
   ]
 }
