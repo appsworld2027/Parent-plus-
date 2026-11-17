@@ -29,7 +29,7 @@ async function feedback(page:Page,linked=false) {
   await page.getByRole('combobox',{name:'Student for this feedback',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.students[0].id));
   await page.getByLabel('Observation text',{exact:true}).fill('Fictional Ria shaped a bowl independently. Practise a smooth rim.');
   await page.getByRole('button',{name:'Save feedback',exact:true}).click();
-  await page.getByRole('button',{name:'Confirm save',exact:true}).click();
+
   await expect(page.getByRole('button',{name:'Review and share to Parent',exact:true})).toBeEnabled();
 }
 async function prepare(page:Page) {

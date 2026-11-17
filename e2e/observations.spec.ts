@@ -14,8 +14,17 @@ async function compose(page: Page) {
 }
 async function record(page: Page) {
   await page.getByRole('button', { name: 'Save feedback', exact: true }).click();
-  await page.getByRole('button', { name: 'Confirm save', exact: true }).click();
+
 }
+test('one tap saves reviewed student feedback privately and enables sharing without another save approval',async({page})=>{
+ await compose(page);
+ await page.getByRole('button',{name:'Save feedback',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Review WhatsApp message',exact:true})).toBeEnabled();
+ await expect(page.getByRole('button',{name:'Save feedback changes',exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>window.__coachFixture.observations[0]?.status)).toBe('recorded');
+ expect(await page.evaluate(()=>window.__coachFixture.calls.some(call=>call.includes('queue_parent_feedback')))).toBe(false);
+ await expect(page.getByRole('dialog')).toHaveCount(0);
+});
 test('private note autosaves locally, survives restart, records and retains immutable students on text edits', async ({ page }, info) => {
   await compose(page);
   await expect(page.getByText('Draft saved on this device. Not yet saved to your workspace.', { exact: true })).toBeVisible();
@@ -29,7 +38,7 @@ test('private note autosaves locally, survives restart, records and retains immu
   await expect(page.getByText('Recent saved versions (up to 5)', { exact: true })).toBeVisible();
   await page.getByRole('textbox', { name: 'Observation text' }).fill('Fictional corrected note about the same child.');
   await page.getByRole('button', { name: 'Save feedback changes', exact: true }).click();
-  await page.getByRole('button', { name: 'Confirm save', exact: true }).click();
+
   await expect(page.getByTestId('action-feedback')).toContainText('Observation recorded in your workspace');
   await expect.poll(() => page.evaluate(() => window.__coachFixture.observations[0]?.revision)).toBe(2);
   await expect(page.getByRole('button', { name: 'Confirm save', exact: true })).toHaveCount(0);

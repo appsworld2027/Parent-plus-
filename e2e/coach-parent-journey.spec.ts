@@ -7,7 +7,7 @@ async function shareClassFeedback(page:Page){
   await page.getByRole('button',{name:'Mark all present',exact:true}).click();await page.getByRole('button',{name:'Save attendance to class',exact:true}).click();
   await page.getByRole('button',{name:'Write feedback for this class',exact:true}).click();
   await expect(page.getByRole('combobox',{name:'Linked class (optional)',exact:true})).toHaveValue(await page.evaluate(()=>window.__coachFixture.classes[0].id));
-  await page.getByLabel('Observation text',{exact:true}).fill(note);await page.getByRole('button',{name:'Save feedback',exact:true}).click();await page.getByRole('button',{name:'Confirm save',exact:true}).click();
+  await page.getByLabel('Observation text',{exact:true}).fill(note);await page.getByRole('button',{name:'Save feedback',exact:true}).click();
   expect(await page.evaluate(()=>window.__mediaFixture.handoffs.length)).toBe(0);
   await page.getByRole('button',{name:'Review and share to Parent',exact:true}).click();await page.getByRole('checkbox',{name:'I reviewed the feedback, recipients and media for parents',exact:true}).check();
   await page.getByRole('button',{name:'Share approved feedback to Parent',exact:true}).click();
