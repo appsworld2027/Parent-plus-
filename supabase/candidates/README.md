@@ -1,5 +1,7 @@
 # Isolated foundation candidates
 
+`workspace_class_roster.sql` adds a private instructor/manager projection after the F1 and F2 kernel candidates. It returns only IDs and names for active students enrolled on the academy-local class day, after the kernel's roster permission check. It grants no client execution and does not replace current app reads. Its dedicated tests cover authorization, membership/account rejection, archive/date filtering and timezone boundaries. This is not a live migration or a complete roster conversion; pagination/capacity and real-provider/concurrent-read acceptance remain future gates.
+
 `workspace_account_eligibility.sql` is the retired standalone prototype, retained as a compatibility check. Apply the isolated F1/F2 candidates first in disposable tests; this file now asserts the canonical F2 helper is present and never creates/replaces it. This prevents branch integration from restoring the older weaker eligibility rule. `tests/workspace-account-eligibility.test.ts` exercises the canonical helper with synthetic Auth rows and verifies replay cannot downgrade it. There is no public API, live ledger entry or production activation. Do not run this file on a live project.
 
 These files are not production migrations or owner dashboard scripts. Do not run them on the live Supabase project.
