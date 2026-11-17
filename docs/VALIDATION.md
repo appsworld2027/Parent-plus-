@@ -309,3 +309,7 @@ Browser flow run:11/13passed, with two assertion-only failures corrected (scope 
 Relevant live /auth/v1/settings read returns email provider enabled and mailer_autoconfirm=false, confirming email confirmation is required. No account data/mail was accessed. New014server activation is still owner-run and unconfirmed; do not claim the live gap is closed until the owner installs it. Existing001–013/Google must not repeat.
 
 Published0791763/Vercel8ntkcG7wDtxTYTbAqEQKmH94Nhka: [hosted identity QA](PARENT_IDENTITY_HOSTED_QA.md)4/4pass41.577s. Private capabilities/config/state removed; no live writes/emails/providers/messages. GitHub43859794515 completed its automated TypeScript/test step successfully; remaining browser/exports and Android43859794507 still running when recorded. Live014 remains uninstalled; source/fixture passes do not activate server protections.
+
+## Live014 activation resolved —17November2026
+
+Owner initially confirmed the read-only ledger/table/function diagnostic was all false, then ran the full014 and reports installed_update202611160014. New approval table limit=0 GET and both read-only request RPCs now return401/42501 anonymously, replacing404/PGRST205/PGRST202. No records read/written, mail or authenticated session used. This corroborates installation/API visibility and denied anonymous access; it does not prove signed-in account behavior. Do not repeat014 or old setup. Full App checks43859794515 and Android43859794507 are both SUCCESS. Next: owner live class feedback/approval/Parent save/reopen.

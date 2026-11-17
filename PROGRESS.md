@@ -1,5 +1,11 @@
 # Parent Plus Coach — development checkpoint
 
+## Live014 activation confirmed — 17 November 2026
+
+After the discrepancy below, owner ran the three-column diagnostic and reported ALL FALSE (ledger/table/function absent). They were directed to copy and run the entire update014 file in a blank query with no selection. Owner now reports exact202611160014 installed. Fresh public-key/anonymous checks find the new parent_connection_requests table and both get_parent_connection_requests/get_coach_parent_requests RPCs: all return401/PostgreSQL42501 permission denied, replacing their former404 missing-object responses. This resolves API visibility and corroborates owner installation; no records were read or written and no authenticated session/email/message was used. Do NOT ask to rerun014, earlier migrations or Google setup.
+
+Source0791763 App checks43859794515 and Android43859794507 succeeded; hosted identity fixtures4/4passed. Next acceptance is owner-signed-in real class→feedback→review/share→same-login Parent request→Coach explicit approval→Parent update/reopen. Live account pairing, wrong-account rejection and inbox receipt are not proved by anonymous API checks. No private owner session/admin connection is available here. Workspace commands are responsive.
+
 ## Update014 owner report — 17 November 2026; API discrepancy unresolved
 
 Owner first reported “Success no rows returned”, then after a requested read-only version check reported “Update14 installed”. Treat installation as owner-reported, not independently confirmed. Fresh public-key/anonymous checks find parent_connection_requests404/PGRST205 and both new request RPCs404/PGRST202; existing parent_families and get_parent_coach_connections return401/42501 as expected. One bounded control retry reproduces the new-table absence. Email confirmation remains required (mailer_autoconfirm=false). No private rows, authenticated session, mail, or writes were used. Do NOT call live014 ready and do NOT ask to blindly rerun the long migration. Next owner query should check version ledger AND to_regclass(public.parent_connection_requests) AND to_regprocedure(public.get_parent_connection_requests()) in their SQL editor to distinguish incomplete installation from API schema-cache visibility.

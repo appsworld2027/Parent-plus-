@@ -36,3 +36,5 @@ Actual SQL tests cover wrong verified email/forwarding, unverified account, pend
 Live Auth configuration check on16November2026: email provider is enabled and mailer_autoconfirm=false (confirmation required). This read-only settings check sent no email and read no account data. Keep email confirmation enabled; actual inbox receipt remains a live acceptance check.
 
 Hosted bundle verification: [PARENT_IDENTITY_HOSTED_QA.md](PARENT_IDENTITY_HOSTED_QA.md),4/4 in41.577s on source0791763. Tests use fictional transport; update014 still needs owner live installation.
+
+Activation follow-up17November2026: after an all-false diagnostic, owner ran the complete014 file and reports exact installed_update202611160014. Fresh new-table/parent-request/Coach-request API checks all return401/42501 to anonymous requests, replacing404missing objects. No records were read/written. Installation/API visibility is confirmed; do not rerun SQL. Owner-signed-in acceptance remains next.

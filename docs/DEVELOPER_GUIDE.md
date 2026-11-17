@@ -1,6 +1,6 @@
 # Developer handover and working agreement
 
-**Guardian identity hardening0.13:** owner explicitly authorised “Close the Gap.” See [PARENT_IDENTITY.md](PARENT_IDENTITY.md). Only new SQL014 is required after installed001–013; previous no-new-SQL wording refers to0.12. It binds verified guardian email and requires Coach approval before feedback release, including same-login tests. Live014 is not installed by this workspace.
+**Guardian identity hardening0.13:** owner explicitly authorised “Close the Gap.” See [PARENT_IDENTITY.md](PARENT_IDENTITY.md). Only new SQL014 is required after installed001–013; previous no-new-SQL wording refers to0.12. It binds verified guardian email and requires Coach approval before feedback release, including same-login tests. Owner-confirmed014 is now API-visible (17November2026): new approval table and both request RPCs reject anonymous access with401/42501. Do not rerun SQL. Signed-in live class/approval/Parent acceptance remains next.
 
 **Same-login feedback journey0.12:** see [SAME_LOGIN_FEEDBACK_FLOW.md](SAME_LOGIN_FEEDBACK_FLOW.md). Reuses installed001–013 and existing verified Auth/RLS/invitation RPCs; do not request another Supabase script. Parent web guides profile/child selection from the Coach’s saved review and rejects another account’s link.
 
