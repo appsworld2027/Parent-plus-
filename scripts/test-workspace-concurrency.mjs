@@ -86,6 +86,7 @@ try{
  await sql(readFileSync('tests/fixtures/workspace-authorization.sql','utf8'));
  for(const file of ['202611170015_workspace_foundation.sql','202611170016_workspace_authorization.sql'])await sql(readFileSync(`supabase/candidates/${file}`,'utf8'));
  await sql(readFileSync('tests/fixtures/workspace-authority.sql','utf8'));
+ await sql(readFileSync('supabase/candidates/202611170017_workspace_roster.sql','utf8'));
  await sql(`create table coach_private.workspace_test_writes(actor uuid,session_id uuid);
  create function coach_private.workspace_test_protected_write(workspace uuid,session uuid) returns void language plpgsql security definer set search_path='' as $$
  begin perform coach_private.workspace_assert_class_write(workspace,session,'feedback.write');
@@ -140,7 +141,42 @@ try{
   const writer=await connection('repeatable_snapshot',3);await writer.send(`rollback;begin isolation level repeatable read;${as(3)}`);await mustDeny(writer.send(write));
   assert.equal(await sql('select count(*) from coach_private.workspace_test_writes;'),'0');
  });
- console.log(`${passed}/8 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
+ // Exercise actual new operations, not just the original protected-write fixture.
+ await sql(`insert into coach_private.workspace_role_grants(workspace_id,membership_id,role_code,scope,source) values(${workspace},${member},'admin','workspace','explicit_grant');`);
+ const saveBatch=(target,revision,request,name)=>`select coach_private.workspace_save_batch(${workspace},'${uid(target)}',${revision},'${uid(request)}','${name}','Studio','${uid(61)}');`;
+ await test('actual batch save waiting behind committed membership removal is denied',async()=>{
+  const revoker=await connection('actual_revoke',1);await revoker.send(revokeMember);
+  const writer=await connection('actual_write',3),attempt=writer.send(saveBatch(601,0,701,'Blocked'));
+  const denial=mustDeny(attempt);await blocked(writer,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from public.batches where id='${uid(601)}';`),'0');
+  assert.equal(await sql('select count(*) from coach_private.workspace_resource_receipts;'),'0');
+ });
+ await test('two actual batch edits with one revision serialize and reject the stale editor',async()=>{
+  await sql(`${as(1)}${saveBatch(602,0,702,'Original')}`);
+  const first=await connection('first_editor',1);await first.send(saveBatch(602,1,703,'First edit'));
+  const second=await connection('stale_editor',8),attempt=second.send(saveBatch(602,1,704,'Stale edit'));
+  const conflict=assert.rejects(attempt,/40001/);await blocked(second,first);await first.send('commit;');await conflict;
+  assert.equal(await sql(`select name from public.batches where id='${uid(602)}';`),'First edit');
+  assert.equal(await sql(`select revision from coach_private.workspace_resource_versions where batch_id='${uid(602)}';`),'2');
+ });
+ await test('same actual save retried concurrently returns one receipt and one resource version',async()=>{
+  const first=await connection('first_request',1);await first.send(saveBatch(603,0,705,'One request'));
+  const second=await connection('repeat_request',1),attempt=second.send(saveBatch(603,0,705,'One request'));
+  await blocked(second,first);await first.send('commit;');const replay=await attempt;await second.send('commit;');
+  assert.equal(JSON.parse(replay).revision,1);
+  assert.equal(await sql(`select count(*) from coach_private.workspace_resource_receipts where request_id='${uid(705)}';`),'1');
+  assert.equal(await sql(`select revision from coach_private.workspace_resource_versions where batch_id='${uid(603)}';`),'1');
+ });
+ await sql(`delete from coach_private.workspace_role_grants where membership_id=${member} and role_code='admin';`);
+ await test('actual roster read serializes with a class move and denies the instructor after transfer',async()=>{
+  await sql(`${as(1)}select coach_private.workspace_save_class(${workspace},'${uid(604)}',0,'${uid(706)}','${uid(31)}',now()-interval '30 minutes',now()+interval '30 minutes','Studio','scheduled');`);
+  const reader=await connection('assigned_reader',3);
+  assert.equal((await reader.send(`select count(*) from coach_private.workspace_class_roster(${workspace},'${uid(604)}');`)),'2');
+  const writer=await connection('moving_manager',1),attempt=writer.send(`select coach_private.workspace_save_class(${workspace},'${uid(604)}',1,'${uid(707)}','${uid(32)}',now()-interval '30 minutes',now()+interval '30 minutes','Studio','scheduled');`);
+  await blocked(writer,reader);await reader.send('commit;');await attempt;await writer.send('commit;');
+  const later=await connection('after_transfer',3);await mustDeny(later.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(604)}');`));
+ });
+ console.log(`${passed}/12 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
 }finally{
  await Promise.all([...clients].map(c=>c.close()));
  if(failures.length)process.exitCode=1;
