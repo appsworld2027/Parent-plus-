@@ -6,4 +6,4 @@ At this documentation rollout's base, main is `2310ad2`: public-address guidance
 
 The private workspace SQL candidates remain separate from installed migrations. No live database, application behavior, dependencies, deployment settings, or existing CI workflows change in this PR.
 
-After merge, both founders continue their sprint and synchronize instructions at a safe point using the [adoption guide](../ai-workspace/agent-instructions/adoption.md).
+After merge, both founders continue their sprint and synchronize instructions from their authorized base at a safe point using the [adoption guide](../ai-workspace/agent-instructions/adoption.md).
