@@ -66,3 +66,63 @@ export function createSessionStorage(driver: StorageDriver) {
     }),
   };
 }
+
+// Email apps commonly open a new tab. Share only each addressed PKCE proof,
+// with an expiry, so that tab can redeem its one-time code. Sessions remain in
+// sessionStorage; no password/access/refresh token is copied to localStorage.
+export function createWebAuthStorage(tabDriver:StorageDriver,sharedDriver:StorageDriver,storageKey:string,options:{projectStorageKey?:string;now?:()=>number;ttlMs?:number}={}):StorageDriver {
+  const {projectStorageKey=storageKey,now=Date.now,ttlMs=60*60*1000}=options;
+  const tab=createSessionStorage(tabDriver),prefix='parentplus.pkce.v1.';
+  // The SDK's notification channel is per document; persisted per-tab keys and
+  // shared pending email proofs retain the stable project namespace on reload.
+  const flowIndex=`${storageKey}-flows-code-verifier`;
+  const normalize=(key:string)=>key===flowIndex?key:key===storageKey||key.startsWith(`${storageKey}-`)?projectStorageKey+key.slice(storageKey.length):key;
+  const sharedProof=(key:string)=>key.startsWith(`${projectStorageKey}-flow-`)&&/^[a-zA-Z0-9_-]{8,64}-code-verifier$/.test(key.slice(`${projectStorageKey}-flow-`.length));
+  const proofKey=(key:string)=>key===`${projectStorageKey}-code-verifier`||key===flowIndex||sharedProof(key);
+  const unpack=(raw:string,legacy=false):string|null=>{
+    try {
+      const value=JSON.parse(raw);
+      if(legacy&&(typeof value==='string'||Array.isArray(value)))return raw;
+      return value&&value.version===1&&typeof value.value==='string'&&value.value.length<=2048
+        &&Number.isFinite(value.expiresAt)&&value.expiresAt>now()?value.value:null;
+    }catch{return null;}
+  };
+  const remove=async(key:string)=>{
+    await tab.removeItem(key);
+    if(sharedProof(key))try{await sharedDriver.removeItem(prefix+key);}catch{/* Same-tab fallback works when shared browser storage is blocked. */}
+  };
+  return {
+    async getItem(key){
+      key=normalize(key);
+      if(!proofKey(key))return tab.getItem(key);
+      let shared:string|null=null;
+      if(sharedProof(key))try{shared=await sharedDriver.getItem(prefix+key);}catch{/* Read the same-tab fallback below. */}
+      if(shared!==null){
+        const value=unpack(shared);
+        if(value===null)await remove(key);
+        return value;
+      }
+      const previous=await tab.getItem(key);
+      if(previous===null)return null;
+      const value=unpack(previous,true);
+      if(value===null)await remove(key);
+      return value;
+    },
+    async setItem(key,value){
+      key=normalize(key);
+      if(!proofKey(key)){await tab.setItem(key,value);return;}
+      if(value.length>2048)throw new Error('Email-link proof is too large');
+      const wrapped=JSON.stringify({version:1,expiresAt:now()+ttlMs,value});
+      // The SDK uses its flow index for logout cleanup. Keep that index per
+      // document (even across cloned tabs), and the legacy fallback per tab.
+      if(!sharedProof(key)){await tab.setItem(key,wrapped);return;}
+      let stored=false;
+      try{await sharedDriver.setItem(prefix+key,wrapped);stored=true;}catch{/* Private mode may permit only the current tab. */}
+      if(stored){
+        // Avoid a second unexpired copy reviving a proof consumed in another tab.
+        await tab.removeItem(key);
+      }else await tab.setItem(key,wrapped);
+    },
+    async removeItem(key){key=normalize(key);if(proofKey(key))await remove(key);else await tab.removeItem(key);},
+  };
+}

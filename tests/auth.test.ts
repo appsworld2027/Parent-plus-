@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createSessionStorage, type StorageDriver } from '../src/auth/storage';
+import { createSessionStorage, createWebAuthStorage, type StorageDriver } from '../src/auth/storage';
 import { parseAuthLink, validateAuth } from '../src/auth/rules';
 
 function memory() {
@@ -84,4 +84,67 @@ describe('email and recovery guardrails', () => {
     expect(parseAuthLink('parentplus-coach://auth/callback#access_token=untrusted')?.code).toBe('');
     expect(parseAuthLink('parentplus-coach://auth/recovery?error=expired')?.error).toBe(true);
   });
+});
+
+describe('web email-link storage',()=>{
+ const key='sb-fictional-auth-token',flow='a'.repeat(32),verifierKey=`${key}-flow-${flow}-code-verifier`;
+ it('shares only short-lived email verifiers between tabs and keeps sessions in their own tab',async()=>{
+  const first=memory(),second=memory(),shared=memory();
+  const a=createWebAuthStorage(first.driver,shared.driver,key),b=createWebAuthStorage(second.driver,shared.driver,key);
+  await a.setItem(key,'fictional-session-token');await a.setItem(verifierKey,'"fictional-verifier/recovery"');
+  expect(await b.getItem(verifierKey)).toBe('"fictional-verifier/recovery"');expect(await b.getItem(key)).toBe(null);
+  expect([...shared.values.values()].join('')).not.toContain('fictional-session-token');
+  await b.removeItem(verifierKey);expect(await b.getItem(verifierKey)).toBe(null);expect(await a.getItem(verifierKey)).toBe(null);
+ });
+ it('expires verifier copies in both storage locations',async()=>{
+  const tab=memory(),shared=memory();let time=1000;
+  const store=createWebAuthStorage(tab.driver,shared.driver,key,{now:()=>time,ttlMs:100});
+  await store.setItem(verifierKey,'"proof"');time=1101;
+  expect(await store.getItem(verifierKey)).toBe(null);expect(shared.values.size).toBe(0);
+  expect(await store.getItem(verifierKey)).toBe(null);
+ });
+ it('never shares other projects or arbitrary keys with a verifier-looking suffix',async()=>{
+  const tab=memory(),shared=memory(),store=createWebAuthStorage(tab.driver,shared.driver,key);
+  await store.setItem('sb-other-auth-token-code-verifier','"other"');await store.setItem(`${key}-flow-invalid-code-verifier`,'"invalid"');
+  expect(shared.values.size).toBe(0);
+ });
+ it('keeps same-tab email recovery available when shared browser storage is unavailable',async()=>{
+  const tab=memory(),unavailable:StorageDriver={getItem:async()=>{throw Error('blocked');},setItem:async()=>{throw Error('blocked');},removeItem:async()=>{throw Error('blocked');}};
+  const store=createWebAuthStorage(tab.driver,unavailable,key);
+  await store.setItem(verifierKey,'"proof"');expect(await store.getItem(verifierKey)).toBe('"proof"');await store.removeItem(verifierKey);expect(await store.getItem(verifierKey)).toBe(null);
+ });
+ it('can read an existing same-tab verifier from before the storage upgrade',async()=>{
+  const tab=memory(),shared=memory();await createSessionStorage(tab.driver).setItem(`${key}-code-verifier`,'"existing-proof/recovery"');
+  expect(await createWebAuthStorage(tab.driver,shared.driver,key).getItem(`${key}-code-verifier`)).toBe('"existing-proof/recovery"');
+ });
+ it('preserves and validates the email flow identifier before clearing URL history',()=>{
+  expect(parseAuthLink(`https://app.example/auth/recovery?code=one&sb_flow_id=${flow}`,'https://app.example')).toMatchObject({code:'one',flowId:flow,error:false});
+  expect(parseAuthLink('https://app.example/auth/recovery?code=one&sb_flow_id=invalid','https://app.example')?.error).toBe(true);
+ });
+ it('isolates SDK notification channels while preserving each tab’s persisted session and shared email proof',async()=>{
+  const first=memory(),second=memory(),shared=memory();
+  const a=createWebAuthStorage(first.driver,shared.driver,`${key}-context-first`,{projectStorageKey:key});
+  const b=createWebAuthStorage(second.driver,shared.driver,`${key}-context-second`,{projectStorageKey:key});
+  await a.setItem(`${key}-context-first`,'fictional-session');await a.setItem(`${key}-context-first-flow-${flow}-code-verifier`,'"proof"');
+  expect(await b.getItem(`${key}-context-second`)).toBe(null);
+  expect(await b.getItem(`${key}-context-second-flow-${flow}-code-verifier`)).toBe('"proof"');
+  const reload=createWebAuthStorage(first.driver,shared.driver,`${key}-context-reloaded`,{projectStorageKey:key});
+  expect(await reload.getItem(`${key}-context-reloaded`)).toBe('fictional-session');
+ });
+ it('keeps cleanup ownership and legacy fallback local to the requesting tab',async()=>{
+  const first=memory(),second=memory(),shared=memory(),a=createWebAuthStorage(first.driver,shared.driver,key),b=createWebAuthStorage(second.driver,shared.driver,key);
+  await a.setItem(`${key}-flows-code-verifier`,JSON.stringify([flow]));await a.setItem(`${key}-code-verifier`,'"proof/recovery"');await a.setItem(verifierKey,'"proof/recovery"');
+  expect(await b.getItem(`${key}-flows-code-verifier`)).toBe(null);expect(await b.getItem(`${key}-code-verifier`)).toBe(null);
+  await b.removeItem(`${key}-flows-code-verifier`);await b.removeItem(`${key}-code-verifier`);
+  expect(await b.getItem(verifierKey)).toBe('"proof/recovery"');
+  expect(shared.values.size).toBe(1);
+ });
+ it('does not inherit cleanup ownership when a browser clones a tab’s storage',async()=>{
+  const first=memory(),cloned=memory(),shared=memory(),firstKey=`${key}-context-original`,secondKey=`${key}-context-clone`;
+  const a=createWebAuthStorage(first.driver,shared.driver,firstKey,{projectStorageKey:key});
+  await a.setItem(`${firstKey}-flows-code-verifier`,JSON.stringify([flow]));
+  for(const [name,value] of first.values)cloned.values.set(name,value);
+  const b=createWebAuthStorage(cloned.driver,shared.driver,secondKey,{projectStorageKey:key});
+  expect(await b.getItem(`${secondKey}-flows-code-verifier`)).toBe(null);
+ });
 });

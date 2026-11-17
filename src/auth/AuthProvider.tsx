@@ -112,14 +112,21 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       try {
         const parsed = parseAuthLink(url, Platform.OS === 'web' ? globalThis.location.origin : undefined);
         if (!parsed) return;
+        const incoming=new URL(url);
+        // The public recovery address is also a useful "Forgot password"
+        // entry point. An address without an email code is never a session.
+        if(Platform.OS==='web'&&parsed.recovery&&!parsed.code&&!parsed.error&&!incoming.hash
+          &&[...incoming.searchParams.keys()].every(key=>key==='module'))return;
+        if (Platform.OS === 'web') globalThis.history.replaceState({}, '', module === 'parent' ? '/parent' : '/');
         if (parsed.error || !parsed.code) throw new Error('Invalid email link');
         // Android may deliver the same initial link again as a live URL event.
         // Exchange a given one-time code once per mounted provider.
         if (parsed.code === lastCode) return;
         lastCode = parsed.code;
-        // Remove code from browser history before doing a network operation.
-        if (Platform.OS === 'web') globalThis.history.replaceState({}, '', module === 'parent' ? '/parent' : '/');
-        const result = await supabase!.auth.exchangeCodeForSession(parsed.code);
+        // Sensitive callback parameters have been removed before any exchange.
+        // Capture the exact PKCE flow before removing URL parameters. Without
+        // it the SDK can use a newer email's fallback proof and burn this code.
+        const result = await supabase!.auth.exchangeCodeForSession(parsed.code,parsed.flowId?{flowId:parsed.flowId}:undefined);
         if (result.error) throw result.error;
         if (active) { setRecovery(parsed.recovery); setError(''); }
       } catch {
