@@ -37,4 +37,4 @@ Read-only `git merge-tree --write-tree` checks compare baseline `d32564b` and do
 | `codex/coach-foundation` | `b6c9006eacc02f6908306b9070ba4f60d0316018` | 0 | 0 |
 | `main` | `fc16814497186e089901158be469270242a9ac62` | 6 | 18 |
 
-Documentation-only review is prepared on AM/consolidated. Integrating main or propagating to MM branches remains pending the owner’s clarification of the earlier no-merge instruction. Keep ongoing feature work; do not reset this shared branch to imitate main. The documentation commit can be reviewed independently of the pre-existing branch divergence.
+Owner-confirmed scope: keep a documentation-only review on AM/consolidated and leave every other branch untouched. Do not integrate main or propagate these changes to MM branches. Keep ongoing feature work; do not reset this shared branch to imitate main. The documentation commits can be reviewed independently of the pre-existing branch divergence.
