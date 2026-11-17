@@ -34,6 +34,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:workspace:postgres": "node scripts/test-workspace-concurrency.mjs",
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm test",
     "export:web": "expo export --platform web",

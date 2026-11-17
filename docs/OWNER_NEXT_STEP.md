@@ -2,6 +2,8 @@
 
 ## Current development work: robust foundation
 
+Latest execution: the private server permission kernel and owner-only revocations are implemented and tested in disposable databases. See [what was tested](WORKSPACE_AUTHORIZATION_QA.md). This does not change the website yet. No SQL to copy/run: the remaining API/storage conversion and real Supabase staging must precede activation.
+
 Owner authorised continuing multi-workspace work after clarification that Supabase staging and eventual schema/permission activation are required. F0contract and45case matrix are written; F1private storage candidate is tested only in disposable PostgreSQL. There is no production015 install script or workspace picker yet. Do not ask the owner to run supabase/candidates/ SQL or repeat001–014. First finish F2authorisation/APIs, then onboarding/UI and a rehearsed staging/cutover plan. Owner account setup/provisioning is needed later for real Supabase staging and production execution; no admin connection is present now. Their live test with a colleague is separate and has not been reported complete.
 
 The pending guardian privacy preference is separate-private vs explicitly shared family spaces. Do not expand digital guardians until that model and per-link consent/delivery are implemented. Further details: [foundation](MULTI_WORKSPACE_FOUNDATION.md), [release gates](MULTI_WORKSPACE_VALIDATION.md).
