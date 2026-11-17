@@ -64,6 +64,8 @@ The HTML references define product/design intent. The working app is native Reac
 
 ## 3. Local setup
 
+For the hosted app, use **https://parent-plus-varcel.vercel.app**. Verify this normal production alias before sharing a developer branch/PR preview or asking the owner to change account settings. A preview redirect to `vercel.com/login` is Vercel deployment protection, not ParentPlus Auth; do not infer the public app is unavailable. Hosted source/version and fixture-versus-real-provider evidence belong in [Vercel QA](VERCEL_QA.md).
+
 Use Node 24, npm and Python 3. Run commands from the repository root.
 
 ```sh
