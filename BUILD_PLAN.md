@@ -1,5 +1,7 @@
 # Parent Plus Coach: module-by-module build and support plan
 
+**Current foundation priority,17November2026:** owner wants robust multi-academy/independent/admin-only/Parent separation and authorised continuing implementation. Follow [foundation contract](docs/MULTI_WORKSPACE_FOUNDATION.md) and [release gates](docs/MULTI_WORKSPACE_VALIDATION.md). F0design/inventory is written; F1private SQL candidate is tested only in disposable databases. Next F2converts server permissions and scoped APIs, F3onboarding/workspace UI, F4real Supabase staging plus migration rehearsal/backup/compatibility, F5live acceptance and measured rollout. These supersede the old single-owner build assumptions. No production SQL015 is delivered now; installed001–014 and existing accounts remain. Earlier milestone descriptions below are history.
+
 **Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [docs/PARENT_PRD.md](docs/PARENT_PRD.md) and [docs/PARENT_MODULE.md](docs/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
 
 

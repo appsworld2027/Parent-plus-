@@ -1,5 +1,11 @@
 # Current owner step — website0.13.0 / Parent0.3
 
+## Current development work: robust foundation
+
+Owner authorised continuing multi-workspace work after clarification that Supabase staging and eventual schema/permission activation are required. F0contract and45case matrix are written; F1private storage candidate is tested only in disposable PostgreSQL. There is no production015 install script or workspace picker yet. Do not ask the owner to run supabase/candidates/ SQL or repeat001–014. First finish F2authorisation/APIs, then onboarding/UI and a rehearsed staging/cutover plan. Owner account setup/provisioning is needed later for real Supabase staging and production execution; no admin connection is present now. Their live test with a colleague is separate and has not been reported complete.
+
+The pending guardian privacy preference is separate-private vs explicitly shared family spaces. Do not expand digital guardians until that model and per-link consent/delivery are implemented. Further details: [foundation](MULTI_WORKSPACE_FOUNDATION.md), [release gates](MULTI_WORKSPACE_VALIDATION.md).
+
 ## Update014 installed — confirmed17November2026
 
 Owner’s initial three-column diagnostic was all false. After rerunning the complete file, owner reports exact installed_update202611160014. Fresh anonymous API checks on the new approval table and both request RPCs now return401/42501, replacing missing-object404responses. Database/API activation is confirmed at that boundary. Do not repeat any SQL, Google key or scan-roster setup.
