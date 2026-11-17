@@ -66,7 +66,7 @@ async function recordedFeedback(page: Page) {
   await page.getByRole('combobox',{name:'Student for this feedback',exact:true}).selectOption(await page.evaluate(()=>window.__coachFixture.roster.students[0].id));
   await page.getByLabel('Observation text', { exact: true }).fill('Excellent work on the clay bowl. Practise shaping at home.');
   await page.getByRole('button', { name: 'Save feedback', exact: true }).click();
-  await page.getByRole('button', { name: 'Confirm save', exact: true }).click();
+
   await expect(page.getByRole('button', { name: 'Review WhatsApp message', exact: true })).toBeEnabled();
 }
 

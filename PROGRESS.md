@@ -1,5 +1,13 @@
 # Parent Plus Coach — development checkpoint
 
+## One-press private feedback save —17November2026
+
+Acted on the owner's earlier concern about excessive feedback approvals while continuing the robust backend build. Candidate0.13.1 / Android versionCode19 removes the extra Confirm save dialog for initial recording and text updates. Selected students stay visible inline, with an explanation that saving fixes class/recipients. Save still persists the device copy before the guarded workspace write; failures retain recovery and exact retries. Parent review/approval, WhatsApp confirmation, audience-widening confirmation and device-draft discard confirmation remain. Saving alone does not publish or send. PRD1.8 and the feedback-reset flow now reflect this distinction; corrected the stale PRD statement that the already-built Parent connection/module did not exist.
+
+New browser regression was observed failing because one click only opened the old modal. Final15focused observation/Coach→Parent browser cases pass1.2m, including restart, lost-response retry, save failure, audience change, retained versions and same-login Parent connection. Fresh TypeScript/full411tests36files pass145.94s; web and Android bundle exports pass exit0. Updated only obsolete browser clicks; all no-extra-dialog, recipient/privacy, failure/recovery and separate approval assertions remain. Full hosted browser/transaction/export results and merge identity belong in the PR. No database update is required for this UI simplification. Physical Android/real-provider acceptance is not claimed.
+
+During verification, exec-server transport disconnected briefly. Reported immediately, checked Cloud Environment status and retried commands successfully; local edits remained intact and were then prepared for GitHub. Previously committed staff/attendance/feedback backend work was already pushed. The disconnect's underlying cause was not established; no reset or history rewrite occurred.
+
 ## Staff-aware feedback authoring and correction —17November2026
 
 Continued the approved build through staff018 and attendance019 into candidate020: actual assigned-instructor class drafts/recording/edits, explicit reasoned owner/capability correction and whitelisted detail/history. Typed immutable submissions preserve original author/membership/name, actual editor, reason, before/after content and fixed request receipts. Recorded class/audience/recipients/time remain; already-reviewed Parent snapshots are not rewritten. Admin-only management cannot impersonate a teacher, and rehire cannot adopt old feedback. [Feedback QA, evidence and remaining limits](docs/WORKSPACE_FEEDBACK_QA.md); [plan](docs/superpowers/plans/2026-11-17-workspace-feedback.md).
