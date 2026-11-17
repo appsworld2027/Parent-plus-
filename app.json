@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Parent Plus Coach",
+    "slug": "parentplus-coach",
+    "owner": "appsworld2027",
+    "version": "0.13.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "versionCode": 18,
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.parentplus.coach",
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "parentplus-coach",
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Choose a student photo, observation photo, or register to import.",
+          "cameraPermission": "Take a photo of a student register to review and import its text.",
+          "microphonePermission": false
+        }
+      ]
+    ]
+  }
+}

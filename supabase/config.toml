@@ -1,0 +1,4 @@
+# The handler verifies every bearer token with Auth, then academy ownership.
+# This supports current publishable-key clients without relying on legacy JWT keys.
+[functions.scan-roster]
+verify_jwt = false

@@ -1,0 +1,99 @@
+name: Android preview APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/coach-foundation]
+    # Hosting routes and browser-only checks do not change an Android APK.
+    paths-ignore: ['**/*.md', 'docs/images/**', 'vercel.json', 'playwright.config.ts', 'e2e/**']
+permissions:
+  contents: write
+concurrency:
+  # A new group isolates SDK20 builds from unfinished legacy diagnostic runs.
+  # Later pushes on the same branch supersede an obsolete preview.
+  group: android-preview-sdk20-v2-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[diagnose-only]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_NO_DOTENV: '1'
+      EXPO_PUBLIC_APP_ENV: test
+      ANDROID_HOME: /tmp/parentplus-sdk
+      ANDROID_SDK_ROOT: /tmp/parentplus-sdk
+      ANDROID_USER_HOME: /tmp/parentplus-android-user
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record build start
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: await require('./scripts/github-build-status.cjs')({github, context}, 'running')
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Retain Java 17 toolchain location
+        run: echo "PARENTPLUS_JAVA17=$JAVA_HOME" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/cache@v4
+        with:
+          path: /tmp/parentplus-sdk
+          key: parentplus-android-sdk37-0-tools20-ndk27b-v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: parentplus-gradle94-${{ hashFiles('package-lock.json') }}
+          restore-keys: parentplus-gradle94-
+      - run: npm ci
+      - run: npm run check
+      - name: Check SDK installer failure handling
+        run: python3 scripts/test_android_installer.py
+      - name: Check phone and emulator APK compatibility guard
+        run: python3 scripts/test_apk_architectures.py
+      - name: Check actual project settings without creating users or sending emails
+        continue-on-error: true
+        run: node scripts/check-live-auth.mjs
+      - name: Install checksum-verified Android command-line tools
+        id: sdk
+        run: python3 scripts/install-android-sdk.py
+      - name: Build and verify preview APK
+        run: python3 scripts/build-android-preview.py
+      - name: Upload installable APK
+        id: apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: ParentPlus-Coach-Preview
+          path: |
+            artifacts/ParentPlus-Coach-Preview.apk
+            artifacts/android-build.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload safe connection/build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-validation
+          path: artifacts/*.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Record final build result
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          BUILD_STATE: ${{ job.status }}
+          APK_URL: ${{ steps.apk.outputs.artifact-url }}
+        with:
+          script: await require('./scripts/github-build-status.cjs')({github, context}, process.env.BUILD_STATE)

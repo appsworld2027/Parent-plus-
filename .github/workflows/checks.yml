@@ -1,0 +1,90 @@
+name: App checks
+on:
+  push:
+    branches: [main, codex/coach-foundation]
+    paths-ignore: ['**/*.md', 'docs/images/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  workspace-concurrency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: parentplus_workspace_test
+          POSTGRES_PASSWORD: fictional-local-test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d parentplus_workspace_test"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run test:workspace:postgres
+        env:
+          WORKSPACE_TEST_DATABASE_URL: postgres://postgres:fictional-local-test-only@127.0.0.1:5432/parentplus_workspace_test
+  foundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPO_NO_TELEMETRY: '1'
+      EXPO_PUBLIC_APP_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Run unit tests and write JUnit evidence
+        run: |
+          mkdir -p test-results
+          npm test -- --reporter=default --reporter=junit --outputFile.junit=test-results/vitest-junit.xml
+      - name: Validate unit test evidence
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          report = Path("test-results/vitest-junit.xml")
+          if not report.is_file() or report.stat().st_size == 0:
+              raise SystemExit("FAIL: JUnit report missing or empty")
+
+          root = ET.parse(report).getroot()
+          if root.tag not in {"testsuite", "testsuites"}:
+              raise SystemExit("FAIL: Invalid JUnit root")
+
+          cases = list(root.iter("testcase"))
+          failures = list(root.iter("failure"))
+          errors = list(root.iter("error"))
+          skipped = list(root.iter("skipped"))
+          print(f"Test cases: {len(cases)}")
+          print(f"Failures: {len(failures)}; errors: {len(errors)}; skipped: {len(skipped)}")
+          if not cases or failures or errors or skipped:
+              raise SystemExit("FAIL: Test evidence is empty, failing, or skipped")
+          print("PASS: JUnit evidence validated")
+          PY
+      # Playwright clears test-results/ at startup; retain unit evidence first.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-test-evidence-${{ github.run_attempt }}
+          path: test-results/vitest-junit.xml
+          if-no-files-found: warn
+          retention-days: 14
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm run export:web
+      - run: npm run export:android
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-evidence
+          path: test-results/

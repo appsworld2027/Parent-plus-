@@ -1,0 +1,2764 @@
+{
+  "captured_date": "2026-11-17",
+  "scope": "catalog metadata only; no customer records",
+  "tables": [
+    {
+      "schema": "public",
+      "name": "attendance_record_events",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "from_status",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "sheet_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "attendance_record_events_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "attendance_record_events_from_status_check",
+          "definition": "CHECK ((from_status = ANY (ARRAY['present'::text, 'late'::text, 'absent'::text, 'excused'::text, 'make_up'::text])))"
+        },
+        {
+          "name": "attendance_record_events_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "attendance_record_events_session_id_enrollment_id_sheet_ver_key",
+          "definition": "UNIQUE (session_id, enrollment_id, sheet_version)"
+        },
+        {
+          "name": "attendance_record_events_sheet_version_check",
+          "definition": "CHECK ((sheet_version > 0))"
+        },
+        {
+          "name": "attendance_record_events_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['present'::text, 'late'::text, 'absent'::text, 'excused'::text, 'make_up'::text])))"
+        },
+        {
+          "name": "attendance_record_events_workspace_id_batch_id_session_id__fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id, enrollment_id, child_id) REFERENCES attendance_records(workspace_id, batch_id, session_id, enrollment_id, child_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_records",
+      "rls": true,
+      "columns": [
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "sheet_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "confirmed_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "confirmed_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "attendance_records_confirmed_by_fkey",
+          "definition": "FOREIGN KEY (confirmed_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "attendance_records_pkey",
+          "definition": "PRIMARY KEY (session_id, enrollment_id)"
+        },
+        {
+          "name": "attendance_records_session_id_child_id_key",
+          "definition": "UNIQUE (session_id, child_id)"
+        },
+        {
+          "name": "attendance_records_sheet_version_check",
+          "definition": "CHECK ((sheet_version > 0))"
+        },
+        {
+          "name": "attendance_records_source_check",
+          "definition": "CHECK ((source = 'coach_confirmed'::text))"
+        },
+        {
+          "name": "attendance_records_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['present'::text, 'late'::text, 'absent'::text, 'excused'::text, 'make_up'::text])))"
+        },
+        {
+          "name": "attendance_records_workspace_id_batch_id_child_id_enrollme_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, child_id, enrollment_id) REFERENCES enrollments(workspace_id, batch_id, child_id, id)"
+        },
+        {
+          "name": "attendance_records_workspace_id_batch_id_session_id_enrollm_key",
+          "definition": "UNIQUE (workspace_id, batch_id, session_id, enrollment_id, child_id)"
+        },
+        {
+          "name": "attendance_records_workspace_id_batch_id_session_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id) REFERENCES attendance_sheets(workspace_id, batch_id, session_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_request_receipts",
+      "rls": true,
+      "columns": [
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "canonical_payload",
+          "type": "jsonb",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "result_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "result_session_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "result_roster_token",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "result_saved_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "result_record_count",
+          "type": "integer",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "attendance_request_receipts_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "attendance_request_receipts_canonical_payload_check",
+          "definition": "CHECK ((jsonb_typeof(canonical_payload) = 'object'::text))"
+        },
+        {
+          "name": "attendance_request_receipts_pkey",
+          "definition": "PRIMARY KEY (request_id)"
+        },
+        {
+          "name": "attendance_request_receipts_result_record_count_check",
+          "definition": "CHECK (((result_record_count >= 1) AND (result_record_count <= 200)))"
+        },
+        {
+          "name": "attendance_request_receipts_result_roster_token_check",
+          "definition": "CHECK ((result_roster_token ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "name": "attendance_request_receipts_result_session_version_check",
+          "definition": "CHECK ((result_session_version > 0))"
+        },
+        {
+          "name": "attendance_request_receipts_result_version_check",
+          "definition": "CHECK ((result_version > 0))"
+        },
+        {
+          "name": "attendance_request_receipts_workspace_id_batch_id_session__fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id) REFERENCES attendance_sheets(workspace_id, batch_id, session_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_sheets",
+      "rls": true,
+      "columns": [
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "session_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "roster_token",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "roster_size",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "saved_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "saved_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "attendance_sheets_pkey",
+          "definition": "PRIMARY KEY (session_id)"
+        },
+        {
+          "name": "attendance_sheets_roster_size_check",
+          "definition": "CHECK (((roster_size >= 1) AND (roster_size <= 200)))"
+        },
+        {
+          "name": "attendance_sheets_roster_token_check",
+          "definition": "CHECK ((roster_token ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "name": "attendance_sheets_saved_by_fkey",
+          "definition": "FOREIGN KEY (saved_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "attendance_sheets_session_version_check",
+          "definition": "CHECK ((session_version > 0))"
+        },
+        {
+          "name": "attendance_sheets_version_check",
+          "definition": "CHECK ((version > 0))"
+        },
+        {
+          "name": "attendance_sheets_workspace_id_batch_id_session_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id) REFERENCES schedule_sessions(workspace_id, batch_id, id)"
+        },
+        {
+          "name": "attendance_sheets_workspace_id_batch_id_session_id_key",
+          "definition": "UNIQUE (workspace_id, batch_id, session_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "batch_coach_assignments",
+      "rls": true,
+      "columns": [
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "membership_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "batch_coach_assignments_pkey",
+          "definition": "PRIMARY KEY (workspace_id, batch_id, membership_id)"
+        },
+        {
+          "name": "batch_coach_assignments_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "batch_coach_assignments_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        },
+        {
+          "name": "batch_coach_assignments_workspace_id_membership_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, membership_id) REFERENCES workspace_memberships(workspace_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "batch_coach_mutation_requests",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "operation",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "membership_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "batch_coach_mutation_requests_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "batch_coach_mutation_requests_operation_check",
+          "definition": "CHECK ((operation = ANY (ARRAY['assign'::text, 'remove'::text])))"
+        },
+        {
+          "name": "batch_coach_mutation_requests_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_id)"
+        },
+        {
+          "name": "batch_coach_mutation_requests_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "batch_coach_mutation_requests_workspace_id_membership_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, membership_id) REFERENCES workspace_memberships(workspace_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "batches",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "course_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "batch_request_pair",
+          "definition": "CHECK (((created_by IS NULL) = (creation_request_id IS NULL)))"
+        },
+        {
+          "name": "batch_request_unique",
+          "definition": "UNIQUE (created_by, creation_request_id)"
+        },
+        {
+          "name": "batches_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "batches_name_check",
+          "definition": "CHECK ((length(TRIM(BOTH FROM name)) > 0))"
+        },
+        {
+          "name": "batches_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "batches_workspace_id_course_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, course_id) REFERENCES courses(workspace_id, id)"
+        },
+        {
+          "name": "batches_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        },
+        {
+          "name": "batches_workspace_id_id_key",
+          "definition": "UNIQUE (workspace_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "child_creation_controls",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "child_creation_controls_id_check",
+          "definition": "CHECK (id)"
+        },
+        {
+          "name": "child_creation_controls_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "child_creation_fences",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "prior_intent_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "child_creation_fences_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "child_creation_fences_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "child_creation_history",
+      "rls": true,
+      "columns": [
+        {
+          "name": "intent_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "prior_intent_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "child_creation_history_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "child_creation_history_actor_id_prior_intent_id_request_id_key",
+          "definition": "UNIQUE NULLS NOT DISTINCT (actor_id, prior_intent_id, request_id)"
+        },
+        {
+          "name": "child_creation_history_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "child_creation_history_pkey",
+          "definition": "PRIMARY KEY (intent_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "child_creation_intents",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "prior_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "display_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "acknowledged",
+          "type": "boolean",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "child_creation_intents_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "child_creation_intents_check",
+          "definition": "CHECK (((prior_id IS NULL) OR (prior_id <> id)))"
+        },
+        {
+          "name": "child_creation_intents_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "child_creation_intents_id_key",
+          "definition": "UNIQUE (id)"
+        },
+        {
+          "name": "child_creation_intents_pkey",
+          "definition": "PRIMARY KEY (actor_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "children",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "display_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "children_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "children_display_name_check",
+          "definition": "CHECK (((length(TRIM(BOTH FROM display_name)) >= 1) AND (length(TRIM(BOTH FROM display_name)) <= 120)))"
+        },
+        {
+          "name": "children_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_begin_requests",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "expected_generation",
+          "type": "bigint",
+          "not_null": true
+        },
+        {
+          "name": "course_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "batch_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "intent_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_begin_requests_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_begin_requests_batch_name_check",
+          "definition": "CHECK (((length(TRIM(BOTH FROM batch_name)) >= 1) AND (length(TRIM(BOTH FROM batch_name)) <= 120)))"
+        },
+        {
+          "name": "class_setup_begin_requests_course_name_check",
+          "definition": "CHECK (((length(TRIM(BOTH FROM course_name)) >= 1) AND (length(TRIM(BOTH FROM course_name)) <= 120)))"
+        },
+        {
+          "name": "class_setup_begin_requests_expected_generation_check",
+          "definition": "CHECK ((expected_generation > 0))"
+        },
+        {
+          "name": "class_setup_begin_requests_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_id)"
+        },
+        {
+          "name": "class_setup_begin_requests_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_controls",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_controls_id_check",
+          "definition": "CHECK (id)"
+        },
+        {
+          "name": "class_setup_controls_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_intent_history",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "course_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "batch_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "completed_course_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "completed_batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "acknowledged",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "generation",
+          "type": "bigint",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_intent_history_acknowledged_check",
+          "definition": "CHECK (acknowledged)"
+        },
+        {
+          "name": "class_setup_intent_history_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_intent_history_generation_check",
+          "definition": "CHECK ((generation > 0))"
+        },
+        {
+          "name": "class_setup_intent_history_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "class_setup_intent_history_workspace_id_completed_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, completed_batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_intent_history_workspace_id_completed_course_i_fkey",
+          "definition": "FOREIGN KEY (workspace_id, completed_course_id) REFERENCES courses(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_intent_history_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_intents",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "course_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "batch_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "completed_course_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "completed_batch_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "acknowledged",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "generation",
+          "type": "bigint",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_ack_requires_completion",
+          "definition": "CHECK (((NOT acknowledged) OR (completed_course_id IS NOT NULL)))"
+        },
+        {
+          "name": "class_setup_intents_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_intents_actor_id_workspace_id_key",
+          "definition": "UNIQUE (actor_id, workspace_id)"
+        },
+        {
+          "name": "class_setup_intents_completion_pair",
+          "definition": "CHECK (((completed_course_id IS NULL) = (completed_batch_id IS NULL)))"
+        },
+        {
+          "name": "class_setup_intents_generation_check",
+          "definition": "CHECK ((generation > 0))"
+        },
+        {
+          "name": "class_setup_intents_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "class_setup_intents_workspace_id_completed_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, completed_batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_intents_workspace_id_completed_course_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, completed_course_id) REFERENCES courses(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_intents_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_next_requests",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "prior_intent_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "course_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "batch_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "next_intent_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_next_intent_unique",
+          "definition": "UNIQUE (next_intent_id)"
+        },
+        {
+          "name": "class_setup_next_requests_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_next_requests_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_id)"
+        },
+        {
+          "name": "class_setup_next_requests_prior_intent_id_fkey",
+          "definition": "FOREIGN KEY (prior_intent_id) REFERENCES class_setup_intent_history(id)"
+        },
+        {
+          "name": "class_setup_next_requests_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_requests",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "course_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "batch_name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "course_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_requests_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_requests_check",
+          "definition": "CHECK (((course_id IS NULL) = (batch_id IS NULL)))"
+        },
+        {
+          "name": "class_setup_requests_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_id)"
+        },
+        {
+          "name": "class_setup_requests_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_requests_workspace_id_course_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, course_id) REFERENCES courses(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_requests_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_session_series",
+      "rls": true,
+      "columns": [
+        {
+          "name": "class_setup_intent_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "time_zone",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "start_date",
+          "type": "date",
+          "not_null": true
+        },
+        {
+          "name": "start_time",
+          "type": "time without time zone",
+          "not_null": true
+        },
+        {
+          "name": "end_date",
+          "type": "date",
+          "not_null": true
+        },
+        {
+          "name": "duration_minutes",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "occurrence_count",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_session_series_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "class_setup_session_series_check",
+          "definition": "CHECK ((isfinite(start_date) AND isfinite(end_date) AND (end_date >= start_date) AND ((duration_minutes >= 1) AND (duration_minutes <= 1440)) AND ((occurrence_count >= 1) AND (occurrence_count <= 104))))"
+        },
+        {
+          "name": "class_setup_session_series_pkey",
+          "definition": "PRIMARY KEY (class_setup_intent_id)"
+        },
+        {
+          "name": "class_setup_session_series_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "class_setup_session_series_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "class_setup_workspace_versions",
+      "rls": true,
+      "columns": [
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "next_generation",
+          "type": "bigint",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "class_setup_workspace_versions_next_generation_check",
+          "definition": "CHECK ((next_generation > 0))"
+        },
+        {
+          "name": "class_setup_workspace_versions_pkey",
+          "definition": "PRIMARY KEY (workspace_id)"
+        },
+        {
+          "name": "class_setup_workspace_versions_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "connection_events",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "connection_request_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "workspace_child_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "actor_user_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "event_type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "connection_events_actor_user_id_fkey",
+          "definition": "FOREIGN KEY (actor_user_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "connection_events_check",
+          "definition": "CHECK (((connection_request_id IS NOT NULL) OR (workspace_child_id IS NOT NULL)))"
+        },
+        {
+          "name": "connection_events_connection_request_id_fkey",
+          "definition": "FOREIGN KEY (connection_request_id) REFERENCES connection_requests(id)"
+        },
+        {
+          "name": "connection_events_event_type_check",
+          "definition": "CHECK ((event_type = ANY (ARRAY['requested'::text, 'approved'::text, 'rejected'::text, 'cancelled'::text, 'expired'::text, 'restricted'::text, 'reactivated'::text, 'archived'::text])))"
+        },
+        {
+          "name": "connection_events_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "connection_events_workspace_child_id_fkey",
+          "definition": "FOREIGN KEY (workspace_child_id) REFERENCES workspace_children(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "connection_request_receipts",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_key",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "connection_request_id",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "connection_request_receipts_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_key)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "connection_requests",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "guardian_user_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "initiated_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "initiation_type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "confirmed_by",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "confirmed_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "connection_approval_integrity",
+          "definition": "CHECK ((((status = 'approved'::text) AND (child_id IS NOT NULL) AND (guardian_user_id IS NOT NULL) AND (confirmed_by IS NOT NULL) AND (confirmed_at IS NOT NULL)) OR ((status <> 'approved'::text) AND (confirmed_by IS NULL) AND (confirmed_at IS NULL))))"
+        },
+        {
+          "name": "connection_requests_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "connection_requests_confirmed_by_fkey",
+          "definition": "FOREIGN KEY (confirmed_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "connection_requests_guardian_user_id_fkey",
+          "definition": "FOREIGN KEY (guardian_user_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "connection_requests_initiated_by_fkey",
+          "definition": "FOREIGN KEY (initiated_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "connection_requests_initiation_type_check",
+          "definition": "CHECK ((initiation_type = ANY (ARRAY['workspace'::text, 'guardian'::text])))"
+        },
+        {
+          "name": "connection_requests_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "connection_requests_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text, 'expired'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "connection_requests_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        },
+        {
+          "name": "guardian_pending_identity_required",
+          "definition": "CHECK (((initiation_type <> 'guardian'::text) OR (status <> 'pending'::text) OR ((child_id IS NOT NULL) AND (guardian_user_id IS NOT NULL))))"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "courses",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "course_request_pair",
+          "definition": "CHECK (((created_by IS NULL) = (creation_request_id IS NULL)))"
+        },
+        {
+          "name": "course_request_unique",
+          "definition": "UNIQUE (created_by, creation_request_id)"
+        },
+        {
+          "name": "courses_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "courses_name_check",
+          "definition": "CHECK ((length(TRIM(BOTH FROM name)) > 0))"
+        },
+        {
+          "name": "courses_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "courses_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        },
+        {
+          "name": "courses_workspace_id_id_key",
+          "definition": "UNIQUE (workspace_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "enrollment_events",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "from_status",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "to_status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "enrollment_events_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "enrollment_events_enrollment_id_fkey",
+          "definition": "FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)"
+        },
+        {
+          "name": "enrollment_events_enrollment_id_version_key",
+          "definition": "UNIQUE (enrollment_id, version)"
+        },
+        {
+          "name": "enrollment_events_from_status_check",
+          "definition": "CHECK ((from_status = ANY (ARRAY['pending'::text, 'active'::text, 'paused'::text, 'completed'::text, 'withdrawn'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "enrollment_events_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "enrollment_events_reason_check",
+          "definition": "CHECK ((reason = ANY (ARRAY['temporary_break'::text, 'schedule_change'::text, 'other'::text])))"
+        },
+        {
+          "name": "enrollment_events_to_status_check",
+          "definition": "CHECK ((to_status = ANY (ARRAY['active'::text, 'paused'::text, 'completed'::text, 'withdrawn'::text])))"
+        },
+        {
+          "name": "enrollment_events_version_check",
+          "definition": "CHECK ((version > 0))"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "enrollment_request_receipts",
+      "rls": true,
+      "columns": [
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "operation",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "requested_status",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "expected_version",
+          "type": "integer",
+          "not_null": false
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "result_status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "result_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "enrollment_request_receipts_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "enrollment_request_receipts_batch_id_fkey",
+          "definition": "FOREIGN KEY (batch_id) REFERENCES batches(id)"
+        },
+        {
+          "name": "enrollment_request_receipts_check",
+          "definition": "CHECK ((((operation = 'save'::text) AND (requested_status IS NULL) AND (expected_version IS NULL) AND (reason IS NULL)) OR ((operation = 'change'::text) AND (requested_status = ANY (ARRAY['active'::text, 'paused'::text, 'completed'::text, 'withdrawn'::text])) AND (expected_version > 0) AND (((requested_status = ANY (ARRAY['paused'::text, 'withdrawn'::text])) AND (reason IS NOT NULL)) OR ((requested_status = ANY (ARRAY['active'::text, 'completed'::text])) AND (reason IS NULL))))))"
+        },
+        {
+          "name": "enrollment_request_receipts_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "enrollment_request_receipts_enrollment_id_fkey",
+          "definition": "FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)"
+        },
+        {
+          "name": "enrollment_request_receipts_operation_check",
+          "definition": "CHECK ((operation = ANY (ARRAY['save'::text, 'change'::text])))"
+        },
+        {
+          "name": "enrollment_request_receipts_pkey",
+          "definition": "PRIMARY KEY (request_id)"
+        },
+        {
+          "name": "enrollment_request_receipts_reason_check",
+          "definition": "CHECK ((reason = ANY (ARRAY['temporary_break'::text, 'schedule_change'::text, 'other'::text])))"
+        },
+        {
+          "name": "enrollment_request_receipts_result_status_check",
+          "definition": "CHECK ((result_status = ANY (ARRAY['pending'::text, 'active'::text, 'paused'::text, 'completed'::text, 'withdrawn'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "enrollment_request_receipts_result_version_check",
+          "definition": "CHECK ((result_version > 0))"
+        },
+        {
+          "name": "enrollment_request_receipts_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "enrollments",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "enrollments_child_id_batch_id_key",
+          "definition": "UNIQUE (child_id, batch_id)"
+        },
+        {
+          "name": "enrollments_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "enrollments_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "enrollments_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "enrollments_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'active'::text, 'paused'::text, 'completed'::text, 'withdrawn'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "enrollments_version_check",
+          "definition": "CHECK ((version > 0))"
+        },
+        {
+          "name": "enrollments_workspace_id_batch_id_child_id_id_key",
+          "definition": "UNIQUE (workspace_id, batch_id, child_id, id)"
+        },
+        {
+          "name": "enrollments_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "enrollments_workspace_id_child_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, child_id) REFERENCES workspace_children(workspace_id, child_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "family_invites",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "issued_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "token_hash",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "accepted_by",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "relationship_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "accepted_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "family_invites_accepted_by_fkey",
+          "definition": "FOREIGN KEY (accepted_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "family_invites_check",
+          "definition": "CHECK ((((accepted_by IS NULL) AND (child_id IS NULL) AND (relationship_id IS NULL) AND (accepted_at IS NULL)) OR ((accepted_by IS NOT NULL) AND (child_id IS NOT NULL) AND (relationship_id IS NOT NULL) AND (accepted_at IS NOT NULL))))"
+        },
+        {
+          "name": "family_invites_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "family_invites_issued_by_fkey",
+          "definition": "FOREIGN KEY (issued_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "family_invites_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "family_invites_relationship_id_fkey",
+          "definition": "FOREIGN KEY (relationship_id) REFERENCES workspace_children(id)"
+        },
+        {
+          "name": "family_invites_token_hash_check",
+          "definition": "CHECK ((token_hash ~ '^[0-9a-f]{64}$'::text))"
+        },
+        {
+          "name": "family_invites_token_hash_key",
+          "definition": "UNIQUE (token_hash)"
+        },
+        {
+          "name": "family_invites_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "guardianships",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "guardian_user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "verification_level",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "guardianships_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "guardianships_child_id_guardian_user_id_key",
+          "definition": "UNIQUE (child_id, guardian_user_id)"
+        },
+        {
+          "name": "guardianships_guardian_user_id_fkey",
+          "definition": "FOREIGN KEY (guardian_user_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "guardianships_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "guardianships_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['provisional'::text, 'active'::text, 'revoked'::text, 'disputed'::text])))"
+        },
+        {
+          "name": "guardianships_verification_level_check",
+          "definition": "CHECK ((verification_level = ANY (ARRAY['self_declared'::text, 'connection_confirmed'::text, 'formally_verified'::text])))"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_child_read_controls",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "parent_child_read_controls_id_check",
+          "definition": "CHECK (id)"
+        },
+        {
+          "name": "parent_child_read_controls_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_items",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "source_session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "schema_version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "priority",
+          "type": "smallint",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "not_null": false
+        },
+        {
+          "name": "payload",
+          "type": "jsonb",
+          "not_null": true
+        },
+        {
+          "name": "audience_policy",
+          "type": "text",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "parent_items_audience_policy_check",
+          "definition": "CHECK ((audience_policy = 'child_guardian'::text))"
+        },
+        {
+          "name": "parent_items_payload_check",
+          "definition": "CHECK (((jsonb_typeof(payload) = 'object'::text) AND (octet_length((payload)::text) <= 16384)))"
+        },
+        {
+          "name": "parent_items_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "parent_items_priority_check",
+          "definition": "CHECK (((priority >= 0) AND (priority <= 100)))"
+        },
+        {
+          "name": "parent_items_schema_version_check",
+          "definition": "CHECK ((schema_version > 0))"
+        },
+        {
+          "name": "parent_items_type_check",
+          "definition": "CHECK (((length(btrim(type)) >= 1) AND (length(btrim(type)) <= 80)))"
+        },
+        {
+          "name": "parent_items_workspace_id_batch_id_child_id_enrollment_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, child_id, enrollment_id) REFERENCES enrollments(workspace_id, batch_id, child_id, id)"
+        },
+        {
+          "name": "parent_items_workspace_id_batch_id_source_session_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, source_session_id) REFERENCES schedule_sessions(workspace_id, batch_id, id)"
+        },
+        {
+          "name": "parent_items_workspace_id_child_id_type_source_session_id_key",
+          "definition": "UNIQUE (workspace_id, child_id, type, source_session_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_signal_request_receipts",
+      "rls": true,
+      "columns": [
+        {
+          "name": "request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "canonical_payload",
+          "type": "jsonb",
+          "not_null": true
+        },
+        {
+          "name": "signal_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "result_created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "parent_signal_request_receipt_workspace_id_batch_id_sessio_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id, child_id, signal_id) REFERENCES parent_signals(workspace_id, batch_id, session_id, child_id, id)"
+        },
+        {
+          "name": "parent_signal_request_receipts_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "parent_signal_request_receipts_canonical_payload_check",
+          "definition": "CHECK ((jsonb_typeof(canonical_payload) = 'object'::text))"
+        },
+        {
+          "name": "parent_signal_request_receipts_pkey",
+          "definition": "PRIMARY KEY (request_id)"
+        },
+        {
+          "name": "parent_signal_request_receipts_signal_id_fkey",
+          "definition": "FOREIGN KEY (signal_id) REFERENCES parent_signals(id)"
+        },
+        {
+          "name": "parent_signal_request_receipts_signal_id_key",
+          "definition": "UNIQUE (signal_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_signals",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "session_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "enrollment_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "reason",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "parent_signals_actor_id_fkey",
+          "definition": "FOREIGN KEY (actor_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "parent_signals_check",
+          "definition": "CHECK ((((type = 'missing_today'::text) AND (reason IS NOT NULL) AND (reason = ANY (ARRAY['unwell'::text, 'travelling'::text, 'other'::text]))) OR ((type <> 'missing_today'::text) AND (reason IS NULL))))"
+        },
+        {
+          "name": "parent_signals_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "parent_signals_type_check",
+          "definition": "CHECK ((type = ANY (ARRAY['running_late'::text, 'missing_today'::text, 'dropped_off'::text, 'picked_up'::text])))"
+        },
+        {
+          "name": "parent_signals_workspace_id_batch_id_child_id_enrollment_i_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, child_id, enrollment_id) REFERENCES enrollments(workspace_id, batch_id, child_id, id)"
+        },
+        {
+          "name": "parent_signals_workspace_id_batch_id_session_id_child_id_id_key",
+          "definition": "UNIQUE (workspace_id, batch_id, session_id, child_id, id)"
+        },
+        {
+          "name": "parent_signals_workspace_id_batch_id_session_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id, session_id) REFERENCES schedule_sessions(workspace_id, batch_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "profiles",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "display_name",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profiles_display_name_check",
+          "definition": "CHECK (((display_name IS NULL) OR (length(TRIM(BOTH FROM display_name)) > 0)))"
+        },
+        {
+          "name": "profiles_id_fkey",
+          "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "profiles_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "schedule_sessions",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "batch_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "starts_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "ends_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "class_setup_intent_id",
+          "type": "uuid",
+          "not_null": false
+        },
+        {
+          "name": "local_date",
+          "type": "date",
+          "not_null": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "version",
+          "type": "integer",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "schedule_sessions_check",
+          "definition": "CHECK ((isfinite(starts_at) AND isfinite(ends_at) AND (ends_at > starts_at) AND ((ends_at - starts_at) <= '24:00:00'::interval) AND (mod(EXTRACT(epoch FROM (ends_at - starts_at)), (60)::numeric) = (0)::numeric)))"
+        },
+        {
+          "name": "schedule_sessions_created_by_creation_request_id_key",
+          "definition": "UNIQUE (created_by, creation_request_id)"
+        },
+        {
+          "name": "schedule_sessions_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "schedule_sessions_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "schedule_sessions_series_date_unique",
+          "definition": "UNIQUE (class_setup_intent_id, local_date)"
+        },
+        {
+          "name": "schedule_sessions_series_fk",
+          "definition": "FOREIGN KEY (class_setup_intent_id) REFERENCES class_setup_session_series(class_setup_intent_id)"
+        },
+        {
+          "name": "schedule_sessions_series_pair",
+          "definition": "CHECK (((class_setup_intent_id IS NULL) = (local_date IS NULL)))"
+        },
+        {
+          "name": "schedule_sessions_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['scheduled'::text, 'cancelled'::text])))"
+        },
+        {
+          "name": "schedule_sessions_version_check",
+          "definition": "CHECK ((version > 0))"
+        },
+        {
+          "name": "schedule_sessions_workspace_id_batch_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id, batch_id) REFERENCES batches(workspace_id, id)"
+        },
+        {
+          "name": "schedule_sessions_workspace_id_batch_id_id_key",
+          "definition": "UNIQUE (workspace_id, batch_id, id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_children",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "child_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "connected_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspace_children_child_id_fkey",
+          "definition": "FOREIGN KEY (child_id) REFERENCES children(id)"
+        },
+        {
+          "name": "workspace_children_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "workspace_children_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['active'::text, 'alumni'::text, 'restricted'::text, 'archived'::text])))"
+        },
+        {
+          "name": "workspace_children_workspace_id_child_id_key",
+          "definition": "UNIQUE (workspace_id, child_id)"
+        },
+        {
+          "name": "workspace_children_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_creation_controls",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "boolean",
+          "not_null": true
+        },
+        {
+          "name": "enabled",
+          "type": "boolean",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspace_creation_controls_id_check",
+          "definition": "CHECK (id)"
+        },
+        {
+          "name": "workspace_creation_controls_pkey",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_creation_fences",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_key",
+          "type": "uuid",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspace_creation_fences_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_key)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_creation_receipts",
+      "rls": true,
+      "columns": [
+        {
+          "name": "actor_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "request_key",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "original_name",
+          "type": "text",
+          "not_null": false
+        },
+        {
+          "name": "original_type",
+          "type": "text",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspace_creation_receipts_check",
+          "definition": "CHECK ((((original_name IS NULL) AND (original_type IS NULL)) OR ((original_name IS NOT NULL) AND (original_type IS NOT NULL) AND (original_type = ANY (ARRAY['independent'::text, 'academy'::text])))))"
+        },
+        {
+          "name": "workspace_creation_receipts_pkey",
+          "definition": "PRIMARY KEY (actor_id, request_key)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_memberships",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "workspace_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "user_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "role",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspace_memberships_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "workspace_memberships_role_check",
+          "definition": "CHECK ((role = ANY (ARRAY['owner'::text, 'admin'::text, 'coach'::text])))"
+        },
+        {
+          "name": "workspace_memberships_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['invited'::text, 'active'::text, 'suspended'::text, 'removed'::text])))"
+        },
+        {
+          "name": "workspace_memberships_user_id_fkey",
+          "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "workspace_memberships_workspace_id_fkey",
+          "definition": "FOREIGN KEY (workspace_id) REFERENCES workspaces(id)"
+        },
+        {
+          "name": "workspace_memberships_workspace_id_id_key",
+          "definition": "UNIQUE (workspace_id, id)"
+        },
+        {
+          "name": "workspace_memberships_workspace_id_user_id_key",
+          "definition": "UNIQUE (workspace_id, user_id)"
+        }
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspaces",
+      "rls": true,
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "type",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "not_null": true
+        },
+        {
+          "name": "created_by",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "creation_request_id",
+          "type": "uuid",
+          "not_null": true
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "not_null": true
+        },
+        {
+          "name": "scheduling_time_zone",
+          "type": "text",
+          "not_null": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "workspaces_created_by_creation_request_id_key",
+          "definition": "UNIQUE (created_by, creation_request_id)"
+        },
+        {
+          "name": "workspaces_created_by_fkey",
+          "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id)"
+        },
+        {
+          "name": "workspaces_name_check",
+          "definition": "CHECK ((length(TRIM(BOTH FROM name)) > 0))"
+        },
+        {
+          "name": "workspaces_pkey",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "workspaces_status_check",
+          "definition": "CHECK ((status = ANY (ARRAY['active'::text, 'suspended'::text, 'archived'::text])))"
+        },
+        {
+          "name": "workspaces_type_check",
+          "definition": "CHECK ((type = ANY (ARRAY['independent'::text, 'academy'::text])))"
+        }
+      ]
+    }
+  ]
+}
