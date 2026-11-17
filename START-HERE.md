@@ -1,0 +1,9 @@
+# Parent Plus — start here
+
+One shared product, two founders, versioned AI working rules.
+
+- [What is Parent Plus?](founders/01-product-vision.md)
+- [What features exist?](founders/02-feature-map.md)
+- [What is working now?](founders/03-current-status.md)
+- [What needs our decision?](founders/04-decisions-needed.md)
+- [Can we trust the latest build?](founders/05-quality-report.md)
