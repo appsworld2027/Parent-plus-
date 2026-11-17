@@ -35,6 +35,7 @@ async function feedback(page:Page,linked=false) {
 async function prepare(page:Page) {
   await page.getByRole('button',{name:'Review and share to Parent',exact:true}).click();
   await expect(page.getByRole('checkbox',{name:'Parent handoff for Fictional Ria',exact:true})).toBeChecked();
+  await expect(page.getByRole('checkbox',{name:'I reviewed the feedback, recipients and media for parents',exact:true})).toBeEnabled();
 }
 async function approve(page:Page) {
   await page.getByRole('checkbox',{name:'I reviewed the feedback, recipients and media for parents',exact:true}).check();

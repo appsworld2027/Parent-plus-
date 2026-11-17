@@ -4497,6 +4497,14 @@
       "tests": [
         "tests/workspace-staff-lifecycle.test.ts::transfers ownership only after a different verified recipient accepts, and preserves a current owner"
       ]
+    },
+    {
+      "id": "SC-91A32C4F8D07",
+      "status": "implemented",
+      "criteria": "APVerse RLS event trigger remains active without client EXECUTE grants",
+      "tests": [
+        "tests/apverse-event-trigger-acl.test.ts::the APVerse RLS event trigger still enables RLS after client EXECUTE is revoked"
+      ]
     }
   ]
 }
