@@ -55,7 +55,7 @@ it('rejects changed request payloads, stale revisions and stale class context at
  await fail(()=>save(current.context,0,1402),'40001');await fail(()=>save(`${current.context}changed`,1,1403),'40001');
  expect((await page()).revision).toBe(1);expect((await db.query('select * from coach_private.workspace_attendance_submissions')).rows).toHaveLength(1);
 });
-it.each([null,{},[],[marks[0]],[marks[0],marks[0]],[marks[0],{student_id:id(23),status:'late'}],[marks[0],{student_id:id(22),status:'unknown'}],[{...marks[0],name:'ignored? '},marks[1]]])('rejects invalid, duplicate, incomplete or foreign marks %j',async rows=>{
+it.each([null,{},[],[marks[0]],[marks[0],marks[0]],[marks[0],{student_id:id(23),status:'late'}],[marks[0],{student_id:id(22),status:'unknown'}],[{...marks[0],name:'ignored? '},marks[1]]])('rejects invalid, duplicate, incomplete or foreign marks case %#',async rows=>{
  const current=await page();await fail(()=>save(current.context,0,1401,rows),'22023');
  expect((await db.query('select * from public.attendance')).rows).toHaveLength(0);expect((await page()).revision).toBe(0);
 });

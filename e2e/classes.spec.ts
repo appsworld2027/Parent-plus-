@@ -148,3 +148,15 @@ test('a new enrolled child is not silently missed when old marks already match',
   await expect(page.getByRole('radio', { name: 'Fictional New Student: present', exact: true })).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Fictional New Student: present', exact: true })).not.toBeChecked();
 });
+
+test('attendance includes an enrolled student beyond the API response cap',async({page})=>{
+ await backend(page,{academy:true,readyClass:true});await login(page);
+ await page.evaluate(()=>{
+  const state=window.__coachFixture;
+  state.roster.students=Array.from({length:1201},(_,i)=>({id:`00000000-0000-0000-0000-${String(i+4000).padStart(12,'0')}`,name:`Fictional learner ${String(i+1).padStart(4,'0')}`,age_years:6,archived_at:null}));
+  state.roster.enrolments=[{id:'00000000-0000-0000-0000-000000000041',student_id:state.roster.students.at(-1)!.id,batch_id:state.roster.batches[0].id,starts_on:'2020-01-01',ends_on:null}];
+ });
+ await page.getByRole('tab',{name:'Schedule',exact:true}).click();
+ await page.getByRole('button',{name:'Attendance for Fictional Clay Class at 16:00',exact:true}).click();
+ await expect(page.getByText('Fictional learner 1201',{exact:true})).toBeVisible();
+});

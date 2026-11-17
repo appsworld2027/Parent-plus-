@@ -1,0 +1,4502 @@
+{
+  "version": 1,
+  "scope": "Narrow executed unit/DB and browser regression behaviors only; not full product acceptance. Product gaps remain in consolidated roadmap.",
+  "scenarios": [
+    {
+      "id": "SC-B29A2660A0B3",
+      "status": "implemented",
+      "criteria": "sign-in validates inputs without losing the form",
+      "tests": [
+        "e2e/auth.spec.ts::sign-in validates inputs without losing the form"
+      ]
+    },
+    {
+      "id": "SC-96D851BC2C12",
+      "status": "implemented",
+      "criteria": "failed login shows a safe reference and retains email",
+      "tests": [
+        "e2e/auth.spec.ts::failed login shows a safe reference and retains email"
+      ]
+    },
+    {
+      "id": "SC-C587C31F43F7",
+      "status": "implemented",
+      "criteria": "sign-up and recovery use neutral messages and return to sign-in",
+      "tests": [
+        "e2e/auth.spec.ts::sign-up and recovery use neutral messages and return to sign-in"
+      ]
+    },
+    {
+      "id": "SC-56E8EE985CD1",
+      "status": "implemented",
+      "criteria": "a verified session loads its academy, survives reload, and clears on sign-out",
+      "tests": [
+        "e2e/auth.spec.ts::a verified session loads its academy, survives reload, and clears on sign-out"
+      ]
+    },
+    {
+      "id": "SC-FC599284C834",
+      "status": "implemented",
+      "criteria": "new owners see onboarding and can safely retry failed academy creation",
+      "tests": [
+        "e2e/auth.spec.ts::new owners see onboarding and can safely retry failed academy creation"
+      ]
+    },
+    {
+      "id": "SC-06F68B8479C4",
+      "status": "implemented",
+      "criteria": "workspace loading failure cannot reveal the signed-in app",
+      "tests": [
+        "e2e/auth.spec.ts::workspace loading failure cannot reveal the signed-in app"
+      ]
+    },
+    {
+      "id": "SC-164985B748AD",
+      "status": "implemented",
+      "criteria": "an unverified account cannot open the academy workspace",
+      "tests": [
+        "e2e/auth.spec.ts::an unverified account cannot open the academy workspace"
+      ]
+    },
+    {
+      "id": "SC-CDF9371D36BA",
+      "status": "implemented",
+      "criteria": "a recovery code opens password update and removes the code from browser history",
+      "tests": [
+        "e2e/auth.spec.ts::a recovery code opens password update and removes the code from browser history"
+      ]
+    },
+    {
+      "id": "SC-9B092EA52272",
+      "status": "implemented",
+      "criteria": "creates, edits and cancels a dated class without deleting the occurrence",
+      "tests": [
+        "e2e/classes.spec.ts::creates, edits and cancels a dated class without deleting the occurrence"
+      ]
+    },
+    {
+      "id": "SC-416F4124E912",
+      "status": "implemented",
+      "criteria": "attendance draft survives restart; saving it updates actual Today figures",
+      "tests": [
+        "e2e/classes.spec.ts::attendance draft survives restart; saving it updates actual Today figures"
+      ]
+    },
+    {
+      "id": "SC-B9AF31C08C7E",
+      "status": "implemented",
+      "criteria": "failed attendance save retains device draft and lost response reconciles without duplicate save",
+      "tests": [
+        "e2e/classes.spec.ts::failed attendance save retains device draft and lost response reconciles without duplicate save"
+      ]
+    },
+    {
+      "id": "SC-8B237AC25DB3",
+      "status": "implemented",
+      "criteria": "stale draft requires an explicit comparison before replacing server attendance",
+      "tests": [
+        "e2e/classes.spec.ts::stale draft requires an explicit comparison before replacing server attendance"
+      ]
+    },
+    {
+      "id": "SC-249DC736D7B9",
+      "status": "implemented",
+      "criteria": "sign-out clears private attendance drafts",
+      "tests": [
+        "e2e/classes.spec.ts::sign-out clears private attendance drafts"
+      ]
+    },
+    {
+      "id": "SC-79F7BB8D1D64",
+      "status": "implemented",
+      "criteria": "unsaved class edits are guarded before navigating away",
+      "tests": [
+        "e2e/classes.spec.ts::unsaved class edits are guarded before navigating away"
+      ]
+    },
+    {
+      "id": "SC-C7A395937D12",
+      "status": "implemented",
+      "criteria": "missing classes migration shows a setup error instead of a fake empty schedule",
+      "tests": [
+        "e2e/classes.spec.ts::missing classes migration shows a setup error instead of a fake empty schedule"
+      ]
+    },
+    {
+      "id": "SC-98FEB518946A",
+      "status": "implemented",
+      "criteria": "a moved class cannot accept attendance from the old open screen",
+      "tests": [
+        "e2e/classes.spec.ts::a moved class cannot accept attendance from the old open screen"
+      ]
+    },
+    {
+      "id": "SC-7C75C6012AB5",
+      "status": "implemented",
+      "criteria": "a new enrolled child is not silently missed when old marks already match",
+      "tests": [
+        "e2e/classes.spec.ts::a new enrolled child is not silently missed when old marks already match"
+      ]
+    },
+    {
+      "id": "SC-481FE3379BD1",
+      "status": "implemented",
+      "criteria": "one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload",
+      "tests": [
+        "e2e/coach-parent-journey.spec.ts::one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload"
+      ]
+    },
+    {
+      "id": "SC-2C215654DE2E",
+      "status": "implemented",
+      "criteria": "existing own connection selects the linked child without another invitation or sign-in",
+      "tests": [
+        "e2e/coach-parent-journey.spec.ts::existing own connection selects the linked child without another invitation or sign-in"
+      ]
+    },
+    {
+      "id": "SC-CEBECCE4F5F4",
+      "status": "implemented",
+      "criteria": "same-login shortcut cannot open or replace another parent\u2019s connection",
+      "tests": [
+        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent\u2019s connection"
+      ]
+    },
+    {
+      "id": "SC-82CA0C42AAA2",
+      "status": "implemented",
+      "criteria": "opening Parent locks sibling actions and cancellation until the connection check finishes",
+      "tests": [
+        "e2e/coach-parent-journey.spec.ts::opening Parent locks sibling actions and cancellation until the connection check finishes"
+      ]
+    },
+    {
+      "id": "SC-466024E34536",
+      "status": "implemented",
+      "criteria": "sign-out clears a pending feedback connection and requires normal authentication again",
+      "tests": [
+        "e2e/coach-parent-journey.spec.ts::sign-out clears a pending feedback connection and requires normal authentication again"
+      ]
+    },
+    {
+      "id": "SC-2BFA20D5CB09",
+      "status": "implemented",
+      "criteria": "Today creates a no-fee batch and schedules a class directly from its roster",
+      "tests": [
+        "e2e/coach-priority.spec.ts::Today creates a no-fee batch and schedules a class directly from its roster"
+      ]
+    },
+    {
+      "id": "SC-4DAEB90597B4",
+      "status": "implemented",
+      "criteria": "empty schedule creates a batch inline without leaving or losing the class date",
+      "tests": [
+        "e2e/coach-priority.spec.ts::empty schedule creates a batch inline without leaving or losing the class date"
+      ]
+    },
+    {
+      "id": "SC-811BC57DAE65",
+      "status": "implemented",
+      "criteria": "Today opens the real class directly and saved attendance prepares reviewed feedback for present students",
+      "tests": [
+        "e2e/coach-priority.spec.ts::Today opens the real class directly and saved attendance prepares reviewed feedback for present students"
+      ]
+    },
+    {
+      "id": "SC-FD0B50EF052A",
+      "status": "implemented",
+      "criteria": "saved feedback previews only the intended parent and requires confirmation before WhatsApp",
+      "tests": [
+        "e2e/coach-priority.spec.ts::saved feedback previews only the intended parent and requires confirmation before WhatsApp"
+      ]
+    },
+    {
+      "id": "SC-2EB2E213A3EC",
+      "status": "implemented",
+      "criteria": "unsaved feedback changes block sharing and local numbers cannot silently select a country",
+      "tests": [
+        "e2e/coach-priority.spec.ts::unsaved feedback changes block sharing and local numbers cannot silently select a country"
+      ]
+    },
+    {
+      "id": "SC-EA1ACCCF0FF2",
+      "status": "implemented",
+      "criteria": "batch lists its students, adds existing profiles without duplication, and creates a new student inside it",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::batch lists its students, adds existing profiles without duplication, and creates a new student inside it"
+      ]
+    },
+    {
+      "id": "SC-36338BF05D04",
+      "status": "implemented",
+      "criteria": "creating a batch inside a new student form preserves inputs and selects the new batch",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::creating a batch inside a new student form preserves inputs and selects the new batch"
+      ]
+    },
+    {
+      "id": "SC-D1581E30D742",
+      "status": "implemented",
+      "criteria": "fees starts with complete unbilled totals; batch/student payment needs no invoice creation and updates totals",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::fees starts with complete unbilled totals; batch/student payment needs no invoice creation and updates totals"
+      ]
+    },
+    {
+      "id": "SC-57A56AC1BA1C",
+      "status": "implemented",
+      "criteria": "student photo saves privately and reopens; upload failure retains existing photo",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::student photo saves privately and reopens; upload failure retains existing photo"
+      ]
+    },
+    {
+      "id": "SC-38526BDDBBA4",
+      "status": "implemented",
+      "criteria": "historical observation photo stays private and read-only while new media uses consented classes",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::historical observation photo stays private and read-only while new media uses consented classes"
+      ]
+    },
+    {
+      "id": "SC-26EE58E8F388",
+      "status": "implemented",
+      "criteria": "direct fee receipt retries after restart without creating a second charge or receipt",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::direct fee receipt retries after restart without creating a second charge or receipt"
+      ]
+    },
+    {
+      "id": "SC-43316A21E0EF",
+      "status": "implemented",
+      "criteria": "student profile shows age and proficiency, joins another batch, and retains details after reopening",
+      "tests": [
+        "e2e/coach-workflows.spec.ts::student profile shows age and proficiency, joins another batch, and retains details after reopening"
+      ]
+    },
+    {
+      "id": "SC-B2F7CCA1F232",
+      "status": "implemented",
+      "criteria": "save notification remains fully visible when scrolled and identical saves notify again",
+      "tests": [
+        "e2e/feedback.spec.ts::save notification remains fully visible when scrolled and identical saves notify again"
+      ]
+    },
+    {
+      "id": "SC-70C7A67D145A",
+      "status": "implemented",
+      "criteria": "failed archive closes its confirmation and shows a persistent visible failure",
+      "tests": [
+        "e2e/feedback.spec.ts::failed archive closes its confirmation and shows a persistent visible failure"
+      ]
+    },
+    {
+      "id": "SC-E855BFE9D18E",
+      "status": "implemented",
+      "criteria": "device draft, confirmed class save and failure have distinct visible feedback",
+      "tests": [
+        "e2e/feedback.spec.ts::device draft, confirmed class save and failure have distinct visible feedback"
+      ]
+    },
+    {
+      "id": "SC-559AA9F16057",
+      "status": "implemented",
+      "criteria": "an earlier success is cleared while a new server save is pending",
+      "tests": [
+        "e2e/feedback.spec.ts::an earlier success is cleared while a new server save is pending"
+      ]
+    },
+    {
+      "id": "SC-EABE7A1245F2",
+      "status": "implemented",
+      "criteria": "invoice and manual payments persist, show partial/paid balances, retain fee snapshot and label manual history",
+      "tests": [
+        "e2e/fees.spec.ts::invoice and manual payments persist, show partial/paid balances, retain fee snapshot and label manual history"
+      ]
+    },
+    {
+      "id": "SC-22C4CCCB59C3",
+      "status": "implemented",
+      "criteria": "lost payment response survives restart and exact retry creates only one payment",
+      "tests": [
+        "e2e/fees.spec.ts::lost payment response survives restart and exact retry creates only one payment"
+      ]
+    },
+    {
+      "id": "SC-F9FD08AF9102",
+      "status": "implemented",
+      "criteria": "manual correction retains original history, then unpaid invoice can be voided and replaced",
+      "tests": [
+        "e2e/fees.spec.ts::manual correction retains original history, then unpaid invoice can be voided and replaced"
+      ]
+    },
+    {
+      "id": "SC-0B74AE95ADE0",
+      "status": "implemented",
+      "criteria": "validation and navigation guards preserve entries; busy save blocks leaving and duplicate taps",
+      "tests": [
+        "e2e/fees.spec.ts::validation and navigation guards preserve entries; busy save blocks leaving and duplicate taps"
+      ]
+    },
+    {
+      "id": "SC-044583A6B203",
+      "status": "implemented",
+      "criteria": "missing fees update is actionable and never looks like an empty successful list",
+      "tests": [
+        "e2e/fees.spec.ts::missing fees update is actionable and never looks like an empty successful list"
+      ]
+    },
+    {
+      "id": "SC-F0B0C26A5104",
+      "status": "implemented",
+      "criteria": "device storage failure sends no payment; retry and changed-balance rejection retain the editable form",
+      "tests": [
+        "e2e/fees.spec.ts::device storage failure sends no payment; retry and changed-balance rejection retain the editable form"
+      ]
+    },
+    {
+      "id": "SC-64786407C799",
+      "status": "implemented",
+      "criteria": "invoice pagination retains equal timestamps even when another device inserts a newer invoice",
+      "tests": [
+        "e2e/fees.spec.ts::invoice pagination retains equal timestamps even when another device inserts a newer invoice"
+      ]
+    },
+    {
+      "id": "SC-D28D36A8B39E",
+      "status": "implemented",
+      "criteria": "unreadable recovery record blocks new fee writes instead of silently losing its retry identity",
+      "tests": [
+        "e2e/fees.spec.ts::unreadable recovery record blocks new fee writes instead of silently losing its retry identity"
+      ]
+    },
+    {
+      "id": "SC-5A4F5895D9D5",
+      "status": "implemented",
+      "criteria": "preserved manual and gateway test receipts are labelled TEST and excluded from real outstanding",
+      "tests": [
+        "e2e/fees.spec.ts::preserved manual and gateway test receipts are labelled TEST and excluded from real outstanding"
+      ]
+    },
+    {
+      "id": "SC-CC9E879EC709",
+      "status": "implemented",
+      "criteria": "native component shell supports all five destinations without fake records",
+      "tests": [
+        "e2e/foundation.spec.ts::native component shell supports all five destinations without fake records"
+      ]
+    },
+    {
+      "id": "SC-623C719CFA3D",
+      "status": "implemented",
+      "criteria": "error report stays safe, can be cleared, and app remains usable",
+      "tests": [
+        "e2e/foundation.spec.ts::error report stays safe, can be cleared, and app remains usable"
+      ]
+    },
+    {
+      "id": "SC-C02579618280",
+      "status": "implemented",
+      "criteria": "screen error boundary recovers and preserves only a sanitized error code",
+      "tests": [
+        "e2e/foundation.spec.ts::screen error boundary recovers and preserves only a sanitized error code"
+      ]
+    },
+    {
+      "id": "SC-54FD2A80219C",
+      "status": "implemented",
+      "criteria": "safe diagnostics survive reload and deliberate clearing persists",
+      "tests": [
+        "e2e/foundation.spec.ts::safe diagnostics survive reload and deliberate clearing persists"
+      ]
+    },
+    {
+      "id": "SC-D20EB0E90528",
+      "status": "implemented",
+      "criteria": "private note autosaves locally, survives restart, records and retains immutable students on text edits",
+      "tests": [
+        "e2e/observations.spec.ts::private note autosaves locally, survives restart, records and retains immutable students on text edits"
+      ]
+    },
+    {
+      "id": "SC-143890C4A6A8",
+      "status": "implemented",
+      "criteria": "draft save is distinct from recording and widening an individual note needs confirmation",
+      "tests": [
+        "e2e/observations.spec.ts::draft save is distinct from recording and widening an individual note needs confirmation"
+      ]
+    },
+    {
+      "id": "SC-DF97A971CDEF",
+      "status": "implemented",
+      "criteria": "lost record response restores the confirmed server copy without duplicate history",
+      "tests": [
+        "e2e/observations.spec.ts::lost record response restores the confirmed server copy without duplicate history"
+      ]
+    },
+    {
+      "id": "SC-A29434D24EF7",
+      "status": "implemented",
+      "criteria": "failure retains draft and shows safe persistent feedback; sign-out warns and removes it",
+      "tests": [
+        "e2e/observations.spec.ts::failure retains draft and shows safe persistent feedback; sign-out warns and removes it"
+      ]
+    },
+    {
+      "id": "SC-89D9FC9CEF22",
+      "status": "implemented",
+      "criteria": "changed server revision requires comparison and can copy device text to a new draft",
+      "tests": [
+        "e2e/observations.spec.ts::changed server revision requires comparison and can copy device text to a new draft"
+      ]
+    },
+    {
+      "id": "SC-2276240EA200",
+      "status": "implemented",
+      "criteria": "missing database update explains setup without showing a false empty history",
+      "tests": [
+        "e2e/observations.spec.ts::missing database update explains setup without showing a false empty history"
+      ]
+    },
+    {
+      "id": "SC-D84B6AF126D5",
+      "status": "implemented",
+      "criteria": "device storage failure never claims a saved draft or sends an unprotected request",
+      "tests": [
+        "e2e/observations.spec.ts::device storage failure never claims a saved draft or sends an unprotected request"
+      ]
+    },
+    {
+      "id": "SC-D9E8B0251438",
+      "status": "implemented",
+      "criteria": "an unreadable private draft blocks replacement until explicitly discarded",
+      "tests": [
+        "e2e/observations.spec.ts::an unreadable private draft blocks replacement until explicitly discarded"
+      ]
+    },
+    {
+      "id": "SC-0F63C8772BDF",
+      "status": "implemented",
+      "criteria": "history pagination retains equal-timestamp notes and roster reads cross the response cap",
+      "tests": [
+        "e2e/observations.spec.ts::history pagination retains equal-timestamp notes and roster reads cross the response cap"
+      ]
+    },
+    {
+      "id": "SC-5A39A48A9F3D",
+      "status": "implemented",
+      "criteria": "Parent sees unrecorded attendance; a failed refresh never becomes a false empty schedule",
+      "tests": [
+        "e2e/parent-attendance.spec.ts::Parent sees unrecorded attendance; a failed refresh never becomes a false empty schedule"
+      ]
+    },
+    {
+      "id": "SC-69B206F1CA14",
+      "status": "implemented",
+      "criteria": "switching children ignores a late previous-child response",
+      "tests": [
+        "e2e/parent-attendance.spec.ts::switching children ignores a late previous-child response"
+      ]
+    },
+    {
+      "id": "SC-A051FDD24765",
+      "status": "implemented",
+      "criteria": "media capture is blocked before consent; a lost video-upload result retries one immutable object",
+      "tests": [
+        "e2e/parent-feedback.spec.ts::media capture is blocked before consent; a lost video-upload result retries one immutable object"
+      ]
+    },
+    {
+      "id": "SC-3D111D6B56EA",
+      "status": "implemented",
+      "criteria": "parent approval saves a held per-child feedback snapshot with consented video, persists and cancels",
+      "tests": [
+        "e2e/parent-feedback.spec.ts::parent approval saves a held per-child feedback snapshot with consented video, persists and cancels"
+      ]
+    },
+    {
+      "id": "SC-D45E92918D96",
+      "status": "implemented",
+      "criteria": "lost parent approval freezes the exact review and retries without another held record",
+      "tests": [
+        "e2e/parent-feedback.spec.ts::lost parent approval freezes the exact review and retries without another held record"
+      ]
+    },
+    {
+      "id": "SC-D47E4678CA10",
+      "status": "implemented",
+      "criteria": "missing new database update blocks media/parent holding and leaves ordinary feedback usable",
+      "tests": [
+        "e2e/parent-feedback.spec.ts::missing new database update blocks media/parent holding and leaves ordinary feedback usable"
+      ]
+    },
+    {
+      "id": "SC-817EC8D99A0F",
+      "status": "implemented",
+      "criteria": "forwarded invitation is refused for the wrong verified email before student details are shown",
+      "tests": [
+        "e2e/parent-identity.spec.ts::forwarded invitation is refused for the wrong verified email before student details are shown"
+      ]
+    },
+    {
+      "id": "SC-DE5DA65C5B41",
+      "status": "implemented",
+      "criteria": "pending request can be rejected by coach and never creates a readable connection",
+      "tests": [
+        "e2e/parent-identity.spec.ts::pending request can be rejected by coach and never creates a readable connection"
+      ]
+    },
+    {
+      "id": "SC-83FE8E030066",
+      "status": "implemented",
+      "criteria": "missing security update pauses linking and feed while preserving private family records",
+      "tests": [
+        "e2e/parent-identity.spec.ts::missing security update pauses linking and feed while preserving private family records"
+      ]
+    },
+    {
+      "id": "SC-93AE5C758D53",
+      "status": "implemented",
+      "criteria": "Aurora Parent workspace creates family and children, logs real private time/reminders and persists across reload",
+      "tests": [
+        "e2e/parent-workspace.spec.ts::Aurora Parent workspace creates family and children, logs real private time/reminders and persists across reload"
+      ]
+    },
+    {
+      "id": "SC-ED7399607830",
+      "status": "implemented",
+      "criteria": "a lost family memory save keeps one record on retry, and unsaved child edits require review before discard",
+      "tests": [
+        "e2e/parent-workspace.spec.ts::a lost family memory save keeps one record on retry, and unsaved child edits require review before discard"
+      ]
+    },
+    {
+      "id": "SC-0FF3FEBC6218",
+      "status": "implemented",
+      "criteria": "coach invitation explicitly links an independently named family child and exposes only reviewed feedback",
+      "tests": [
+        "e2e/parent-workspace.spec.ts::coach invitation explicitly links an independently named family child and exposes only reviewed feedback"
+      ]
+    },
+    {
+      "id": "SC-7315D4785B08",
+      "status": "implemented",
+      "criteria": "missing Parent database setup is explained without creating a Coach academy or fake family records",
+      "tests": [
+        "e2e/parent-workspace.spec.ts::missing Parent database setup is explained without creating a Coach academy or fake family records"
+      ]
+    },
+    {
+      "id": "SC-22D5690AA8A2",
+      "status": "implemented",
+      "criteria": "Parent password recovery reuses the existing callback and returns to Parent, without academy onboarding",
+      "tests": [
+        "e2e/parent-workspace.spec.ts::Parent password recovery reuses the existing callback and returns to Parent, without academy onboarding"
+      ]
+    },
+    {
+      "id": "SC-8E42ABDA0612",
+      "status": "implemented",
+      "criteria": "fresh Today setup creates a batch, populates reviewed profiles, changes batch and reopens persisted roster and details",
+      "tests": [
+        "e2e/roster-scan.spec.ts::fresh Today setup creates a batch, populates reviewed profiles, changes batch and reopens persisted roster and details"
+      ]
+    },
+    {
+      "id": "SC-187B70E366CB",
+      "status": "implemented",
+      "criteria": "an unknown save locks review and retries the exact import without duplicate profiles or another scan",
+      "tests": [
+        "e2e/roster-scan.spec.ts::an unknown save locks review and retries the exact import without duplicate profiles or another scan"
+      ]
+    },
+    {
+      "id": "SC-5AFFF075E236",
+      "status": "implemented",
+      "criteria": "confirmed import with failed roster refresh retries only the refresh and then opens its saved profile",
+      "tests": [
+        "e2e/roster-scan.spec.ts::confirmed import with failed roster refresh retries only the refresh and then opens its saved profile"
+      ]
+    },
+    {
+      "id": "SC-2CEE108EBDA0",
+      "status": "implemented",
+      "criteria": "cancelled photo selection and a failed scan retain the created batch and permit manual student entry",
+      "tests": [
+        "e2e/roster-scan.spec.ts::cancelled photo selection and a failed scan retain the created batch and permit manual student entry"
+      ]
+    },
+    {
+      "id": "SC-2C3E79081A09",
+      "status": "implemented",
+      "criteria": "linking an existing profile adds only selected membership and preserves age, level and guardian",
+      "tests": [
+        "e2e/roster-scan.spec.ts::linking an existing profile adds only selected membership and preserves age, level and guardian"
+      ]
+    },
+    {
+      "id": "SC-5EC62A1E0413",
+      "status": "implemented",
+      "criteria": "names-only OCR automatically populates review without another scan or invented profile fields",
+      "tests": [
+        "e2e/roster-scan.spec.ts::names-only OCR automatically populates review without another scan or invented profile fields"
+      ]
+    },
+    {
+      "id": "SC-AC901DF52377",
+      "status": "implemented",
+      "criteria": "monthly scan quota refusal leaves manual entry available and saves no students",
+      "tests": [
+        "e2e/roster-scan.spec.ts::monthly scan quota refusal leaves manual entry available and saves no students"
+      ]
+    },
+    {
+      "id": "SC-860604D9DBE3",
+      "status": "implemented",
+      "criteria": "batch and student can be created, edited, reloaded, searched, and archived",
+      "tests": [
+        "e2e/roster.spec.ts::batch and student can be created, edited, reloaded, searched, and archived"
+      ]
+    },
+    {
+      "id": "SC-8028EB99CBD9",
+      "status": "implemented",
+      "criteria": "failed and lost-response saves preserve input and reuse the same student identity",
+      "tests": [
+        "e2e/roster.spec.ts::failed and lost-response saves preserve input and reuse the same student identity"
+      ]
+    },
+    {
+      "id": "SC-16A32A4E58B7",
+      "status": "implemented",
+      "criteria": "unsaved forms require confirmation before leaving through navigation",
+      "tests": [
+        "e2e/roster.spec.ts::unsaved forms require confirmation before leaving through navigation"
+      ]
+    },
+    {
+      "id": "SC-9DE4C8312C86",
+      "status": "implemented",
+      "criteria": "a long student form keeps its back/discard confirmation in the viewport",
+      "tests": [
+        "e2e/roster.spec.ts::a long student form keeps its back/discard confirmation in the viewport"
+      ]
+    },
+    {
+      "id": "SC-5637C9B1D286",
+      "status": "implemented",
+      "criteria": "missing database update is explained and does not display a fake empty roster",
+      "tests": [
+        "e2e/roster.spec.ts::missing database update is explained and does not display a fake empty roster"
+      ]
+    },
+    {
+      "id": "SC-781860056B40",
+      "status": "implemented",
+      "criteria": "website offers role-specific signup and returning-user login",
+      "tests": [
+        "e2e/workspace-entry.spec.ts::website offers role-specific signup and returning-user login"
+      ]
+    },
+    {
+      "id": "SC-C06C3D10A9A8",
+      "status": "implemented",
+      "criteria": "signed-in Coach opens Parent setup and returns to the dashboard with the same session",
+      "tests": [
+        "e2e/workspace-entry.spec.ts::signed-in Coach opens Parent setup and returns to the dashboard with the same session"
+      ]
+    },
+    {
+      "id": "SC-85DC00540F19",
+      "status": "implemented",
+      "criteria": "space switching cannot silently discard an unsaved Coach form",
+      "tests": [
+        "e2e/workspace-entry.spec.ts::space switching cannot silently discard an unsaved Coach form"
+      ]
+    },
+    {
+      "id": "UT-605E8B25FA17",
+      "status": "implemented",
+      "criteria": "backfills stable academy/resource IDs once without fabricating coaches, assignments or historical teachers",
+      "tests": [
+        "tests/workspace-foundation.test.ts::backfills stable academy/resource IDs once without fabricating coaches, assignments or historical teachers"
+      ]
+    },
+    {
+      "id": "UT-AEC7382960D8",
+      "status": "implemented",
+      "criteria": "keeps the current014 guardian link, reviewed feed and original academy isolation intact",
+      "tests": [
+        "tests/workspace-foundation.test.ts::keeps the current014 guardian link, reviewed feed and original academy isolation intact"
+      ]
+    },
+    {
+      "id": "UT-0878CB8CD8F5",
+      "status": "implemented",
+      "criteria": "creates no production015 marker or public API and keeps all candidate tables RLS-enabled and inaccessible to clients",
+      "tests": [
+        "tests/workspace-foundation.test.ts::creates no production015 marker or public API and keeps all candidate tables RLS-enabled and inaccessible to clients"
+      ]
+    },
+    {
+      "id": "UT-7590E401D5CE",
+      "status": "implemented",
+      "criteria": "does not silently widen existing runtime access when a second academy membership is staged",
+      "tests": [
+        "tests/workspace-foundation.test.ts::does not silently widen existing runtime access when a second academy membership is staged"
+      ]
+    },
+    {
+      "id": "UT-6D14B7A56387",
+      "status": "implemented",
+      "criteria": "can represent a separate independent practice and several accepted affiliations without a fake academy",
+      "tests": [
+        "tests/workspace-foundation.test.ts::can represent a separate independent practice and several accepted affiliations without a fake academy"
+      ]
+    },
+    {
+      "id": "UT-EC380D39F57F",
+      "status": "implemented",
+      "criteria": "rejects duplicate current memberships while allowing a new period after revocation",
+      "tests": [
+        "tests/workspace-foundation.test.ts::rejects duplicate current memberships while allowing a new period after revocation"
+      ]
+    },
+    {
+      "id": "UT-D92280C77788",
+      "status": "implemented",
+      "criteria": "enforces acceptance state and time intervals",
+      "tests": [
+        "tests/workspace-foundation.test.ts::enforces acceptance state and time intervals"
+      ]
+    },
+    {
+      "id": "UT-3DF5343674CF",
+      "status": "implemented",
+      "criteria": "prevents cross-workspace role, branch and resource association even for trusted inserts",
+      "tests": [
+        "tests/workspace-foundation.test.ts::prevents cross-workspace role, branch and resource association even for trusted inserts"
+      ]
+    },
+    {
+      "id": "UT-15B42AF1F09A",
+      "status": "implemented",
+      "criteria": "keeps ownership global to its workspace, branch managers scoped and roles typed",
+      "tests": [
+        "tests/workspace-foundation.test.ts::keeps ownership global to its workspace, branch managers scoped and roles typed"
+      ]
+    },
+    {
+      "id": "UT-F67E28FFA778",
+      "status": "implemented",
+      "criteria": "represents co-teaching/substitution with distinct access and teaching windows; rejects mixed or foreign targets",
+      "tests": [
+        "tests/workspace-foundation.test.ts::represents co-teaching/substitution with distinct access and teaching windows; rejects mixed or foreign targets"
+      ]
+    },
+    {
+      "id": "UT-DB0965849780",
+      "status": "implemented",
+      "criteria": "requires explicit bounded history grants for a same-workspace student",
+      "tests": [
+        "tests/workspace-foundation.test.ts::requires explicit bounded history grants for a same-workspace student"
+      ]
+    },
+    {
+      "id": "UT-6CDA7AE42D87",
+      "status": "implemented",
+      "criteria": "binds accepted invitation membership/account and proposed branch to the invitation workspace",
+      "tests": [
+        "tests/workspace-foundation.test.ts::binds accepted invitation membership/account and proposed branch to the invitation workspace"
+      ]
+    },
+    {
+      "id": "UT-EF8CDC83087F",
+      "status": "implemented",
+      "criteria": "preserves append-only audit with actor-to-membership consistency and no fabricated migration actor",
+      "tests": [
+        "tests/workspace-foundation.test.ts::preserves append-only audit with actor-to-membership consistency and no fabricated migration actor"
+      ]
+    },
+    {
+      "id": "UT-D7A9C3817BCE",
+      "status": "implemented",
+      "criteria": "reruns without reactivating revoked staged legacy authority or duplicating audit",
+      "tests": [
+        "tests/workspace-foundation.test.ts::reruns without reactivating revoked staged legacy authority or duplicating audit"
+      ]
+    },
+    {
+      "id": "UT-1B43C5B5456C",
+      "status": "implemented",
+      "criteria": "stops on ownership drift rather than silently granting a different legacy user",
+      "tests": [
+        "tests/workspace-foundation.test.ts::stops on ownership drift rather than silently granting a different legacy user"
+      ]
+    },
+    {
+      "id": "UT-AF61ABCADF29",
+      "status": "implemented",
+      "criteria": "rejects audit subjects from another workspace and mismatched event/subject types",
+      "tests": [
+        "tests/workspace-foundation.test.ts::rejects audit subjects from another workspace and mismatched event/subject types"
+      ]
+    },
+    {
+      "id": "UT-78B50038C031",
+      "status": "implemented",
+      "criteria": "stops before adopting untracked candidate table objects",
+      "tests": [
+        "tests/workspace-foundation.test.ts::stops before adopting untracked candidate table objects"
+      ]
+    },
+    {
+      "id": "UT-FA9B50895C7D",
+      "status": "implemented",
+      "criteria": "stops before adopting untracked candidate empty_marker objects",
+      "tests": [
+        "tests/workspace-foundation.test.ts::stops before adopting untracked candidate empty_marker objects"
+      ]
+    },
+    {
+      "id": "UT-D5E78DCCD274",
+      "status": "implemented",
+      "criteria": "stops before adopting untracked candidate function objects",
+      "tests": [
+        "tests/workspace-foundation.test.ts::stops before adopting untracked candidate function objects"
+      ]
+    },
+    {
+      "id": "UT-899D218BFD1E",
+      "status": "implemented",
+      "criteria": "stops before adopting untracked candidate index objects",
+      "tests": [
+        "tests/workspace-foundation.test.ts::stops before adopting untracked candidate index objects"
+      ]
+    },
+    {
+      "id": "UT-60F85BAB9EBB",
+      "status": "implemented",
+      "criteria": "returns only approved child sessions and treats missing attendance as unrecorded",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::returns only approved child sessions and treats missing attendance as unrecorded"
+      ]
+    },
+    {
+      "id": "UT-D66CF6AF4C13",
+      "status": "implemented",
+      "criteria": "returns saved attendance without changing it",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::returns saved attendance without changing it"
+      ]
+    },
+    {
+      "id": "UT-5A1F55904491",
+      "status": "implemented",
+      "criteria": "does not disclose another parent child or a guessed child",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not disclose another parent child or a guessed child"
+      ]
+    },
+    {
+      "id": "UT-7CBF99321B9A",
+      "status": "implemented",
+      "criteria": "removes visibility after explicit disconnect",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::removes visibility after explicit disconnect"
+      ]
+    },
+    {
+      "id": "UT-D727A273B2B9",
+      "status": "implemented",
+      "criteria": "does not trust a stale link after the parent email changes",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not trust a stale link after the parent email changes"
+      ]
+    },
+    {
+      "id": "UT-785944F1FDDC",
+      "status": "implemented",
+      "criteria": "denies a banned parent account",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::denies a banned parent account"
+      ]
+    },
+    {
+      "id": "UT-F5DF6FDC0EB0",
+      "status": "implemented",
+      "criteria": "filters academy-local class day and inclusive enrolment end",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::filters academy-local class day and inclusive enrolment end"
+      ]
+    },
+    {
+      "id": "UT-86DFD149FC9B",
+      "status": "implemented",
+      "criteria": "pages deterministically without repeating the last session",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::pages deterministically without repeating the last session"
+      ]
+    },
+    {
+      "id": "UT-8C8FABF88762",
+      "status": "implemented",
+      "criteria": "rejects a half-specified cursor",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::rejects a half-specified cursor"
+      ]
+    },
+    {
+      "id": "UT-D16B969236CF",
+      "status": "implemented",
+      "criteria": "allows only approved own-child reads through the staging API wrapper",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::allows only approved own-child reads through the staging API wrapper"
+      ]
+    },
+    {
+      "id": "UT-852A1767B7E5",
+      "status": "implemented",
+      "criteria": "keeps the staging API unavailable to anon",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::keeps the staging API unavailable to anon"
+      ]
+    },
+    {
+      "id": "UT-5CBB7E42A46B",
+      "status": "implemented",
+      "criteria": "keeps the staging API unavailable to service_role",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::keeps the staging API unavailable to service_role"
+      ]
+    },
+    {
+      "id": "UT-2406C701D711",
+      "status": "implemented",
+      "criteria": "does not expose the candidate to anon",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not expose the candidate to anon"
+      ]
+    },
+    {
+      "id": "UT-B181FF311D88",
+      "status": "implemented",
+      "criteria": "does not expose the candidate to authenticated",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not expose the candidate to authenticated"
+      ]
+    },
+    {
+      "id": "UT-89FFE1BBFDA1",
+      "status": "implemented",
+      "criteria": "does not expose the candidate to service_role",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not expose the candidate to service_role"
+      ]
+    },
+    {
+      "id": "UT-FB9CE1943AB9",
+      "status": "implemented",
+      "criteria": "denies ineligible account state is_anonymous=true",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::denies ineligible account state is_anonymous=true"
+      ]
+    },
+    {
+      "id": "UT-42E9DB89B363",
+      "status": "implemented",
+      "criteria": "denies ineligible account state email_confirmed_at=null",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::denies ineligible account state email_confirmed_at=null"
+      ]
+    },
+    {
+      "id": "UT-8811AEF0A781",
+      "status": "implemented",
+      "criteria": "denies ineligible account state deleted_at=now()",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::denies ineligible account state deleted_at=now()"
+      ]
+    },
+    {
+      "id": "UT-7765C4C93FD0",
+      "status": "implemented",
+      "criteria": "denies ineligible account state email_confirmed_at=now()+interval '1 day'",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::denies ineligible account state email_confirmed_at=now()+interval '1 day'"
+      ]
+    },
+    {
+      "id": "UT-99E44C5A16C6",
+      "status": "implemented",
+      "criteria": "removes access when the approval is withdrawn",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::removes access when the approval is withdrawn"
+      ]
+    },
+    {
+      "id": "UT-B581B657852D",
+      "status": "implemented",
+      "criteria": "does not require any private staff workspace candidate",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::does not require any private staff workspace candidate"
+      ]
+    },
+    {
+      "id": "UT-FED30018A512",
+      "status": "implemented",
+      "criteria": "rejects an approval attached to a different sibling",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::rejects an approval attached to a different sibling"
+      ]
+    },
+    {
+      "id": "UT-9023F7451682",
+      "status": "implemented",
+      "criteria": "removes client execution from the platform event helper without changing its owner authority",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::removes client execution from the platform event helper without changing its owner authority"
+      ]
+    },
+    {
+      "id": "UT-9F21F8C0399C",
+      "status": "implemented",
+      "criteria": "retired preview files cannot overwrite the stronger deployed reader",
+      "tests": [
+        "tests/parent-attendance-projection.test.ts::retired preview files cannot overwrite the stronger deployed reader"
+      ]
+    },
+    {
+      "id": "UT-6CD3E59ECCD0",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > applies cleanly and enables RLS on every application table",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > applies cleanly and enables RLS on every application table"
+      ]
+    },
+    {
+      "id": "UT-72E52E7B758B",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > stops before changing a project with an unrelated existing table",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > stops before changing a project with an unrelated existing table"
+      ]
+    },
+    {
+      "id": "UT-39CD9FCD776B",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > returns only the signed-in academy and students",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > returns only the signed-in academy and students"
+      ]
+    },
+    {
+      "id": "UT-D4D3F1F27942",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > blocks anonymous table reads and authenticated API operations",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > blocks anonymous table reads and authenticated API operations"
+      ]
+    },
+    {
+      "id": "UT-A003A11CA306",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rejects a forged academy ID and hides other-academy updates",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rejects a forged academy ID and hides other-academy updates"
+      ]
+    },
+    {
+      "id": "UT-2D4799A8D30E",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rejects cross-academy enrolments even when a caller bypasses RLS",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rejects cross-academy enrolments even when a caller bypasses RLS"
+      ]
+    },
+    {
+      "id": "UT-105B51F331EF",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > creates academy/profile atomically and makes onboarding retries idempotent",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > creates academy/profile atomically and makes onboarding retries idempotent"
+      ]
+    },
+    {
+      "id": "UT-218F240A9E3E",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rejects invalid timezones and duplicate enrolment",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rejects invalid timezones and duplicate enrolment"
+      ]
+    },
+    {
+      "id": "UT-053ADCB9A3F6",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > saves and updates attendance without duplicates",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > saves and updates attendance without duplicates"
+      ]
+    },
+    {
+      "id": "UT-E4A370C6C362",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rolls back the whole attendance save if any student is invalid",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rolls back the whole attendance save if any student is invalid"
+      ]
+    },
+    {
+      "id": "UT-A10CBF6A325B",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rejects invalid statuses, repeated students, and cancelled-session writes",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rejects invalid statuses, repeated students, and cancelled-session writes"
+      ]
+    },
+    {
+      "id": "UT-CA401CAC13D1",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > rejects another academy attendance RPC and direct table writes",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > rejects another academy attendance RPC and direct table writes"
+      ]
+    },
+    {
+      "id": "UT-FCB80C3F7BE2",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > keeps archived-student history while rejecting new attendance changes",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > keeps archived-student history while rejecting new attendance changes"
+      ]
+    },
+    {
+      "id": "UT-A675E76189D9",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > prevents cross-academy invoices and duplicate invoice months",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > prevents cross-academy invoices and duplicate invoice months"
+      ]
+    },
+    {
+      "id": "UT-B684BC2683F0",
+      "status": "implemented",
+      "criteria": "PostgreSQL academy isolation and atomic writes > prevents clients from manufacturing verified payments or changing invoice totals",
+      "tests": [
+        "tests/database.test.ts::PostgreSQL academy isolation and atomic writes > prevents clients from manufacturing verified payments or changing invoice totals"
+      ]
+    },
+    {
+      "id": "UT-E77BAB7108F8",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > round-trips age and all supported proficiency levels on new and existing profiles",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > round-trips age and all supported proficiency levels on new and existing profiles"
+      ]
+    },
+    {
+      "id": "UT-0C28E3C3DA31",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > rejects invalid proficiency or age atomically without changing profile, guardian or memberships",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > rejects invalid proficiency or age atomically without changing profile, guardian or memberships"
+      ]
+    },
+    {
+      "id": "UT-97E2E779B1B6",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > preserves original membership dates and secondary guardians while adding batches from a retried profile save",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > preserves original membership dates and secondary guardians while adding batches from a retried profile save"
+      ]
+    },
+    {
+      "id": "UT-604FDB474935",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > denies foreign/anonymous profile writes and direct proficiency edits",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > denies foreign/anonymous profile writes and direct proficiency edits"
+      ]
+    },
+    {
+      "id": "UT-7FEAAB5BA926",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > replays update007 without resetting a saved proficiency, guardian or historical membership",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > replays update007 without resetting a saved proficiency, guardian or historical membership"
+      ]
+    },
+    {
+      "id": "UT-F9DB5FEBBEAE",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > adds existing students atomically and retries without overwriting original membership dates",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > adds existing students atomically and retries without overwriting original membership dates"
+      ]
+    },
+    {
+      "id": "UT-D7FCE5DD74B1",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > rejects foreign/archived students and rolls back every new membership if any selection is invalid",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > rejects foreign/archived students and rolls back every new membership if any selection is invalid"
+      ]
+    },
+    {
+      "id": "UT-E620534744E1",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > does not reactivate or rewrite a previously ended membership",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > does not reactivate or rewrite a previously ended membership"
+      ]
+    },
+    {
+      "id": "UT-312FA1E9CFD0",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > creates the monthly charge and receipt in one transaction; exact retry survives later roster changes",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > creates the monthly charge and receipt in one transaction; exact retry survives later roster changes"
+      ]
+    },
+    {
+      "id": "UT-739DECD1A2F9",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > rolls back auto-created charges when the receipt is invalid, oversized or based on a changed fee",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > rolls back auto-created charges when the receipt is invalid, oversized or based on a changed fee"
+      ]
+    },
+    {
+      "id": "UT-ADD59CD65B91",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > rejects stale concurrent-state expectations and permits the reviewed remainder against an existing charge",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > rejects stale concurrent-state expectations and permits the reviewed remainder against an existing charge"
+      ]
+    },
+    {
+      "id": "UT-89CD9409519A",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > denies foreign and anonymous workflow execution",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > denies foreign and anonymous workflow execution"
+      ]
+    },
+    {
+      "id": "UT-0FD5FDE883CE",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > keeps the photo bucket private with bounded supported types after repeat installation",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > keeps the photo bucket private with bounded supported types after repeat installation"
+      ]
+    },
+    {
+      "id": "UT-A7B7908D9C67",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > isolates object reads/inserts/deletes by academy and rejects malformed or spoofed entity paths",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > isolates object reads/inserts/deletes by academy and rejects malformed or spoofed entity paths"
+      ]
+    },
+    {
+      "id": "UT-FAB587BD53CF",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > allows optimistic metadata replacement and exact retry while denying direct metadata writes",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > allows optimistic metadata replacement and exact retry while denying direct metadata writes"
+      ]
+    },
+    {
+      "id": "UT-28BDED07E15B",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > rejects missing/unsupported uploads and blocks cross-entity photo attachment",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > rejects missing/unsupported uploads and blocks cross-entity photo attachment"
+      ]
+    },
+    {
+      "id": "UT-777441E5EDD1",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > keeps objects immutable and protects referenced objects, but permits orphan cleanup after replacement/removal",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > keeps objects immutable and protects referenced objects, but permits orphan cleanup after replacement/removal"
+      ]
+    },
+    {
+      "id": "UT-785F09215C04",
+      "status": "implemented",
+      "criteria": "batch membership, student-first collection and private photos > locks recorded observation photos and archived student photos while retaining their private reads and exact retries",
+      "tests": [
+        "tests/coach-workflows-database.test.ts::batch membership, student-first collection and private photos > locks recorded observation photos and archived student photos while retaining their private reads and exact retries"
+      ]
+    },
+    {
+      "id": "UT-1A653FCC5B60",
+      "status": "implemented",
+      "criteria": "blocks forwarded invitations and previews for another verified email without consuming the invitation",
+      "tests": [
+        "tests/parent-identity-database.test.ts::blocks forwarded invitations and previews for another verified email without consuming the invitation"
+      ]
+    },
+    {
+      "id": "UT-291A2083D16B",
+      "status": "implemented",
+      "criteria": "uses the server verified email, normalises only case/whitespace and rejects unverified accounts",
+      "tests": [
+        "tests/parent-identity-database.test.ts::uses the server verified email, normalises only case/whitespace and rejects unverified accounts"
+      ]
+    },
+    {
+      "id": "UT-4F614A560928",
+      "status": "implemented",
+      "criteria": "claim only creates an immutable pending request; no feedback, link or consent access exists until coach approval",
+      "tests": [
+        "tests/parent-identity-database.test.ts::claim only creates an immutable pending request; no feedback, link or consent access exists until coach approval"
+      ]
+    },
+    {
+      "id": "UT-ACC783BECA4D",
+      "status": "implemented",
+      "criteria": "wrong child can be rejected; rejection does not release feedback or let a stale approval revive it",
+      "tests": [
+        "tests/parent-identity-database.test.ts::wrong child can be rejected; rejection does not release feedback or let a stale approval revive it"
+      ]
+    },
+    {
+      "id": "UT-4E86E8E8DE02",
+      "status": "implemented",
+      "criteria": "changed child details or guardian email require a fresh match review",
+      "tests": [
+        "tests/parent-identity-database.test.ts::changed child details or guardian email require a fresh match review"
+      ]
+    },
+    {
+      "id": "UT-ECD9D4A824A0",
+      "status": "implemented",
+      "criteria": "another coach/family cannot see or approve a request or attach a foreign child",
+      "tests": [
+        "tests/parent-identity-database.test.ts::another coach/family cannot see or approve a request or attach a foreign child"
+      ]
+    },
+    {
+      "id": "UT-ADD48E10DD7E",
+      "status": "implemented",
+      "criteria": "pending claims can be cancelled but cannot hide through child archive; student archive cancels requests",
+      "tests": [
+        "tests/parent-identity-database.test.ts::pending claims can be cancelled but cannot hide through child archive; student archive cancels requests"
+      ]
+    },
+    {
+      "id": "UT-5A8B5EF1F220",
+      "status": "implemented",
+      "criteria": "same-login testing still requires the separate coach approval; no self-approval bypass is inferred from login",
+      "tests": [
+        "tests/parent-identity-database.test.ts::same-login testing still requires the separate coach approval; no self-approval bypass is inferred from login"
+      ]
+    },
+    {
+      "id": "UT-0C3FBA429B4E",
+      "status": "implemented",
+      "criteria": "old unbound RPC and anonymous clients cannot create invitations or requests",
+      "tests": [
+        "tests/parent-identity-database.test.ts::old unbound RPC and anonymous clients cannot create invitations or requests"
+      ]
+    },
+    {
+      "id": "UT-59C2EC5B3DC5",
+      "status": "implemented",
+      "criteria": "reapplying the exact owner update preserves newly approved links and their feedback",
+      "tests": [
+        "tests/parent-identity-database.test.ts::reapplying the exact owner update preserves newly approved links and their feedback"
+      ]
+    },
+    {
+      "id": "UT-AB58DD72F5FC",
+      "status": "implemented",
+      "criteria": "NULL is not an approval decision and releases no access",
+      "tests": [
+        "tests/parent-identity-database.test.ts::NULL is not an approval decision and releases no access"
+      ]
+    },
+    {
+      "id": "UT-2C768672CEEC",
+      "status": "implemented",
+      "criteria": "both verified families can read approved group media; either withdrawal revokes it for both",
+      "tests": [
+        "tests/parent-identity-database.test.ts::both verified families can read approved group media; either withdrawal revokes it for both"
+      ]
+    },
+    {
+      "id": "UT-12ED44125151",
+      "status": "implemented",
+      "criteria": "upgrade revokes old unbound links/invitations and stale shared copies without deleting teaching notes",
+      "tests": [
+        "tests/parent-identity-database.test.ts::upgrade revokes old unbound links/invitations and stale shared copies without deleting teaching notes"
+      ]
+    },
+    {
+      "id": "UT-68423114C128",
+      "status": "implemented",
+      "criteria": "disconnect cannot be reversed by replaying an old approval or claimed invitation",
+      "tests": [
+        "tests/parent-identity-database.test.ts::disconnect cannot be reversed by replaying an old approval or claimed invitation"
+      ]
+    },
+    {
+      "id": "UT-57DF675BF224",
+      "status": "implemented",
+      "criteria": "isolates family records from other parents and from an academy coach",
+      "tests": [
+        "tests/parent-database.test.ts::isolates family records from other parents and from an academy coach"
+      ]
+    },
+    {
+      "id": "UT-62A3D72CB101",
+      "status": "implemented",
+      "criteria": "requires an explicit expiring one-time invitation and never stores its raw code",
+      "tests": [
+        "tests/parent-database.test.ts::requires an explicit expiring one-time invitation and never stores its raw code"
+      ]
+    },
+    {
+      "id": "UT-0F3CD32F6503",
+      "status": "implemented",
+      "criteria": "exposes only coach-approved per-child snapshots after linking, with fresh reviews appearing in the feed",
+      "tests": [
+        "tests/parent-database.test.ts::exposes only coach-approved per-child snapshots after linking, with fresh reviews appearing in the feed"
+      ]
+    },
+    {
+      "id": "UT-EC8B8618AAFA",
+      "status": "implemented",
+      "criteria": "disconnecting revokes feed access and does not transfer old approvals to a replacement family",
+      "tests": [
+        "tests/parent-database.test.ts::disconnecting revokes feed access and does not transfer old approvals to a replacement family"
+      ]
+    },
+    {
+      "id": "UT-BCFAD03670CF",
+      "status": "implemented",
+      "criteria": "parent media access needs approved media and current permission; a coach cannot overrule a parent refusal",
+      "tests": [
+        "tests/parent-database.test.ts::parent media access needs approved media and current permission; a coach cannot overrule a parent refusal"
+      ]
+    },
+    {
+      "id": "UT-DC4C34A74B07",
+      "status": "implemented",
+      "criteria": "invalid or revoked invites and foreign-child claims cannot change a family connection",
+      "tests": [
+        "tests/parent-database.test.ts::invalid or revoked invites and foreign-child claims cannot change a family connection"
+      ]
+    },
+    {
+      "id": "UT-2DF528B6C944",
+      "status": "implemented",
+      "criteria": "archive revokes outstanding invites, rejects first claims and preserves existing approved text history",
+      "tests": [
+        "tests/parent-database.test.ts::archive revokes outstanding invites, rejects first claims and preserves existing approved text history"
+      ]
+    },
+    {
+      "id": "UT-378DA624BA83",
+      "status": "implemented",
+      "criteria": "archive does not erase connected family history or break exact claim retry",
+      "tests": [
+        "tests/parent-database.test.ts::archive does not erase connected family history or break exact claim retry"
+      ]
+    },
+    {
+      "id": "UT-AAAF4E754B9E",
+      "status": "implemented",
+      "criteria": "keeps siblings separate while a child attends multiple batches",
+      "tests": [
+        "tests/parent-database.test.ts::keeps siblings separate while a child attends multiple batches"
+      ]
+    },
+    {
+      "id": "UT-5BEB9656B97C",
+      "status": "implemented",
+      "criteria": "links one family child to independent coaches without exposing private family records",
+      "tests": [
+        "tests/parent-database.test.ts::links one family child to independent coaches without exposing private family records"
+      ]
+    },
+    {
+      "id": "UT-BED6A1F2B765",
+      "status": "implemented",
+      "criteria": "rejects anonymous family access, untrusted link creation and a second active household",
+      "tests": [
+        "tests/parent-database.test.ts::rejects anonymous family access, untrusted link creation and a second active household"
+      ]
+    },
+    {
+      "id": "UT-86577B153E69",
+      "status": "implemented",
+      "criteria": "requires disconnect before family-child archive, preserving a clear consent lifecycle",
+      "tests": [
+        "tests/parent-database.test.ts::requires disconnect before family-child archive, preserving a clear consent lifecycle"
+      ]
+    },
+    {
+      "id": "UT-A08A6DE330D4",
+      "status": "implemented",
+      "criteria": "one verified login can own both profiles and see only explicitly reviewed feedback after connecting its child",
+      "tests": [
+        "tests/parent-database.test.ts::one verified login can own both profiles and see only explicitly reviewed feedback after connecting its child"
+      ]
+    },
+    {
+      "id": "UT-98AD39487DF6",
+      "status": "implemented",
+      "criteria": "allows an explicitly assigned instructor, but ownership alone only permits class management",
+      "tests": [
+        "tests/workspace-authorization.test.ts::allows an explicitly assigned instructor, but ownership alone only permits class management"
+      ]
+    },
+    {
+      "id": "UT-BC619279003C",
+      "status": "implemented",
+      "criteria": "rejects a currently unverified account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently unverified account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-BF8FC5FA175E",
+      "status": "implemented",
+      "criteria": "rejects a currently future verification account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently future verification account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-F7DEB3F29B98",
+      "status": "implemented",
+      "criteria": "rejects a currently banned account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently banned account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-99A75CFA2958",
+      "status": "implemented",
+      "criteria": "rejects a currently deleted account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently deleted account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-50383257396F",
+      "status": "implemented",
+      "criteria": "rejects a currently anonymous account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently anonymous account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-7244088068F1",
+      "status": "implemented",
+      "criteria": "rejects a currently missing email account despite the unchanged identity claim",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects a currently missing email account despite the unchanged identity claim"
+      ]
+    },
+    {
+      "id": "UT-CAB702615F12",
+      "status": "implemented",
+      "criteria": "allows an expired ban and denies an absent account",
+      "tests": [
+        "tests/workspace-authorization.test.ts::allows an expired ban and denies an absent account"
+      ]
+    },
+    {
+      "id": "UT-8FC3487722B9",
+      "status": "implemented",
+      "criteria": "does not accept pending membership or a stale token",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not accept pending membership or a stale token"
+      ]
+    },
+    {
+      "id": "UT-BB64E9C07A44",
+      "status": "implemented",
+      "criteria": "does not accept suspended membership or a stale token",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not accept suspended membership or a stale token"
+      ]
+    },
+    {
+      "id": "UT-45A08777E813",
+      "status": "implemented",
+      "criteria": "does not accept left membership or a stale token",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not accept left membership or a stale token"
+      ]
+    },
+    {
+      "id": "UT-12F963A53FAF",
+      "status": "implemented",
+      "criteria": "does not accept revoked membership or a stale token",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not accept revoked membership or a stale token"
+      ]
+    },
+    {
+      "id": "UT-57527C495F26",
+      "status": "implemented",
+      "criteria": "does not accept expired membership or a stale token",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not accept expired membership or a stale token"
+      ]
+    },
+    {
+      "id": "UT-CE987EBA62F5",
+      "status": "implemented",
+      "criteria": "checks current membership time: effective_from=now()+interval '1 hour'",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks current membership time: effective_from=now()+interval '1 hour'"
+      ]
+    },
+    {
+      "id": "UT-F3150AAF6FBB",
+      "status": "implemented",
+      "criteria": "checks current membership time: valid_until=now()-interval '1 second'",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks current membership time: valid_until=now()-interval '1 second'"
+      ]
+    },
+    {
+      "id": "UT-17E4FB75C083",
+      "status": "implemented",
+      "criteria": "checks current membership time: accepted_at=now()+interval '1 hour'",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks current membership time: accepted_at=now()+interval '1 hour'"
+      ]
+    },
+    {
+      "id": "UT-2D182C6CB066",
+      "status": "implemented",
+      "criteria": "requires current role and Coach identity as well as an assignment",
+      "tests": [
+        "tests/workspace-authorization.test.ts::requires current role and Coach identity as well as an assignment"
+      ]
+    },
+    {
+      "id": "UT-78FCCC842750",
+      "status": "implemented",
+      "criteria": "checks role dates: valid_from=now()+interval '1 hour'",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks role dates: valid_from=now()+interval '1 hour'"
+      ]
+    },
+    {
+      "id": "UT-498749B87097",
+      "status": "implemented",
+      "criteria": "checks role dates: valid_from=now()-interval '1 day',valid_until=now()-interval '1 second'",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks role dates: valid_from=now()-interval '1 day',valid_until=now()-interval '1 second'"
+      ]
+    },
+    {
+      "id": "UT-80743572E1E7",
+      "status": "implemented",
+      "criteria": "keeps branch roles in their exact branch and never turns a missing branch into a wildcard",
+      "tests": [
+        "tests/workspace-authorization.test.ts::keeps branch roles in their exact branch and never turns a missing branch into a wildcard"
+      ]
+    },
+    {
+      "id": "UT-FBEF0D078DB1",
+      "status": "implemented",
+      "criteria": "does not combine foreign branches, workspace IDs, or client role claims",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not combine foreign branches, workspace IDs, or client role claims"
+      ]
+    },
+    {
+      "id": "UT-D148123B1FBA",
+      "status": "implemented",
+      "criteria": "honours assignment teaching/access/write windows without inheriting prior classes",
+      "tests": [
+        "tests/workspace-authorization.test.ts::honours assignment teaching/access/write windows without inheriting prior classes"
+      ]
+    },
+    {
+      "id": "UT-7F9C6D143C00",
+      "status": "implemented",
+      "criteria": "a substitute gets only the assigned class, no previous drafts/history or finance",
+      "tests": [
+        "tests/workspace-authorization.test.ts::a substitute gets only the assigned class, no previous drafts/history or finance"
+      ]
+    },
+    {
+      "id": "UT-8E9D44581010",
+      "status": "implemented",
+      "criteria": "rejects teaching writes for a cancelled resource",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects teaching writes for a cancelled resource"
+      ]
+    },
+    {
+      "id": "UT-765E0AF8787A",
+      "status": "implemented",
+      "criteria": "rejects teaching writes for a archived batch resource",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects teaching writes for a archived batch resource"
+      ]
+    },
+    {
+      "id": "UT-91F0DD211854",
+      "status": "implemented",
+      "criteria": "rejects teaching writes for a archived branch resource",
+      "tests": [
+        "tests/workspace-authorization.test.ts::rejects teaching writes for a archived branch resource"
+      ]
+    },
+    {
+      "id": "UT-69034F4D4773",
+      "status": "implemented",
+      "criteria": "permits own current membership feedback edits while preserving other/legacy author boundaries",
+      "tests": [
+        "tests/workspace-authorization.test.ts::permits own current membership feedback edits while preserving other/legacy author boundaries"
+      ]
+    },
+    {
+      "id": "UT-B51AAEEB0AE4",
+      "status": "implemented",
+      "criteria": "ends own working-note access when the assignment access window closes; history needs a separate grant",
+      "tests": [
+        "tests/workspace-authorization.test.ts::ends own working-note access when the assignment access window closes; history needs a separate grant"
+      ]
+    },
+    {
+      "id": "UT-03AF6D5FEC53",
+      "status": "implemented",
+      "criteria": "does not give a rehire authority over records from their previous membership period",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not give a rehire authority over records from their previous membership period"
+      ]
+    },
+    {
+      "id": "UT-24AA724A8816",
+      "status": "implemented",
+      "criteria": "requires explicit capability plus dated feedback history grants, never drafts or media-only grants",
+      "tests": [
+        "tests/workspace-authorization.test.ts::requires explicit capability plus dated feedback history grants, never drafts or media-only grants"
+      ]
+    },
+    {
+      "id": "UT-696C97AA83D6",
+      "status": "implemented",
+      "criteria": "requires history grants for every child mentioned by a group note",
+      "tests": [
+        "tests/workspace-authorization.test.ts::requires history grants for every child mentioned by a group note"
+      ]
+    },
+    {
+      "id": "UT-1A1CE15312A4",
+      "status": "implemented",
+      "criteria": "checks history date boundaries, grant revocation and archived branch",
+      "tests": [
+        "tests/workspace-authorization.test.ts::checks history date boundaries, grant revocation and archived branch"
+      ]
+    },
+    {
+      "id": "UT-7028EAE76F6E",
+      "status": "implemented",
+      "criteria": "limits correction capabilities by branch and expiry; does not turn them into an editing API",
+      "tests": [
+        "tests/workspace-authorization.test.ts::limits correction capabilities by branch and expiry; does not turn them into an editing API"
+      ]
+    },
+    {
+      "id": "UT-07B8268472CD",
+      "status": "implemented",
+      "criteria": "separates finance from teaching and respects finance branch scope",
+      "tests": [
+        "tests/workspace-authorization.test.ts::separates finance from teaching and respects finance branch scope"
+      ]
+    },
+    {
+      "id": "UT-D3D0128B34D2",
+      "status": "implemented",
+      "criteria": "returns only the actor\u2019s own accepted contexts without staff, family or other employment details",
+      "tests": [
+        "tests/workspace-authorization.test.ts::returns only the actor\u2019s own accepted contexts without staff, family or other employment details"
+      ]
+    },
+    {
+      "id": "UT-A3E24731AFBB",
+      "status": "implemented",
+      "criteria": "keeps new decisions private and does not widen the old runtime or expose raw authority tables",
+      "tests": [
+        "tests/workspace-authorization.test.ts::keeps new decisions private and does not widen the old runtime or expose raw authority tables"
+      ]
+    },
+    {
+      "id": "UT-D7C3BBCBDEB4",
+      "status": "implemented",
+      "criteria": "fails closed for unknown actions, absent resources and null operation values",
+      "tests": [
+        "tests/workspace-authorization.test.ts::fails closed for unknown actions, absent resources and null operation values"
+      ]
+    },
+    {
+      "id": "UT-F1EE5A831B4D",
+      "status": "implemented",
+      "criteria": "denies unsupported repeatable read transaction snapshots",
+      "tests": [
+        "tests/workspace-authorization.test.ts::denies unsupported repeatable read transaction snapshots"
+      ]
+    },
+    {
+      "id": "UT-6F6575746322",
+      "status": "implemented",
+      "criteria": "denies unsupported serializable transaction snapshots",
+      "tests": [
+        "tests/workspace-authorization.test.ts::denies unsupported serializable transaction snapshots"
+      ]
+    },
+    {
+      "id": "UT-1886033EA6E2",
+      "status": "implemented",
+      "criteria": "revokes current membership once, audits the real actor, and cannot restore it by rerunning candidates",
+      "tests": [
+        "tests/workspace-authorization.test.ts::revokes current membership once, audits the real actor, and cannot restore it by rerunning candidates"
+      ]
+    },
+    {
+      "id": "UT-9C34AEDDE3D7",
+      "status": "implemented",
+      "criteria": "blocks self-elevation, foreign-target revocation and removal of the last owner",
+      "tests": [
+        "tests/workspace-authorization.test.ts::blocks self-elevation, foreign-target revocation and removal of the last owner"
+      ]
+    },
+    {
+      "id": "UT-773531B717A6",
+      "status": "implemented",
+      "criteria": "revokes an assignment once while retaining membership and historical authorship",
+      "tests": [
+        "tests/workspace-authorization.test.ts::revokes an assignment once while retaining membership and historical authorship"
+      ]
+    },
+    {
+      "id": "UT-09506940A4B7",
+      "status": "implemented",
+      "criteria": "does not adopt untracked kernel objects",
+      "tests": [
+        "tests/workspace-authorization.test.ts::does not adopt untracked kernel objects"
+      ]
+    },
+    {
+      "id": "UT-4B7E7777E45D",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > imports reviewed names, ages, guardian and proficiency atomically with optional batch membership",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > imports reviewed names, ages, guardian and proficiency atomically with optional batch membership"
+      ]
+    },
+    {
+      "id": "UT-9AE7DC649314",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > exact lost-response retry returns original IDs after roster changes and rejects changed-payload reuse",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > exact lost-response retry returns original IDs after roster changes and rejects changed-payload reuse"
+      ]
+    },
+    {
+      "id": "UT-5CA898D611D2",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > links an existing profile without overwriting any reviewed personal fields or its historical memberships",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > links an existing profile without overwriting any reviewed personal fields or its historical memberships"
+      ]
+    },
+    {
+      "id": "UT-0B40BDE3FF52",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > rejects normalized duplicate names, including surrounding tabs/newlines, without partially importing earlier rows",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > rejects normalized duplicate names, including surrounding tabs/newlines, without partially importing earlier rows"
+      ]
+    },
+    {
+      "id": "UT-E2F066B93F0D",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > rolls back students, guardians, memberships and receipt-of-import audit when any reviewed row is invalid",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > rolls back students, guardians, memberships and receipt-of-import audit when any reviewed row is invalid"
+      ]
+    },
+    {
+      "id": "UT-A8A145130DE6",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > rejects empty/oversized payloads, duplicate IDs, null request IDs and ID collisions",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > rejects empty/oversized payloads, duplicate IDs, null request IDs and ID collisions"
+      ]
+    },
+    {
+      "id": "UT-2045FA672EB1",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > denies foreign/anonymous imports, foreign batch or existing-profile references and private audit access",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > denies foreign/anonymous imports, foreign batch or existing-profile references and private audit access"
+      ]
+    },
+    {
+      "id": "UT-550CD3FD88BB",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > reserves scan quota only for the service role and enforces cooldown and ten daily attempts",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > reserves scan quota only for the service role and enforces cooldown and ten daily attempts"
+      ]
+    },
+    {
+      "id": "UT-B223D7B627BF",
+      "status": "implemented",
+      "criteria": "reviewed roster imports and server-only scan budgets > keeps quota independent per academy and UTC day and refuses a nonexistent academy",
+      "tests": [
+        "tests/roster-scan-database.test.ts::reviewed roster imports and server-only scan budgets > keeps quota independent per academy and UTC day and refuses a nonexistent academy"
+      ]
+    },
+    {
+      "id": "UT-05511F03B1ED",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > creates student, primary contact, and enrolment in one retry-safe operation",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > creates student, primary contact, and enrolment in one retry-safe operation"
+      ]
+    },
+    {
+      "id": "UT-3A1CAD779F02",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > rejects foreign batches without leaving partial student/contact records",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > rejects foreign batches without leaving partial student/contact records"
+      ]
+    },
+    {
+      "id": "UT-118EB227C271",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > rejects cross-academy writes and anonymous execution",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > rejects cross-academy writes and anonymous execution"
+      ]
+    },
+    {
+      "id": "UT-2E2D5D2848CF",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > allows same names for distinct student IDs and duplicate batch selections safely",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > allows same names for distinct student IDs and duplicate batch selections safely"
+      ]
+    },
+    {
+      "id": "UT-6EDC45D97E25",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > allows multiple batches while preserving existing enrolment dates",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > allows multiple batches while preserving existing enrolment dates"
+      ]
+    },
+    {
+      "id": "UT-E351173EBFAD",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > archives without deleting contacts/enrolments and rejects edits of archived students",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > archives without deleting contacts/enrolments and rejects edits of archived students"
+      ]
+    },
+    {
+      "id": "UT-C6E5709CAE8A",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > denies direct client writes that would bypass the transaction",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > denies direct client writes that would bypass the transaction"
+      ]
+    },
+    {
+      "id": "UT-3ACD9DF7B58D",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > rejects invalid age or guardian data before creating the student",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > rejects invalid age or guardian data before creating the student"
+      ]
+    },
+    {
+      "id": "UT-0D04E278224C",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > clears only the primary guardian on an explicit blank-contact edit",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > clears only the primary guardian on an explicit blank-contact edit"
+      ]
+    },
+    {
+      "id": "UT-31A564E5026D",
+      "status": "implemented",
+      "criteria": "atomic roster functions and permissions > keeps batch amounts validated and inaccessible to another academy",
+      "tests": [
+        "tests/roster.test.ts::atomic roster functions and permissions > keeps batch amounts validated and inaccessible to another academy"
+      ]
+    },
+    {
+      "id": "UT-5647450E639F",
+      "status": "implemented",
+      "criteria": "roster input rules > converts rupees to paise without floating-point rounding",
+      "tests": [
+        "tests/roster.test.ts::roster input rules > converts rupees to paise without floating-point rounding"
+      ]
+    },
+    {
+      "id": "UT-57F775169F7A",
+      "status": "implemented",
+      "criteria": "roster input rules > requires a guardian name only when contact details are supplied",
+      "tests": [
+        "tests/roster.test.ts::roster input rules > requires a guardian name only when contact details are supplied"
+      ]
+    },
+    {
+      "id": "UT-0D9DE0E02C56",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > retries the same class UUID without duplicate sessions and edits room/status",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > retries the same class UUID without duplicate sessions and edits room/status"
+      ]
+    },
+    {
+      "id": "UT-49DFCA7CCA7E",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > rejects foreign-academy/session/batch IDs and direct client table writes",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > rejects foreign-academy/session/batch IDs and direct client table writes"
+      ]
+    },
+    {
+      "id": "UT-81DB2277C68C",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > advances revision atomically and rejects stale competing saves",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > advances revision atomically and rejects stale competing saves"
+      ]
+    },
+    {
+      "id": "UT-A4990A619F42",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > rolls back every mark and revision on invalid entries or incomplete roster",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > rolls back every mark and revision on invalid entries or incomplete roster"
+      ]
+    },
+    {
+      "id": "UT-F0E86D868510",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > protects timing after attendance; cancellation retains marks and blocks further saves",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > protects timing after attendance; cancellation retains marks and blocks further saves"
+      ]
+    },
+    {
+      "id": "UT-997CEFFED673",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > uses the academy date when a class crosses the UTC date boundary",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > uses the academy date when a class crosses the UTC date boundary"
+      ]
+    },
+    {
+      "id": "UT-BD94B2D3085F",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > denies anonymous execution of trusted class and attendance operations",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > denies anonymous execution of trusted class and attendance operations"
+      ]
+    },
+    {
+      "id": "UT-F078E062F271",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > rejects a moved class even when its attendance revision has not changed",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > rejects a moved class even when its attendance revision has not changed"
+      ]
+    },
+    {
+      "id": "UT-D10AF6465C4F",
+      "status": "implemented",
+      "criteria": "trusted classes and attendance revisions > rejects reversed times and duplicate batch/start occurrences",
+      "tests": [
+        "tests/classes-database.test.ts::trusted classes and attendance revisions > rejects reversed times and duplicate batch/start occurrences"
+      ]
+    },
+    {
+      "id": "UT-51E509FF5ACF",
+      "status": "implemented",
+      "criteria": "denies capture without permission, foreign students and direct consent/media writes",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::denies capture without permission, foreign students and direct consent/media writes"
+      ]
+    },
+    {
+      "id": "UT-C34CF9F5D8FA",
+      "status": "implemented",
+      "criteria": "allows consented uploads once and refuses changed retry identity or forged metadata",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::allows consented uploads once and refuses changed retry identity or forged metadata"
+      ]
+    },
+    {
+      "id": "UT-BDB87D1079E2",
+      "status": "implemented",
+      "criteria": "keeps capture consent separate from permission to share media with parents",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::keeps capture consent separate from permission to share media with parents"
+      ]
+    },
+    {
+      "id": "UT-0C63C9F44F6F",
+      "status": "implemented",
+      "criteria": "creates immutable per-child snapshots and replays the exact request without duplicates",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::creates immutable per-child snapshots and replays the exact request without duplicates"
+      ]
+    },
+    {
+      "id": "UT-E262FB64C464",
+      "status": "implemented",
+      "criteria": "blocks sharing group media unless every pictured child permits it and every recipient appears",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::blocks sharing group media unless every pictured child permits it and every recipient appears"
+      ]
+    },
+    {
+      "id": "UT-758F57E8DA7F",
+      "status": "implemented",
+      "criteria": "withdrawal retains consent audit, blocks reads and cancels all pending group-media handoffs",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::withdrawal retains consent audit, blocks reads and cancels all pending group-media handoffs"
+      ]
+    },
+    {
+      "id": "UT-B5AE5C9B0649",
+      "status": "implemented",
+      "criteria": "isolates private consent, media and handoffs from other accounts and anonymous calls",
+      "tests": [
+        "tests/reviewed-feedback-database.test.ts::isolates private consent, media and handoffs from other accounts and anonymous calls"
+      ]
+    },
+    {
+      "id": "UT-7573C8CB6E48",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > snapshots trusted fee and names; fee changes and exact retries never rewrite an invoice",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > snapshots trusted fee and names; fee changes and exact retries never rewrite an invoice"
+      ]
+    },
+    {
+      "id": "UT-26E8F0BE88CE",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > accepts overlapping enrolment months and year rollover; rejects missing overlap and duplicate active months",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > accepts overlapping enrolment months and year rollover; rejects missing overlap and duplicate active months"
+      ]
+    },
+    {
+      "id": "UT-7BEFC8DAC227",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > rejects invalid fee/date boundaries and UUID request reuse with changed data atomically",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > rejects invalid fee/date boundaries and UUID request reuse with changed data atomically"
+      ]
+    },
+    {
+      "id": "UT-18941494FF4A",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > calculates unpaid, partial and paid from ledger; duplicate/lost-response retry preserves a single entry",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > calculates unpaid, partial and paid from ledger; duplicate/lost-response retry preserves a single entry"
+      ]
+    },
+    {
+      "id": "UT-0DC527EF4ABD",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > rejects invalid or changed payment requests without changing totals",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > rejects invalid or changed payment requests without changing totals"
+      ]
+    },
+    {
+      "id": "UT-8C41D67CFCAD",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > retains reversed manual entry and attribution, restores balance and permits an auditable replacement",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > retains reversed manual entry and attribution, restores balance and permits an auditable replacement"
+      ]
+    },
+    {
+      "id": "UT-6DDDD354B519",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > requires correcting payments before void, preserves voided history and allows replacement invoice",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > requires correcting payments before void, preserves voided history and allows replacement invoice"
+      ]
+    },
+    {
+      "id": "UT-22500025CB3E",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > excludes gateway test money from real balance and flags excess live money for review",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > excludes gateway test money from real balance and flags excess live money for review"
+      ]
+    },
+    {
+      "id": "UT-66C12AE70C4D",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > blocks foreign/anonymous RPCs and direct writes; invoker view/detail cannot leak another academy",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > blocks foreign/anonymous RPCs and direct writes; invoker view/detail cannot leak another academy"
+      ]
+    },
+    {
+      "id": "UT-3FA085144376",
+      "status": "implemented",
+      "criteria": "trusted monthly billing and manual ledger > returns one consistent detail with original receipt and its reversal",
+      "tests": [
+        "tests/fees-database.test.ts::trusted monthly billing and manual ledger > returns one consistent detail with original receipt and its reversal"
+      ]
+    },
+    {
+      "id": "UT-332018913780",
+      "status": "implemented",
+      "criteria": "accepts a verified existing account",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::accepts a verified existing account"
+      ]
+    },
+    {
+      "id": "UT-225F985DF467",
+      "status": "implemented",
+      "criteria": "rejects unverified accounts",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::rejects unverified accounts"
+      ]
+    },
+    {
+      "id": "UT-A5652B898A05",
+      "status": "implemented",
+      "criteria": "rejects an account with a current ban",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::rejects an account with a current ban"
+      ]
+    },
+    {
+      "id": "UT-A85618C80F8F",
+      "status": "implemented",
+      "criteria": "allows an expired ban",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::allows an expired ban"
+      ]
+    },
+    {
+      "id": "UT-3D2968D7BBBF",
+      "status": "implemented",
+      "criteria": "rejects a soft-deleted account even with a verified email",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::rejects a soft-deleted account even with a verified email"
+      ]
+    },
+    {
+      "id": "UT-6E2F440A47C9",
+      "status": "implemented",
+      "criteria": "rejects a removed account with a stale identity claim",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::rejects a removed account with a stale identity claim"
+      ]
+    },
+    {
+      "id": "UT-57B173DFFBF6",
+      "status": "implemented",
+      "criteria": "rejects a missing identity claim",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::rejects a missing identity claim"
+      ]
+    },
+    {
+      "id": "UT-C01970DD8137",
+      "status": "implemented",
+      "criteria": "does not downgrade the canonical kernel when the older candidate is reapplied",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::does not downgrade the canonical kernel when the older candidate is reapplied"
+      ]
+    },
+    {
+      "id": "UT-B6E9BCE49A1D",
+      "status": "implemented",
+      "criteria": "does not expose the candidate helper to anon",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::does not expose the candidate helper to anon"
+      ]
+    },
+    {
+      "id": "UT-3CE6A5B3CEEC",
+      "status": "implemented",
+      "criteria": "does not expose the candidate helper to authenticated",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::does not expose the candidate helper to authenticated"
+      ]
+    },
+    {
+      "id": "UT-8ADA8687CD98",
+      "status": "implemented",
+      "criteria": "does not expose the candidate helper to service_role",
+      "tests": [
+        "tests/workspace-account-eligibility.test.ts::does not expose the candidate helper to service_role"
+      ]
+    },
+    {
+      "id": "UT-16792C39C218",
+      "status": "implemented",
+      "criteria": "returns only the assigned class student IDs and names",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::returns only the assigned class student IDs and names"
+      ]
+    },
+    {
+      "id": "UT-03B0D1837793",
+      "status": "implemented",
+      "criteria": "permits owner management access without inventing instructor status",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::permits owner management access without inventing instructor status"
+      ]
+    },
+    {
+      "id": "UT-9BC5D72278B8",
+      "status": "implemented",
+      "criteria": "denies foreign, unassigned or missing class 12/44",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::denies foreign, unassigned or missing class 12/44"
+      ]
+    },
+    {
+      "id": "UT-79C9D9047DC2",
+      "status": "implemented",
+      "criteria": "denies foreign, unassigned or missing class 11/43",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::denies foreign, unassigned or missing class 11/43"
+      ]
+    },
+    {
+      "id": "UT-5DEA3A0E5E29",
+      "status": "implemented",
+      "criteria": "denies foreign, unassigned or missing class 11/999",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::denies foreign, unassigned or missing class 11/999"
+      ]
+    },
+    {
+      "id": "UT-1B65983DE1DB",
+      "status": "implemented",
+      "criteria": "denies revoked membership even with the same identity claim",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::denies revoked membership even with the same identity claim"
+      ]
+    },
+    {
+      "id": "UT-C27DBA4EE16B",
+      "status": "implemented",
+      "criteria": "denies a banned caller",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::denies a banned caller"
+      ]
+    },
+    {
+      "id": "UT-430A0D9C7637",
+      "status": "implemented",
+      "criteria": "excludes archived students and enrolments outside the academy-local session day",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::excludes archived students and enrolments outside the academy-local session day"
+      ]
+    },
+    {
+      "id": "UT-2B512D6DFB11",
+      "status": "implemented",
+      "criteria": "uses the academy timezone and inclusive enrolment dates at a UTC day boundary",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::uses the academy timezone and inclusive enrolment dates at a UTC day boundary"
+      ]
+    },
+    {
+      "id": "UT-64139F0AA8F6",
+      "status": "implemented",
+      "criteria": "keeps the candidate inaccessible to anon",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::keeps the candidate inaccessible to anon"
+      ]
+    },
+    {
+      "id": "UT-5BC6B59148C1",
+      "status": "implemented",
+      "criteria": "keeps the candidate inaccessible to authenticated",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::keeps the candidate inaccessible to authenticated"
+      ]
+    },
+    {
+      "id": "UT-1A7A1DADE656",
+      "status": "implemented",
+      "criteria": "keeps the candidate inaccessible to service_role",
+      "tests": [
+        "tests/workspace-roster-projection.test.ts::keeps the candidate inaccessible to service_role"
+      ]
+    },
+    {
+      "id": "UT-1CC29187CFB0",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > saves and records atomically; lost-response retries preserve revision/history/timestamp",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > saves and records atomically; lost-response retries preserve revision/history/timestamp"
+      ]
+    },
+    {
+      "id": "UT-1177E62EE5B7",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > rejects foreign accounts, foreign batches/recipients and anonymous execution",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > rejects foreign accounts, foreign batches/recipients and anonymous execution"
+      ]
+    },
+    {
+      "id": "UT-DF0D31008848",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > rejects invalid/repeated recipients and empty publication without partial rows",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > rejects invalid/repeated recipients and empty publication without partial rows"
+      ]
+    },
+    {
+      "id": "UT-CA8A56D22364",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > locks a recorded individual audience and rejects draft downgrade or scope changes",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > locks a recorded individual audience and rejects draft downgrade or scope changes"
+      ]
+    },
+    {
+      "id": "UT-267D3446D346",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > preserves recorded audience through roster changes and allows attributable text correction",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > preserves recorded audience through roster changes and allows attributable text correction"
+      ]
+    },
+    {
+      "id": "UT-CD842FF20CFA",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > rejects stale changed text instead of overwriting the newer saved version",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > rejects stale changed text instead of overwriting the newer saved version"
+      ]
+    },
+    {
+      "id": "UT-30E575778AF1",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > uses linked-class academy date and rejects cancelled or mismatched classes",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > uses linked-class academy date and rejects cancelled or mismatched classes"
+      ]
+    },
+    {
+      "id": "UT-0F1B79F40C11",
+      "status": "implemented",
+      "criteria": "private observation publication and immutable recipients > blocks direct client mutation of observations, recipients and version history",
+      "tests": [
+        "tests/observations-database.test.ts::private observation publication and immutable recipients > blocks direct client mutation of observations, recipients and version history"
+      ]
+    },
+    {
+      "id": "UT-5ED687F1CF3F",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > reserves one shared monthly attempt and one academy/day attempt together",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > reserves one shared monthly attempt and one academy/day attempt together"
+      ]
+    },
+    {
+      "id": "UT-48F674416C4C",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > daily-limit rejection never consumes the monthly allowance",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > daily-limit rejection never consumes the monthly allowance"
+      ]
+    },
+    {
+      "id": "UT-CD0A60EF253B",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > rejects attempt901 globally before touching another academy daily allowance",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > rejects attempt901 globally before touching another academy daily allowance"
+      ]
+    },
+    {
+      "id": "UT-EA2497A66657",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > concurrent queued transactions at899 admit only one final reservation across academies",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > concurrent queued transactions at899 admit only one final reservation across academies"
+      ]
+    },
+    {
+      "id": "UT-26D00D3EEDAF",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > concurrent queued calls for one academy cannot bypass its cooldown",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > concurrent queued calls for one academy cannot bypass its cooldown"
+      ]
+    },
+    {
+      "id": "UT-2E169CB7059E",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > keeps prior-month use separate and uses UTC month even with another session timezone",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > keeps prior-month use separate and uses UTC month even with another session timezone"
+      ]
+    },
+    {
+      "id": "UT-6A0F0CC9340C",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > rolls back every reservation when the academy does not exist",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > rolls back every reservation when the academy does not exist"
+      ]
+    },
+    {
+      "id": "UT-DF0E4594454C",
+      "status": "implemented",
+      "criteria": "global Vision allowance plus atomic academy/day reservations > denies authenticated/anonymous execution and access to monthly counters",
+      "tests": [
+        "tests/vision-quota-database.test.ts::global Vision allowance plus atomic academy/day reservations > denies authenticated/anonymous execution and access to monthly counters"
+      ]
+    },
+    {
+      "id": "UT-3097B52945B9",
+      "status": "implemented",
+      "criteria": "all literal accessibilityRole props are accepted by the installed Android native setter",
+      "tests": [
+        "tests/native-accessibility.test.ts::all literal accessibilityRole props are accepted by the installed Android native setter"
+      ]
+    },
+    {
+      "id": "UT-6F764FC83F2A",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > answers preflight/method rejection and rejects missing/invalid bearer auth before any provider call",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > answers preflight/method rejection and rejects missing/invalid bearer auth before any provider call"
+      ]
+    },
+    {
+      "id": "UT-3F597EE4D73E",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > verifies owner before quota/provider use and keeps service/provider credentials at their intended boundaries",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > verifies owner before quota/provider use and keeps service/provider credentials at their intended boundaries"
+      ]
+    },
+    {
+      "id": "UT-D85372CD9B7D",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > rejects non-owned academies and unavailable setup without spending scan quota",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > rejects non-owned academies and unavailable setup without spending scan quota"
+      ]
+    },
+    {
+      "id": "UT-5BEA79885DCC",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > rejects missing or old recognizer markers before reserving quota or contacting Google",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > rejects missing or old recognizer markers before reserving quota or contacting Google"
+      ]
+    },
+    {
+      "id": "UT-A9A283CC40A1",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > rejects unsupported/corrupt images, invalid academy IDs and images over5MB before quota/provider calls",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > rejects unsupported/corrupt images, invalid academy IDs and images over5MB before quota/provider calls"
+      ]
+    },
+    {
+      "id": "UT-8FEAD8FF971B",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > bounds actual streamed body bytes even when Content-Length lies and cancels the oversized stream",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > bounds actual streamed body bytes even when Content-Length lies and cancels the oversized stream"
+      ]
+    },
+    {
+      "id": "UT-076441CF1F1E",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > maps daily/monthly budget exhaustion and setup failures without calling Google afterward",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > maps daily/monthly budget exhaustion and setup failures without calling Google afterward"
+      ]
+    },
+    {
+      "id": "UT-A71CCECCD353",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > rejects provider errors and malformed/multiple OCR responses without returning raw provider diagnostics",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > rejects provider errors and malformed/multiple OCR responses without returning raw provider diagnostics"
+      ]
+    },
+    {
+      "id": "UT-0072F0517CF0",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > reports empty OCR but keeps unknown layouts as raw text for explicit names-only review without invented profile fields",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > reports empty OCR but keeps unknown layouts as raw text for explicit names-only review without invented profile fields"
+      ]
+    },
+    {
+      "id": "UT-2E139ED3FBED",
+      "status": "implemented",
+      "criteria": "authenticated Cloud Vision roster scanning with mocked requests only > redacts thrown backend/provider diagnostics from all client responses",
+      "tests": [
+        "tests/roster-scan-handler.test.ts::authenticated Cloud Vision roster scanning with mocked requests only > redacts thrown backend/provider diagnostics from all client responses"
+      ]
+    },
+    {
+      "id": "UT-17F89F7922F5",
+      "status": "implemented",
+      "criteria": "the owner dashboard bundle matches generated immutable migrations and excludes 001",
+      "tests": [
+        "tests/migration-bundle.test.ts::the owner dashboard bundle matches generated immutable migrations and excludes 001"
+      ]
+    },
+    {
+      "id": "UT-8359CC8B5682",
+      "status": "implemented",
+      "criteria": "the single-file dashboard scanner matches the tested handler and entry point",
+      "tests": [
+        "tests/migration-bundle.test.ts::the single-file dashboard scanner matches the tested handler and entry point"
+      ]
+    },
+    {
+      "id": "UT-17B307A540F7",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > uses the academy timezone even when UTC dates differ",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > uses the academy timezone even when UTC dates differ"
+      ]
+    },
+    {
+      "id": "UT-84A023FEA1E4",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > accepts overnight classes and rejects reversed/equal end times",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > accepts overnight classes and rejects reversed/equal end times"
+      ]
+    },
+    {
+      "id": "UT-D05517FCCA6E",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > rejects normalized invalid dates and invalid time input",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > rejects normalized invalid dates and invalid time input"
+      ]
+    },
+    {
+      "id": "UT-A8634FF7F344",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > rejects DST gaps and repeated ambiguous times rather than guessing",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > rejects DST gaps and repeated ambiguous times rather than guessing"
+      ]
+    },
+    {
+      "id": "UT-97867CCF16E6",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > queries a local day using timezone-aware next-day boundaries",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > queries a local day using timezone-aware next-day boundaries"
+      ]
+    },
+    {
+      "id": "UT-797E788731EE",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > marks only students enrolled on the local class date, excluding archives",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > marks only students enrolled on the local class date, excluding archives"
+      ]
+    },
+    {
+      "id": "UT-E4DB77980BB0",
+      "status": "implemented",
+      "criteria": "academy dates and class validation > recognizes an already-saved desired state but not an empty or differing draft",
+      "tests": [
+        "tests/classes.test.ts::academy dates and class validation > recognizes an already-saved desired state but not an empty or differing draft"
+      ]
+    },
+    {
+      "id": "UT-5B23BBE2AB21",
+      "status": "implemented",
+      "criteria": "private attendance device drafts > survives reopening and clears only the matching owner/academy/session",
+      "tests": [
+        "tests/classes.test.ts::private attendance device drafts > survives reopening and clears only the matching owner/academy/session"
+      ]
+    },
+    {
+      "id": "UT-6F9E6E244F0F",
+      "status": "implemented",
+      "criteria": "private attendance device drafts > strips arbitrary data and rejects invalid or oversized marks",
+      "tests": [
+        "tests/classes.test.ts::private attendance device drafts > strips arbitrary data and rejects invalid or oversized marks"
+      ]
+    },
+    {
+      "id": "UT-FBBC81367A99",
+      "status": "implemented",
+      "criteria": "private attendance device drafts > serializes a pending write and sign-out clear so a draft cannot reappear",
+      "tests": [
+        "tests/classes.test.ts::private attendance device drafts > serializes a pending write and sign-out clear so a draft cannot reappear"
+      ]
+    },
+    {
+      "id": "UT-3DAB931E4C6F",
+      "status": "implemented",
+      "criteria": "private attendance device drafts > reports storage failure without mutating the in-memory input",
+      "tests": [
+        "tests/classes.test.ts::private attendance device drafts > reports storage failure without mutating the in-memory input"
+      ]
+    },
+    {
+      "id": "UT-5D336E76F62F",
+      "status": "implemented",
+      "criteria": "a matching saved subset is not complete when the roster gained a student",
+      "tests": [
+        "tests/classes.test.ts::a matching saved subset is not complete when the roster gained a student"
+      ]
+    },
+    {
+      "id": "UT-D1830203DAD4",
+      "status": "implemented",
+      "criteria": "maps register columns by position even if provider text reading order differs",
+      "tests": [
+        "tests/vision-mapping.test.ts::maps register columns by position even if provider text reading order differs"
+      ]
+    },
+    {
+      "id": "UT-FD5C9BEA624C",
+      "status": "implemented",
+      "criteria": "reads explicit labelled admission fields, including multiple fields on one line",
+      "tests": [
+        "tests/vision-mapping.test.ts::reads explicit labelled admission fields, including multiple fields on one line"
+      ]
+    },
+    {
+      "id": "UT-A8CE37DDE71E",
+      "status": "implemented",
+      "criteria": "keeps Hindi names and converts explicitly written Devanagari digits without inferring ages",
+      "tests": [
+        "tests/vision-mapping.test.ts::keeps Hindi names and converts explicitly written Devanagari digits without inferring ages"
+      ]
+    },
+    {
+      "id": "UT-33A7371740B8",
+      "status": "implemented",
+      "criteria": "returns raw text for unclear layouts, single labelled names and portraits without text",
+      "tests": [
+        "tests/vision-mapping.test.ts::returns raw text for unclear layouts, single labelled names and portraits without text"
+      ]
+    },
+    {
+      "id": "UT-12DCF8143847",
+      "status": "implemented",
+      "criteria": "leaves uncertain ages, contacts and learning levels blank and exposes review warnings",
+      "tests": [
+        "tests/vision-mapping.test.ts::leaves uncertain ages, contacts and learning levels blank and exposes review warnings"
+      ]
+    },
+    {
+      "id": "UT-97BB60021370",
+      "status": "implemented",
+      "criteria": "skips repeated headers and totals while preserving independent rows",
+      "tests": [
+        "tests/vision-mapping.test.ts::skips repeated headers and totals while preserving independent rows"
+      ]
+    },
+    {
+      "id": "UT-B2FE839DEC6E",
+      "status": "implemented",
+      "criteria": "never uses a student mobile column as a guardian phone field",
+      "tests": [
+        "tests/vision-mapping.test.ts::never uses a student mobile column as a guardian phone field"
+      ]
+    },
+    {
+      "id": "UT-AF01C79CB86B",
+      "status": "implemented",
+      "criteria": "does not guess row associations from missing or rotated word geometry",
+      "tests": [
+        "tests/vision-mapping.test.ts::does not guess row associations from missing or rotated word geometry"
+      ]
+    },
+    {
+      "id": "UT-2D1902B5C962",
+      "status": "implemented",
+      "criteria": "limits imported rows and rejects malformed provider envelopes and oversized text",
+      "tests": [
+        "tests/vision-mapping.test.ts::limits imported rows and rejects malformed provider envelopes and oversized text"
+      ]
+    },
+    {
+      "id": "UT-B7E400518BE7",
+      "status": "implemented",
+      "criteria": "does not turn an unknown qualified name or its following contact into another student",
+      "tests": [
+        "tests/vision-mapping.test.ts::does not turn an unknown qualified name or its following contact into another student"
+      ]
+    },
+    {
+      "id": "UT-E55BAF8F6878",
+      "status": "implemented",
+      "criteria": "keeps far-apart Guardian and Phone headers as separate columns",
+      "tests": [
+        "tests/vision-mapping.test.ts::keeps far-apart Guardian and Phone headers as separate columns"
+      ]
+    },
+    {
+      "id": "UT-440346AE740B",
+      "status": "implemented",
+      "criteria": "falls back instead of assigning people with stale columns after a changed section header",
+      "tests": [
+        "tests/vision-mapping.test.ts::falls back instead of assigning people with stale columns after a changed section header"
+      ]
+    },
+    {
+      "id": "UT-8A6506B4AF32",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > counts distinct students separately from batch memberships and includes unbilled expected fees",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > counts distinct students separately from batch memberships and includes unbilled expected fees"
+      ]
+    },
+    {
+      "id": "UT-8B9E42E1F97F",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > uses trusted paid/partial/reversed balances, excludes test receipts and preserves excess collected for review",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > uses trusted paid/partial/reversed balances, excludes test receipts and preserves excess collected for review"
+      ]
+    },
+    {
+      "id": "UT-1CE2B5E8CF0D",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > keeps invoice amount/name snapshots after batch fee and student name changes",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > keeps invoice amount/name snapshots after batch fee and student name changes"
+      ]
+    },
+    {
+      "id": "UT-399C0933C4E3",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > retains archived historical charges but does not invent new charges for archived students or ended enrolments",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > retains archived historical charges but does not invent new charges for archived students or ended enrolments"
+      ]
+    },
+    {
+      "id": "UT-96B272046989",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > excludes voided charges from money totals and does not silently recreate cancelled debt",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > excludes voided charges from money totals and does not silently recreate cancelled debt"
+      ]
+    },
+    {
+      "id": "UT-EE2551A7E545",
+      "status": "implemented",
+      "criteria": "student-first monthly fee summary > does not let an earlier month invoice replace the selected months unbilled fee or current snapshot",
+      "tests": [
+        "tests/coach-summary.test.ts::student-first monthly fee summary > does not let an earlier month invoice replace the selected months unbilled fee or current snapshot"
+      ]
+    },
+    {
+      "id": "UT-2005D79200E0",
+      "status": "implemented",
+      "criteria": "privacy-safe error reports > keeps a bounded buffer with distinct references",
+      "tests": [
+        "tests/diagnostics.test.ts::privacy-safe error reports > keeps a bounded buffer with distinct references"
+      ]
+    },
+    {
+      "id": "UT-AD7A9C74ACEF",
+      "status": "implemented",
+      "criteria": "privacy-safe error reports > bounds a capacity-one buffer",
+      "tests": [
+        "tests/diagnostics.test.ts::privacy-safe error reports > bounds a capacity-one buffer"
+      ]
+    },
+    {
+      "id": "UT-FF30B2AE5FB2",
+      "status": "implemented",
+      "criteria": "privacy-safe error reports > does not accept arbitrary messages or private fields",
+      "tests": [
+        "tests/diagnostics.test.ts::privacy-safe error reports > does not accept arbitrary messages or private fields"
+      ]
+    },
+    {
+      "id": "UT-217E78BFA16D",
+      "status": "implemented",
+      "criteria": "privacy-safe error reports > clears reports and protects internal records from caller mutation",
+      "tests": [
+        "tests/diagnostics.test.ts::privacy-safe error reports > clears reports and protects internal records from caller mutation"
+      ]
+    },
+    {
+      "id": "UT-C5D9AE427870",
+      "status": "implemented",
+      "criteria": "privacy-safe error reports > captures UTC timestamps and rejects invalid capacity",
+      "tests": [
+        "tests/diagnostics.test.ts::privacy-safe error reports > captures UTC timestamps and rejects invalid capacity"
+      ]
+    },
+    {
+      "id": "UT-BA998C6E2F2E",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > restores safe errors across restarts and keeps the bounded limit",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > restores safe errors across restarts and keeps the bounded limit"
+      ]
+    },
+    {
+      "id": "UT-6881155BBDB1",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > strips extra fields and discards expired, future or unsupported records",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > strips extra fields and discards expired, future or unsupported records"
+      ]
+    },
+    {
+      "id": "UT-64F6C6653A56",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > merges startup errors recorded before restoration finishes",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > merges startup errors recorded before restoration finishes"
+      ]
+    },
+    {
+      "id": "UT-5DBCA79F3678",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > clear during restoration cannot resurrect signed-out reports",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > clear during restoration cannot resurrect signed-out reports"
+      ]
+    },
+    {
+      "id": "UT-D1DE2971BF06",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > unavailable storage never throws from record or prevents report export",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > unavailable storage never throws from record or prevents report export"
+      ]
+    },
+    {
+      "id": "UT-7D8FDE9597DF",
+      "status": "implemented",
+      "criteria": "device-persisted diagnostics > corrupt JSON is discarded instead of being exported",
+      "tests": [
+        "tests/diagnostics.test.ts::device-persisted diagnostics > corrupt JSON is discarded instead of being exported"
+      ]
+    },
+    {
+      "id": "UT-6E0380DC9730",
+      "status": "implemented",
+      "criteria": "records Parent attendance failures as metadata without accepting private payloads",
+      "tests": [
+        "tests/diagnostics.test.ts::records Parent attendance failures as metadata without accepting private payloads"
+      ]
+    },
+    {
+      "id": "UT-3986F783C216",
+      "status": "implemented",
+      "criteria": "billing calendar and integer money > validates dates, leap years, month/year rollover and partial enrolment overlap",
+      "tests": [
+        "tests/fees.test.ts::billing calendar and integer money > validates dates, leap years, month/year rollover and partial enrolment overlap"
+      ]
+    },
+    {
+      "id": "UT-F16451EBDD60",
+      "status": "implemented",
+      "criteria": "billing calendar and integer money > distinguishes unpaid, partial, paid, overdue and void, including the due-date boundary",
+      "tests": [
+        "tests/fees.test.ts::billing calendar and integer money > distinguishes unpaid, partial, paid, overdue and void, including the due-date boundary"
+      ]
+    },
+    {
+      "id": "UT-97D37BEFA403",
+      "status": "implemented",
+      "criteria": "billing calendar and integer money > parses paise without rounding and rejects zero, overpayment and fractional paise",
+      "tests": [
+        "tests/fees.test.ts::billing calendar and integer money > parses paise without rounding and rejects zero, overpayment and fractional paise"
+      ]
+    },
+    {
+      "id": "UT-D7E506E132FF",
+      "status": "implemented",
+      "criteria": "durable exact-request fee recovery > restores only whitelisted fields in the same account/academy",
+      "tests": [
+        "tests/fees.test.ts::durable exact-request fee recovery > restores only whitelisted fields in the same account/academy"
+      ]
+    },
+    {
+      "id": "UT-744093AF37CC",
+      "status": "implemented",
+      "criteria": "durable exact-request fee recovery > survives a new adapter instance, rejects replacement and clears only the exact request",
+      "tests": [
+        "tests/fees.test.ts::durable exact-request fee recovery > survives a new adapter instance, rejects replacement and clears only the exact request"
+      ]
+    },
+    {
+      "id": "UT-2A5891EE76D8",
+      "status": "implemented",
+      "criteria": "durable exact-request fee recovery > propagates unavailable storage instead of claiming a safely recoverable request",
+      "tests": [
+        "tests/fees.test.ts::durable exact-request fee recovery > propagates unavailable storage instead of claiming a safely recoverable request"
+      ]
+    },
+    {
+      "id": "UT-14BD4E46BCDA",
+      "status": "implemented",
+      "criteria": "private observation device drafts > restores the complete scoped draft without extra fields",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > restores the complete scoped draft without extra fields"
+      ]
+    },
+    {
+      "id": "UT-F10AE20437D5",
+      "status": "implemented",
+      "criteria": "private observation device drafts > rejects corrupt/oversized or widened individual drafts",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > rejects corrupt/oversized or widened individual drafts"
+      ]
+    },
+    {
+      "id": "UT-30D5AB5A3C60",
+      "status": "implemented",
+      "criteria": "private observation device drafts > coalesces queued edits and keeps the most recent text",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > coalesces queued edits and keeps the most recent text"
+      ]
+    },
+    {
+      "id": "UT-4499620EFED8",
+      "status": "implemented",
+      "criteria": "private observation device drafts > sign-out invalidates scheduled writers so private text cannot reappear",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > sign-out invalidates scheduled writers so private text cannot reappear"
+      ]
+    },
+    {
+      "id": "UT-C8C414F4D29C",
+      "status": "implemented",
+      "criteria": "private observation device drafts > an older request cleanup cannot delete newer edits",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > an older request cleanup cannot delete newer edits"
+      ]
+    },
+    {
+      "id": "UT-3E2A1E83E2F7",
+      "status": "implemented",
+      "criteria": "private observation device drafts > keeps storage failure explicit instead of falsely confirming a draft",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > keeps storage failure explicit instead of falsely confirming a draft"
+      ]
+    },
+    {
+      "id": "UT-17427404CA79",
+      "status": "implemented",
+      "criteria": "private observation device drafts > allows incomplete server drafts but requires text and recipients to record",
+      "tests": [
+        "tests/observations.test.ts::private observation device drafts > allows incomplete server drafts but requires text and recipients to record"
+      ]
+    },
+    {
+      "id": "UT-9D4671EACE6E",
+      "status": "implemented",
+      "criteria": "keeps multilingual names and blanks unsupported ages/levels without inventing data",
+      "tests": [
+        "tests/roster-scan-model.test.ts::keeps multilingual names and blanks unsupported ages/levels without inventing data"
+      ]
+    },
+    {
+      "id": "UT-74B50C310065",
+      "status": "implemented",
+      "criteria": "requires a valid reviewed selection and resolves existing names explicitly",
+      "tests": [
+        "tests/roster-scan-model.test.ts::requires a valid reviewed selection and resolves existing names explicitly"
+      ]
+    },
+    {
+      "id": "UT-DB1746E29DAE",
+      "status": "implemented",
+      "criteria": "sends only reviewed selected fields; linking cannot overwrite a profile",
+      "tests": [
+        "tests/roster-scan-model.test.ts::sends only reviewed selected fields; linking cannot overwrite a profile"
+      ]
+    },
+    {
+      "id": "UT-1C7351E432CE",
+      "status": "implemented",
+      "criteria": "keeps bounded recognised text available for review without storing it in imports",
+      "tests": [
+        "tests/roster-scan-model.test.ts::keeps bounded recognised text available for review without storing it in imports"
+      ]
+    },
+    {
+      "id": "UT-C03B7D1160F5",
+      "status": "implemented",
+      "criteria": "names-only mode strips numbering, leaves details blank and rejects contact/age lines",
+      "tests": [
+        "tests/roster-scan-model.test.ts::names-only mode strips numbering, leaves details blank and rejects contact/age lines"
+      ]
+    },
+    {
+      "id": "UT-529E1C9ACEBA",
+      "status": "implemented",
+      "criteria": "requires name selection when unassigned contact or age columns are present",
+      "tests": [
+        "tests/roster-scan-model.test.ts::requires name selection when unassigned contact or age columns are present"
+      ]
+    },
+    {
+      "id": "UT-D13225608CC3",
+      "status": "implemented",
+      "criteria": "secure session adapter > round-trips long Unicode sessions using small ASCII chunks",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > round-trips long Unicode sessions using small ASCII chunks"
+      ]
+    },
+    {
+      "id": "UT-D070D29857F5",
+      "status": "implemented",
+      "criteria": "secure session adapter > keeps the old session if a refresh write fails",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > keeps the old session if a refresh write fails"
+      ]
+    },
+    {
+      "id": "UT-5EA88B780155",
+      "status": "implemented",
+      "criteria": "secure session adapter > serializes concurrent writes and removes previous session chunks",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > serializes concurrent writes and removes previous session chunks"
+      ]
+    },
+    {
+      "id": "UT-75E806398116",
+      "status": "implemented",
+      "criteria": "secure session adapter > can explicitly discard a corrupt index and save a fresh session",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > can explicitly discard a corrupt index and save a fresh session"
+      ]
+    },
+    {
+      "id": "UT-B3E762422FE5",
+      "status": "implemented",
+      "criteria": "secure session adapter > fails explicitly on incomplete storage instead of returning a partial token",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > fails explicitly on incomplete storage instead of returning a partial token"
+      ]
+    },
+    {
+      "id": "UT-12EA11B38212",
+      "status": "implemented",
+      "criteria": "secure session adapter > rejects malformed manifests and oversized sessions",
+      "tests": [
+        "tests/auth.test.ts::secure session adapter > rejects malformed manifests and oversized sessions"
+      ]
+    },
+    {
+      "id": "UT-62F956279A3D",
+      "status": "implemented",
+      "criteria": "email and recovery guardrails > validates email and new passwords without rejecting valid existing shorter passwords",
+      "tests": [
+        "tests/auth.test.ts::email and recovery guardrails > validates email and new passwords without rejecting valid existing shorter passwords"
+      ]
+    },
+    {
+      "id": "UT-393638825BD0",
+      "status": "implemented",
+      "criteria": "email and recovery guardrails > accepts only owned callback routes and one-time code exchanges",
+      "tests": [
+        "tests/auth.test.ts::email and recovery guardrails > accepts only owned callback routes and one-time code exchanges"
+      ]
+    },
+    {
+      "id": "UT-22EB1C2EDA84",
+      "status": "implemented",
+      "criteria": "preserves unrecorded attendance and whitelists the output",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::preserves unrecorded attendance and whitelists the output"
+      ]
+    },
+    {
+      "id": "UT-9EC701359904",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"attendance_status\":\"make_up\"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"attendance_status\":\"make_up\"}"
+      ]
+    },
+    {
+      "id": "UT-E956087F4049",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"ends_at\":\"2026-11-16T10:00:00Z\"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"ends_at\":\"2026-11-16T10:00:00Z\"}"
+      ]
+    },
+    {
+      "id": "UT-01B5ACB7FB33",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"starts_at\":\"bad\"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"starts_at\":\"bad\"}"
+      ]
+    },
+    {
+      "id": "UT-4CBCFE34D8A8",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"session_id\":\"bad\"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"session_id\":\"bad\"}"
+      ]
+    },
+    {
+      "id": "UT-634F8A7CDCBD",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"session_status\":\"invented\"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"session_status\":\"invented\"}"
+      ]
+    },
+    {
+      "id": "UT-8F13FE96F512",
+      "status": "implemented",
+      "criteria": "rejects malformed destination rows {\"academy_name\":\" \"}",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"academy_name\":\" \"}"
+      ]
+    },
+    {
+      "id": "UT-69E63B6D2C23",
+      "status": "implemented",
+      "criteria": "rejects duplicate, unordered or oversized pages",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects duplicate, unordered or oversized pages"
+      ]
+    },
+    {
+      "id": "UT-A9C4CCFE734C",
+      "status": "implemented",
+      "criteria": "accepts empty pages and finds the Monday across a year boundary",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::accepts empty pages and finds the Monday across a year boundary"
+      ]
+    },
+    {
+      "id": "UT-79BE8188C2A6",
+      "status": "implemented",
+      "criteria": "rejects invalid week input 2026-02-30",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects invalid week input 2026-02-30"
+      ]
+    },
+    {
+      "id": "UT-CB1509E6507F",
+      "status": "implemented",
+      "criteria": "rejects invalid week input invalid",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects invalid week input invalid"
+      ]
+    },
+    {
+      "id": "UT-8B53A13003F9",
+      "status": "implemented",
+      "criteria": "rejects invalid week input 2026-13-01",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::rejects invalid week input 2026-13-01"
+      ]
+    },
+    {
+      "id": "UT-2909A81EB743",
+      "status": "implemented",
+      "criteria": "native authentication cryptography adapter > delegates random bytes and SHA-256 to the platform driver",
+      "tests": [
+        "tests/crypto.test.ts::native authentication cryptography adapter > delegates random bytes and SHA-256 to the platform driver"
+      ]
+    },
+    {
+      "id": "UT-173A0D936A85",
+      "status": "implemented",
+      "criteria": "native authentication cryptography adapter > preserves an existing complete WebCrypto implementation",
+      "tests": [
+        "tests/crypto.test.ts::native authentication cryptography adapter > preserves an existing complete WebCrypto implementation"
+      ]
+    },
+    {
+      "id": "UT-37FEBAF2CBE3",
+      "status": "implemented",
+      "criteria": "safe startup configuration > hides developer controls for unset or unrecognized environments",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > hides developer controls for unset or unrecognized environments"
+      ]
+    },
+    {
+      "id": "UT-823C5234159C",
+      "status": "implemented",
+      "criteria": "safe startup configuration > starts with actionable missing settings instead of throwing",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > starts with actionable missing settings instead of throwing"
+      ]
+    },
+    {
+      "id": "UT-E29EEAE86E72",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects unsuitable endpoint http://project.supabase.co",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects unsuitable endpoint http://project.supabase.co"
+      ]
+    },
+    {
+      "id": "UT-378D0C3D58BD",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects unsuitable endpoint https://user:password@project.supabase.co",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects unsuitable endpoint https://user:password@project.supabase.co"
+      ]
+    },
+    {
+      "id": "UT-9676CE3D50D0",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects unsuitable endpoint broken",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects unsuitable endpoint broken"
+      ]
+    },
+    {
+      "id": "UT-DD2E2767F1DC",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects unsuitable endpoint https://project.supabase.co/rest/v1/",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects unsuitable endpoint https://project.supabase.co/rest/v1/"
+      ]
+    },
+    {
+      "id": "UT-EAD33A83B15F",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects unsuitable endpoint https://project.supabase.co?key=secret",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects unsuitable endpoint https://project.supabase.co?key=secret"
+      ]
+    },
+    {
+      "id": "UT-4066C392F630",
+      "status": "implemented",
+      "criteria": "safe startup configuration > rejects server secrets as client configuration",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects server secrets as client configuration"
+      ]
+    },
+    {
+      "id": "UT-D58C98EED7F5",
+      "status": "implemented",
+      "criteria": "safe startup configuration > recognizes public configuration without claiming connectivity",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > recognizes public configuration without claiming connectivity"
+      ]
+    },
+    {
+      "id": "UT-3DCD1139E730",
+      "status": "implemented",
+      "criteria": "requires an explicit international recipient and rejects link injection or ambiguous local numbers",
+      "tests": [
+        "tests/whatsapp.test.ts::requires an explicit international recipient and rejects link injection or ambiguous local numbers"
+      ]
+    },
+    {
+      "id": "UT-2B0BCFC03BF1",
+      "status": "implemented",
+      "criteria": "encodes feedback as a single message and refuses blank or oversized text",
+      "tests": [
+        "tests/whatsapp.test.ts::encodes feedback as a single message and refuses blank or oversized text"
+      ]
+    },
+    {
+      "id": "UT-573E5B348603",
+      "status": "implemented",
+      "criteria": "allows a teaching batch without fee setup while financial input remains strict",
+      "tests": [
+        "tests/whatsapp.test.ts::allows a teaching batch without fee setup while financial input remains strict"
+      ]
+    },
+    {
+      "id": "UT-EB11ED7C7631",
+      "status": "implemented",
+      "criteria": "requires permission from every pictured student and separates video/capture/sharing purposes",
+      "tests": [
+        "tests/class-media.test.ts::requires permission from every pictured student and separates video/capture/sharing purposes"
+      ]
+    },
+    {
+      "id": "UT-5ABCD343477E",
+      "status": "implemented",
+      "criteria": "recognises supported video headers without accepting disguised HEIC images or arbitrary files",
+      "tests": [
+        "tests/class-media.test.ts::recognises supported video headers without accepting disguised HEIC images or arbitrary files"
+      ]
+    },
+    {
+      "id": "UT-E22E81ADC6BD",
+      "status": "implemented",
+      "criteria": "accepts only supported photo byte signatures and enforces the byte limit",
+      "tests": [
+        "tests/photos.test.ts::accepts only supported photo byte signatures and enforces the byte limit"
+      ]
+    },
+    {
+      "id": "UT-35CBE4D012AF",
+      "status": "implemented",
+      "criteria": "restores a pending child connection only for the same signed-in account",
+      "tests": [
+        "tests/feedback-journey.test.ts::restores a pending child connection only for the same signed-in account"
+      ]
+    },
+    {
+      "id": "UT-B0C8D42A6E51",
+      "status": "implemented",
+      "criteria": "expires invitations and rejects malformed intents rather than inferring a child",
+      "tests": [
+        "tests/feedback-journey.test.ts::expires invitations and rejects malformed intents rather than inferring a child"
+      ]
+    },
+    {
+      "id": "UT-077BE81216E0",
+      "status": "implemented",
+      "criteria": "supports an existing connection and explicitly clears its navigation intent",
+      "tests": [
+        "tests/feedback-journey.test.ts::supports an existing connection and explicitly clears its navigation intent"
+      ]
+    },
+    {
+      "id": "UT-FA579F704845",
+      "status": "implemented",
+      "criteria": "counts only the selected child and current week from saved records, including an empty week",
+      "tests": [
+        "tests/parent-model.test.ts::counts only the selected child and current week from saved records, including an empty week"
+      ]
+    },
+    {
+      "id": "UT-0E16E8A1C29E",
+      "status": "implemented",
+      "criteria": "keeps academy and local-day filters on every SDK page",
+      "tests": [
+        "tests/classes-service.test.ts::keeps academy and local-day filters on every SDK page"
+      ]
+    },
+    {
+      "id": "UT-F8B114426B28",
+      "status": "implemented",
+      "criteria": "rejects the entire class context if any later API page fails",
+      "tests": [
+        "tests/classes-service.test.ts::rejects the entire class context if any later API page fails"
+      ]
+    },
+    {
+      "id": "UT-EFA0E32B73F4",
+      "status": "implemented",
+      "criteria": "loads records beyond the API page cap, including a final short page",
+      "tests": [
+        "tests/class-paging.test.ts::loads records beyond the API page cap, including a final short page"
+      ]
+    },
+    {
+      "id": "UT-10F9ACD0180F",
+      "status": "implemented",
+      "criteria": "rejects a failed later page instead of returning an incomplete roster",
+      "tests": [
+        "tests/class-paging.test.ts::rejects a failed later page instead of returning an incomplete roster"
+      ]
+    },
+    {
+      "id": "UT-6F1C432FC85B",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"000002\"},{\"id\":\"000001\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"000002\"},{\"id\":\"000001\"}]}"
+      ]
+    },
+    {
+      "id": "UT-393D57DA5802",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"000001\"},{\"id\":\"000001\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"000001\"},{\"id\":\"000001\"}]}"
+      ]
+    },
+    {
+      "id": "UT-9F6CCE814ECA",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"\"}]}"
+      ]
+    },
+    {
+      "id": "UT-BEB0E670EB0C",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{}]}"
+      ]
+    },
+    {
+      "id": "UT-EA01D434FAE5",
+      "status": "implemented",
+      "criteria": "rejects an API that repeats the cursor instead of looping or duplicating records",
+      "tests": [
+        "tests/class-paging.test.ts::rejects an API that repeats the cursor instead of looping or duplicating records"
+      ]
+    },
+    {
+      "id": "UT-7A4ED0F4B87B",
+      "status": "implemented",
+      "criteria": "rejects a null success payload rather than showing a false empty result",
+      "tests": [
+        "tests/class-paging.test.ts::rejects a null success payload rather than showing a false empty result"
+      ]
+    },
+    {
+      "id": "UT-4998B3EACD8B",
+      "status": "implemented",
+      "criteria": "retains the unread tail when an earlier row disappears between pages",
+      "tests": [
+        "tests/class-paging.test.ts::retains the unread tail when an earlier row disappears between pages"
+      ]
+    },
+    {
+      "id": "SC-5B894CFBD73E",
+      "status": "implemented",
+      "criteria": "attendance includes an enrolled student beyond the API response cap",
+      "tests": [
+        "e2e/classes.spec.ts::attendance includes an enrolled student beyond the API response cap"
+      ]
+    },
+    {
+      "id": "SC-0E43A7A1AA11",
+      "status": "implemented",
+      "criteria": "one tap saves reviewed student feedback privately and enables sharing without another save approval",
+      "tests": [
+        "e2e/observations.spec.ts::one tap saves reviewed student feedback privately and enables sharing without another save approval"
+      ]
+    },
+    {
+      "id": "SC-003237E12598",
+      "status": "implemented",
+      "criteria": "allows admin-only roster inspection without creating a teaching identity or permitting marks",
+      "tests": [
+        "tests/workspace-attendance.test.ts::allows admin-only roster inspection without creating a teaching identity or permitting marks"
+      ]
+    },
+    {
+      "id": "SC-12B9124D81A9",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 1",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 1"
+      ]
+    },
+    {
+      "id": "SC-0C87584FB686",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 2",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 2"
+      ]
+    },
+    {
+      "id": "SC-D472BD5782B8",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 5",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 5"
+      ]
+    },
+    {
+      "id": "SC-6CC49E8A30EB",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 6",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 6"
+      ]
+    },
+    {
+      "id": "SC-0E28117BAA97",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 7",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 7"
+      ]
+    },
+    {
+      "id": "SC-0FC6C4C17F87",
+      "status": "implemented",
+      "criteria": "denies attendance writes without eligible current teaching authority 8",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies attendance writes without eligible current teaching authority 8"
+      ]
+    },
+    {
+      "id": "SC-C60B4CFC50DB",
+      "status": "implemented",
+      "criteria": "denies revoked assignments, expired write windows, cancelled classes and archived batches even for retries",
+      "tests": [
+        "tests/workspace-attendance.test.ts::denies revoked assignments, expired write windows, cancelled classes and archived batches even for retries"
+      ]
+    },
+    {
+      "id": "SC-A274E2BB1966",
+      "status": "implemented",
+      "criteria": "detects a roster addition/removal after review and preserves previous revisions on failure",
+      "tests": [
+        "tests/workspace-attendance.test.ts::detects a roster addition/removal after review and preserves previous revisions on failure"
+      ]
+    },
+    {
+      "id": "SC-084A12B67260",
+      "status": "implemented",
+      "criteria": "keeps submissions and operations private without inventing legacy attribution or changing the live ledger",
+      "tests": [
+        "tests/workspace-attendance.test.ts::keeps submissions and operations private without inventing legacy attribution or changing the live ledger"
+      ]
+    },
+    {
+      "id": "SC-74B3082BDDB6",
+      "status": "implemented",
+      "criteria": "lets an assigned instructor mark the complete class roster without impersonating its owner",
+      "tests": [
+        "tests/workspace-attendance.test.ts::lets an assigned instructor mark the complete class roster without impersonating its owner"
+      ]
+    },
+    {
+      "id": "SC-4AA1400833BC",
+      "status": "implemented",
+      "criteria": "rejects a foreign or unassigned branch class and does not leak its roster",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects a foreign or unassigned branch class and does not leak its roster"
+      ]
+    },
+    {
+      "id": "SC-FCABCB92A8C0",
+      "status": "implemented",
+      "criteria": "rejects changed request payloads, stale revisions and stale class context atomically",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects changed request payloads, stale revisions and stale class context atomically"
+      ]
+    },
+    {
+      "id": "SC-93CAC9530A0D",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 0",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 0"
+      ]
+    },
+    {
+      "id": "SC-AC027D97A370",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 1",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 1"
+      ]
+    },
+    {
+      "id": "SC-0EE77C3963B9",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 2",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 2"
+      ]
+    },
+    {
+      "id": "SC-7410E2CAA4BC",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 3",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 3"
+      ]
+    },
+    {
+      "id": "SC-D98FCEED1A29",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 4",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 4"
+      ]
+    },
+    {
+      "id": "SC-BF68CC11C48D",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 5",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 5"
+      ]
+    },
+    {
+      "id": "SC-A3651585A96C",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 6",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 6"
+      ]
+    },
+    {
+      "id": "SC-381B71AE9439",
+      "status": "implemented",
+      "criteria": "rejects invalid, duplicate, incomplete or foreign marks case 7",
+      "tests": [
+        "tests/workspace-attendance.test.ts::rejects invalid, duplicate, incomplete or foreign marks case 7"
+      ]
+    },
+    {
+      "id": "SC-3DAD447AEB77",
+      "status": "implemented",
+      "criteria": "retains old snapshot attribution after another instructor updates attendance",
+      "tests": [
+        "tests/workspace-attendance.test.ts::retains old snapshot attribution after another instructor updates attendance"
+      ]
+    },
+    {
+      "id": "SC-0C30FBFE2322",
+      "status": "implemented",
+      "criteria": "returns the original receipt for reordered exact retries without undoing later attendance edits",
+      "tests": [
+        "tests/workspace-attendance.test.ts::returns the original receipt for reordered exact retries without undoing later attendance edits"
+      ]
+    },
+    {
+      "id": "SC-376D50F67947",
+      "status": "implemented",
+      "criteria": "uses the academy-local class date and ended enrolments when checking every student",
+      "tests": [
+        "tests/workspace-attendance.test.ts::uses the academy-local class date and ended enrolments when checking every student"
+      ]
+    },
+    {
+      "id": "SC-2629B42688A8",
+      "status": "implemented",
+      "criteria": "corrects recorded feedback with a reason and actual editor while keeping original teaching identity",
+      "tests": [
+        "tests/workspace-feedback.test.ts::corrects recorded feedback with a reason and actual editor while keeping original teaching identity"
+      ]
+    },
+    {
+      "id": "SC-93371ECA0BC0",
+      "status": "implemented",
+      "criteria": "creates a teacher-authored class draft, records it and preserves membership attribution",
+      "tests": [
+        "tests/workspace-feedback.test.ts::creates a teacher-authored class draft, records it and preserves membership attribution"
+      ]
+    },
+    {
+      "id": "SC-C0590BC5C0C6",
+      "status": "implemented",
+      "criteria": "denies old receipt/edit after assignment revocation and never treats rehire as the original membership",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies old receipt/edit after assignment revocation and never treats rehire as the original membership"
+      ]
+    },
+    {
+      "id": "SC-227CE2A14881",
+      "status": "implemented",
+      "criteria": "denies unrelated draft reads and returns only whitelisted feedback fields with five latest versions",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies unrelated draft reads and returns only whitelisted feedback fields with five latest versions"
+      ]
+    },
+    {
+      "id": "SC-2DBBC846ED35",
+      "status": "implemented",
+      "criteria": "denies wrong branch/foreign class and locks recorded context, audience, recipients and status",
+      "tests": [
+        "tests/workspace-feedback.test.ts::denies wrong branch/foreign class and locks recorded context, audience, recipients and status"
+      ]
+    },
+    {
+      "id": "SC-2A591952A710",
+      "status": "implemented",
+      "criteria": "does not let a co-instructor or manager edit another teacher draft or inherit its authorship",
+      "tests": [
+        "tests/workspace-feedback.test.ts::does not let a co-instructor or manager edit another teacher draft or inherit its authorship"
+      ]
+    },
+    {
+      "id": "SC-DF2D8704D273",
+      "status": "implemented",
+      "criteria": "enforces a nonnull correction reason in the audit table as well as the operation",
+      "tests": [
+        "tests/workspace-feedback.test.ts::enforces a nonnull correction reason in the audit table as well as the operation"
+      ]
+    },
+    {
+      "id": "SC-B1B1662B644C",
+      "status": "implemented",
+      "criteria": "keeps legacy authorship unknown at membership level when an owner corrects an older recorded note",
+      "tests": [
+        "tests/workspace-feedback.test.ts::keeps legacy authorship unknown at membership level when an owner corrects an older recorded note"
+      ]
+    },
+    {
+      "id": "SC-36C61E55B4BD",
+      "status": "implemented",
+      "criteria": "keeps private feedback operations and submissions inaccessible to app/service roles",
+      "tests": [
+        "tests/workspace-feedback.test.ts::keeps private feedback operations and submissions inaccessible to app/service roles"
+      ]
+    },
+    {
+      "id": "SC-44E0E4E3BAEB",
+      "status": "implemented",
+      "criteria": "leaves an already-approved Parent snapshot unchanged when the source note is corrected",
+      "tests": [
+        "tests/workspace-feedback.test.ts::leaves an already-approved Parent snapshot unchanged when the source note is corrected"
+      ]
+    },
+    {
+      "id": "SC-4B1FE2B1E6C9",
+      "status": "implemented",
+      "criteria": "moves an authorized draft across batches atomically and hides old branch versions from a current branch manager",
+      "tests": [
+        "tests/workspace-feedback.test.ts::moves an authorized draft across batches atomically and hides old branch versions from a current branch manager"
+      ]
+    },
+    {
+      "id": "SC-C1481A9391AB",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 1",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 1"
+      ]
+    },
+    {
+      "id": "SC-8D8BABEF2C1A",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 2",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 2"
+      ]
+    },
+    {
+      "id": "SC-60E13802D63B",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 5",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 5"
+      ]
+    },
+    {
+      "id": "SC-28ED15BB83C3",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 6",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 6"
+      ]
+    },
+    {
+      "id": "SC-B6611CD423FB",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 7",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 7"
+      ]
+    },
+    {
+      "id": "SC-95D1F3D8A031",
+      "status": "implemented",
+      "criteria": "never creates teaching authorship using owner-only/finance/unverified/unrelated actor 8",
+      "tests": [
+        "tests/workspace-feedback.test.ts::never creates teaching authorship using owner-only/finance/unverified/unrelated actor 8"
+      ]
+    },
+    {
+      "id": "SC-7E68F4DB357C",
+      "status": "implemented",
+      "criteria": "preserves stable receipts and does not undo a newer note when an older response is retried",
+      "tests": [
+        "tests/workspace-feedback.test.ts::preserves stable receipts and does not undo a newer note when an older response is retried"
+      ]
+    },
+    {
+      "id": "SC-F6B3553C0AC1",
+      "status": "implemented",
+      "criteria": "preserves the original shared teacher name after a rename and later correction",
+      "tests": [
+        "tests/workspace-feedback.test.ts::preserves the original shared teacher name after a rename and later correction"
+      ]
+    },
+    {
+      "id": "SC-AA6173520BA2",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[21,21]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[21,21]}"
+      ]
+    },
+    {
+      "id": "SC-4D680100ADFE",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[23]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[23]}"
+      ]
+    },
+    {
+      "id": "SC-7554C51CC7E5",
+      "status": "implemented",
+      "criteria": "rejects foreign, duplicate or empty recorded recipients {\"recipients\":[]}",
+      "tests": [
+        "tests/workspace-feedback.test.ts::rejects foreign, duplicate or empty recorded recipients {\"recipients\":[]}"
+      ]
+    },
+    {
+      "id": "SC-778BA35BC8F3",
+      "status": "implemented",
+      "criteria": "requires explicit correction authority, recorded status and a nonblank reason",
+      "tests": [
+        "tests/workspace-feedback.test.ts::requires explicit correction authority, recorded status and a nonblank reason"
+      ]
+    },
+    {
+      "id": "SC-B11903C40AC0",
+      "status": "implemented",
+      "criteria": "adds batch memberships without dropping earlier relationships or duplicating the primary contact",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::adds batch memberships without dropping earlier relationships or duplicating the primary contact"
+      ]
+    },
+    {
+      "id": "SC-1C4E184B113E",
+      "status": "implemented",
+      "criteria": "allows ordinary profile edits when approved Parent email differs from unchanged contact ",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows ordinary profile edits when approved Parent email differs from unchanged contact "
+      ]
+    },
+    {
+      "id": "SC-B97C49B0A3BD",
+      "status": "implemented",
+      "criteria": "allows ordinary profile edits when approved Parent email differs from unchanged contact different@example.test",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows ordinary profile edits when approved Parent email differs from unchanged contact different@example.test"
+      ]
+    },
+    {
+      "id": "SC-760A21C4E612",
+      "status": "implemented",
+      "criteria": "allows status/room edits without changing recorded context or inventing teacher attribution",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::allows status/room edits without changing recorded context or inventing teacher attribution"
+      ]
+    },
+    {
+      "id": "SC-790AD37E59BA",
+      "status": "implemented",
+      "criteria": "binds request receipts to membership periods, not a global account request ID",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::binds request receipts to membership periods, not a global account request ID"
+      ]
+    },
+    {
+      "id": "SC-9FB3633B60FF",
+      "status": "implemented",
+      "criteria": "canonicalizes class retry payloads across server session timezones",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::canonicalizes class retry payloads across server session timezones"
+      ]
+    },
+    {
+      "id": "SC-902280C374AC",
+      "status": "implemented",
+      "criteria": "denies new edits to archived students/batches and classes in archived batches",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies new edits to archived students/batches and classes in archived batches"
+      ]
+    },
+    {
+      "id": "SC-A6702BECC33E",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 3",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 3"
+      ]
+    },
+    {
+      "id": "SC-7AF74EF680E5",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 4",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 4"
+      ]
+    },
+    {
+      "id": "SC-795AF816DF43",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 5",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 5"
+      ]
+    },
+    {
+      "id": "SC-E13679640F3B",
+      "status": "implemented",
+      "criteria": "denies roster management to instructor/substitute/finance/unverified actor 6",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::denies roster management to instructor/substitute/finance/unverified actor 6"
+      ]
+    },
+    {
+      "id": "SC-32A296B6FE01",
+      "status": "implemented",
+      "criteria": "does not silently replace the verified email on an existing approved Parent connection",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::does not silently replace the verified email on an existing approved Parent connection"
+      ]
+    },
+    {
+      "id": "SC-A252AC1C7877",
+      "status": "implemented",
+      "criteria": "keeps every new function private, fixed-search-path, and every new table protected by RLS",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps every new function private, fixed-search-path, and every new table protected by RLS"
+      ]
+    },
+    {
+      "id": "SC-752010C23E00",
+      "status": "implemented",
+      "criteria": "keeps mutations in the selected workspace even when the same account has authority in both",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps mutations in the selected workspace even when the same account has authority in both"
+      ]
+    },
+    {
+      "id": "SC-6CA986C1D160",
+      "status": "implemented",
+      "criteria": "keeps operations and receipt/version tables inaccessible to app roles and leaves live migration history unchanged",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::keeps operations and receipt/version tables inaccessible to app roles and leaves live migration history unchanged"
+      ]
+    },
+    {
+      "id": "SC-78A005F43464",
+      "status": "implemented",
+      "criteria": "opens a complete student profile only for workspace owner/admin with contact and enrolment fields whitelisted",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::opens a complete student profile only for workspace owner/admin with contact and enrolment fields whitelisted"
+      ]
+    },
+    {
+      "id": "SC-9C9F564E7EE5",
+      "status": "implemented",
+      "criteria": "permits delegated global admin management without fabricating a Coach or ownership",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::permits delegated global admin management without fabricating a Coach or ownership"
+      ]
+    },
+    {
+      "id": "SC-D6541F96E125",
+      "status": "implemented",
+      "criteria": "preserves existing fees and prohibits an unauthorized branch move even with a new request",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::preserves existing fees and prohibits an unauthorized branch move even with a new request"
+      ]
+    },
+    {
+      "id": "SC-908A40525657",
+      "status": "implemented",
+      "criteria": "protects class history and session-specific teaching assignments when editing context",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::protects class history and session-specific teaching assignments when editing context"
+      ]
+    },
+    {
+      "id": "SC-DBA19A69682F",
+      "status": "implemented",
+      "criteria": "rechecks revocation and expiry before allowing a receipt replay",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rechecks revocation and expiry before allowing a receipt replay"
+      ]
+    },
+    {
+      "id": "SC-9C867F1B5ECD",
+      "status": "implemented",
+      "criteria": "rejects changed requests, stale revisions and resource-type substitution",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects changed requests, stale revisions and resource-type substitution"
+      ]
+    },
+    {
+      "id": "SC-FE9F64810D3E",
+      "status": "implemented",
+      "criteria": "rejects foreign workspace IDs, foreign resource IDs and foreign branches",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects foreign workspace IDs, foreign resource IDs and foreign branches"
+      ]
+    },
+    {
+      "id": "SC-189F70E552FB",
+      "status": "implemented",
+      "criteria": "rejects invalid revisions, identifiers, names and class intervals without partial state",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rejects invalid revisions, identifiers, names and class intervals without partial state"
+      ]
+    },
+    {
+      "id": "SC-FCA5CB98C394",
+      "status": "implemented",
+      "criteria": "reruns the candidate without resetting resource versions or erasing prior receipts",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::reruns the candidate without resetting resource versions or erasing prior receipts"
+      ]
+    },
+    {
+      "id": "SC-5D056751AF39",
+      "status": "implemented",
+      "criteria": "restricts branch managers to their branch and denies global student-profile changes",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::restricts branch managers to their branch and denies global student-profile changes"
+      ]
+    },
+    {
+      "id": "SC-606D9532114B",
+      "status": "implemented",
+      "criteria": "retries exactly once and returns the original receipt after later edits without overwriting them",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::retries exactly once and returns the original receipt after later edits without overwriting them"
+      ]
+    },
+    {
+      "id": "SC-2A0E8F5B2C87",
+      "status": "implemented",
+      "criteria": "returns a minimum teaching roster with no contacts, billing, private family or unassigned students",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::returns a minimum teaching roster with no contacts, billing, private family or unassigned students"
+      ]
+    },
+    {
+      "id": "SC-24BBABF7503B",
+      "status": "implemented",
+      "criteria": "rolls student, resource map and receipt back when a contact write fails after validation",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rolls student, resource map and receipt back when a contact write fails after validation"
+      ]
+    },
+    {
+      "id": "SC-96FE1BE4517A",
+      "status": "implemented",
+      "criteria": "rolls the whole student operation back for an invalid batch or ended enrolment",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::rolls the whole student operation back for an invalid batch or ended enrolment"
+      ]
+    },
+    {
+      "id": "SC-01F163A99FD3",
+      "status": "implemented",
+      "criteria": "saves a batch, student/contact/enrolment and class under explicit workspace authority",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::saves a batch, student/contact/enrolment and class under explicit workspace authority"
+      ]
+    },
+    {
+      "id": "SC-E17B2EA95DCF",
+      "status": "implemented",
+      "criteria": "uses the class date and academy timezone for enrolments, excluding archived students",
+      "tests": [
+        "tests/workspace-roster-transactions.test.ts::uses the class date and academy timezone for enrolments, excluding archived students"
+      ]
+    },
+    {
+      "id": "SC-15B0C1257AA5",
+      "status": "implemented",
+      "criteria": "accepts ownership for an existing indefinite staff member without rewriting their teaching identity",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::accepts ownership for an existing indefinite staff member without rewriting their teaching identity"
+      ]
+    },
+    {
+      "id": "SC-66809CD68C30",
+      "status": "implemented",
+      "criteria": "binds a neutral owner-issued offer to one verified recipient, with no access before acceptance",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::binds a neutral owner-issued offer to one verified recipient, with no access before acceptance"
+      ]
+    },
+    {
+      "id": "SC-006020945059",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 2",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 2"
+      ]
+    },
+    {
+      "id": "SC-28C05DF07330",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 3",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 3"
+      ]
+    },
+    {
+      "id": "SC-5C66FB7691FA",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 4",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 4"
+      ]
+    },
+    {
+      "id": "SC-3221D1560F71",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 5",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 5"
+      ]
+    },
+    {
+      "id": "SC-338A4A278F97",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 6",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 6"
+      ]
+    },
+    {
+      "id": "SC-C801457F5213",
+      "status": "implemented",
+      "criteria": "cannot issue staff offers using unrelated, instructor, finance or unverified authority 7",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::cannot issue staff offers using unrelated, instructor, finance or unverified authority 7"
+      ]
+    },
+    {
+      "id": "SC-A7BFD2AC2A7E",
+      "status": "implemented",
+      "criteria": "caps new membership and grants at the issuer authority ceiling",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::caps new membership and grants at the issuer authority ceiling"
+      ]
+    },
+    {
+      "id": "SC-8C723DDCE584",
+      "status": "implemented",
+      "criteria": "creates admin-only membership without inventing a Coach identity",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::creates admin-only membership without inventing a Coach identity"
+      ]
+    },
+    {
+      "id": "SC-0BAA95A07728",
+      "status": "implemented",
+      "criteria": "creates explicit bounded assignments only for the accepted instructor and correct branch",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::creates explicit bounded assignments only for the accepted instructor and correct branch"
+      ]
+    },
+    {
+      "id": "SC-9BC584C4F33B",
+      "status": "implemented",
+      "criteria": "does not grant retrospective classes or arbitrary history through a new assignment",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not grant retrospective classes or arbitrary history through a new assignment"
+      ]
+    },
+    {
+      "id": "SC-3A5E2AA0A7BC",
+      "status": "implemented",
+      "criteria": "does not hand permanent ownership to an existing temporary owner grant",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not hand permanent ownership to an existing temporary owner grant"
+      ]
+    },
+    {
+      "id": "SC-6432295E8C9A",
+      "status": "implemented",
+      "criteria": "does not let old acceptance or pre-offboarding offers revive a removed membership",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not let old acceptance or pre-offboarding offers revive a removed membership"
+      ]
+    },
+    {
+      "id": "SC-6B54BDF63AC6",
+      "status": "implemented",
+      "criteria": "does not let temporary owners delegate assignment access beyond their own authority",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not let temporary owners delegate assignment access beyond their own authority"
+      ]
+    },
+    {
+      "id": "SC-590944C83FE0",
+      "status": "implemented",
+      "criteria": "does not revive a pending invitation when its issuer regains ownership later",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not revive a pending invitation when its issuer regains ownership later"
+      ]
+    },
+    {
+      "id": "SC-971AB528D2E0",
+      "status": "implemented",
+      "criteria": "does not treat a bounded membership as an instructor grant after teaching authority is removed",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::does not treat a bounded membership as an instructor grant after teaching authority is removed"
+      ]
+    },
+    {
+      "id": "SC-AE4A165BF549",
+      "status": "implemented",
+      "criteria": "keeps every offer/profile/event function and table private, with no production ledger change",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::keeps every offer/profile/event function and table private, with no production ledger change"
+      ]
+    },
+    {
+      "id": "SC-6114968C82D9",
+      "status": "implemented",
+      "criteria": "makes accept retries harmless after later role removal without restoring grants",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::makes accept retries harmless after later role removal without restoring grants"
+      ]
+    },
+    {
+      "id": "SC-25ED0DFCD9A6",
+      "status": "implemented",
+      "criteria": "never bypasses a suspended membership or silently upgrades another active membership",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::never bypasses a suspended membership or silently upgrades another active membership"
+      ]
+    },
+    {
+      "id": "SC-EC0E2313C879",
+      "status": "implemented",
+      "criteria": "rechecks issuer ownership and eligibility before acceptance",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rechecks issuer ownership and eligibility before acceptance"
+      ]
+    },
+    {
+      "id": "SC-F54A5038A6E0",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"admin\",\"branch\":\"00000000-0000-0000-0000-000000000061\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"admin\",\"branch\":\"00000000-0000-0000-0000-000000000061\"}]}"
+      ]
+    },
+    {
+      "id": "SC-C41C1916C9B0",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"branch_manager\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"branch_manager\"}]}"
+      ]
+    },
+    {
+      "id": "SC-944E1D3CE749",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"instructor\",\"branch\":\"00000000-0000-0000-0000-000000000063\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"instructor\",\"branch\":\"00000000-0000-0000-0000-000000000063\"}]}"
+      ]
+    },
+    {
+      "id": "SC-BFB57E6C6C52",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"owner\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"owner\"}]}"
+      ]
+    },
+    {
+      "id": "SC-284282F11F3F",
+      "status": "implemented",
+      "criteria": "rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"superadmin\"}]}",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects malformed or escalated staff proposals {\"roles\":[{\"role\":\"superadmin\"}]}"
+      ]
+    },
+    {
+      "id": "SC-DBAB285FB0A8",
+      "status": "implemented",
+      "criteria": "rejects self-transfer and bounded owner transfers",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects self-transfer and bounded owner transfers"
+      ]
+    },
+    {
+      "id": "SC-02AD3B96FC18",
+      "status": "implemented",
+      "criteria": "rejects wrong recipients, missing/changed verification, disabled recipients and unknown tokens uniformly",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::rejects wrong recipients, missing/changed verification, disabled recipients and unknown tokens uniformly"
+      ]
+    },
+    {
+      "id": "SC-61820170F6E4",
+      "status": "implemented",
+      "criteria": "replaces only an earlier pending ownership offer and never revives it by retry",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::replaces only an earlier pending ownership offer and never revives it by retry"
+      ]
+    },
+    {
+      "id": "SC-DFCC2F718AFD",
+      "status": "implemented",
+      "criteria": "requires explicit teaching profile acceptance for a new instructor",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::requires explicit teaching profile acceptance for a new instructor"
+      ]
+    },
+    {
+      "id": "SC-A2A5F75CB1A2",
+      "status": "implemented",
+      "criteria": "returns workspace-local staff profiles without other employment, auth IDs or family data",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::returns workspace-local staff profiles without other employment, auth IDs or family data"
+      ]
+    },
+    {
+      "id": "SC-28241DA4CB4E",
+      "status": "implemented",
+      "criteria": "revokes pending invitations without granting membership and blocks expired offers",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::revokes pending invitations without granting membership and blocks expired offers"
+      ]
+    },
+    {
+      "id": "SC-2DCE8B70C921",
+      "status": "implemented",
+      "criteria": "stores only token digests and returns the same offer for exact issue retries",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::stores only token digests and returns the same offer for exact issue retries"
+      ]
+    },
+    {
+      "id": "SC-00C62D8771DD",
+      "status": "implemented",
+      "criteria": "transfers ownership only after a different verified recipient accepts, and preserves a current owner",
+      "tests": [
+        "tests/workspace-staff-lifecycle.test.ts::transfers ownership only after a different verified recipient accepts, and preserves a current owner"
+      ]
+    }
+  ]
+}

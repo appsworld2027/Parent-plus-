@@ -1,0 +1,1322 @@
+[
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "AGENTS.md",
+    "sha256": "dc7b4c139dcb1380d880df840a1325f191ebad441c527bbdd8164b17ceb23bc3",
+    "title": "# ParentPlus \u2014 Codex instructions",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "CLAUDE.md",
+    "sha256": "9cda1c233fd46ba35d67d532d48dbf02a30412b05fa6388beed4e13c3c8c7a23",
+    "title": "# ParentPlus \u2014 Claude entrypoint",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "README.md",
+    "sha256": "1d8aa20e27c993301b2960d2ba5eaca18c01d1f8fb7a34f1bb4792db07c56e26",
+    "title": "# ParentPlus",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "apps/web/AGENTS.md",
+    "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0",
+    "title": "## This is NOT the Next.js you know",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "apps/web/README.md",
+    "sha256": "60b55ff7df79af72590f9524208e46642bc32bdc175cdad41349681c0e2f958f",
+    "title": "## Getting Started",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "apps/web/e2e-enabled/README.md",
+    "sha256": "aacd8285a8aac6f310578246c9b7f26701f4a5742b7fbbe970edf209a23560d3",
+    "title": "# Isolated enabled parent browser checks",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/AGENT_HANDOFF.md",
+    "sha256": "9668abc84216a58cf44cf2ca737f440a5d9e43357429fa08bd778a21366bcc62",
+    "title": "# ParentPlus \u2014 Agent Handoff",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/BROWSER_TESTING.md",
+    "sha256": "f67564415005c3fae8a6277f07f2be195146956c07d92a42deace4b4396447ba",
+    "title": "# ParentPlus automated browser testing",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/BUILD_PROGRESS.md",
+    "sha256": "0f823a0b5d4aac240891b7d618631234940338d2b7fb3145931718adbd925acf",
+    "title": "# ParentPlus Build Progress",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/CODEX_COMMUNICATION_STANDARD.md",
+    "sha256": "238738bbe50e183f704df8cee145b2b59aba50e8e778f85fb1c66638fedb8062",
+    "title": "# ParentPlus Shared AI Communication Standard",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/COMMUNICATION_CALIBRATION.md",
+    "sha256": "aee348de842213bfa46730f944181a6b503a845ec9bc2c0d171e24690659b795",
+    "title": "# ParentPlus \u2014 Temporary Communication Calibration",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/DATABASE_ARCHITECTURE.md",
+    "sha256": "0e114a91f2078b541d1f11f909debfdb76ffbfdca88f5bb4ce28c42dc7653957",
+    "title": "# ParentPlus Database Architecture",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/DB_SECURITY_REVIEW.md",
+    "sha256": "674402eec40ef754e13520bf1aff96ebc42b761aebcc2ae21d9490e615fff78e",
+    "title": "# ParentPlus Database Security Review",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/DECISION_LOG.md",
+    "sha256": "93ce39f0842c08846a9d58abbc0abb0527e2587ca367d7855306a32bec1a7af8",
+    "title": "# ParentPlus Decision Log",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/DEVELOPMENT_ROADMAP.md",
+    "sha256": "56c43d1eb78134e2b5e6f14bffc9250646346460484dec3fe6b74f0eb85a002c",
+    "title": "# ParentPlus Development Roadmap",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/ENGINEERING_STANDARDS.md",
+    "sha256": "60fc93171240b20eafebcb0af8878dbc7c077406e8c9756a938e2ec02c3cf1e7",
+    "title": "# ParentPlus Engineering Standards",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/FEATURE_DELIVERY_WORKFLOW.md",
+    "sha256": "5904f9bdf294af43423d8738461a8db1e30e1f34d501f1b2ca24effbe9fa3eec",
+    "title": "# ParentPlus Feature Delivery Workflow",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/FEATURE_SCENARIO_REGISTER.md",
+    "sha256": "6a61e00a2ccd55df9adbc9677d58919bfaddc45c8a1e179d4d12c1b378eadbf7",
+    "title": "# ParentPlus \u2014 Feature, Scenario and End-to-End Register",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/FIRST_USE_ROLLOUT.md",
+    "sha256": "fa53784923db2e3c9e2efca98658ed7c50646176fb0d4dbcc01f5eeba8814682",
+    "title": "# ParentPlus first-use rollout: preparation",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/INTELLIGENT_QUALITY_GATE.md",
+    "sha256": "7876fa2fa8f7fd7aff47a4914a7a922c6caaa86fc192515dd4db65ef0a67115d",
+    "title": "# ParentPlus Intelligent Quality Gate v1",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/INTELLIGENT_QUALITY_GATE_AUDIT.md",
+    "sha256": "95537d51778976d9165fe240fc284ccf84c1412c45cf808f8cc8d9cb12172918",
+    "title": "# Independent Audit and Engineering Operating System Report",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/INTELLIGENT_QUALITY_GATE_REPORT.md",
+    "sha256": "fec4d0649f2c94fdcdda9b7d4ea06539a88e41e4d58108d2fff2295bbf7b0cba",
+    "title": "# Intelligent Quality Gate v1 implementation report",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/LOCAL_FIRST_USE_VERIFICATION.md",
+    "sha256": "489aab29d3f18ccadc30110facaaf3ad69ac7e0e6984c503540aa111ae5de880",
+    "title": "# Local first-use verification \u2014 2026-11-09",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/PROJECT_CONTEXT.md",
+    "sha256": "0d64c26a632b9633f2f2967a38ee6280441b68f23b70fa90710384a7972d2056",
+    "title": "# ParentPlus \u2014 Shared Project Context",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/QUALITY_EVIDENCE.md",
+    "sha256": "c7b9a92acb2cc07fd99de4d268866aeab18f99aafc20de46d13a4794523a0081",
+    "title": "# ParentPlus \u2014 Quality Evidence Index",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/SYSTEM_ARCHITECTURE.md",
+    "sha256": "4f570c99b2525733617ebbec2994ed69bcf7af918c639b80bd112ce9a134727f",
+    "title": "# ParentPlus \u2014 System Architecture",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/TEST_AUTOMATION_REPORT.md",
+    "sha256": "2079a1562c99a947ba6d2bf8ed4120a6893d5d3c5e2c5ed222acc119155b5a55",
+    "title": "# ParentPlus \u2014 Test Automation and Simulation Report",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/examples/FOUNDER_RESPONSE_REFERENCE.md",
+    "sha256": "34a2f6cd05bb6c4fabb4fbc9346a1add21bfe84eab1dbff32621252e6d5a7be9",
+    "title": "# ParentPlus \u2014 Founder Response Reference",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/00_working_agreement.md",
+    "sha256": "89a45fb8619595a3cc401d1d356aa0281a98eea7de80174c5c36879b6ea45c64",
+    "title": "# 00. Working agreement",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/01_pilot_prd.md",
+    "sha256": "d802dc0e12f31a3eccf272bed85f21d9d77ea0222d83c3a5fee4152140004dc2",
+    "title": "# 01. Product requirements: Pilot v1",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/02_roadmap_and_gates.md",
+    "sha256": "05fc2fd8a7a647ef62f4c1d67db9e7d80a0bc4ebdb6381575f43cdaabc3fbd98",
+    "title": "# 02. Roadmap and gates",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/03_architecture.md",
+    "sha256": "afebe4a919c39b2aba2269b3b0f8d053680738da7be6cea7401ccb5c73beceb2",
+    "title": "# 03. Architecture",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/04_data_model.md",
+    "sha256": "ffce43570d288762bc48fdc915ed81dc00f73ecdb084fe220ec9096e5fe5607e",
+    "title": "# 04. Data model",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/05_parent_items_contract.md",
+    "sha256": "7f43d012bb053c18bbb84b1fb9335ed051f9660c0ac0bc2e2a70f3abf6065a8f",
+    "title": "# 05. Parent items contract (UI-agnostic)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/06_engineering_standards.md",
+    "sha256": "7f5557d737f10d9f1d00fb0d02c583dfbbb2fd87464db90e9d7e095504071110",
+    "title": "# 06. Engineering standards",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/07_definition_of_ready_and_done.md",
+    "sha256": "6133a2799d4f9b626c08cde2bf461a589c2f0a0aa618f3038e1f45b285e24f03",
+    "title": "# 07. Definition of ready and definition of done",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/08_privacy_and_security.md",
+    "sha256": "d776cfbf44e431bccea9ceef0ca0cf16d74fe55ccb5762df41bc0c33a13cabc2",
+    "title": "# 08. Privacy and security",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/09_founder_prep_checklist.md",
+    "sha256": "4c4a4066332411a3b67a81943c1988146ac4d6f4cfa284334395667e909fd177",
+    "title": "# 09. Founder prep checklist (Stage 0)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/10_backlog_stage1_stage2.md",
+    "sha256": "67fdc210badb7f66a66ea115ea07d78658316276000773a6e15ab474477829f0",
+    "title": "# 10. Backlog: Stage 1 (Foundation) and Stage 2 (Class setup)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/11_launch_readiness_checklist.md",
+    "sha256": "0ab5632990328bfc52614c7b781d1846f7a7d2ca830e60feb1fb66a2c3e7ec7e",
+    "title": "# 11. Launch readiness checklist (Stage 7)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/12_risk_register.md",
+    "sha256": "8393d8377c4a4bdc91a1025a8c1f264fd126fa0ee230d40fc8708b5b9b9a1053",
+    "title": "# 12. Risk register (product and technical)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/13_build_diary_template.md",
+    "sha256": "06d94f50aa73d5d2dc71d84e96b9e11d728a2cde069a7d11070c549f15ba46de",
+    "title": "# 13. Build diary template",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/14_decision_log.md",
+    "sha256": "4600b32751d7a6ffd0debb6aa672f0c1f3591f5dbbf0d5172b5aaba13a309c53",
+    "title": "# 14. Decision log (Architecture Decision Records)",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/founder-references/2026-11-10/README.md",
+    "sha256": "9949e988b5a8e746f85bb5e2f2649c05d75891c0025a61c8022a520ac799d7cf",
+    "title": "# Founder reference documents \u2014 received 10 November 2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/quality/2026-11-10-parent-attendance-checkpoint.md",
+    "sha256": "ffa25a3b3ea8925fa0149f35d93b33b23074d992b909e27be841aaee2207aa34",
+    "title": "# Parent attendance checkpoint \u2014 10 November 2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers.md",
+    "sha256": "26d2a51a16a1473b8207682f91860edb826421ace05afb3cfa5bf9c67513d379",
+    "title": "# Superpowers for ParentPlus",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-atomic-class-setup.md",
+    "sha256": "bfdb18f28950659f106e6c1f1c4dede3cce683c4db95f35312756f33f808b9cb",
+    "title": "# Atomic course-and-batch setup plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-authenticated-batch-draft.md",
+    "sha256": "47d55e885194b3c2d78a104e3a590211864eb46edca4a9a55a79a9979f4bbc15",
+    "title": "# Local authenticated batch-creation draft plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-authenticated-course-draft.md",
+    "sha256": "35d4781743f2e242a296963b64869def6bd0cb3885d42656d30e8ef726be2a3d",
+    "title": "# Local authenticated course-creation draft plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-class-setup-preview.md",
+    "sha256": "ea55c741f43181858c9e719f5098cbdd0cba96bed6793d8a58c640812f827c68",
+    "title": "# Class setup preview plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-class-setup-server-boundary.md",
+    "sha256": "29c61f9306b22a080ceb7d7b3d6e5f89bdcebd78e1de78f56e8fe09ffa48b42d",
+    "title": "# Class setup server boundary plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-email-otp-screen.md",
+    "sha256": "69715cf79d887dbfce8181480033726bed99025fb87260b44b50f07e38c41384",
+    "title": "# Email OTP screen \u2014 delivery plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-engineering-operating-system.md",
+    "sha256": "2662c2baf57719cd44e42c1498ee7a275097c7edada27055bef4a1cb57d04c4a",
+    "title": "# Independent Audit and Engineering Operating System Plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-intelligent-quality-gate.md",
+    "sha256": "eac56b89bc42e91265ac64e5028f40e7d0bb834029778f3bf814975a39b2e573",
+    "title": "# Intelligent Quality Gate v1 Implementation Plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-local-signout.md",
+    "sha256": "eb3f972b030a8a7dbba5c8f4ee49a751f146281cedb69eaee7bc40537e853f84",
+    "title": "# Local sign-out \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-login-browser-tests.md",
+    "sha256": "811769c32e37a7a856287fcd8a3d77974a37ddc438c7c671a15b0ec37eaac897",
+    "title": "# Login browser tests \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-coach-assignment.md",
+    "sha256": "bcd11ba79d47a7e2c58796580b78ce3fc38636ea9ae437704054cce7448548f5",
+    "title": "# Private coach assignment plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-coach-removal.md",
+    "sha256": "5a28fbedcbc85038f2d493ec2243bbada5d5311a89eea51253abbac87084c958",
+    "title": "# Private coach assignment removal plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-course-batch-setup.md",
+    "sha256": "bfac09d145e89bfa9c7830ddde016c840a6d038febae55295d0ea8e80738421b",
+    "title": "# Private course and batch setup plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-local-time.md",
+    "sha256": "09f43d89d8751f24223450cba5bb69f742caa5c2e9a3ecb0a3349bbb5d869e20",
+    "title": "# Private workspace-local time plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-session-write.md",
+    "sha256": "9130be54204670d36394484c9e6d73809d5d133eb5747452a6ef9c46d24c8587",
+    "title": "# Private single-session write plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-private-zone-configuration.md",
+    "sha256": "f01d2bb463b85e37cf1827caeb329d8501f7eb588b615161814b98b4b577fa03",
+    "title": "# Private initial workspace time-zone configuration plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-schedule-preview.md",
+    "sha256": "cd63591744d818609c9cf0b52a05d1c58792f676d9c75da9003c5b800a57e726",
+    "title": "# Coach schedule preview \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-schedule-recurrence-engine.md",
+    "sha256": "7892ce59396629d3446979c422d88448c1c6160528a5c7be98c66172b0e1f7ab",
+    "title": "# Scheduling recurrence engine \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-scheduling-authorization-helper.md",
+    "sha256": "99a50ef6473d355d7908e6df34aeb1d5aae8045ad787f3be0223798a939715f6",
+    "title": "# Scheduling authorization helper plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-scheduling-data-foundation.md",
+    "sha256": "a6c528554e40757b5d1b39eaecf57d71fc1694b8d6708ed291ddfc9bc27c5102",
+    "title": "# Scheduling data foundation implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-session-change-safety.md",
+    "sha256": "83387a53ff29ec7c2c83a1d43072925be98f9ede2ddd5d1d84c89c8e80e47f4e",
+    "title": "# Session change safety \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-session-restoration.md",
+    "sha256": "f4e5ebec82ecbd0ea2785da93556778df66ddf9f4d9b32bcba670354cf7d81a1",
+    "title": "# Session restoration \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-03-session-resume-check.md",
+    "sha256": "0ccd03540f6541395efaa396dc6a987d034ae0b17826b0372170ed322a84b8e8",
+    "title": "# Session revalidation on return \u2014 implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-09-founder-testing.md",
+    "sha256": "03640a0466ab46fe5855339499fbe2c49f24353f90555e56e1fc121eac592ab9",
+    "title": "# Founder testing implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-09-local-first-use.md",
+    "sha256": "21a03442e51e8f978181362f282da8618f2ffc22d611346244cce393174d1362",
+    "title": "# Local first-use implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-10-attendance-today.md",
+    "sha256": "2037f69760779c20cd5289bd991aa2cd5a201902e22e4e4bd854a1ca5240025a",
+    "title": "# Attendance, Today and parent signals Implementation Plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-10-browser-quality.md",
+    "sha256": "7edae822d898433a6b861c3719966d3a35a90dba4aaec2a299ba11acbf3bd0b8",
+    "title": "# Browser quality implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-10-enrolment.md",
+    "sha256": "ac869d6f3f64d1f1dfcf1947de974f61a62cf9e70065f8325b5ea5fd653cf0c4",
+    "title": "# Batch enrolment implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-10-family-invitations.md",
+    "sha256": "34d712cc000c8aa6273e5826b8a58af79305527e3ef55cbb132a6dc70694d151",
+    "title": "# Family invitations implementation plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/plans/2026-11-10-hosted-founder-testing.md",
+    "sha256": "612d048448a476f284b9bfdb375d76b0b36e4f6a32135efbad5421f61f2ec360",
+    "title": "# Hosted founder testing plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-class-setup-preview.md",
+    "sha256": "98734382c1b3e7dd54ea52b2e351cecbbf1c3683174a03b575aec9ebc7903e55",
+    "title": "# Class setup preview",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-class-setup-server-boundary.md",
+    "sha256": "1dfc4d886fd4971699618353b42a81b1ff64de7a6b7162944b7bff04b0ce2d66",
+    "title": "# Class setup server boundary",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-email-otp-screen.md",
+    "sha256": "3f41b08729a9f23d6de87220753a1a4571b78226d1f7a965ac059553f38956d1",
+    "title": "# Email OTP screen \u2014 local slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-intelligent-quality-gate.md",
+    "sha256": "3cf8cae9d646fa55a04d09f089552c49cf3fc949592b2cef7f1fc48972923942",
+    "title": "# Intelligent Quality Gate v1 design",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-local-signout.md",
+    "sha256": "01f440352035e47854f3b26faba0edfcefe5f44b0458a870626a0088821ac20c",
+    "title": "# Local sign-out \u2014 email verification slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-login-browser-tests.md",
+    "sha256": "4beb99a5ea473e044e7231118c4c06576eed008a333e324abb31c75974ce9ef4",
+    "title": "# Login browser tests \u2014 local synthetic slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-real-scheduling-design.md",
+    "sha256": "f72a380c4fbe23887bc853169de21b949e7ff9515e0ca4fd3e990a8a38b4f579",
+    "title": "# Real scheduling \u2014 draft architecture and test matrix",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-schedule-preview.md",
+    "sha256": "7e6b8ed95e4b6356ba4bb95e3212ff73c4b8f83ee29e341f3cd847f387ff6c9a",
+    "title": "# Coach schedule preview \u2014 synthetic M3 slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-schedule-recurrence-engine.md",
+    "sha256": "aacb52edae9a4742dc0a7ed97fad5e9ac465a6e565d43a2ae28bb7a0fda5adb8",
+    "title": "# Scheduling recurrence engine \u2014 local foundation",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-session-change-safety.md",
+    "sha256": "dfc0e9dfbcd7e9b05b5c73f73d014e60d25937613079a277b0f2823e90a5c92f",
+    "title": "# Session change safety \u2014 local authentication slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-session-restoration.md",
+    "sha256": "5836cae794596aba27723bfa49fae3f6d49e425ab5c7c17c785e23b680373ae1",
+    "title": "# Session restoration \u2014 local authentication slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-03-session-resume-check.md",
+    "sha256": "56d75147df19fbf839c5c05130026873dfcebb96672df348f8e0f5a027c6a916",
+    "title": "# Session revalidation on returning to the app",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-04-child-creation-control.md",
+    "sha256": "e76ad1004c764c896c11e1ba9fca3afea2783e1d57e93778465e6541af4bf86c",
+    "title": "# Child creation database control \u2014 local draft",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-04-child-creation-journey.md",
+    "sha256": "ddc50ee9e75a2dd0beb9e6e47ebc4bc608c36fb16d734c222df2210a88f40e7e",
+    "title": "# Parent child-profile creation \u2014 local draft",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-04-explicit-email-signup.md",
+    "sha256": "5b822958caa201212d64ad33dfdecde4cf69e99b5eaec5b6799737fa07c7a617",
+    "title": "# Explicit email account creation \u2014 local draft",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-04-parent-created-child-list.md",
+    "sha256": "22b2cc07456e159b377f3f60c48607f52dd74be4760776a4b6962201463d6395",
+    "title": "# Parent-created profiles \u2014 local read-only draft",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-05-child-creation-recovery-fence.md",
+    "sha256": "58523070fe6b08be17788d62003756a38cb50070a4f7e525096ddb9bf0fb1d94",
+    "title": "# Child-creation recovery fence \u2014 local draft",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-07-coach-route-access.md",
+    "sha256": "73c8a1580b9d259de6b08a7ce093e58726479747441d6da07e6967cb2f779f48",
+    "title": "# Coach route access \u2014 2026-11-07",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-09-founder-testing.md",
+    "sha256": "ddaf7f58d54f0a63c663597260bd8880006b5875413ffb4e10c3bbabad28a268",
+    "title": "# Founder testing with real local data",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-09-local-first-use.md",
+    "sha256": "077cbf9e44c98a6e1ab3e7350683cbbd76d0d8ad477c2669bf86ec0ded11042a",
+    "title": "# Real local first-use journeys",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-attendance-today-design.md",
+    "sha256": "1975c31ce3b251f5c1184fcf1e5bedf7fa38608fadcaecdd3c242de09b2ed35d",
+    "title": "# Attendance, parent signals and real Today",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-browser-quality-design.md",
+    "sha256": "0de1d8af4068649531c79683c13de6ecbe34712488eadc392e2079bb55594195",
+    "title": "# Founder browser quality and reports",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-enrolment-design.md",
+    "sha256": "2484fef8ccce49f4a0a17ec4b047f827a00b990630d5aa934db95fbcbbc55156",
+    "title": "# Batch enrolment and student directory",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-family-invitations-design.md",
+    "sha256": "87f6b015b15e023ee7433fe1a170ed99bb02a07535568e7da26a79e96ae37485",
+    "title": "# Academy family invitations \u2014 M2-02 first slice",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-hosted-founder-testing.md",
+    "sha256": "961f22d49b9f4c32aa8e6a4c86eb8038098975ff5aaa048f327be72e021dc338",
+    "title": "# Browser-accessible founder testing",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "docs/superpowers/specs/2026-11-10-web-app-shell-design.md",
+    "sha256": "827480873fb4d446394be58d68f0cb1fadbe0fb3e9166eaba8bccb27739acb5b",
+    "title": "# Web app shell and visual foundation",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "source",
+    "snapshot": "380adba9f73b3021a787dff72074df57f2a53634",
+    "path": "scripts/dev/README.md",
+    "sha256": "6b44a11cd0406c40cc435c60dc46f90dd00702e1cc57c2e5cdebfc98fb6b81a7",
+    "title": "# Local Supabase and browser journeys",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": ".github/pull_request_template.md",
+    "sha256": "0ed3892e75380e37cb67f1b32b67454060e34a2b9cf87691438e48a84f0d94f3",
+    "title": "## Summary",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "AGENTS.md",
+    "sha256": "eee61df164aa41123cc8382538b7790dad7e215fb42dcb2003986cb6908bd445",
+    "title": "# Repository guidance",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "BUILD_PLAN.md",
+    "sha256": "3daeb73644a9db84d29db05259fa2aafa931f5fa9bf30ed3274e8aa21c1dab33",
+    "title": "# Parent Plus Coach: module-by-module build and support plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "PRD.md",
+    "sha256": "0d4bd3ff2d856938c4f5321a61b7a64d268b44fdda93d7ffd8506a61786d1efa",
+    "title": "# Product requirements: Parent Plus Coach",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "PRODUCT_PLAN.md",
+    "sha256": "fb0b37a7a67ff3d23bdab1759ec00a184d74beba1a2114c65f703c6228d0d739",
+    "title": "# Parent Plus Coach \u2014 two-day pilot product plan",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "PROGRESS.md",
+    "sha256": "240bf9e8a501c34894e81ed3bdf9ecbcf6fb8d775ab3232fd0a0a680d79db5d7",
+    "title": "# Parent Plus Coach \u2014 development checkpoint",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "README.md",
+    "sha256": "888b24d4f8ec7b32b6e23d7d1b00de1cc5c671c1f5cef81221913568626b3756",
+    "title": "# ParentPlus \u2014 Coach and Parent",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "STEP_0.md",
+    "sha256": "7627d08d36b94505852580e48384a0aa74e695548b3c8dd298052d9def600824",
+    "title": "# Step 0: prepare accounts and the development foundation",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ACTION_FEEDBACK.md",
+    "sha256": "94e6cf12d8e48808476bb000607978bfef42ab15657e9dffc943843c3beb48a4",
+    "title": "# Visible action results \u2014 version 0.3.1",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ANDROID_PREVIEW.md",
+    "sha256": "87f4dd481672fa9981631fac36c05ecd0089dc61750e82396c15f510c3312ea7",
+    "title": "# Android preview build and real login checklist",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ARCHITECTURE.md",
+    "sha256": "bca64719ca3f2583069d111345ae700a96aff5e568b0de9b28678fa00e27c8f2",
+    "title": "# How Parent Plus Coach works today",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/AUTH_SETUP.md",
+    "sha256": "cfa5667469978d8014dee704a9db04313cf79a3a9c48d6e74ab4e07ec0077e2a",
+    "title": "# Email authentication setup",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CLASS_PARENT_HOSTED_QA.md",
+    "sha256": "aedc3e0a46d7c89bf2a58ca0c84e3a03f2d9a3b23408d3b3e5158a7da9d60b11",
+    "title": "# Hosted Coach\u2192Parent journey QA \u2014 0.12.0 / Parent0.2.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CLASS_SETUP.md",
+    "sha256": "6473fdbb1402eb93a7b407f5b038a94b02ad048942879decba15e9625afc8c49",
+    "title": "# Classes and attendance: setup and phone acceptance",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CLOUD_VISION_QA.md",
+    "sha256": "5de097e6e8b891ba9c2dd7cb1a0fa348b1fd25ab01b7612c3ef9bfba56740b8e",
+    "title": "# Focused hosted Google Cloud Vision QA \u2014 0.8.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/COACH_FEEDBACK_RESET.md",
+    "sha256": "d8759d933b4abd75043ae48138ba3ab0d6dfc2399669d2b1a30b215e8e800814",
+    "title": "# Coach feedback-first reset \u201416November2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/COACH_SETUP_QA.md",
+    "sha256": "b954aa1d1623c3ab94f4b02f59035a8a64f975dc4ac1913e66f5aac823baf2ff",
+    "title": "# Focused hosted onboarding flow QA \u2014 0.9.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/COACH_WORKFLOW_REVIEW.md",
+    "sha256": "4c6c867b528f60ac725da79ac493ad6ad3ae21baebc3cc2325abe13ec681b8f5",
+    "title": "# Coach workflow correction \u2014 0.6.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CONSOLIDATED_DATABASE_DESIGN.md",
+    "sha256": "ca4649ac6f350bd5aa3a8913172f04c4657e3ce7cdc8ffce1f531193857b4b5c",
+    "title": "# Consolidated database direction",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CONSOLIDATED_PRODUCT_ROADMAP.md",
+    "sha256": "ab4844021cee150cb1ed834b0199f19326f6219a2f1ef015a5681dffa6879cc7",
+    "title": "# Consolidated product roadmap and source inventory",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/CONSOLIDATION_REVIEW.md",
+    "sha256": "61c4d171a8ed525bb2d96e492c2edccee4c236c17b0959831285067c1cd696c1",
+    "title": "# ParentPlus consolidation review",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/DATABASE_RELATIONSHIP_REVIEW.md",
+    "sha256": "c1ff833d86f338ee6caaad4c5d43574e46fcd36ee9745297285b8e379f960149",
+    "title": "# Database relationship review \u2014 16 November 2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/DEVELOPER_GUIDE.md",
+    "sha256": "fa43c00064baadb162838bfb6f536f03f4052052941b11081687b18614c3e26e",
+    "title": "# Developer handover and working agreement",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/DUAL_WORKSPACE_HOSTED_QA.md",
+    "sha256": "189e991c9017608be64092fe65ef3f352d0a82e6c776e39e07d94df4d1ad5b36",
+    "title": "# Hosted QA \u2014 Coach 0.11.0 / Parent 0.1.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/DUAL_WORKSPACE_QA.md",
+    "sha256": "9f70bdb461f708c06e6096d4edc5102cf4e16e8b317457294680b78b189269ef",
+    "title": "# Coach0.11 / Parent0.1 verification \u201416November2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/FEES.md",
+    "sha256": "02f4c9be15976af468ae5d2bd4e345e004ccb7880dd80c33b491c3cb5d9b2059",
+    "title": "# Invoices and manual payments \u2014 Module 6",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/FOUNDER_BRANCH_PROTECTION_PROPOSAL.md",
+    "sha256": "6c71a138552d6f3c36f1e94eef1d257a8474d3a6d3e020a4a650a86a731ee2ee",
+    "title": "# Founder branch ownership and merge controls",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ISSUES.md",
+    "sha256": "2900ce2af6e29333b9ae5a32698bb813e3d62d08a062d5cbab42e4938cb7a20e",
+    "title": "# Issue record",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/MULTI_WORKSPACE_FOUNDATION.md",
+    "sha256": "7c0555b454d0fdd4f53e6ad8898a4ce386507171076840e7f392f3e20103c1b8",
+    "title": "# Multi-workspace foundation: implementation contract",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/MULTI_WORKSPACE_VALIDATION.md",
+    "sha256": "876cd927b371917a7623b076bfc964614f55409488437e7b024e7cccf70becea",
+    "title": "# Multi-workspace acceptance and release gates",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/OBSERVATIONS.md",
+    "sha256": "7d05096b48616b7ede8e5ae4004614f254b31104d45eeb8edf40f44760649b95",
+    "title": "# Private observations \u2014 Module 5",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/OCR_OPTIONS.md",
+    "sha256": "486bcdff480ae7806b29f56492542535d707856a0d67f6080a19e0c6883e48b5",
+    "title": "# OCR alternatives for coach onboarding",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/OWNER_NEXT_STEP.md",
+    "sha256": "5421c07cbc9421233db9c518a48fd3748e583930f959b4a5674b50d2122c139e",
+    "title": "# Current owner step \u2014 website0.13.0 / Parent0.3",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PARENT_ATTENDANCE_INTEGRATION.md",
+    "sha256": "be6ce5e4a6922b094f4fa61ac4ad4dba4ac835d74282970b5fa844717a36fd7e",
+    "title": "# Parent attendance integration: isolated implementation",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PARENT_IDENTITY.md",
+    "sha256": "6af374960202049556fc010e4bf16e7affdeb5760fc6a4d7643fa5070ee325fc",
+    "title": "# Verified guardian and child connection \u2014 update014",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PARENT_IDENTITY_HOSTED_QA.md",
+    "sha256": "64403ae23d7799e20b603655553839d9298bf4891df47bd92d4ce5b0638ee9d2",
+    "title": "# Hosted verified Parent connection QA \u2014 Coach0.13.0 / Parent0.3.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PARENT_MODULE.md",
+    "sha256": "f59102b455cc1cdac3903baee10be494af864b629f0b6d8c9f2f4a625077e52d",
+    "title": "# Parent Plus \u2014 Aurora workspace",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PARENT_PRD.md",
+    "sha256": "52628c9971ded7dd065421f295791a9cc86fce76f79054b52e73eda42a1b6f08",
+    "title": "# Parent Plus \u2014 Parent module requirements",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PHOTO_ONBOARDING.md",
+    "sha256": "c28e98d21b81ae9d8921be1a1367b31d2c74b7d7ec176145d627dd39e406df7c",
+    "title": "# First-batch photo onboarding \u20140.9.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PRODUCT_DB_SYNC_WORKING_NOTES.md",
+    "sha256": "c644c71f4fae6bc4aef9b413f04a5704c80e69589daf85253973ac30466a8c5d",
+    "title": "# Product and database sync: working notes",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/PRODUCT_DECISIONS.md",
+    "sha256": "12eee9961ad5eef3deff5c283145af06b75dc01dabd207fca9d6eb88d3791203",
+    "title": "# Product decisions and assumptions",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ROSTER_SCAN_QA.md",
+    "sha256": "8713fe056a2bb01e8144066f20503bf53e98b481287ca39929f945ef36081ff7",
+    "title": "# Focused hosted roster-scan QA \u2014 0.7.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/ROSTER_SETUP.md",
+    "sha256": "8d27c49dbdbb3b2dcf411628b215855f7cc365fe2adaa24b3852a6eea4996aa7",
+    "title": "# Students and batches: database update",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/SAME_LOGIN_FEEDBACK_FLOW.md",
+    "sha256": "176591d40c6968e90fb059cdfbf9489d6651bd627fcb59093b8efa433552d82b",
+    "title": "# Class feedback to Parent \u2014 same-login web journey",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/SECURITY_VALIDATION.md",
+    "sha256": "f58ba5c5eff3de1ff9ed076a03dfe670a2f8cc310fe925c43f0ed278e8d37409",
+    "title": "# Security verification checkpoint \u2014 14 November 2026",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/SHARED_DEVELOPMENT_WORKFLOW.md",
+    "sha256": "a3facf2654254564c44440a0eac154c141f0666e019274815958202bb4ef13d7",
+    "title": "# Shared development workflow",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/SIGNUP_HOSTED_QA.md",
+    "sha256": "3844ab75460591fbe8cb124eae0375bd3c9fd19b814a481e705210e3320ce7ad",
+    "title": "# Hosted signup entry QA \u2014 0.11.2",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/SUPABASE_SETUP.md",
+    "sha256": "80ac231e6568142a98f77e80bfe09fc5a148c1896f83d45684e4a63909807eaf",
+    "title": "# Supabase: apply the initial development database",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/UPDATE_007_008.md",
+    "sha256": "67bd07334aa5ce89bbb22d76c4d6b9ebe66612e679f206194594a6edf31f6763",
+    "title": "# One-time coach workflow, profile and private-photo update",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/UPDATE_009.md",
+    "sha256": "31174358ad9897d25272ca13d8eb3bc698fac2ed757b8d645e678f76efa1fe6e",
+    "title": "# Historical update009 \u2014 reviewed roster imports and scan quota",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/UPDATE_009_010.md",
+    "sha256": "a60b4e64859f7a789df0f7fd1aa706f1b5df350c7bcc6ec7a2f51a29b7e2d19e",
+    "title": "# Only missing009/010 \u2014 Cloud Vision roster onboarding",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/VALIDATION.md",
+    "sha256": "8a2f898082ed87eaa6ffbb4fe5210c2afa16dc52cc0dacf8a5e35dc4203bae95",
+    "title": "# Validation record",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/VERCEL_QA.md",
+    "sha256": "9474044fa3f99260b0d4552fdae67439742fabec8f09ffb01e8794df4df93df5",
+    "title": "# Latest Vercel verification \u20140.8.0",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/VERIFY_OBSERVATIONS.md",
+    "sha256": "1e6eba7ee6415bf3591ef9642c578ff0257ebbc8a42be6cc592820e91fef0e6c",
+    "title": "# Verify installed observation update 005",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/WINDOWS_EMULATOR.md",
+    "sha256": "cc9ed0f27a293dea7b33bd06c81ef2bac37484acc8a697e212e7c3317003dd66",
+    "title": "# Use Parent Plus Coach on a Windows Intel laptop",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/WORKSPACE_AUTHORIZATION_QA.md",
+    "sha256": "34b6fb91a0938e775114674853712da3a64fa837ec96eb9cb0a080e0a7314c9a",
+    "title": "# Isolated workspace authorization kernel",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/examples/FOUNDER_RESPONSE_REFERENCE.md",
+    "sha256": "34a2f6cd05bb6c4fabb4fbc9346a1add21bfe84eab1dbff32621252e6d5a7be9",
+    "title": "# ParentPlus \u2014 Founder Response Reference",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/prototypes/README.md",
+    "sha256": "703cf5c08078afb68cf2fb77e10d8eddacb5be05e2188083093bc65814e98e98",
+    "title": "# Owner-supplied visual references",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/superpowers.md",
+    "sha256": "e84825b0dde3de86c6a901fb501ab2b80a1c9d3c059526dece1faa2905f5fbaf",
+    "title": "# Superpowers for ParentPlus",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/superpowers/plans/2026-11-17-account-eligibility.md",
+    "sha256": "630e7ea51ea29437a1e15a6d567d313cc38dcfd4b1e80f9911576856afc2c401",
+    "title": "# Private account eligibility: implementation and review notes",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "docs/superpowers/plans/2026-11-17-roster-projection.md",
+    "sha256": "9bbcac69b0a59f96c093bd8bbabd0826660553c71523380c212ce5a9bbec00dd",
+    "title": "# Private class roster projection checkpoint",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  },
+  {
+    "repository": "destination",
+    "snapshot": "614e1b2dbaea3c522fc7d223cb7ee6d02aa028f4",
+    "path": "supabase/candidates/README.md",
+    "sha256": "26e1d5f47256ca1e56843cfdd1d111db510402f1293ac94bf0397c79f5994c1a",
+    "title": "# Isolated foundation candidates",
+    "scope": "document inventoried; entry-specific technical review is recorded in comparison report"
+  }
+]

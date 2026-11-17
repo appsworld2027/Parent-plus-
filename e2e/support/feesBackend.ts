@@ -39,7 +39,7 @@ export async function feesBackend(page: Page, options: { missing?: boolean } = {
         return response(rows.slice(0,50).map(totals));
       }
       state.writes++;
-      while (state.hold) await new Promise(resolve => setTimeout(resolve,20));
+      while (state.hold) await new Promise(resolve => { setTimeout(resolve,20); });
       if (state.failWrite) return response({ message: 'Private billing backend failure' },500);
       let result: string;
       if(path.endsWith('/collect_student_fee')) {

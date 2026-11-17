@@ -20,6 +20,8 @@ import { activities, parentVersion, parentColors, parentToday, parentWeek, weekS
 import { readFeedbackJourney, clearFeedbackJourney, type FeedbackJourney } from './feedbackJourney';
 import { identityFailure } from './identity';
 import { createFamily, loadFamily, loadParentData, parentFailure, saveFamilyRecord } from './service';
+import {ParentAttendance} from './ParentAttendance';
+import {appConfig} from '../config';
 
 type Tab='Home'|'Week'|'Together'|'Explore';
 type Sheet='child'|'moment'|'todo'|'event'|'connect'|'activity'|'profile'|'consent';
@@ -166,6 +168,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
             {section('Coming up',()=>open('event'))}{events.filter(value=>value.ends_at>=new Date().toISOString()).slice(0,3).map(value=><View key={value.id} style={s.row}><View style={s.stripe}/><View style={s.grow}><Text style={s.cardTitle}>{value.title}</Text><Text style={s.muted}>{localParts(value.starts_at,family.timezone).date} · {localParts(value.starts_at,family.timezone).time} {value.location?`· ${value.location}`:''}</Text></View></View>)}{!events.some(value=>value.ends_at>=new Date().toISOString())&&<Text style={s.muted}>Nothing planned yet. Add a class, school event or family plan.</Text>}
             {section('Family to-dos',()=>open('todo'))}{!todos.length&&<Text style={s.muted}>A small list for the things you want to remember.</Text>}{todos.map(todo=><Check key={todo.id} title={todo.title} checked={todo.done} disabled={busy} action={()=>{void run(async()=>{await saveFamilyRecord('family_todos',{...todo,done:!todo.done});await refreshedAfterSave('Reminder updated.');});}} />)}
             {section('From coaches',()=>{void refresh();},'Refresh')}{feedbackCards()}
+            {appConfig.environment!=='production'&&process.env.EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE==='true'&&!!owner&&!!child&&data.identityReady&&links.length>0&&<ParentAttendance key={`${owner}:${child.id}:${links.map(l=>l.id).sort().join(',')}`} owner={owner} child={child.id} initialDay={today}/>}
             {section('One easy thing tonight')}<Pressable accessibilityRole="button" onPress={()=>{setIdea(activities[0]);open('activity');setName(activities[0].title);setMinutes(String(activities[0].minutes));}} style={s.card}><Text style={[s.overline,{color:parentColors.sun}]}>{activities[0].minutes} MIN · TOGETHER</Text><Text style={s.cardTitle}>{activities[0].title}</Text><Text style={s.muted}>{activities[0].need} →</Text></Pressable>
           </>}
           {tab==='Week'&&<>{section('Your family plans',()=>open('event'))}{!events.length&&<Text style={s.muted}>No saved plans yet.</Text>}{events.map(value=><View key={value.id} style={s.card}><Text style={s.cardTitle}>{value.title}</Text><Text style={s.muted}>{localParts(value.starts_at,family.timezone).date} · {localParts(value.starts_at,family.timezone).time}–{localParts(value.ends_at,family.timezone).time}</Text><Text style={s.muted}>{value.location}</Text></View>)}{section('Memories and together time',()=>open('moment'))}{!moments.length&&<Text style={s.muted}>Your saved moments will appear here.</Text>}{moments.map(value=><View key={value.id} style={s.card}><Text style={s.cardTitle}>{value.note}</Text><Text style={s.muted}>{value.occurred_on} · {value.minutes} minutes</Text></View>)}</>}

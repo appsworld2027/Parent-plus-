@@ -1,6 +1,6 @@
 # ParentPlus — Coach and Parent
 
-**[Open the app](https://parent-plus-varcel.vercel.app)** — use this normal production address. Branch/PR preview links can require a separate Vercel account sign-in. [Latest hosted verification](docs/VERCEL_QA.md).
+**[Open the app](https://parent-plus-varcel.vercel.app)** — use this normal production address. Branch/PR preview links can require a separate Vercel account sign-in. [Latest hosted verification](ai-workspace/validation/VERCEL_QA.md).
 
 ParentPlus is a mobile-first Expo/React Native application with two workspaces:
 
@@ -13,13 +13,13 @@ The destination Supabase project is the canonical development database. Its inst
 
 - [Current progress](PROGRESS.md)
 - [Coach requirements](PRD.md)
-- [Parent requirements](docs/PARENT_PRD.md)
-- [Parent access design](docs/PARENT_MODULE.md)
-- [Developer guide](docs/DEVELOPER_GUIDE.md)
-- [Multi-workspace foundation](docs/MULTI_WORKSPACE_FOUNDATION.md)
-- [Validation and release gates](docs/MULTI_WORKSPACE_VALIDATION.md)
-- [Consolidation decision](docs/CONSOLIDATION_REVIEW.md)
-- [Shared development workflow](docs/SHARED_DEVELOPMENT_WORKFLOW.md)
+- [Parent requirements](founders/product/PARENT_PRD.md)
+- [Parent access design](ai-workspace/features/PARENT_MODULE.md)
+- [Developer guide](ai-workspace/development/DEVELOPER_GUIDE.md)
+- [Multi-workspace foundation](ai-workspace/architecture/MULTI_WORKSPACE_FOUNDATION.md)
+- [Validation and release gates](ai-workspace/validation/MULTI_WORKSPACE_VALIDATION.md)
+- [Consolidation decision](founders/decisions/CONSOLIDATION_REVIEW.md)
+- [Shared development workflow](ai-workspace/development/SHARED_DEVELOPMENT_WORKFLOW.md)
 
 ## Local development
 
@@ -34,3 +34,6 @@ npm run export:android
 Use fictional data in tests. Keep guardian verification and explicit Coach approval, academy/family isolation, reviewed Parent feedback, and consented media protections intact. Never commit secrets or personal records.
 
 The source Next.js repository is reference material for product workflows and selected engineering practices; it is not the target application stack. Keep its migration history separate from this repository. GitLab and Vercel review is deferred from the current consolidation.
+
+- [Founder documentation](founders/README.md)
+- [AI and technical documentation](ai-workspace/README.md)
