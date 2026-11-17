@@ -18,5 +18,5 @@
 - [x] Add real SQL tests for role/privacy/scope/state/expiry/retry/rejoin/transfer and assignment invariants; observe missing-operation failures.
 - [x] Implement018 private helper/offer/profile structures, owner issue/revoke, recipient preview/accept, ownership handoff, scoped staff projection and teaching assignment creation.
 - [x] Add independent PostgreSQL acceptance/revoke/transfer races and test actual post-join roster access.
-- [ ] Review findings, full regression/exports, document current boundaries, commit through a tested PR to main under the owner's ongoing main instruction.
+- [x] Review findings, full regression/exports, document current boundaries, commit through tested PR8 to main under the owner's ongoing main instruction.
 - [ ] Continue remaining permission conversion/onboarding work. Ask for staging/account execution only when needed; do not apply candidates to production.

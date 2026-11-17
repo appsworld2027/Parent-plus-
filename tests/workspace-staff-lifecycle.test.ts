@@ -20,7 +20,7 @@ async function fail(run:()=>Promise<unknown>,code='42501'){
 }
 async function joined(n=1){await actor(1);await issue(n);await actor(101);return accept(n);}
 async function assignment(member:string,n=1,session=0){
- return(await db.query<{value:string}>(`select coach_private.workspace_assign_teacher($1,$2,$3,$4,$5,'lead',clock_timestamp()+interval '1 hour',clock_timestamp()+interval '2 hours',clock_timestamp(),clock_timestamp()+interval '3 hours',clock_timestamp()+interval '3 hours') as value`,[id(11),id(900+n),member,session?null:id(31),session?id(session):null])).rows[0].value;
+ return(await db.query<{value:string}>(`with bounds as materialized(select clock_timestamp() t) select coach_private.workspace_assign_teacher($1,$2,$3,$4,$5,'lead',t+interval '1 hour',t+interval '2 hours',t,t+interval '3 hours',t+interval '3 hours') as value from bounds`,[id(11),id(900+n),member,session?null:id(31),session?id(session):null])).rows[0].value;
 }
 beforeAll(async()=>{
  db=await supabaseDatabase();await db.exec(readFileSync('tests/fixtures/workspace-authorization.sql','utf8'));
@@ -90,7 +90,7 @@ it('caps new membership and grants at the issuer authority ceiling',async()=>{
  expect((await db.query<{valid_until:string}>('select valid_until from coach_private.workspace_memberships where id=$1',[member])).rows[0].valid_until).toEqual(until);
  expect((await db.query<{valid_until:string}>('select valid_until from coach_private.workspace_role_grants where membership_id=$1',[member])).rows[0].valid_until).toEqual(until);
 });
-it.each([[{role:'owner'}],[{role:'branch_manager'}],[{role:'admin',branch:id(61)}],[{role:'instructor',branch:id(63)}],[{role:'superadmin'}]])('rejects malformed or escalated staff proposals %j',async roles=>{await fail(()=>issue(1,'new@example.test',roles),'22023');});
+it.each([{roles:[{role:'owner'}]},{roles:[{role:'branch_manager'}]},{roles:[{role:'admin',branch:id(61)}]},{roles:[{role:'instructor',branch:id(63)}]},{roles:[{role:'superadmin'}]}])('rejects malformed or escalated staff proposals %j',async({roles})=>{await fail(()=>issue(1,'new@example.test',roles),'22023');});
 it('creates admin-only membership without inventing a Coach identity',async()=>{
  await issue(1,'new@example.test',[{role:'admin',branch:null}]);await actor(101);await accept(1,'Academy administrator',null);
  expect((await db.query('select * from coach_private.coach_identities where user_id=$1',[id(101)])).rows).toHaveLength(0);

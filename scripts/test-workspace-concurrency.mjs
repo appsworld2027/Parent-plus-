@@ -31,7 +31,7 @@ class Connection{
   this.process.on('error',error=>{this.failure=error;this.flush();});
   this.process.stdin.on('error',error=>{this.failure=error;this.flush();});
   this.process.on('close',code=>{this.failure=new Error(`psql exited ${code}: ${this.errors}`);this.flush();clients.delete(this);});
-  this.ready=this.send(`set application_name='${this.name}';set statement_timeout='10s';set lock_timeout='8s';\n\\set VERBOSITY verbose`);
+  this.ready=this.send(`set application_name='${this.name}';set statement_timeout='10s';set lock_timeout='8s';set client_min_messages='warning';\n\\set VERBOSITY verbose`);
  }
  flush(){
   while(this.pending.length){
@@ -90,6 +90,7 @@ try{
  await sql(readFileSync('supabase/candidates/202611170017_workspace_roster.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170018_workspace_staff.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170019_workspace_attendance.sql','utf8'));
+ await sql(readFileSync('supabase/candidates/202611170020_workspace_feedback.sql','utf8'));
  await sql(`insert into auth.users(id,email,email_confirmed_at) values('${uid(101)}','new@example.test',clock_timestamp()),('${uid(102)}','second@example.test',clock_timestamp()),('${uid(103)}','third@example.test',clock_timestamp());`);
  await sql(`create table coach_private.workspace_test_writes(actor uuid,session_id uuid);
  create function coach_private.workspace_test_protected_write(workspace uuid,session uuid) returns void language plpgsql security definer set search_path='' as $$
@@ -212,7 +213,7 @@ try{
  await test('accepted instructor gains only an explicit class roster and loses it on assignment removal',async()=>{
   await sql(`${as(8)}select coach_private.workspace_save_class(${workspace},'${uid(1301)}',0,'${uid(1302)}','${uid(31)}',clock_timestamp()+interval '1 hour',clock_timestamp()+interval '2 hours','Studio','scheduled');`);
   const recipient=await connection('joined_unassigned',101);await mustDeny(recipient.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`));await recipient.close();
-  await sql(`${as(8)}select coach_private.workspace_assign_teacher(${workspace},'${uid(1303)}','${joinedStaff}',null,'${uid(1301)}','lead',clock_timestamp(),clock_timestamp()+interval '3 hours',clock_timestamp(),clock_timestamp()+interval '4 hours',clock_timestamp()+interval '4 hours');`);
+  await sql(`${as(8)}with bounds as materialized(select clock_timestamp() t) select coach_private.workspace_assign_teacher(${workspace},'${uid(1303)}','${joinedStaff}',null,'${uid(1301)}','lead',t,t+interval '3 hours',t,t+interval '4 hours',t+interval '4 hours') from bounds;`);
   assert.equal(await sql(`${as(101)}select count(*) from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`),'2');
   await sql(`${as(8)}select coach_private.workspace_revoke_assignment(${workspace},'${uid(1303)}');`);
   const removed=await connection('assignment_removed',101);await mustDeny(removed.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`));
@@ -251,6 +252,35 @@ try{
   const later=await connection('attendance_replay_after_revoke',3);await mustDeny(later.send(saveAttendance(page,1505)));
   assert.equal(await sql(`select attendance_revision from public.class_sessions where id=${session};`),String(page.revision+1));
  });
+ const saveFeedback=(target,revision,request,note,status='draft')=>`select coach_private.workspace_save_class_feedback(${workspace},'${uid(target)}',${revision},'${uid(request)}',${session},'student',array['${uid(21)}']::uuid[],'${note}','${status}');`;
+ await test('actual feedback creation waiting behind assignment removal is denied without a note or author link',async()=>{
+  const revoker=await connection('feedback_assignment_revoker',1);await revoker.send(revokeAssignment);
+  const writer=await connection('feedback_waiter',3),attempt=writer.send(saveFeedback(1601,0,1701,'Denied feedback'));const denial=mustDeny(attempt);
+  await blocked(writer,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from public.observations where id='${uid(1601)}';`),'0');
+  assert.equal(await sql('select count(*) from coach_private.workspace_feedback_submissions;'),'0');
+ });
+ await test('actual feedback edits serialize and reject a stale note rather than losing an update',async()=>{
+  await sql(`${as(3)}${saveFeedback(1602,0,1702,'Original')}`);
+  const first=await connection('feedback_first_editor',3);await first.send(saveFeedback(1602,1,1703,'First edit'));
+  const second=await connection('feedback_stale_editor',3),attempt=second.send(saveFeedback(1602,1,1704,'Stale edit'));const conflict=assert.rejects(attempt,/40001/);
+  await blocked(second,first);await first.send('commit;');await conflict;
+  assert.equal(await sql(`select note from public.observations where id='${uid(1602)}';`),'First edit');
+ });
+ await test('identical actual feedback requests create one author link, version and receipt',async()=>{
+  const first=await connection('feedback_original_request',3);const original=await first.send(saveFeedback(1603,0,1705,'One note'));
+  const second=await connection('feedback_same_request',3),attempt=second.send(saveFeedback(1603,0,1705,'One note'));
+  await blocked(second,first);await first.send('commit;');assert.deepEqual(JSON.parse(await attempt),JSON.parse(original));await second.send('commit;');
+  assert.equal(await sql(`select count(*) from public.observation_versions where observation_id='${uid(1603)}';`),'1');
+  assert.equal(await sql(`select count(*) from coach_private.workspace_feedback_submissions where request_id='${uid(1705)}';`),'1');
+ });
+ await test('correction commits before a waiting author edit: stale edit denied and original teacher preserved',async()=>{
+  await sql(`${as(3)}${saveFeedback(1604,0,1706,'Original recorded note','recorded')}`);
+  const editor=await connection('feedback_corrector',1);await editor.send(`select coach_private.workspace_correct_feedback(${workspace},'${uid(1604)}',1,'${uid(1801)}','Corrected note','Factual correction');`);
+  const author=await connection('feedback_author_waiting',3),attempt=author.send(saveFeedback(1604,1,1707,'Stale author edit','recorded'));const conflict=assert.rejects(attempt,/40001/);
+  await blocked(author,editor);await editor.send('commit;');await conflict;
+  assert.equal(await sql(`select author_id='${uid(3)}' and updated_by='${uid(1)}' and note='Corrected note' from public.observations where id='${uid(1604)}';`),'t');
+ });
  await test('ownership handoff commits before an old owner write: waiting old owner denied',async()=>{
   await sql(`${as(1)}${issueStaff(4,'second@example.test',true)}`);
   const successor=await connection('new_owner_accepting',102);await successor.send(acceptStaff(4));
@@ -259,7 +289,7 @@ try{
   assert.equal(await sql(`select count(*) from public.batches where id='${uid(1304)}';`),'0');
   assert.equal(await sql(`${as(102)}select coach_private.workspace_has_role(${workspace},'owner',null);`),'t');
  });
- console.log(`${passed}/21 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
+ console.log(`${passed}/25 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
 }finally{
  await Promise.all([...clients].map(c=>c.close()));
  if(failures.length)process.exitCode=1;
