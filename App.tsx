@@ -192,7 +192,11 @@ export default function App() {
   let parentRoute = process.env.EXPO_PUBLIC_APP_MODULE === 'parent';
   if (Platform.OS === 'web') {
     parentRoute = parentRoute || globalThis.location.pathname.startsWith('/parent');
-    if (globalThis.location.pathname.startsWith('/auth')) { try { parentRoute = parentRoute || globalThis.sessionStorage.getItem('parentplus.auth.return-module') === 'parent'; } catch { /* A normal sign-in remains available. */ } }
+    if (globalThis.location.pathname.startsWith('/auth')) {
+      const returnModule=new URLSearchParams(globalThis.location.search).get('module');
+      if(returnModule==='coach'||returnModule==='parent')parentRoute=process.env.EXPO_PUBLIC_APP_MODULE==='parent'||returnModule==='parent';
+      else try { parentRoute = parentRoute || globalThis.sessionStorage.getItem('parentplus.auth.return-module') === 'parent'; } catch { /* A normal sign-in remains available. */ }
+    }
   }
   if (!fontsLoaded && !fontError) return <View style={{flex:1,backgroundColor:parentRoute?'#060A0E':'#F3F5F1',alignItems:'center',justifyContent:'center'}}><Text style={{color:parentRoute?'#F9FBFC':'#22303A'}}>Loading Parent Plus…</Text></View>;
   if (parentRoute) return <ParentApp />;

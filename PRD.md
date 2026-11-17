@@ -1,6 +1,6 @@
 # Product requirements: Parent Plus Coach
 
-Version: 1.8 · simpler private feedback save, 17 November 2026
+Version: 1.9 · reliable browser recovery and tab isolation, 17 November 2026
 Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](docs/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](docs/PRODUCT_DECISIONS.md) and [developer handover](docs/DEVELOPER_GUIDE.md).
 Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
@@ -55,8 +55,8 @@ Screens that merely show sample data or success messages do not satisfy these cr
 
 | ID | Priority | Requirement | Acceptance evidence |
 | --- | --- | --- | --- |
-| AUTH-01 | P0 | Email/password registration, verification, sign-in, recovery, and sign-out | Real verification/recovery email flows work on Android; invalid/expired links are handled |
-| AUTH-02 | P0 | Secure session restoration and academy onboarding | Restart restores an authorized session; interrupted onboarding retries safely; sign-out removes private cached state |
+| AUTH-01 | P0 | Email/password registration, verification, sign-in, recovery, and sign-out | Real verification/recovery email flows work on Android; public web recovery request page and a new email tab in the same browser work; exact flow/module is retained; invalid/expired links are handled |
+| AUTH-02 | P0 | Secure session restoration and academy onboarding | Restart restores an authorized session; interrupted onboarding retries safely; sign-out removes private cached state without replacing another tab's account or erasing its pending recovery flow |
 | ORG-01 | P0 | Owner creates academy name, timezone, and currency defaults | Ownership is enforced server-side; app cannot select another owner's academy |
 | STU-01 | P0 | Add/edit/archive students and guardian contacts; select existing batches and create a batch inside the student form | Saved values persist; history survives archiving; contact data alone grants no account access |
 | STU-02 | P0 | Open a student profile showing photo, age, assessed proficiency, guardian and batches; add a batch from that profile | Age/level persist and remain visible after reopen; joining a batch retains other memberships and profile values; grouped form fields have clear labels and spacing |
