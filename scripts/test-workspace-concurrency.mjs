@@ -89,6 +89,7 @@ try{
  await sql(readFileSync('tests/fixtures/workspace-authority.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170017_workspace_roster.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170018_workspace_staff.sql','utf8'));
+ await sql(readFileSync('supabase/candidates/202611170019_workspace_attendance.sql','utf8'));
  await sql(`insert into auth.users(id,email,email_confirmed_at) values('${uid(101)}','new@example.test',clock_timestamp()),('${uid(102)}','second@example.test',clock_timestamp()),('${uid(103)}','third@example.test',clock_timestamp());`);
  await sql(`create table coach_private.workspace_test_writes(actor uuid,session_id uuid);
  create function coach_private.workspace_test_protected_write(workspace uuid,session uuid) returns void language plpgsql security definer set search_path='' as $$
@@ -216,6 +217,40 @@ try{
   await sql(`${as(8)}select coach_private.workspace_revoke_assignment(${workspace},'${uid(1303)}');`);
   const removed=await connection('assignment_removed',101);await mustDeny(removed.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`));
  });
+ const attendancePage=async()=>JSON.parse(await sql(`${as(3)}select coach_private.workspace_class_attendance(${workspace},${session});`));
+ const saveAttendance=(page,request,status='present')=>`select coach_private.workspace_save_attendance(${workspace},${session},${page.revision},'${page.context}','${uid(request)}','[{"student_id":"${uid(21)}","status":"${status}"},{"student_id":"${uid(22)}","status":"${status}"}]');`;
+ await test('actual attendance save waiting behind assignment removal is denied without marks or revision',async()=>{
+  const page=await attendancePage();
+  const revoker=await connection('attendance_assignment_revoker',1);await revoker.send(revokeAssignment);
+  const writer=await connection('attendance_waiter',3),attempt=writer.send(saveAttendance(page,1501));const denial=mustDeny(attempt);
+  await blocked(writer,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select attendance_revision from public.class_sessions where id=${session};`),String(page.revision));
+  assert.equal(await sql('select count(*) from public.attendance;'),'0');
+ });
+ await test('two actual attendance editors serialize and reject a stale second instructor',async()=>{
+  const page=await attendancePage();
+  const first=await connection('attendance_first_editor',3);await first.send(saveAttendance(page,1502,'late'));
+  const second=await connection('attendance_stale_editor',4),attempt=second.send(saveAttendance(page,1503,'absent'));const conflict=assert.rejects(attempt,/40001/);
+  await blocked(second,first);await first.send('commit;');await conflict;
+  assert.equal(await sql(`select bool_and(status='late') from public.attendance where session_id=${session};`),'t');
+  assert.equal(await sql('select count(*) from coach_private.workspace_attendance_submissions;'),'1');
+ });
+ await test('identical actual attendance submissions return one immutable receipt and revision',async()=>{
+  const page=await attendancePage();
+  const first=await connection('attendance_original_request',3);const original=await first.send(saveAttendance(page,1504));
+  const second=await connection('attendance_same_request',3),attempt=second.send(saveAttendance(page,1504));
+  await blocked(second,first);await first.send('commit;');assert.deepEqual(JSON.parse(await attempt),JSON.parse(original));await second.send('commit;');
+  assert.equal(await sql(`select count(*) from coach_private.workspace_attendance_submissions where request_id='${uid(1504)}';`),'1');
+  assert.equal(await sql(`select attendance_revision from public.class_sessions where id=${session};`),String(page.revision+1));
+ });
+ await test('actual attendance locks first: save commits, revoke waits, even the receipt replay is then denied',async()=>{
+  const page=await attendancePage();
+  const writer=await connection('attendance_write_first',3);await writer.send(saveAttendance(page,1505));
+  const revoker=await connection('attendance_revoke_waiter',1),attempt=revoker.send(revokeAssignment);
+  await blocked(revoker,writer);await writer.send('commit;');await attempt;await revoker.send('commit;');
+  const later=await connection('attendance_replay_after_revoke',3);await mustDeny(later.send(saveAttendance(page,1505)));
+  assert.equal(await sql(`select attendance_revision from public.class_sessions where id=${session};`),String(page.revision+1));
+ });
  await test('ownership handoff commits before an old owner write: waiting old owner denied',async()=>{
   await sql(`${as(1)}${issueStaff(4,'second@example.test',true)}`);
   const successor=await connection('new_owner_accepting',102);await successor.send(acceptStaff(4));
@@ -224,7 +259,7 @@ try{
   assert.equal(await sql(`select count(*) from public.batches where id='${uid(1304)}';`),'0');
   assert.equal(await sql(`${as(102)}select coach_private.workspace_has_role(${workspace},'owner',null);`),'t');
  });
- console.log(`${passed}/17 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
+ console.log(`${passed}/21 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
 }finally{
  await Promise.all([...clients].map(c=>c.close()));
  if(failures.length)process.exitCode=1;
