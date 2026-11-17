@@ -2,9 +2,9 @@ name: Android preview APK
 on:
   workflow_dispatch:
   push:
-    branches: [codex/coach-foundation]
+    branches: [codex/coach-foundation, "AM/**"]
     # Hosting routes and browser-only checks do not change an Android APK.
-    paths-ignore: ['**/*.md', 'docs/images/**', 'vercel.json', 'playwright.config.ts', 'e2e/**']
+    paths-ignore: ['**/*.md', 'docs/images/**', 'vercel.json', 'playwright.config.ts', 'e2e/**', 'quality/**', 'scripts/quality_gate.py']
 permissions:
   contents: write
 concurrency:
