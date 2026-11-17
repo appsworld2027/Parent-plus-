@@ -313,3 +313,24 @@ Published0791763/Vercel8ntkcG7wDtxTYTbAqEQKmH94Nhka: [hosted identity QA](PARENT
 ## Live014 activation resolved —17November2026
 
 Owner initially confirmed the read-only ledger/table/function diagnostic was all false, then ran the full014 and reports installed_update202611160014. New approval table limit=0 GET and both read-only request RPCs now return401/42501 anonymously, replacing404/PGRST205/PGRST202. No records read/written, mail or authenticated session used. This corroborates installation/API visibility and denied anonymous access; it does not prove signed-in account behavior. Do not repeat014 or old setup. Full App checks43859794515 and Android43859794507 are both SUCCESS. Next: owner live class feedback/approval/Parent save/reopen.
+
+## Cross-repository code audit — 17 November 2026
+
+Preparation/test baselines: Source `380adba9f73b3021a787dff72074df57f2a53634`; Destination `3e237f558c65ad2c886a1c6e40eff140dcca0597`. Subsequent tracked changes in this task are existing Markdown/instruction/template edits only. Full domain/disposition and command evidence is in [system comparison sections 5–9](PARENTPLUS_SYSTEM_COMPARISON.md#5-code-gap-audit--refreshed-17-november-2026).
+
+| Fresh check | Observed outcome |
+| --- | --- |
+| Destination npm run check | TypeScript passed; 338/338 tests in 35 files passed; Vitest 58.20s. |
+| Destination npm run test:e2e with system Chromium/offline Expo metadata | 89/89 passed, 3.9 minutes. Fictional network/SDK transport; not live provider/device proof. |
+| Destination npm run test:workspace:postgres | 8/8 real PG17 private-kernel transaction cases passed in the required labeled network-isolated container; container removed. Not full public F2/Parent API race acceptance. |
+| Source frontend npm test | 528/528 cases in 55 files passed, 109.67s. Locked temporary dependencies installed after initial missing-Vitest error and removed later for disk capacity. Source tracked tree remains clean. |
+| Source quality_gate self-test and plan | 58/58 engine cases passed, 11.807s; registry/plan validation succeeded. Full execution gate not certified by a plan. |
+| Source full database runner | Not green after repeat: 598 executed, 594 passed, 1 failure + 3 errors during extra container startup (exit 125), zero skips. Cleanup passed; standalone concurrency evidence missing. |
+| Source isolated retest of four startup-affected tests | 4/4 passed in 71.592s using cutover/forward-upgrade/receipt-upgrade unittest modules without the full runner's outer container. Original full gate remains unsuccessful. |
+| Document checks | Unique 20 audit slices and 58 catalogue requirements; local Markdown targets; no new documents; git diff --check. |
+
+The first broad browser/DB attempts encountered ENOSPC disk exhaustion. Reproducible dependency/download caches were removed; affected Destination checks and four Source container tests were rerun successfully. No assertions were weakened or tests skipped to obtain success. Original failed full-gate results are retained as failures, distinct from narrow retests.
+
+Local raw logs: `/tmp/parentplus-source-db-audit.log`, `/tmp/parentplus-source-container-case-retest.log`, `/tmp/parentplus-destination-concurrency-audit.log`, `/tmp/parentplus-destination-browser-audit.log`; Source full-run XML is under its ignored test-results/database directory. Scratch artifacts are not guaranteed retained across workspace replacement; this human summary is durable. No uploaded hosted artifacts or current CI success is asserted.
+
+Unrun/separate gates: Source full successful DB gate and real-local browser/lint/type/build checks, hosted CI for current work, independent review, real email/Storage/OCR, native/iOS/accessibility, load/performance, staging activation and restore. App exports were not rerun for this documentation-only update; earlier exports remain historical evidence at their own tested code snapshot. No live database or provider was used as a fixture.

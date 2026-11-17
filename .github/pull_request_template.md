@@ -10,14 +10,23 @@ What changed and why?
 
 ## Validation
 
+- Accepted scenario IDs and exact executable cases (link existing feature QA/spec):
+- Denial, retry/lost-response, stale-context and concurrency coverage or explicit gaps:
+- Tested code commit/diff, environment and fresh evidence links:
+- Provider/device/migration/restore checks still pending and release consequence:
+
 - [ ] `npm run check` (or explain why not relevant)
 - [ ] `npm run test:e2e` (or explain why not relevant)
 - [ ] `npm run export:web` (or explain why not relevant)
 - [ ] `npm run export:android` (or explain why not relevant)
 - [ ] CI result reviewed
+- [ ] No focused/skipped/zero-test run presented as complete evidence
+- [ ] Implemented/candidate/live status and remaining acceptance gaps are explicit
 
 ## Review
 
 - [ ] No secrets or real personal data added
 - [ ] Scope and follow-ups are documented
 - [ ] Required owner review obtained for shared auth, access, schema, or release changes
+- [ ] Independent review recorded, or explicitly pending; author review is not independent
+- [ ] Current branch and merge authorization verified; AM-only restriction respected

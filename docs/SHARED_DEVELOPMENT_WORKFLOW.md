@@ -4,7 +4,9 @@ This repository is the shared destination for AM and MM. The source repository r
 
 ## Branches and reviews
 
-The owner explicitly requested consolidation into `main` on17November2026. `main` is the canonical shared base after this promotion. New AM/MM feature PRs target `main`; the legacy `codex/coach-foundation` and existing feature branches retain their history. A commit saved on a feature branch is not yet a commit on `main`; status reports must state which branch contains the work. The owner's current instruction authorizes this promotion, without authorizing live SQL activation or changing provider/release settings.
+**Current owner restriction (supersedes the historical promotion paragraph below):** new consolidation work stays on `AM/consolidated`. Do not merge into main, coach-foundation, MM or another AM branch until instructed. Read the reusable feature procedure in Developer Guide section 10. Branch-prefix conventions and documentation are not enforcement; current GitHub required-check/reviewer protection is not established here.
+
+Historical promotion: the owner previously requested consolidation into `main` on 17 November 2026, establishing a shared base while preserving legacy branch history. That promotion did not authorize live SQL or provider/release settings. Later AM-only instructions above govern ongoing work. A feature-branch commit is not a main-branch commit; reports must identify the actual branch containing the work.
 
 1. Start work from the agreed current destination development base. Use `AM/<short-task>` or `MM/<short-task>` for owner work; keep existing legacy branches intact.
 2. Keep each pull request focused. State the user-facing change, affected Coach/Parent journey, data/security impact, validation performed, and any follow-up.

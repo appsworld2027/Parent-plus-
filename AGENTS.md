@@ -31,6 +31,8 @@ Keep guardian identity checks, explicit Coach approval, family/academy isolation
 
 ## Collaboration and verification
 
+Before any substantive feature work or quality audit, read section 10 of `docs/DEVELOPER_GUIDE.md` (Rigorous feature delivery for every Codex session). It owns the reusable acceptance/threat/test/review/evidence procedure and existing-document map. Reuse existing feature QA/spec/plan documents; do not create parallel reports or standards when an existing owner covers the topic. Map accepted scenarios to exact tests or explicit release gaps, preserve Destination-only behavior, distinguish mocked/candidate/live/device evidence, and report independent review as pending when unavailable. Installed skills are guidance; executable checks and actual results establish evidence. Current owner restriction is AM/consolidated only; no merge to other branches or live activation is implied.
+
 Use the branch and review process in `docs/SHARED_DEVELOPMENT_WORKFLOW.md`. Never write to the source repository during consolidation. Do not merge a pull request without explicit approval.
 
 For relevant app changes, use the existing checks: `npm run check`, `npm run test:e2e`, `npm run export:web`, and `npm run export:android`. For SQL candidates, use the isolated database validation described in `docs/MULTI_WORKSPACE_VALIDATION.md`; do not use a live project as a test database. Report what ran and what did not.

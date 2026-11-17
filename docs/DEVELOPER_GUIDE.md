@@ -1,5 +1,7 @@
 # Developer handover and working agreement
 
+**Current engineering entrypoint, 17 November 2026:** read section 10, “Rigorous feature delivery for every Codex session,” for the reusable delivery/test procedure and document ownership map. All new work remains on `AM/consolidated`; historical main-promotion and Parent-deferral instructions do not override the current task. The code gap audit is in the existing [system comparison](PARENTPLUS_SYSTEM_COMPARISON.md#5-code-gap-audit--refreshed-17-november-2026). No new runtime quality automation is installed by these instructions.
+
 **F2 execution checkpoint,17November2026:** private `202611170016_workspace_authorization.sql` adds the decision kernel and owner-only revocations, with no client/public activation. Read [kernel QA](WORKSPACE_AUTHORIZATION_QA.md) before using its helpers. Current-note reads end with the assignment access window; historical grants cannot reveal drafts. Protected writes/revocations share workspace→actor locks after any required legacy locks, recheck authority and support READ COMMITTED only. `npm run test:workspace:postgres` uses an explicitly configured empty disposable database; CI has a separate PG17 service. All36public RPCs/direct grants/storage still need complete conversion. No new owner SQL is ready.
 
 **Robust foundation direction,17November2026:** read [MULTI_WORKSPACE_FOUNDATION.md](MULTI_WORKSPACE_FOUNDATION.md) and [MULTI_WORKSPACE_VALIDATION.md](MULTI_WORKSPACE_VALIDATION.md). Owner authorised continuing after Supabase clarification. A private F1candidate exists only under supabase/candidates/ and runs in disposable tests; do not present it as an owner script or live015. Current001–014 permissions/app remain. F2server authorisation must cover all36public RPCs/direct grants/storage and server account eligibility before enabling memberships. Never auto-infer old teachers or give a legacy admin an invented Coach identity. Real Supabase staging/prod activation will need authorised access; none is configured here. Guardian privacy choice remains pending and blocks guardian expansion, not independent F1/F2work.
@@ -152,7 +154,7 @@ Use the current PRD requirement IDs to relate work to acceptance, and keep a sho
 - Preview development signing is separate from production-key custody and Play publication. Build artifacts expire; regenerate a verified build if needed.
 - Keep diagnostic data separate from family content/financial audit records. Diagnostics now persist on the device on a best-effort basis with validated restoration, memory fallback and sign-out clearing. Native crash/remote reporting remains open; do not claim it is connected.
 - Never log passwords/tokens/student details or automatically send reports to someone. Report sharing is a deliberate owner action.
-- Keep the parent app deferred and gateway collection disabled until separately implemented, tested and approved for the intended environment.
+- The Parent workspace is authorized and implemented in the current scope; preserve its verified-link, review and consent controls. Gateway collection remains disabled/shelved until separately implemented, tested and approved for the intended environment.
 
 ## 9. Before handing off a change
 
@@ -196,3 +198,79 @@ CoachSetupCard loads real roster counts on Today and opens RosterScreen through 
 ## Parent0.1 and shared typography
 
 The new src/parent root is selected by /parent, with shared AuthProvider module=parent. Never route Parent-only users through AcademySetup or infer family links from contacts. Parent interface reads only family tables, whitelisted connections/permissions and approved feed. Migrations011/012 and delivered update_011_012.sql must stay consistent (npm run prepare:parent-sql and --check). Parent database tests execute the exact combined owner file twice. The source is React Native, not the prototype scripts. Typography.tsx uses the SDK-compatible expo-font and local OFL Bricolage asset; failure falls back to system text. New source/map and limits: PARENT_MODULE.md.
+
+## 10. Rigorous feature delivery for every Codex session
+
+This is the canonical Destination engineering procedure. Adapted from Source Engineering Standards / Feature Delivery Workflow / quality-gate mechanisms reviewed at `380adba`, using Destination Expo commands and current owner authorization. Do not create a parallel engineering standard, handoff or feature-audit document when this guide, current progress, existing QA/spec/plan or system comparison already owns that topic.
+
+**Current branch rule:** work stays on `AM/consolidated`; source is read-only. New merges, live SQL/provider changes and release infrastructure need their applicable separate authorization. Reuse authorization already granted; do not ask the founder to choose routine technical implementation details. Historical instructions/examples do not override the current session.
+
+**How Codex becomes consistent:** model retraining is not performed by editing a repository. Repository instructions supply durable context; executable tests/CI check outcomes; a reviewer examines what automation misses. These controls guide an invoked assistant and must be verified in the actual client. They install no unattended agent and cannot guarantee every future model obeys instructions.
+
+### Existing document ownership and session bootstrap
+
+| Topic | Existing owner to read/update |
+| --- | --- |
+| Instruction entrypoint and current permissions | `AGENTS.md`, latest session instructions |
+| Current checkpoint, baseline/remaining work | `PROGRESS.md`; latest dated entries override older history |
+| Product outcome and privacy decisions | `PRD.md`, `docs/PARENT_PRD.md`, `PRODUCT_DECISIONS.md` and relevant feature contract |
+| Cross-repository capability status | `CONSOLIDATED_PRODUCT_ROADMAP.md`, `PARENTPLUS_SYSTEM_COMPARISON.md` |
+| Runtime architecture and database authority | `ARCHITECTURE.md`, `CONSOLIDATED_DATABASE_DESIGN.md`, `LIVE_DATABASE_COMPARISON.md`; exact SQL/code remain evidence |
+| Delivery/verification procedure | This guide; existing feature QA/spec/plan for detailed scenarios |
+| Executed checks and remaining limitations | `VALIDATION.md` and relevant existing feature QA; raw output stays ignored under test-results or task scratch space |
+| Mission closure and source independence | `CONSOLIDATION_ACCEPTANCE_LEDGER.md` |
+| Collaboration/release and founder format | `SHARED_DEVELOPMENT_WORKFLOW.md`, `examples/FOUNDER_RESPONSE_REFERENCE.md` |
+
+At the start, identify actual branch/full HEAD, dirty scope and accessible context; preserve unrelated work. Read the relevant feature callers, services, migrations and tests. A future clean session should answer what is live, what is candidate-only, what remains and which checks apply using Destination alone. Report missing context instead of inventing cross-chat memory.
+
+### Required execution flow
+
+Request → acceptance criteria → affected-system/threat review → scenario-to-test matrix → implementation/regression → selected automated checks → actual review → evidence/remaining gates → authorized checkpoint.
+
+1. **Define observable outcomes.** Reuse the relevant existing PRD/spec/QA and allocate stable feature/scenario IDs there. State success, invalid/denied behavior, compatibility, included/excluded scope and release consequence of gaps. Do not call a table/screen/API “the feature” before the complete user flow works.
+2. **Inspect dependencies and authority.** Follow UI → service/API → function/policy/Storage → data → response and all affected callers. Assess identity/tenant ownership, lifecycle, caches/drafts, provider/toolchain, migrations and repair. Make routine technical decisions with repository evidence; escalate only unresolved product/privacy decisions or missing authorization/prerequisites.
+3. **Map every accepted scenario to an exact test identity or explicit gap.** Use the matrix below inside the existing feature QA/spec. Proposed tests are not passed tests. Tests should assert the user/security behavior, not mirror private implementation. Apply meaningful failing regression/reproduction first for defects and material new behavior; do not manufacture tests for prose-only changes.
+4. **Implement and preserve existing journeys.** Use relevant Superpowers skills and locked dependencies. Keep server authorization authoritative; client flags/filtering are not access controls. Never activate founder dummy Auth or use live projects as test fixtures. Preserve existing valid regression tests.
+5. **Run applicable checks and inspect complete results.** Use the command matrix below; preserve exit codes and count passing/failing/skipped tests. Diagnose missing prerequisites, run independent safe work and state any blocked gate exactly. Never weaken assertions or disable scenarios to obtain green output.
+6. **Review independently when available and resolve findings.** Independent means another actual reviewer, not a second pass by the author. Use only authorized review tools; do not spawn agents merely because a skill example suggests it. If unavailable, disclose author review and leave independent review pending for the applicable merge/release gate. Each confirmed issue needs reproduction, correction and relevant retest.
+7. **Publish truthful evidence in existing owner documents.** Record branch/full baseline, exact code/diff under review, commands/results, environment, mocks/provider boundaries, review findings, failures/skips/unrun checks and remaining release blockers. Later code changes invalidate affected results; documentation-only updates must label earlier code evidence with its actual tested snapshot. A commit, push, hosted CI result, live migration and installed-device acceptance are distinct facts.
+8. **Complete only the authorized checkpoint.** Verify actual local/remote state after approved operations. Preserve AM-only work and separate live activation/merge decisions. Do not ask the founder to run available routine checks or make architecture choices the agent can resolve.
+
+### Per-feature acceptance/test matrix
+
+Maintain this table in the existing feature QA/spec/plan; no new central document is required.
+
+| Scenario ID / outcome | Exact executable case(s), environment, actual result or gap, release impact |
+| --- | --- |
+| Happy path, persisted reopen and correction | Name the exact test title, not just a filename; record DB/browser/device/provider boundary. |
+| Invalid input/response and empty/loading/error | Malformed/oversized/duplicate/unordered API rows; failure must not look like a successful empty view. |
+| Permission boundaries | Anonymous/unverified/wrong account, other family/academy, revoked/expired/banned actor, changed intended email; direct API/table/Storage bypass as applicable. |
+| Retry and recovery | Double submission, same key/same payload, changed payload, commit-with-lost-response, restart and corrupt/unavailable storage. |
+| In-flight changes and concurrency | Late reply after context/child/account change; roster/session/link/consent change; both revocation-before-write and write-before-revocation orderings. |
+| Dates, history and scale | DST gaps/folds, year/local-day boundaries, archived records, bounded pagination and data over service limits. |
+| Migration and real environment | Rebuild installed history + exact candidate, preserved IDs/finance/links, old-client compatibility, forward repair and restore where affected. |
+| User-facing accessibility/mobile | Accessible names/error/focus, phone layout, Android/iOS lifecycle/keyboard/permissions and actual provider integration where relevant. |
+
+Scope each row to the feature's risk. Mark truly inapplicable scenarios with a reason. An uncovered acceptance/security requirement remains open; mark implemented narrowly enough to match evidence.
+
+### Automated checks and what they prove
+
+| Change / boundary | Applicable commands and separate gates |
+| --- | --- |
+| App logic/types/SQL contracts | `npm run check` = TypeScript + Vitest, including PGlite integration. It currently does not run ESLint. |
+| User-visible flow or shared Auth/state | `npm run test:e2e`; fictional SDK/browser transport. Check relevant denial/recovery cases, then broad regressions for shared changes. |
+| Native/web compatibility | `npm run export:web`, `npm run export:android`; exports do not compile/install an APK or test iOS. |
+| Workspace locks/authority concurrency | `npm run test:workspace:postgres` with the documented explicitly disposable loopback DB or labeled test container. Never point this at Supabase. PGlite is not multiple independent PostgreSQL connections. |
+| Android build-tool/ABI changes | Existing `scripts/test_android_installer.py`, `scripts/test_apk_architectures.py`, APK build and actual install/lifecycle gates as applicable. |
+| Real email/Auth/Storage/OCR behavior | Authorized local/staging provider journeys; fictional responses cannot substitute. No secret/PII in artifacts. |
+| Documentation/instruction/template only | Check full diff, paths/links, current facts and whitespace; no new APK or mirrored implementation tests needed. |
+
+Run tests serially when they share a database/file/server; independent suites may run concurrently if they do not contaminate evidence. Choose broad regression for unknown/shared security or dependency impact. Optimize suite selection only when a reviewed executable dependency/coverage model supports it.
+
+**Current enforcement limitations (17 November 2026):** the Destination has no executable requirement registry/impact selector/source-bound receipt gate, no lint command, and no Playwright forbidOnly/success-JUnit requirement. CI push triggers omit AM branches. Required GitHub review/check protection is not established by repository instructions. These are implementation follow-ups in the system comparison, not automation installed by this guide. Copying Source gate scripts unchanged would target the wrong Next.js/Python paths.
+
+### Definition of Done and reporting
+
+A development slice is verified only when its accepted outcomes have current applicable tests, meaningful denial/retry evidence, compatible data contracts, resolved blocking findings and updated owner documents. Report staging/device/provider/restore/independent review gates as pending where unrun. A broader feature cannot inherit completion from a narrow slice or a historical green run.
+
+The handoff must say: what changed and why → actual evidence and limits → remaining product/release impact → one next action. Use the founder reference and explain necessary engineering vocabulary. Do not invent a completion percentage or promise persistent model memory.
