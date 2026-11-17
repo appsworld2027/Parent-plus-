@@ -1,4 +1,12 @@
-## Current AM branch preview — 17 November 2026
+## Latest class-pagination AM preview — 17 November 2026
+
+Code c332eb7458a6d714368c69ee3f4475753a1f95bf, AM/consolidated. Owner-triggered deployment dpl_PEkAfoe62UJpz5xcMQsVFUjy6bqL is READY, aliasError=null. Exact URL https://parent-plus-varcel-53tl8hldk-appsworld2027.vercel.app; stable AM alias below now points here. Node24/npm ci/test-only Parent attendance Expo web export; main unchanged.
+
+[GitHub run44072486103](https://github.com/appsworld2027/Parent-plus-/actions/runs/44072486103) passed all four jobs,359 unit/DB and90 fictional-browser scenarios plus exports and real-PG jobs. Artifact14322639448 archive/report hashes, test identities and Git input fingerprint independently verified; see VALIDATION.md. This is not a browser visit to the protected preview.
+
+Automatic approval review again rejected protected-preview sharing: general permission to proceed did not explicitly authorize access for anyone possessing the temporary link. No access link was created, protection disabled or workaround attempted. Hosted-preview browser acceptance remains pending explicit scoped sharing approval or available authenticated access. Automatic AM Git author/team authorization also remains unresolved; owner-triggered previews work.
+
+## Previous AM branch preview — 17 November 2026
 
 Code checkpoint: e174c3aeebed43cd745c09563369229a3dbcbc06, AM/consolidated. Destination project parent-plus-varcel / prj_tsZh07nxIY6ndn6Enes99YS21dGw, team Appsworld2027. Owner-authorized MCP preview deployment dpl_4WVocRW6GrsYFRDxxY9SZKsfuhvN is READY with no alias error; Node 24, npm ci, Expo web export, test-only Parent attendance visibility. Main was not promoted or merged.
 
