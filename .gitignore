@@ -48,3 +48,6 @@ test-results/
 artifacts/
 __pycache__/
 *.pyc
+
+# Supabase CLI local metadata
+supabase/.temp/

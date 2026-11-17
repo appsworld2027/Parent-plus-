@@ -25,7 +25,7 @@ For substantive founder updates, use the reference's outcome-first flow: a visib
 
 ## Supabase and release safety
 
-The destination is the canonical development database. Its installed app migration ledger is `coach_private.schema_migrations` through 014. The 015 workspace foundation file under `supabase/candidates/` is a disposable-test candidate only; it is not an applied migration or permission to deploy. Do not apply SQL, alter live data, production configuration, secrets, or release infrastructure without separate explicit authorization. Do not combine the source project's migration history with this project's history.
+The destination is the canonical development database. Its installed app ledger is `coach_private.schema_migrations` through001–014 plus the standalone Parent reader20261117090944. The 015 workspace foundation file under `supabase/candidates/` is a disposable-test candidate only; it is not an applied migration or permission to deploy. Current owner instruction (17 November 2026) authorizes tested Destination DB changes and Vercel branch previews as part of consolidation. Validate exact additive migrations and record actual activation; do not deploy unfinished workspace candidates, alter Source, merge other branches, delete legacy systems or create paid resources without applicable authorization. Do not combine the source project's migration history with this project's history.
 
 Keep guardian identity checks, explicit Coach approval, family/academy isolation, reviewed Parent feedback, consented media, and fail-closed access behavior. Review SECURITY DEFINER functions and grants carefully.
 

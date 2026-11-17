@@ -2,6 +2,25 @@
 
 Status: OPEN, 17 November 2026. This is the completion audit for the Master Mission and Addendum, not a completion certificate. Work continues only on `AM/consolidated` until the owner authorizes other merges. Source remains read-only; live SQL/infrastructure changes require separate approval. Every acceptance row needs exact commit/environment, dated execution evidence, remaining limitations, owner acceptance and a rollback/repair reference. Never accept a row merely because its document or test filename exists.
 
+## Active build/sync loop and source-retirement tracker
+
+Owner authorization, 17 November 2026: implement Destination AM code and DB changes, branch-wise Vercel previews, logging and automated FE/DB/browser/scenario checks. Source remains read-only; other-branch merges/deletion are not authorized. This supersedes earlier read-only/live-SQL pauses for reviewed Destination changes. Use the existing ledger rather than a parallel tracker.
+
+**Loop:** choose the highest dependency → define narrow acceptance/security scenarios → reproduce failure → implement → run deterministic checks → inspect evidence/preview/live metadata → repair failures → update this ledger → continue. GitHub runs checks on pushes; no unattended Codex author/auto-merge daemon is installed. Failure stops the gate and the agent investigates; tests must not be suppressed.
+
+| Gate / order | Current state and closure evidence |
+| --- | --- |
+| R01 Automated quality foundation | LOCAL PASS: Expo lint, AM/MM push triggers, actual runtime inventory,89 regression scenarios, source/run/JUnit evidence and full348 unit/89 browser/export loop implemented. Hosted app/real-PG jobs must pass at the published code commit. |
+| R02 Destination additive DB safety and Parent reader | INSTALLED 20261117090944: standalone approved-parent reader after 014,24focused SQL cases and real PG passed; live catalog/grants/anonymous API verified and business counts unchanged. F1/F2 not activated; real signed-in/provider/device acceptance remains in R05. |
+| R03 Branch preview delivery | IN PROGRESS: existing Vercel project found; AM Git auto-deploy blocked by team collaboration. Authorized MM-triggered preview at audit baseline reached READY. Close with exact new commit preview/branch alias, headless checks, and durable automatic-deploy authorization. |
+| R04 Missing product/API parity | OPEN: system comparison C02–C20 and 58-item roadmap retain every disposition. Staff authorization/context, recurrence/enrolment lifecycle, weekly facts/signals/typed delivery/locales remain separate reviewed slices. No table-name copying. |
+| R05 Security/provider/native acceptance | OPEN: real distinct-account Auth/Storage/OCR, consent/revocation, all public/staff paths, device lifecycle/accessibility and relevant concurrency/load gates. Unit/browser fixtures alone do not close it. |
+| R06 Source data disposition | REAL DATA CONFIRMED by owner on 17 November 2026. Source has 3 workspaces, 2 children and 1 class (aggregate inspection; no child records exported to Git). These must remain usable in ParentPlus; archival-only disposal is not acceptable. Read-only identity comparison found 3 Source record owners, no shared Auth UUIDs, one verified Destination email candidate, and two placeholder example.test identities (one owns a child). Account emails were hashed/masked for comparison; no real identities or child records were committed. Verified account/guardian/academy mapping is mandatory before migration; owner confirmation for the placeholders is pending. Never auto-merge accounts by email. |
+| R07 Restore and destination-only rehearsal | OPEN: prove restore and exact migration/app compatibility; clean checkout build/Coach/Parent scenarios with Source Git/Supabase inaccessible. Preserve IDs/links/consent/media/finance evidence. |
+| R08 Cutover and source disconnection | BLOCKED by R01–R07. Review exact Destination release and accepted deferrals; revoke only source-specific connections, verify Destination still works, retain historical archive. Do not delete Source. |
+
+**When Source can be decommissioned:** after R01–R07 pass with exact evidence and R08 is accepted. There is no defensible calendar date yet; missing provider/native/restore/data-disposition evidence controls the date, not the number of merged files. Further independent feature development can continue on AM after its relevant quality gates pass; it does not require premature source retirement. Vercel is back in scope; GitLab remains deferred until resumed or explicitly waived at final closure.
+
 ## Master Mission final deliverables: all19 tracked
 
 | ID / deliverable | Current state, evidence and closure requirement |
@@ -11,14 +30,14 @@ Status: OPEN, 17 November 2026. This is the completion audit for the Master Miss
 | D03 Architecture diagrams | PARTIAL: existing architecture docs and target relationship diagram. Reconcile diagrams with final implemented/runtime topology. |
 | D04 Infrastructure inventory | PARTIAL: GitHub/Supabase refs known. Complete environments, configuration-name mapping, integration ownership and remaining external systems without secrets. |
 | D05 Supabase schema comparison/migration plan | PARTIAL:41source/31destination tables, function identities, target design and private SQL tests. Fresh live snapshots now include policies/grants/indexes/triggers/extensions/enums/function identities and body hashes. Semantic function review, compatibility/races/staging and exact activation/repair remain. |
-| D06 Vercel comparison | DEFERRED by owner. Not completed; resume or explicitly waive before full mission closure. |
+| D06 Vercel comparison | RESUMED: owner requested branch previews. Existing Destination project/team verified; MM-authorized AM preview READY. Final code preview/headless verification and automatic AM author/team authorization remain to close. |
 | D07 GitLab backup verification | DEFERRED by owner. A configured mirror or successful Git sync does not prove database restore. Resume or explicitly waive. |
 | D08 Consolidated engineering standards | PARTIAL: 15 Superpowers skills, shared workflow, CI/JUnit practice and Developer Guide section 10 procedure/PR checklist. Missing executable registry/receipts, lint, browser focus/evidence guards and AM push trigger identified. Implement and verify hosted enforcement; branch protection remains deferred. |
 | D09 Consolidated product practices | PARTIAL:shared strategy/roadmap and existing PRDs. Resolve historical contradictions and publish one current acceptance/prioritization baseline. |
 | D10 AI collaboration instructions | PARTIAL: AGENTS/skills/response reference plus existing-document ownership and mandatory acceptance/test/review procedure updated. Demonstrate a clean session follows them using Destination alone; instructions are not model retraining or automatic enforcement. |
 | D11 Branch ownership/synchronization | PARTIAL:AM/consolidated exists; instructions/proposal recorded. Founder protection postponed; actual two-identity enforcement is not configured. |
 | D12 Migration change log | PARTIAL:Git commits and isolated integration notes. Produce final source-to-destination change/disposition log, including retired prototypes and every applied/not-applied DB artifact. |
-| D13 Automated test evidence | PARTIAL:AM attendance preview passes local338tests/35files, TypeScript,89browser cases and web/Android exports; see PARENT_ATTENDANCE_INTEGRATION.md. Bind required hosted CI/realPG/staging/device/security results to final reviewed head and retain downloadable artifacts. |
+| D13 Automated test evidence | PARTIAL:AM attendance preview passes local338tests/35 files, TypeScript,89 browser cases and web/Android exports; see PARENT_ATTENDANCE_INTEGRATION.md. Bind required hosted CI/realPG/staging/device/security results to final reviewed head and retain downloadable artifacts. |
 | D14 Security review | OPEN:retain014guardianship/consent and private-kernel tests. Complete direct API/function/grant/Storage/account lifecycle review, threat/negative/race scenarios and resolve or explicitly accept findings. |
 | D15 Rollback plan | PARTIAL:design explains forward repair and staged compatibility. Demonstrate backup restore and exact app/schema compatibility after new-model writes; Git revert is insufficient. |
 | D16 Updated roadmap | PARTIAL:58source requirements preserved and shared strategy defined. Map destination-only features too; make implemented/planned/deferred statuses precise with release gates. |

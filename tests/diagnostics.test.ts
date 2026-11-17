@@ -117,3 +117,9 @@ describe('device-persisted diagnostics', () => {
     expect(values.size).toBe(0);
   });
 });
+
+it('records Parent attendance failures as metadata without accepting private payloads',()=>{
+ const log=createDiagnostics();
+ expect(log.record('PARENT_ATTENDANCE_FAILURE' as never).action).toBe('parent-attendance-request');
+ expect(Object.keys(log.list()[0]).sort()).toEqual(['action','build','code','reference','timestamp']);
+});

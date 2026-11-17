@@ -51,7 +51,7 @@ export async function parentBackend(page:Page){
       // attendance cases install explicit responses above this transport.
       if(endpoint==='get_parent_attendance_sessions')return reply([]);
       if(endpoint==='get_parent_media_permissions')return reply(state.permissions);
-      if(endpoint==='parent_coach_links'){state.connectionReads=(state.connectionReads??0)+1;while(state.holdConnections)await new Promise(resolve=>setTimeout(resolve,20));return reply(state.links.filter(link=>link.active&&(!url.searchParams.has('student_id')||link.student_id===url.searchParams.get('student_id')?.slice(3))&&(!url.searchParams.has('academy_id')||link.academy_id===url.searchParams.get('academy_id')?.slice(3))));}
+      if(endpoint==='parent_coach_links'){state.connectionReads=(state.connectionReads??0)+1;while(state.holdConnections)await new Promise(resolve=>{setTimeout(resolve,20);});return reply(state.links.filter(link=>link.active&&(!url.searchParams.has('student_id')||link.student_id===url.searchParams.get('student_id')?.slice(3))&&(!url.searchParams.has('academy_id')||link.academy_id===url.searchParams.get('academy_id')?.slice(3))));}
       if(endpoint==='parent_feedback_feed'){
         window.__coachFixture.calls.push(url.pathname);
         return reply(window.__mediaFixture.handoffs.filter(item=>item.state!=='cancelled').flatMap(item=>state.links.filter(link=>link.active&&link.student_id===item.student_id).map(link=>({id:item.id,child_id:link.child_id,reviewed_at:new Date().toISOString(),snapshot:{schema_version:1,note:item.snapshot.note,academy_name:link.academy_name,student_name:link.student_name,recorded_at:new Date().toISOString(),session_id:null,media_ids:item.media_ids}}))));

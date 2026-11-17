@@ -1,5 +1,15 @@
 # Parent Plus Coach — development checkpoint
 
+## AM quality loop and live Parent DB reader — 17 November 2026
+
+Current work remains on AM/consolidated. Owner authorized Destination code/DB changes, Vercel branch previews and continuous build/test feedback. Existing documents remain authoritative; no parallel tracker was created. See [retirement gates R01–R08](docs/CONSOLIDATION_ACCEPTANCE_LEDGER.md#active-buildsync-loop-and-source-retirement-tracker).
+
+Implemented: pinned Expo-compatible lint; AM/MM push and manual CI; runtime Vitest (parameter expansion) / Playwright inventory;437 narrow unit/DB and browser regression mappings; stale/missing/skipped/failing/identity/source/run evidence checks; seven gate self-tests; full lint→types→348 unit/DB→89 headless browser→web/Android exports→receipt loop. Separate real PG17 Parent migration/role checks and8 workspace transaction races passed. Human prose is reviewed separately from the execution-input fingerprint. The public Parent reader migration 20261117090944 was applied to Destination after 014; private helpers and API grants verified, anonymous endpoint401/42501, business counts unchanged. F1/F2 candidates remain unapplied. Metadata-only Parent error references and retired-preview downgrade regression are included.
+
+Source's3 workspaces / 2 children / 1 class are real and must remain usable, per owner confirmation. Migration requires verified account/guardian/academy mapping and compatible feature support; Source must not be retired or treated as disposable test data. No Source record or tracked file was changed. Native/real-provider/restore and full source-feature parity remain open.
+
+Local full build-loop receipt fingerprint: `590c859bf98d2ef0fdb4243d29d7576f4f4ffe3fdedb80c07c96041a8e2cf97b`. This binds tested executable inputs at the working-tree baseline, not new hosted CI or device results. Vercel owner-triggered AM audit-baseline preview reached READY; exact final-code preview and hosted CI evidence follow after push. Automatic AM Git deploys remain blocked by Vercel team/author authorization; no protection was disabled and commit authorship was not changed.
+
 ## AM-only code gap audit and delivery instructions — 17 November 2026
 
 Compared fetched Source main `380adba9f73b3021a787dff72074df57f2a53634` with Destination AM baseline `3e237f558c65ad2c886a1c6e40eff140dcca0597`. The existing system comparison now contains 20 capability slices, Destination-only preservation, common backlog and quality-enforcement gaps. All 58 catalogue IDs remain in the existing roadmap; catalogue intent is separated from implemented Source code. All six fetched historical MM feature tips are already in AM ancestry; main/coach-foundation are different snapshots and were not merged.

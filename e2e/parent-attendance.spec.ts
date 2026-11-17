@@ -16,7 +16,7 @@ async function setup(page:Page){
    const raw=typeof input==='string'?input:input instanceof URL?input.href:input.url;
    if(!new URL(raw,location.origin).pathname.endsWith('/get_parent_attendance_sessions'))return original(input,init);
    const p=JSON.parse(String(init?.body));
-   if(p.target_child===id(71)){state.started=true;while(state.hold)await new Promise(resolve=>setTimeout(resolve,20));state.finished=true;}
+   if(p.target_child===id(71)){state.started=true;while(state.hold)await new Promise(resolve=>{setTimeout(resolve,20);});state.finished=true;}
    return new Response(JSON.stringify(state.fail?{code:'unavailable'}:[{session_id:id(41),academy_id:id(11),academy_name:'Academy',batch_name:p.target_child===id(71)?'Ria class':'Asha class',starts_at:`${p.target_day}T10:00:00Z`,ends_at:`${p.target_day}T11:00:00Z`,session_status:'scheduled',attendance_status:null}]),{status:state.fail?503:200,headers:{'Content-Type':'application/json'}});
   };
 
@@ -27,7 +27,7 @@ async function setup(page:Page){
 test('Parent sees unrecorded attendance; a failed refresh never becomes a false empty schedule',async({page})=>{
  await setup(page);await expect(page.getByText('Attendance not recorded',{exact:true})).toBeVisible();
  await page.evaluate(()=>{window.__attendanceFixture.fail=true;});await page.getByRole('button',{name:'Refresh attendance',exact:true}).click();
- await expect(page.getByText('Attendance could not be loaded. Retry to check the latest records.',{exact:true})).toBeVisible();
+ await expect(page.getByRole('alert')).toHaveText(/^Attendance could not be loaded\. Retry to check the latest records\. Reference: PP-[A-Z0-9]+-[A-Z0-9]+$/);
  await expect(page.getByText('Attendance not recorded',{exact:true})).toHaveCount(0);
  await expect(page.getByText('No shared classes for this date.',{exact:true})).toHaveCount(0);
  await page.evaluate(()=>{window.__attendanceFixture.fail=false;});await page.getByRole('button',{name:'Refresh attendance',exact:true}).click();await expect(page.getByText('Attendance not recorded',{exact:true})).toBeVisible();

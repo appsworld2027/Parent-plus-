@@ -1,3 +1,5 @@
+**Current delta, 17 November 2026:** Destination now includes the tested additive Parent reader migration20261117090944 (3 new functions; no new application tables), plus revoked client execution of rls_auto_enable. The anonymous security-definer advisory is cleared; all other unresolved audit findings remain tracked. Source data has been confirmed real and must migrate with verified identity/guardian/academy mapping before retirement. The comparison below is the earlier read-only snapshot, not a claim that no later DB changes occurred. See [activation evidence](PARENT_ATTENDANCE_INTEGRATION.md#live-destination-activation--17-november-2026).
+
 # Live Supabase comparison and destination gaps
 
 Read-only inspection: 17 November 2026. Source: `fmavpazczahxeusqbxuh`; destination: `zcgcnycnanqkbdlwojln`. All new repository files belong only to `AM/consolidated`. No DDL, data migration, provider setting, storage or deployment was changed.

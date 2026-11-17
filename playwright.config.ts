@@ -6,6 +6,10 @@ const hostedURL = process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
   testDir: './e2e',
+  forbidOnly: true,
+  retries: 0,
+  outputDir: 'test-results/browser',
+  reporter: [['list'], ['junit', { outputFile: 'test-results/browser-junit.xml' }]],
   fullyParallel: false,
   use: {
     baseURL: hostedURL ?? 'http://127.0.0.1:18081',

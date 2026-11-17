@@ -4,14 +4,13 @@ import {afterAll,afterEach,beforeAll,beforeEach,expect,it} from 'vitest';
 import {supabaseDatabase} from './support/supabaseDatabase';
 const id=(n:number)=>`00000000-0000-0000-0000-${String(n).padStart(12,'0')}`;
 let db:PGlite;
-const file='supabase/candidates/parent_attendance_projection.sql';
+const file='supabase/migrations/20261117090944_parent_attendance_read.sql';
 const actor=(n:number)=>db.query("select set_config('request.jwt.claim.sub',$1,true)",[id(n)]);
 const page=(child=71,day='2026-11-16',start:string|null=null,cursor:string|null=null)=>db.query<{session_id:string;starts_at:Date;attendance_status:string|null}>('select * from coach_private.parent_attendance_sessions($1,$2,$3,$4)',[id(child),day,start,cursor]);
 beforeAll(async()=>{
  db=await supabaseDatabase();
- for(const path of ['supabase/candidates/202611170015_workspace_foundation.sql','supabase/candidates/202611170016_workspace_authorization.sql'])await db.exec(readFileSync(path,'utf8'));
+ await db.exec("create function public.rls_auto_enable() returns event_trigger language plpgsql security definer as $$ begin return; end $$;");
  await db.exec(readFileSync(file,'utf8'));await db.exec(readFileSync(file,'utf8'));
- await db.exec(readFileSync('supabase/candidates/parent_attendance_api.sql','utf8'));
 },30000);
 beforeEach(async()=>{
  await db.exec('begin');
@@ -53,3 +52,26 @@ it('allows only approved own-child reads through the staging API wrapper',async(
 });
 it.each(['anon','service_role'])('keeps the staging API unavailable to %s',async role=>{await db.exec(`set local role ${role}`);await expect(db.query('select * from public.get_parent_attendance_sessions($1,$2)',[id(71),'2026-11-16'])).rejects.toMatchObject({code:'42501'});});
 it.each(['anon','authenticated','service_role'])('does not expose the candidate to %s',async role=>{await db.exec(`set local role ${role}`);await expect(page()).rejects.toMatchObject({code:'42501'});});
+
+it.each(['is_anonymous=true','email_confirmed_at=null', 'deleted_at=now()', "email_confirmed_at=now()+interval '1 day'"])('denies ineligible account state %s',async change=>{await db.exec(`update auth.users set ${change} where id='${id(2)}'`);await expect(page()).rejects.toMatchObject({code:'42501'});});
+it('removes access when the approval is withdrawn',async()=>{await db.exec("update public.parent_connection_requests set status='rejected'");expect((await page()).rows).toEqual([]);});
+it('does not require any private staff workspace candidate',async()=>{expect((await db.query<{value:string|null}>("select to_regclass('coach_private.workspaces') as value")).rows[0].value).toBeNull();});
+
+it('rejects an approval attached to a different sibling',async()=>{
+ await db.query("insert into public.family_children(id,family_id,name) values($1,$2,'Sibling')",[id(72),id(61)]);
+ await db.query('update public.parent_connection_requests set child_id=$1',[id(72)]);
+ expect((await page()).rows).toEqual([]);
+});
+
+it('removes client execution from the platform event helper without changing its owner authority',async()=>{
+ const rows=await db.query("select has_function_privilege('anon','public.rls_auto_enable()','execute') as anon,has_function_privilege('authenticated','public.rls_auto_enable()','execute') as authenticated");
+ expect(rows.rows).toEqual([{anon:false,authenticated:false}]);
+});
+
+it('retired preview files cannot overwrite the stronger deployed reader',async()=>{
+ const fingerprint=async()=>(await db.query<{body:string}>("select pg_get_functiondef('coach_private.parent_attendance_sessions(uuid,date,timestamptz,uuid)'::regprocedure) as body")).rows[0].body;
+ const before=await fingerprint();
+ await db.exec(readFileSync('supabase/candidates/parent_attendance_projection.sql','utf8'));
+ await db.exec(readFileSync('supabase/candidates/parent_attendance_api.sql','utf8'));
+ expect(await fingerprint()).toBe(before);
+});

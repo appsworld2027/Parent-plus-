@@ -100,7 +100,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           persistClasses(); data = value.id;
         }
       } else if (url.pathname.endsWith('/rpc/save_class_attendance_checked')) {
-        while (state.holdAttendance) await new Promise(resolve => setTimeout(resolve, 20));
+        while (state.holdAttendance) await new Promise(resolve => { setTimeout(resolve, 20); });
         const session = state.classes.find(c => c.id === payload.target_session);
         if (state.failAttendance) { status = 500; data = { message: 'Private attendance backend failure' }; }
         else if (!session || session.status === 'cancelled') { status = 400; data = { code: '22023', message: 'Unavailable class' }; }
@@ -112,7 +112,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (state.loseAttendanceResponse) { state.loseAttendanceResponse = false; throw new TypeError('Simulated lost response after attendance commit'); }
         }
       } else if (url.pathname.endsWith('/rpc/save_observation')) {
-        while (state.holdObservation) await new Promise(resolve => setTimeout(resolve, 20));
+        while (state.holdObservation) await new Promise(resolve => { setTimeout(resolve, 20); });
         const existing = state.observations.find(row => row.id === payload.target_observation);
         if (state.failObservation) { status = 500; data = { message: 'Private note backend failure' }; }
         else {

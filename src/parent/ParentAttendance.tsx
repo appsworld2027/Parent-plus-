@@ -3,6 +3,11 @@ import {ActivityIndicator,Pressable,StyleSheet,TextInput,View} from 'react-nativ
 import {Text} from '../ui/Typography';
 import {mondayOf,type AttendanceSession} from './attendance';
 import {loadAttendancePage} from './attendanceService';
+import {diagnostics} from '../diagnostics';
+function failure(message:string) {
+ try{return `${message} Reference: ${diagnostics.record('PARENT_ATTENDANCE_FAILURE').reference}`;}
+ catch{return message;}
+}
 export function ParentAttendance({owner,child,initialDay}:{owner:string;child:string;initialDay:string}) {
  const [day,setDay]=useState(initialDay),[revision,setRevision]=useState(0);
  const [state,setState]=useState<{day:string;rows:AttendanceSession[];loading:boolean;more:boolean;error:string}>({day:'',rows:[],loading:false,more:false,error:''});
@@ -11,7 +16,7 @@ export function ParentAttendance({owner,child,initialDay}:{owner:string;child:st
   const token=++generation.current;busy.current=true;
   setState({day,rows:[],loading:true,more:false,error:''});
   try{mondayOf(day);}catch{busy.current=false;setState({day,rows:[],loading:false,more:false,error:'Enter a valid class date as YYYY-MM-DD.'});return;}
-  void loadAttendancePage(owner,child,day).then(rows=>{if(token===generation.current)setState({day,rows,loading:false,more:rows.length===50,error:''});}).catch(()=>{if(token===generation.current)setState({day,rows:[],loading:false,more:false,error:'Attendance could not be loaded. Retry to check the latest records.'});}).finally(()=>{if(token===generation.current)busy.current=false;});
+  void loadAttendancePage(owner,child,day).then(rows=>{if(token===generation.current)setState({day,rows,loading:false,more:rows.length===50,error:''});}).catch(()=>{if(token===generation.current)setState({day,rows:[],loading:false,more:false,error:failure('Attendance could not be loaded. Retry to check the latest records.')});}).finally(()=>{if(token===generation.current)busy.current=false;});
   return()=>{generation.current++;};
  },[owner,child,day,revision]);
  async function more(){
@@ -19,7 +24,7 @@ export function ParentAttendance({owner,child,initialDay}:{owner:string;child:st
   busy.current=true;const token=generation.current;
   setState(current=>({...current,loading:true,error:''}));
   try{const rows=await loadAttendancePage(owner,child,day,state.rows.at(-1));if(token===generation.current)setState(current=>({...current,rows:[...current.rows,...rows],loading:false,more:rows.length===50,error:''}));}
-  catch{if(token===generation.current)setState(current=>({...current,loading:false,error:'More attendance could not be loaded. Retry or refresh.'}));}
+  catch{if(token===generation.current)setState(current=>({...current,loading:false,error:failure('More attendance could not be loaded. Retry or refresh.')}));}
   finally{if(token===generation.current)busy.current=false;}
  }
  const visible=state.day===day?state.rows:[];

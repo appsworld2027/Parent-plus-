@@ -1,3 +1,7 @@
+## Current Parent reader path — 17 November 2026
+
+The reviewed standalone migration is now `supabase/migrations/20261117090944_parent_attendance_read.sql`, after installed001–014. It does not require F1/F2. The two historical parent_attendance candidate files are retired compatibility sentinels and cannot redefine the deployed reader; use the canonical migration and its recorded activation status in PARENT_ATTENDANCE_INTEGRATION.md. The workspace foundation/kernel/roster candidates below remain isolated and unapproved for activation. Historical Parent candidate implementation details below are superseded by this paragraph.
+
 # Isolated foundation candidates
 
 `parent_attendance_projection.sql` is a private destination-native Parent session/attendance read adapted from AM's source journey. It requires the F2 account helper and installed014 link structures, with no direct client execution. `parent_attendance_api.sql` separately exposes its approved-child read to authenticated users only inside an isolated staging candidate. A development/test-only app panel can call that wrapper; default/production remains disabled. Neither candidate has been applied live. See [integration scope and release gaps](../../docs/PARENT_ATTENDANCE_INTEGRATION.md).
