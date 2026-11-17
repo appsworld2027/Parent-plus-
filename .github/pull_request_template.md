@@ -30,3 +30,11 @@ What changed and why?
 - [ ] Required owner review obtained for shared auth, access, schema, or release changes
 - [ ] Independent review recorded, or explicitly pending; author review is not independent
 - [ ] Current branch and merge authorization verified; AM-only restriction respected
+
+## Skill and review evidence
+
+- Skills: <!-- Applicable skills selected by the agent and why. -->
+- Evidence: <!-- Links to task requirements, relevant tests and results for this head. -->
+- Exceptions: <!-- Unavailable steps and remaining limits, or "none". -->
+
+An independent reviewer must approve the current PR head; self-attestation does not prove skill compliance.
