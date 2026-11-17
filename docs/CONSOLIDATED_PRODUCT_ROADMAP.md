@@ -4,6 +4,14 @@ Status: integration planning, 17 November 2026. This inventory preserves all 58 
 
 ## Recommended sequence
 
+### Shared product strategy
+
+Serve parents and independent coaches/academies through one account system with distinct private workspaces. The primary useful loop is: Coach creates a class and enrols a student → Parent establishes an explicitly approved child connection → Coach records attendance and reviews a child-specific update → Parent sees the permitted result. Private family plans and memories remain the Parent's own data. Employer/academy roles do not expose a person's other affiliations or private family space.
+
+Retain MM's mobile-first Expo implementation and its reviewed-feedback/consent controls. Adopt AM's child-scoped attendance visibility, report-only signals, explicit enrolment lifecycle and requirement/evidence discipline through destination-native design. Broader AI, discovery, notification delivery and payments remain distinct features with their own acceptance and provider gates. A stored reminder is not a delivered notification; a guardian contact is not an authenticated guardian; a passing fixture is not real-provider acceptance.
+
+The first acceptance outcome is a complete Coach-to-Parent loop through ordinary verified accounts with save/reopen/retry and wrong-account denial, followed by mobile/device acceptance. Do not assign a launch date, capacity or adoption target without measured evidence. Product metrics to define and measure during that pilot are completion of the connection/class/update loop, failed saves and recovery, time to first permitted Parent update, and support incidents; no analytics collection is installed by this document.
+
 1. Preserve existing Coach and Aurora Parent journeys, verified guardian approval and consent. Retain MM migration history 001–014.
 2. Complete destination authorization foundation F2 and its permission/compatibility gates before activating multi-workspace access; F1 remains an isolated candidate.
 3. Design and implement the Parent attendance projection and report-only signals against destination links and session records. Preserve source semantics and add destination authorization and recovery tests.
