@@ -3,6 +3,7 @@
 import {spawn,execFileSync} from 'node:child_process';
 import {readFileSync,readdirSync} from 'node:fs';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 const container=process.env.WORKSPACE_TEST_CONTAINER;
 let executable='psql',args=['-X','-qAt','-v','ON_ERROR_STOP=1','-d','parentplus_workspace_test'],environment={...process.env};
 if(container){
@@ -87,6 +88,8 @@ try{
  for(const file of ['202611170015_workspace_foundation.sql','202611170016_workspace_authorization.sql'])await sql(readFileSync(`supabase/candidates/${file}`,'utf8'));
  await sql(readFileSync('tests/fixtures/workspace-authority.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170017_workspace_roster.sql','utf8'));
+ await sql(readFileSync('supabase/candidates/202611170018_workspace_staff.sql','utf8'));
+ await sql(`insert into auth.users(id,email,email_confirmed_at) values('${uid(101)}','new@example.test',clock_timestamp()),('${uid(102)}','second@example.test',clock_timestamp()),('${uid(103)}','third@example.test',clock_timestamp());`);
  await sql(`create table coach_private.workspace_test_writes(actor uuid,session_id uuid);
  create function coach_private.workspace_test_protected_write(workspace uuid,session uuid) returns void language plpgsql security definer set search_path='' as $$
  begin perform coach_private.workspace_assert_class_write(workspace,session,'feedback.write');
@@ -176,7 +179,52 @@ try{
   await blocked(writer,reader);await reader.send('commit;');await attempt;await writer.send('commit;');
   const later=await connection('after_transfer',3);await mustDeny(later.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(604)}');`));
  });
- console.log(`${passed}/12 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
+ // These are fixture tokens, never application credentials. Production callers
+ // must generate their raw invitation token cryptographically and retain retries.
+ const staffToken=n=>String(n).padStart(64,'a');
+ const staffExpiry=await sql("select (clock_timestamp()+interval '2 days')::text;");
+ const issueStaff=(n,email='new@example.test',ownership=false)=>`select coach_private.workspace_issue_staff_offer(${workspace},'${uid(1100+n)}','${email}','${createHash('sha256').update(staffToken(n)).digest('hex')}','${staffExpiry}','[{"role":"${ownership?'owner':'instructor'}","branch":${ownership?'null':`"${uid(61)}"`}}]',${ownership});`;
+ const acceptStaff=n=>`select coach_private.workspace_accept_staff_offer('${staffToken(n)}','Test staff','Test coach');`;
+ await test('staff offer revocation commits before waiting acceptance: no membership created',async()=>{
+  await sql(`${as(1)}${issueStaff(1)}`);
+  const revoker=await connection('offer_revoker',1);await revoker.send(`select coach_private.workspace_revoke_staff_offer(${workspace},'${uid(1101)}');`);
+  const recipient=await connection('waiting_recipient',101),attempt=recipient.send(acceptStaff(1));const denial=mustDeny(attempt);
+  await blocked(recipient,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from coach_private.workspace_memberships where user_id='${uid(101)}';`),'0');
+ });
+ let joinedStaff;
+ await test('two identical staff acceptances serialize into one membership and receipt',async()=>{
+  await sql(`${as(1)}${issueStaff(2)}`);
+  const first=await connection('first_acceptance',101);joinedStaff=await first.send(acceptStaff(2));
+  const second=await connection('repeat_acceptance',101),attempt=second.send(acceptStaff(2));
+  await blocked(second,first);await first.send('commit;');assert.equal(await attempt,joinedStaff);await second.send('commit;');
+  assert.equal(await sql(`select count(*) from coach_private.workspace_memberships where user_id='${uid(101)}';`),'1');
+  assert.equal(await sql(`select count(*) from coach_private.workspace_staff_events where invite_id='${uid(1102)}' and kind='accepted';`),'1');
+ });
+ await test('issuer membership removal commits before waiting acceptance: stale issuer denied',async()=>{
+  await sql(`${as(1)}${issueStaff(3,'second@example.test')}`);
+  const revoker=await connection('issuer_removal',8);await revoker.send(`select coach_private.workspace_revoke_membership(${workspace},'${legacyOwner}');`);
+  const recipient=await connection('issuer_removed_recipient',102),attempt=recipient.send(acceptStaff(3));const denial=mustDeny(attempt);
+  await blocked(recipient,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from coach_private.workspace_memberships where user_id='${uid(102)}';`),'0');
+ });
+ await test('accepted instructor gains only an explicit class roster and loses it on assignment removal',async()=>{
+  await sql(`${as(8)}select coach_private.workspace_save_class(${workspace},'${uid(1301)}',0,'${uid(1302)}','${uid(31)}',clock_timestamp()+interval '1 hour',clock_timestamp()+interval '2 hours','Studio','scheduled');`);
+  const recipient=await connection('joined_unassigned',101);await mustDeny(recipient.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`));await recipient.close();
+  await sql(`${as(8)}select coach_private.workspace_assign_teacher(${workspace},'${uid(1303)}','${joinedStaff}',null,'${uid(1301)}','lead',clock_timestamp(),clock_timestamp()+interval '3 hours',clock_timestamp(),clock_timestamp()+interval '4 hours',clock_timestamp()+interval '4 hours');`);
+  assert.equal(await sql(`${as(101)}select count(*) from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`),'2');
+  await sql(`${as(8)}select coach_private.workspace_revoke_assignment(${workspace},'${uid(1303)}');`);
+  const removed=await connection('assignment_removed',101);await mustDeny(removed.send(`select * from coach_private.workspace_class_roster(${workspace},'${uid(1301)}');`));
+ });
+ await test('ownership handoff commits before an old owner write: waiting old owner denied',async()=>{
+  await sql(`${as(1)}${issueStaff(4,'second@example.test',true)}`);
+  const successor=await connection('new_owner_accepting',102);await successor.send(acceptStaff(4));
+  const former=await connection('former_owner_waiting',1),attempt=former.send(saveBatch(1304,0,1305,'Former owner write'));const denial=mustDeny(attempt);
+  await blocked(former,successor);await successor.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from public.batches where id='${uid(1304)}';`),'0');
+  assert.equal(await sql(`${as(102)}select coach_private.workspace_has_role(${workspace},'owner',null);`),'t');
+ });
+ console.log(`${passed}/17 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
 }finally{
  await Promise.all([...clients].map(c=>c.close()));
  if(failures.length)process.exitCode=1;
