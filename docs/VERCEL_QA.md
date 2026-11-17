@@ -1,3 +1,21 @@
+## Current AM branch preview — 17 November 2026
+
+Code checkpoint: e174c3aeebed43cd745c09563369229a3dbcbc06, AM/consolidated. Destination project parent-plus-varcel / prj_tsZh07nxIY6ndn6Enes99YS21dGw, team Appsworld2027. Owner-authorized MCP preview deployment dpl_4WVocRW6GrsYFRDxxY9SZKsfuhvN is READY with no alias error; Node 24, npm ci, Expo web export, test-only Parent attendance visibility. Main was not promoted or merged.
+
+| Branch/environment | Link and exact status |
+| --- | --- |
+| AM/consolidated stable branch alias | https://parent-plus-varcel-git-am-consolidated-appsworld2027.vercel.app — READY at the code checkpoint above |
+| Exact AM deployment | https://parent-plus-varcel-ohhehq7xa-appsworld2027.vercel.app — READY; deployment protection applies |
+| Main stable application | https://parent-plus-varcel.vercel.app — existing main a1888f24c5591c615498016072bc27229adbba1f, unchanged by this task |
+
+Automatic AM Git-triggered deployment was BLOCKED by Vercel collaboration/team authorization. The authorized MM connection successfully built the exact AM commit without changing commit authorship or disabling protection. MM has been asked to resolve AM author access in the blocked deployment; if billing is required, do not upgrade without explicit paid authorization. GitHub secret management is not available through the current integration (403); no deployment credential was read, exported or added to CI.
+
+Hosted CI run 44059620662 passed foundation, workspace-concurrency, parent-attendance-postgres and ParentPlus required quality gate. Artifact 14316894021/app-quality-evidence-1 expires 1 December 2026; archive SHA256 b4b2e7d2a414c054a18f0f6a8f74fe5ecdc79ad677adecff1a12119e28ff4124. Download through the GitHub connector succeeded after direct runner download was unavailable. Independently verified 348 unit/DB + 89 browser exact identities, report hashes, run/attempt and published Git bytes/modes. CI execution fingerprint bc203b8524d065973089d74db8ae9e330735af01c86fb25ec323055cfe61f84e matches the canonical Git checkout; local fingerprint 590c859bf98d2ef0fdb4243d29d7576f4f4ffe3fdedb80c07c96041a8e2cf97b differs only in nine repository skill scripts' local owner-only executable bits. Actual tracked bytes match. These are execution-environment differences, not substituted reports.
+
+**Protected-hosted browser acceptance is NOT RUN.** Automatic approval review rejected get_access_to_vercel_url because it creates a broadly shareable preview URL accessible by anyone possessing it. No share link was created and no indirect sharing workaround was used. No existing CLI/OIDC credentials or browser session is available in this workspace. The local/CI 89 headless scenarios use fictional SDK transport and passed, but they are not browser visits to this Vercel URL. Complete hosted browser checks only through approved authenticated access; keep temporary auth state outside Git/logs and remove it afterward. Real signed-in provider/device/Storage/OCR acceptance remains separate.
+
+[Verified code CI](https://github.com/appsworld2027/Parent-plus-/actions/runs/44059620662). [Latest branch runs](https://github.com/appsworld2027/Parent-plus-/actions?query=branch%3AAM%2Fconsolidated). Historical reports below retain their own source/build scope.
+
 # Latest Vercel verification —0.8.0
 
 Latest16November2026: runtimeb014c0a deploys0.11.0 with separate Parent0.1.0 at/parent. [Hosted two-workspace QA](DUAL_WORKSPACE_HOSTED_QA.md) passes14/14; GitHub43829864988 passes201automated and76browser checks. New data needs the prepared011/012 activation; all hosted new-data journeys were fictional transport. Older reports below are history.

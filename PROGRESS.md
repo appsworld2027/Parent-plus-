@@ -8,7 +8,7 @@ Implemented: pinned Expo-compatible lint; AM/MM push and manual CI; runtime Vite
 
 Source's3 workspaces / 2 children / 1 class are real and must remain usable, per owner confirmation. Migration requires verified account/guardian/academy mapping and compatible feature support; Source must not be retired or treated as disposable test data. No Source record or tracked file was changed. Native/real-provider/restore and full source-feature parity remain open.
 
-Local full build-loop receipt fingerprint: `590c859bf98d2ef0fdb4243d29d7576f4f4ffe3fdedb80c07c96041a8e2cf97b`. This binds tested executable inputs at the working-tree baseline, not new hosted CI or device results. Vercel owner-triggered AM audit-baseline preview reached READY; exact final-code preview and hosted CI evidence follow after push. Automatic AM Git deploys remain blocked by Vercel team/author authorization; no protection was disabled and commit authorship was not changed.
+Local full build-loop receipt fingerprint: `590c859bf98d2ef0fdb4243d29d7576f4f4ffe3fdedb80c07c96041a8e2cf97b`. This binds tested executable inputs at the working-tree baseline, not new hosted CI or device results. Vercel owner-triggered exact e174c3a AM preview reached READY; hosted CI run44059620662 passed all four jobs, with artifact cases/hashes/Git content verified. Protected-hosted browser checks remain pending approved authenticated access. Automatic AM Git deploys remain blocked by Vercel team/author authorization; no protection was disabled and commit authorship was not changed.
 
 ## AM-only code gap audit and delivery instructions — 17 November 2026
 
