@@ -1,0 +1,928 @@
+{
+  "captured_date": "2026-11-17",
+  "scope": "function identities and security metadata; bodies and records excluded",
+  "functions": [
+    {
+      "schema": "public",
+      "name": "acknowledge_private_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "advance_private_class_setup",
+      "arguments": "p_workspace_id uuid, p_prior_intent_id uuid, p_request_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_accept_family_invite",
+      "arguments": "p_token text, p_child_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_ack_child_creation",
+      "arguments": "p_intent_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_acknowledge_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_advance_class_setup",
+      "arguments": "p_workspace_id uuid, p_prior_intent_id uuid, p_request_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_archived_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_attendance_request_status",
+      "arguments": "p_workspace_id uuid, p_session_id uuid, p_request_id uuid, p_payload jsonb",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_attendance_sheet",
+      "arguments": "p_workspace_id uuid, p_session_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_batch_enrollments",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_begin_child_creation",
+      "arguments": "p_display_name text, p_prior_intent_id uuid, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_begin_class_setup",
+      "arguments": "p_workspace_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_begin_class_setup_v2",
+      "arguments": "p_workspace_id uuid, p_expected_generation bigint, p_request_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_change_enrollment",
+      "arguments": "p_enrollment_id uuid, p_status text, p_expected_version integer, p_reason text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_child_academies",
+      "arguments": "p_child_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_class_setup_generation",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_complete_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_complete_class_setup_weekly",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid, p_time_zone text, p_start_date date, p_start_time time without time zone, p_end_date date, p_duration_minutes integer",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_current_child_creation",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_current_class_setup",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_current_class_setup_v2",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_enrollment_batches",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_enrollment_candidates",
+      "arguments": "p_workspace_id uuid, p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_family_roster",
+      "arguments": "p_workspace_id uuid, p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_fence_child_creation",
+      "arguments": "p_prior_intent_id uuid, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_historical_child_creation",
+      "arguments": "p_prior_intent_id uuid, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_issue_family_invite",
+      "arguments": "p_workspace_id uuid, p_request_id uuid, p_token text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_list_archived_class_setups",
+      "arguments": "p_workspace_id uuid, p_after_id uuid, p_limit integer",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_list_created_children",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_academies",
+      "arguments": "p_child_id uuid, p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_attendance_week",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_week_start date, p_batch_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_batches",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_enrollments",
+      "arguments": "p_child_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_items",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_batch_id uuid, p_before_created timestamp with time zone, p_before_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_sessions",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_date date, p_batch_id uuid, p_after_start timestamp with time zone, p_after_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_parent_signal_request_status",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_session_id uuid, p_request_id uuid, p_payload jsonb",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_preview_family_invite",
+      "arguments": "p_token text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_reserve_class_setup",
+      "arguments": "p_workspace_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_save_attendance",
+      "arguments": "p_workspace_id uuid, p_session_id uuid, p_expected_session_version integer, p_expected_sheet_version integer, p_roster_token text, p_records jsonb, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_save_enrollment",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_child_id uuid, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_send_parent_signal",
+      "arguments": "p_child_id uuid, p_workspace_id uuid, p_session_id uuid, p_expected_session_version integer, p_type text, p_reason text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_session_parent_signals",
+      "arguments": "p_workspace_id uuid, p_session_id uuid, p_after_child uuid, p_after_actor uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_today_academies",
+      "arguments": "p_after uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "app_today_sessions",
+      "arguments": "p_workspace_id uuid, p_date date, p_after_start timestamp with time zone, p_after_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\"",
+        "TimeZone=UTC"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "approve_guardian_connection",
+      "arguments": "p_connection_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "archive_private_child_creation_intent",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_private_child_creation_access",
+      "arguments": "p_actor uuid, p_child uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_private_class_setup_enabled",
+      "arguments": "",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_private_enrollment_target",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_child_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_private_family_invite_access",
+      "arguments": "p_workspace_id uuid, p_issuer uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_private_workspace_manager",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assert_schedule_write_access",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "assign_private_batch_coach",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_membership_id uuid, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_clock",
+      "arguments": "",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_parent",
+      "arguments": "p_child uuid, p_workspace uuid, p_batch uuid, p_session uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_payload",
+      "arguments": "p jsonb",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_payload_access",
+      "arguments": "p jsonb, p_batch uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_read_committed",
+      "arguments": "",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_receipt",
+      "arguments": "r attendance_request_receipts",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_roster",
+      "arguments": "p_workspace uuid, p_batch uuid, p_lock boolean",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_save_roster_locks",
+      "arguments": "p_workspace uuid, p_batch uuid, p_records jsonb",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_session_json",
+      "arguments": "p_session uuid, p_roster jsonb",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_session_lifecycle",
+      "arguments": "",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_staff",
+      "arguments": "p_workspace uuid, p_batch uuid, p_update boolean",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_zone",
+      "arguments": "p_workspace uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "attendance_zone",
+      "arguments": "p_workspace uuid, p_date date",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "begin_private_class_setup",
+      "arguments": "p_workspace_id uuid, p_expected_generation bigint, p_request_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "complete_private_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "complete_private_class_setup_weekly",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid, p_time_zone text, p_start_date date, p_start_time time without time zone, p_end_date date, p_duration_minutes integer",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "configure_private_workspace_zone",
+      "arguments": "p_workspace_id uuid, p_zone text",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_batch",
+      "arguments": "p_workspace_id uuid, p_course_id uuid, p_name text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_child",
+      "arguments": "p_display_name text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_course",
+      "arguments": "p_workspace_id uuid, p_name text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_course_and_batch",
+      "arguments": "p_workspace_id uuid, p_course_name text, p_batch_name text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_private_batch",
+      "arguments": "p_workspace_id uuid, p_course_id uuid, p_name text, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_private_course",
+      "arguments": "p_workspace_id uuid, p_name text, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_private_local_session",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_local_start timestamp without time zone, p_duration_minutes integer, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_private_session",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_starts_at timestamp with time zone, p_ends_at timestamp with time zone, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_workspace",
+      "arguments": "p_name text, p_type text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "create_workspace_unguarded_private",
+      "arguments": "p_name text, p_type text, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "fence_workspace_creation",
+      "arguments": "p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "get_private_class_setup_generation",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "guard_fenced_workspace_creation",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "handle_new_auth_user",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "list_private_archived_class_setups",
+      "arguments": "p_workspace_id uuid, p_after_id uuid, p_limit integer",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "lock_private_child_creation_actor",
+      "arguments": "",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "mutate_private_batch_coach",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_membership_id uuid, p_request_id uuid, p_operation text",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_signal_json",
+      "arguments": "s parent_signals",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_signal_payload",
+      "arguments": "p jsonb",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "parent_signal_receipt",
+      "arguments": "q parent_signal_request_receipts",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "private_class_setup_status",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "record_workspace_creation_tombstone",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "recover_private_archived_class_setup",
+      "arguments": "p_workspace_id uuid, p_intent_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "recover_private_current_class_setup",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "recover_private_current_class_setup_v2",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "remove_private_batch_coach",
+      "arguments": "p_workspace_id uuid, p_batch_id uuid, p_membership_id uuid, p_request_id uuid",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "request_workspace_connection",
+      "arguments": "p_workspace_id uuid, p_child_id uuid, p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "reserve_private_class_setup",
+      "arguments": "p_workspace_id uuid, p_course_name text, p_batch_name text",
+      "security_definer": false,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "rls_auto_enable",
+      "arguments": "",
+      "security_definer": true,
+      "settings": [
+        "search_path=pg_catalog"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_creation_key_for_workspace",
+      "arguments": "p_workspace_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "workspace_creation_recovery_status",
+      "arguments": "p_request_id uuid",
+      "security_definer": true,
+      "settings": [
+        "search_path=\"\""
+      ]
+    }
+  ]
+}

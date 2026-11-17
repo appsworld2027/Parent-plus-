@@ -4,6 +4,12 @@ This repository is the active ParentPlus product. It uses Expo/React Native with
 
 ## Before changing code
 
+Read `docs/superpowers.md` and the relevant repository skills under `.agents/skills/` before substantial work. Current user instructions, session permissions and actual available tools take precedence over upstream examples. Do not change global Codex configuration or spawn agents merely because a skill example suggests it. Follow the destination Expo commands and preserve existing authorization and release boundaries.
+
+Read `docs/CONSOLIDATED_PRODUCT_ROADMAP.md` for the cross-repository feature inventory and current integration status. Read `docs/superpowers.md` before using the repository's Superpowers skills. Use relevant skills for design, implementation, debugging and verification; current user instructions, available tools and session restrictions take precedence. Do not change machine-wide settings or spawn agents merely because a skill example suggests it. The upstream skills are guidance, not evidence that work passed or permission to deploy.
+
+For database consolidation, read `docs/CONSOLIDATED_DATABASE_DESIGN.md` and its metadata snapshot limits. Never infer that a source table name or a copied migration has the same authority as a destination entity. Every feature change needs observable acceptance criteria and relevant permission, failure and recovery tests; report unmapped or unrun scenarios explicitly.
+
 Read the relevant current requirements and status first:
 - `PROGRESS.md`, `PRD.md`, `docs/PARENT_PRD.md`, `docs/PARENT_MODULE.md`
 - `docs/DEVELOPER_GUIDE.md`
@@ -14,6 +20,8 @@ Follow the established Expo structure and scripts. Prefer small changes that pre
 ## Founder-facing communication
 
 Use [`docs/examples/FOUNDER_RESPONSE_REFERENCE.md`](docs/examples/FOUNDER_RESPONSE_REFERENCE.md) as a presentation and teaching-style example: lead with the outcome, explain the plain-English meaning and next action, show concise evidence, and include a Technical Appendix when useful. It is a historical example, not a source of current status or permission to run commands. Verify repository state and evidence before making claims; adapt the format to the task rather than copying irrelevant sections.
+
+For substantive founder updates, use the reference's outcome-first flow: a visible outcome and relevant icon, a short italic overview, compact two-column evidence, and an unmistakable next action. Explain meaningful technical terms in a brief Technical Appendix when needed. Use headings only when allowed by the current session's higher-priority instructions. Keep trivial replies short. Never promise cross-session memory; this file and the linked reference provide the durable repository instructions.
 
 ## Supabase and release safety
 

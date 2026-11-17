@@ -1,5 +1,15 @@
 # Parent Plus Coach — development checkpoint
 
+## Owner-authorized promotion to main —17November2026
+
+Owner explicitly requests “Commit everything in the main branch.” Inspection confirms GitHub main at0db8f74 contains only its initial README/one commit; completed application work was saved on codex/coach-foundation and reviewed MM branches. Earlier branch-specific work and the explicit-review rule explain why those commits were not yet on main. This instruction authorizes a normal merge to main, preserving source history; it does not authorize live Supabase SQL or changing provider settings.
+
+Integration branch MM/promote-all-work-to-main-20261117 combines all current product work: codex base d3b1d68, PR3head c8d488a (58-requirement roadmap, metadata snapshots, skills and private eligibility tests), PR4head4769d00 (F1/F2 kernel, permission/history/finance rules, transaction runner and retained CI evidence), and PR5head2d7bb93 (skills/guidance). Skill resources/license are byte/mode identical between3and5; both owners' AGENTS instructions are preserved. The full Coach/Parent app and installed001–014 migration sources remain. main becomes the documented shared integration base; legacy branches are preserved.
+
+Found a real candidate integration hazard: PR3's older standalone file redefined workspace_actor_eligible and could overwrite016's stronger guard. A new regression first failed because an anonymous account was accepted. Retired that standalone definition to a compatibility sentinel requiring the canonical F1/F2 kernel; it cannot replace functions or grants. All original account/role tests now exercise the canonical implementation. Read-only review finds no unsafe semantic loss; this sentinel is compatibility detection, not a full function-body attestation.
+
+Fresh local npm run check passes TypeScript and299tests/32files in65.75s. Four metadata snapshots parse and all58catalogue IDs are unique. The main consolidation PR records hosted CI/merge evidence after verification. Source files/candidates being on main do not mean unbuilt roadmap features are complete or SQL015/016 is active; live Supabase remains001–014. No real records/messages/provider actions occur in this promotion. Future feature PRs target main.
+
 ## F2 permission kernel executed and tested —17November2026
 
 Owner asked “Please test and execute.” Commands and saved branch were verified after a tool-runtime restart, reported immediately; no work was lost. Implemented private `supabase/candidates/202611170016_workspace_authorization.sql`, after F1only. [Kernel QA/runbook](docs/WORKSPACE_AUTHORIZATION_QA.md) documents current verified/enabled actor checks, scoped role/capability decisions, exact branch/class assignment windows, own current feedback versus bounded recorded history, finance separation, private own-context projection and owner-only membership/assignment revocation. Legacy authorship stays known-account/unknown-membership; no teaching identity is invented. All new table/function access stays denied to clients/service; public001–014 behavior and app0.13.0/Parent0.3.0 remain unchanged.
