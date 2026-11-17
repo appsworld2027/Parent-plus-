@@ -33,10 +33,16 @@ test('failed archive closes its confirmation and shows a persistent visible fail
   await page.getByRole('tab', { name: 'Students', exact: true }).click();
   await page.evaluate(() => { window.__coachFixture.failArchive = true; });
   await page.getByRole('button', { name: 'Archive Fictional Ria', exact: true }).click();
+  const confirmation = page.getByRole('dialog');
+  await expect(confirmation).toBeVisible();
   await page.getByRole('button', { name: 'Confirm archive', exact: true }).click();
+  // Busy changes the button label before the fading dialog has unmounted.
+  await expect(confirmation).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Confirm archive', exact: true })).toHaveCount(0);
-  await expect(page.getByRole('alert')).toContainText('Archiving could not be confirmed');
-  await expect(page.getByRole('alert')).toContainText('PP-');
+  const failure = page.getByTestId('action-feedback');
+  await expect(failure).toHaveAttribute('role', 'alert');
+  await expect(failure).toContainText('Archiving could not be confirmed');
+  await expect(failure).toContainText('PP-');
   await page.getByTestId('workspace-scroll').evaluate(node => { node.scrollTop = node.scrollHeight; });
   await expect(page.getByTestId('action-feedback')).toBeInViewport({ ratio: 1 });
   await page.screenshot({ path: testInfo.outputPath('feedback-error.png'), fullPage: true });

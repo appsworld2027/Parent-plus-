@@ -44,7 +44,9 @@ test('existing own connection selects the linked child without another invitatio
     sessionStorage.setItem('__fictional_parent',JSON.stringify(state));
   });
   await page.getByRole('button',{name:'Open Fictional Ria’s update in Parent',exact:true}).click();
-  await expect(page.getByText(note,{exact:true})).toBeVisible();await expect(page.getByRole('heading',{name:'Your shared class update',exact:true})).toBeVisible();
+  // The Coach editor/history also contain this text while navigation is pending.
+  await expect(page.getByRole('heading',{name:'Your shared class update',exact:true})).toBeVisible();
+  await expect(page.getByText(note,{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>Object.keys(window.__parentFixture.invites).length)).toBe(0);
   await page.reload();await expect(page.getByText(note,{exact:true})).toBeVisible();
   await page.getByRole('tab',{name:'Choose child Sibling',exact:true}).click();await expect(page.getByText(note,{exact:true})).toHaveCount(0);
