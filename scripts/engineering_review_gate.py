@@ -14,7 +14,10 @@ def validate(pr, reviews):
     section = re.sub(r'<!--.*?-->', '', match.group(1), flags=re.S)
     for field in ('Skills', 'Evidence', 'Exceptions'):
         item = re.search(r'^[ \t]*-?[ \t]*' + field + r'[ \t]*:[ \t]*(\S[^\n]*)$', section, re.M | re.I)
-        if not item or item.group(1).strip().lower() in ('todo', 'tbd', 'n/a', '...', 'placeholder'):
+        invalid = ('todo', 'tbd', 'n/a', '...', 'placeholder')
+        if field != 'Exceptions':
+            invalid += ('none',)
+        if not item or item.group(1).strip().lower() in invalid:
             raise ValueError(f'Missing or placeholder {field} entry')
     author = pr['user']['login'].lower()
     head = pr['head']['sha']

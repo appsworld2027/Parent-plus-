@@ -70,6 +70,12 @@ class ReviewGateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'triggering event'):
                 self.gate.main()
 
+    def test_no_skills_or_evidence_is_not_accepted(self):
+        review = {'user': {'login': 'reviewer'}, 'state': 'APPROVED', 'commit_id': 'new'}
+        for field in ('Skills: verification-before-completion', 'Evidence: tests passed; independent review requested.'):
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                self.gate.validate({**self.pr, 'body': self.pr['body'].replace(field, field.split(':')[0] + ': none')}, [review])
+
     def test_missing_or_placeholder_task_evidence_is_rejected(self):
         review = {'user': {'login': 'reviewer'}, 'state': 'APPROVED', 'commit_id': 'new'}
         for body in ['', '## Skill and review evidence\nTODO', '## Skill and review evidence\nSkills: <!-- choose -->\nEvidence: <!-- fill -->\nExceptions: <!-- fill -->']:
