@@ -97,7 +97,7 @@ def plan():
     inventory = collect()
     value = {'schema': 1, 'started_ns': time.time_ns(), 'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
              'fingerprint': source_fingerprint(), 'inventory': inventory,
-             'selected': ['lint', 'typecheck', 'unit', 'browser', 'web-export', 'android-export'],
+             'selected': ['lint', 'typecheck', 'unit', 'browser', 'web-export'],
              'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT')}
     (OUTPUT / 'plan.json').write_text(json.dumps(value, indent=2) + '\n')
     print(f"Planned full regression: {len(inventory['unit'])} unit/DB, {len(inventory['browser'])} browser scenarios")
@@ -128,7 +128,7 @@ def run():
     steps = [
         ['npm', 'run', 'quality:self-test'], ['npm', 'run', 'lint'], ['npm', 'run', 'typecheck'],
         ['npm', 'test', '--', '--allowOnly=false', '--reporter=default', '--reporter=junit', '--outputFile.junit=test-results/unit-junit.xml'],
-        ['npm', 'run', 'test:e2e'], ['npm', 'run', 'export:web'], ['npm', 'run', 'export:android'],
+        ['npm', 'run', 'test:e2e'], ['npm', 'run', 'export:web'],
     ]
     for step in steps:
         print('RUN', ' '.join(step), flush=True)

@@ -8,7 +8,7 @@ Read `docs/superpowers.md` and the relevant repository skills under `.agents/ski
 
 Read `docs/CONSOLIDATED_PRODUCT_ROADMAP.md` for the cross-repository feature inventory and current integration status. Read `docs/superpowers.md` before using the repository's Superpowers skills. Use relevant skills for design, implementation, debugging and verification; current user instructions, available tools and session restrictions take precedence. Do not change machine-wide settings or spawn agents merely because a skill example suggests it. The upstream skills are guidance, not evidence that work passed or permission to deploy.
 
-For database consolidation, read `docs/CONSOLIDATED_DATABASE_DESIGN.md` and its metadata snapshot limits. Never infer that a source table name or a copied migration has the same authority as a destination entity. Every feature change needs observable acceptance criteria and relevant permission, failure and recovery tests; report unmapped or unrun scenarios explicitly.
+For database consolidation, read `docs/CONSOLIDATED_DATABASE_DESIGN.md` and its metadata snapshot limits. Current owner direction: APVerse (`fmavpazczahxeusqbxuh`) is the AM schema-integration target; appsworld2027 (`zcgcnycnanqkbdlwojln`) is the MM compatibility/data baseline until cutover acceptance. Preserve MM runtime behavior and data. AM's existing records may be discarded only when a tested rebuild needs it; retain its schema concepts, relationships and proven procedures. Never copy migration histories or infer authority from matching names. Port feature contracts through reviewed, additive migrations and verify each on isolated PostgreSQL before applying to APVerse. Keep both hosted projects separate during development. Every feature change needs observable acceptance criteria and relevant permission, failure and recovery tests; report unmapped or unrun scenarios explicitly.
 
 Read the relevant current requirements and status first:
 - `PROGRESS.md`, `PRD.md`, `docs/PARENT_PRD.md`, `docs/PARENT_MODULE.md`
@@ -35,7 +35,7 @@ Before any substantive feature work or quality audit, read section 10 of `docs/D
 
 Use the branch and review process in `docs/SHARED_DEVELOPMENT_WORKFLOW.md`. Never write to the source repository during consolidation. Do not merge a pull request without explicit approval.
 
-For relevant app changes, use the existing checks: `npm run check`, `npm run test:e2e`, `npm run export:web`, and `npm run export:android`. For SQL candidates, use the isolated database validation described in `docs/MULTI_WORKSPACE_VALIDATION.md`; do not use a live project as a test database. Report what ran and what did not.
+For relevant app changes, use the existing checks: `npm run check`, `npm run test:e2e`, and `npm run export:web`; verify deployment and browser journeys on Vercel previews. APK builds and APK-based testing are retired. For SQL candidates, use the isolated database validation described in `docs/MULTI_WORKSPACE_VALIDATION.md`; do not use a live project as a test database. Report what ran and what did not.
 
 ## AI operating system — parallel adoption
 
