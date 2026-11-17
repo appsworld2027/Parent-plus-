@@ -14,7 +14,11 @@ Session instructions and supported tools take precedence over upstream examples 
 2. Start a new turn; if skills do not appear, restart Codex.
 3. In Codex CLI or the IDE extension, use `/skills` to inspect the installed skills.
 
-You can request a skill explicitly, for example:
+Codex selects and reads applicable skills from the task, without waiting for the user to name them. Start with `using-superpowers`; reassess when the work changes and read applicable process and verification skills before their associated work. If the client does not list a repository skill, read its SKILL.md directly from `.agents/skills/` when available. Report missing files, unsupported tools, incomplete steps and pending independent review; never claim a skill was followed merely because its files exist. Higher-priority session and user instructions still govern.
+
+The quality loop validates the checked-in Superpowers files against `quality/superpowers-manifest.json`. This detects accidental missing or changed files; it cannot establish that an agent invoked or followed a skill, and a contributor who changes both the files and manifest can bypass it. Review intentional upgrades and regenerate the manifest from the approved full snapshot. GitHub protection and independent review remain separate controls.
+
+Users may also request a skill explicitly, for example:
 
 - `$brainstorming Help design the ParentPlus onboarding flow.`
 - `$writing-plans Plan the agreed onboarding implementation.`

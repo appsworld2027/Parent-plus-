@@ -32,6 +32,28 @@ def source_fingerprint():
     return digest.hexdigest()
 
 
+def validate_skill_installation(root, manifest):
+    files = manifest.get('files')
+    if not isinstance(files, dict) or not files:
+        raise ValueError('Superpowers manifest has no files')
+    prefix = Path('.agents/skills')
+    for name, expected in files.items():
+        path = Path(name)
+        if path.is_absolute() or '..' in path.parts or not path.is_relative_to(prefix):
+            raise ValueError(f'Invalid skill path: {name}')
+        file = root / path
+        if file.is_symlink() or not file.is_file():
+            raise ValueError(f'Superpowers file missing: {name}')
+        if hashlib.sha256(file.read_bytes()).hexdigest() != expected:
+            raise ValueError(f'Superpowers file changed: {name}')
+
+
+def check_skill_installation():
+    manifest = json.loads((ROOT / 'quality/superpowers-manifest.json').read_text())
+    validate_skill_installation(ROOT, manifest)
+    print(f"PASS Superpowers installation: {len(manifest['files'])} pinned files")
+
+
 def require_fingerprint(expected, actual):
     if not expected or expected != actual: raise ValueError('Execution inputs changed; regenerate the plan and rerun checks')
 
@@ -94,6 +116,7 @@ def collect():
 
 def plan():
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    check_skill_installation()
     inventory = collect()
     value = {'schema': 1, 'started_ns': time.time_ns(), 'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
              'fingerprint': source_fingerprint(), 'inventory': inventory,
@@ -134,6 +157,7 @@ def run():
         print('RUN', ' '.join(step), flush=True)
         command(step)
         require_fingerprint(value['fingerprint'], source_fingerprint())
+        check_skill_installation()
     _, counts = verify()
     receipt = {**value, 'counts': counts, 'commands': steps, 'result': 'passed',
                'reports': {name: hashlib.sha256((ROOT / f'test-results/{name}-junit.xml').read_bytes()).hexdigest() for name in ('unit', 'browser')}}
@@ -143,9 +167,9 @@ def run():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['plan', 'verify', 'run'])
+    parser.add_argument('action', choices=['skills', 'plan', 'verify', 'run'])
     args = parser.parse_args()
-    try: {'plan': plan, 'verify': verify, 'run': run}[args.action]()
+    try: {'skills': check_skill_installation, 'plan': plan, 'verify': verify, 'run': run}[args.action]()
     except (ValueError, OSError, ET.ParseError, subprocess.CalledProcessError) as error:
         print(f'FAIL quality gate: {error}', file=sys.stderr)
         sys.exit(1)

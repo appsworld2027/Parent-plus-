@@ -1,4 +1,5 @@
 import importlib.util
+import hashlib
 from pathlib import Path
 import tempfile
 import unittest
@@ -9,6 +10,25 @@ spec.loader.exec_module(gate)
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_skill_integrity_rejects_missing_and_changed_skill(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / '.agents/skills/using-superpowers/SKILL.md'
+            path.parent.mkdir(parents=True)
+            path.write_text('original')
+            manifest = {'files': {str(path.relative_to(root)): hashlib.sha256(b'original').hexdigest()}}
+            gate.validate_skill_installation(root, manifest)
+            path.write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'changed'):
+                gate.validate_skill_installation(root, manifest)
+            path.unlink()
+            with self.assertRaisesRegex(ValueError, 'missing'):
+                gate.validate_skill_installation(root, manifest)
+
+    def test_skill_integrity_rejects_paths_outside_skill_directory(self):
+        with tempfile.TemporaryDirectory() as tmp, self.assertRaises(ValueError):
+            gate.validate_skill_installation(Path(tmp), {'files': {'../outside': 'bad'}})
+
     def report(self, xml, expected=('tests/a.test.ts::works',)):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'report.xml'
