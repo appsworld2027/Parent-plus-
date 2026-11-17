@@ -84,7 +84,7 @@ The source status text below is historical catalogue evidence. Newer source chec
 
 ## Evidence and gaps
 
-AM branch implementation update: `PARENT_ATTENDANCE_INTEGRATION.md` records the isolated Parent attendance projection and destination decoder/date port. This advances implementation preparation; source signals, weekly facts, public API/UI, complete scenario coverage and deployment acceptance remain unfinished.
+AM branch implementation update: `PARENT_ATTENDANCE_INTEGRATION.md` records the isolated Parent attendance projection, staging-only API, account-checked service and development/test native panel. Local SQL/contract and browser tests pass; production defaults off and no live SQL was applied. Source signals, weekly facts, complete scenario coverage and staging/provider/device acceptance remain unfinished.
 
 This is a complete source catalogue inventory, not exhaustive code or edge-case coverage. Destination evidence entrypoints: `PROGRESS.md`, `docs/VALIDATION.md`, `docs/MULTI_WORKSPACE_VALIDATION.md`, `tests/`, and `e2e/`. Source evidence entrypoints at the pinned snapshot: `docs/BUILD_PROGRESS.md`, `docs/QUALITY_EVIDENCE.md`, `quality/requirements.json`, and `docs/quality/2026-11-10-parent-attendance-checkpoint.md`.
 

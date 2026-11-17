@@ -21,6 +21,7 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       EXPO_NO_TELEMETRY: '1', EXPO_NO_DOTENV: '1', EXPO_PUBLIC_APP_ENV: 'test',
+      EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE: 'true',
       // Fixtures only: all authentication tests intercept this domain.
       EXPO_PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
       EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example_public_test_key',

@@ -1,5 +1,7 @@
 # Email authentication setup
 
+**Current-state notice, 17 November 2026:** this is the historical setup and acceptance guide. Read the latest `PROGRESS.md` before acting; do not repeat saved redirect/provider configuration or SQL setup. The current app uses shared email/password Auth with confirmation and PKCE recovery. Multi-workspace authority remains an isolated candidate. Earlier APK/setup status below describes its original checkpoint, not today's full repository state.
+
 The initial database migration was confirmed by the owner's Supabase screenshot: version `202611110001` has an applied timestamp. No further setup SQL is needed for the current login/academy module.
 
 Owner subsequently reported saving both redirect URLs. Their screenshot confirms Email and Confirm email enabled, with anonymous sign-ins and manual linking disabled. These settings checks are complete; real email delivery and installed-app verification remain pending. Work is currently paused; the steps below are a reference, not a request to repeat setup.

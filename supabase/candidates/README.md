@@ -1,6 +1,6 @@
 # Isolated foundation candidates
 
-`parent_attendance_projection.sql` is a private destination-native Parent session/attendance read adapted from AM's source journey. It requires the F2 account helper and installed014 link structures, has no client execution grants and is not wired into the app. See [integration scope and release gaps](../../docs/PARENT_ATTENDANCE_INTEGRATION.md).
+`parent_attendance_projection.sql` is a private destination-native Parent session/attendance read adapted from AM's source journey. It requires the F2 account helper and installed014 link structures, with no direct client execution. `parent_attendance_api.sql` separately exposes its approved-child read to authenticated users only inside an isolated staging candidate. A development/test-only app panel can call that wrapper; default/production remains disabled. Neither candidate has been applied live. See [integration scope and release gaps](../../docs/PARENT_ATTENDANCE_INTEGRATION.md).
 
 `workspace_class_roster.sql` adds a private instructor/manager projection after the F1 and F2 kernel candidates. It returns only IDs and names for active students enrolled on the academy-local class day, after the kernel's roster permission check. It grants no client execution and does not replace current app reads. Its dedicated tests cover authorization, membership/account rejection, archive/date filtering and timezone boundaries. This is not a live migration or a complete roster conversion; pagination/capacity and real-provider/concurrent-read acceptance remain future gates.
 

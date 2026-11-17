@@ -47,6 +47,9 @@ export async function parentBackend(page:Page){
         for(const held of window.__mediaFixture.handoffs)if(held.student_id===request.student_id&&held.state==='awaiting_parent_link')held.state='available_to_parent';sessionStorage.setItem('__fictional_media',JSON.stringify(window.__mediaFixture));persist();return reply(link.id);
       }
       if(endpoint==='get_parent_coach_connections')return reply(state.links.filter(value=>value.active));
+      // Existing journeys have no fictional class-attendance rows. Dedicated
+      // attendance cases install explicit responses above this transport.
+      if(endpoint==='get_parent_attendance_sessions')return reply([]);
       if(endpoint==='get_parent_media_permissions')return reply(state.permissions);
       if(endpoint==='parent_coach_links'){state.connectionReads=(state.connectionReads??0)+1;while(state.holdConnections)await new Promise(resolve=>setTimeout(resolve,20));return reply(state.links.filter(link=>link.active&&(!url.searchParams.has('student_id')||link.student_id===url.searchParams.get('student_id')?.slice(3))&&(!url.searchParams.has('academy_id')||link.academy_id===url.searchParams.get('academy_id')?.slice(3))));}
       if(endpoint==='parent_feedback_feed'){

@@ -6,7 +6,7 @@
 
 Port the source's child-scoped saved-session/attendance read as a destination-native implementation, preserving the distinction between an unrecorded mark and absence. Source reference: AM `380adba9f73b3021a787dff72074df57f2a53634`, `apps/web/src/modules/parent-feed/contracts.ts`, `parent-home.tsx`, migration053 and DEC-024. The Monday/date utility and strict response-decoding approach are adapted into `src/parent/attendance.ts`. The Next.js screen and source SQL history are not copied.
 
-User journey to deliver: select own family child → view approved academy classes on their academy-local date → see saved attendance or unrecorded → page through the saved results. Parent signals, weekly totals and a complete screen remain separate unfinished parts of the source feature. Reports must never write attendance or assert physical handover.
+Development/test journey: select own family child → view approved academy classes on their academy-local date → see saved attendance or unrecorded → page through the saved results. Parent signals and weekly totals remain unfinished parts of the source feature. Reports must never write attendance or assert physical handover.
 
 ## Database implementation
 
@@ -16,10 +16,22 @@ Tests create links using actual014 invite/claim/Coach-review functions with fict
 
 ## App contract and remaining gates
 
-`src/parent/attendance.ts` whitelists returned fields, rejects malformed/duplicate/unordered/oversized pages and preserves null attendance. Monday calculation includes real-calendar validation. It currently has no network or UI callers. Public API exposure, in-flight child/account switching guards, sibling/multi-academy/ambiguous links, full negative/concurrency cases, performance/index review, Supabase staging, migration/restore acceptance and browser/device journeys remain before enablement. A copied utility or a private SQL test is not a completed Parent attendance feature.
+`src/parent/attendance.ts` whitelists returned fields, rejects malformed/duplicate/unordered/oversized pages and preserves null attendance. Monday calculation includes real-calendar validation. `attendanceService.ts` verifies the expected current account before calling the staging API and rejects reversed/repeated cursor pages. `ParentAttendance.tsx` provides date selection, refresh, loading/error/empty states and paging. An owner/child/link keyed instance and request generations discard old child/date responses. No records are persisted by this reader. Class times are explicitly labeled UTC; date selection uses academy-local dates on the server.
+
+The panel is gated by `EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE=true` AND a non-production environment, current approved link and014identity readiness. The flag controls visibility only; database authorization remains authoritative. Default is disabled. The Playwright test runner enables the flag with fictional transport. Do not enable it against a hosted project before the exact candidate/staging review.
+
+`supabase/candidates/parent_attendance_api.sql` is a separate isolated API wrapper after001–014, F1/F2 and the private projection. Authenticated users may execute the wrapper in that disposable database; the private projection remains inaccessible. Ordinary callers are filtered by the same actual approved-link/account checks. Anon/service execution is revoked. This staging candidate is not a production migration and has not been installed in Supabase.
+
+Remaining before live enablement: real-provider session checks, complete sibling/multi-academy lifecycle scenarios, concurrent disconnect/revocation review, performance/index review, Supabase staging, migration/restore acceptance and device journeys. No complete F2 conversion or source feature parity is claimed.
 
 No live database or source code was modified. Existing accounts, schema001–014 and application behavior remain authoritative.
 
-## Local execution evidence
+## AM development-preview verification
 
-`npm run check` passed TypeScript and335tests across35files in50.80seconds, including12new SQL projection cases and12contract/date cases. The SQL tests first failed because the function was missing, then passed after implementation. The first combined check found test result typing errors; those were corrected before the successful complete run. `git diff --check` passed. No UI or runtime caller changed, so browser/export suites were not repeated for this isolated preparation. Hosted/provider/concurrent-read and real-device acceptance are not claimed.
+The API wrapper, account-checked service and native panel pass the current local checks: TypeScript;338unit/database tests in35files (98.29s);89Playwright browser cases (4.1minutes), including failed refresh/retry and a deliberately delayed previous-child response; Expo web and Android JS exports; and whitespace validation. Final typecheck passes after the UI guard review. The wrapper tests verify ordinary authenticated own-child success, foreign-child empty response, and anon/service-role denial. Applying the transactional candidate inside a test originally committed the fixture and invalidated its local identity; setup was corrected to apply candidates before transactional test data. Browser responses use the existing synthetic in-page network fixture, not a live Supabase provider. The two focused new browser cases passed before the complete browser run. Build results are exports, not a new installed APK.
+
+No hosted CI run, real-provider test, new independent PostgreSQL race check, staging migration or live activation is claimed for this preview. The existing private-kernel race evidence does not substitute for testing this new API under concurrent link/account changes.
+
+## Earlier isolated checkpoint evidence
+
+`npm run check` passed TypeScript and335tests across35files in50.80seconds, including12new SQL projection cases and12contract/date cases. The SQL tests first failed because the function was missing, then passed after implementation. The first combined check found test result typing errors; those were corrected before the successful complete run. `git diff --check` passed. No UI or runtime caller changed at that earlier checkpoint, so browser/export suites were not repeated then. The development-preview verification above supersedes this preparation-time scope.

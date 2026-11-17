@@ -1,5 +1,7 @@
 # Parent Plus — Aurora workspace
 
+**Current-state notice, 17 November 2026:** installed application history is001–014 according to the latest recorded activation checkpoint. The activation instructions and missing-table statements below are historical; do not rerun011/012. Current connection authority requires intended verified email plus explicit Coach approval under014. Read `PROGRESS.md` and `PARENT_ATTENDANCE_INTEGRATION.md`: Parent attendance is now an AM-branch development/test preview backed by an unapplied API candidate, not a live feature. Existing private families and reviewed feedback remain in scope.
+
 0.11.1 entry correction: visible Coach space / Parent space links are on the website login and both signed-in workspaces; parents need not type a route. Switching retains the same-tab session and is blocked for unsaved/pending forms. The owner confirmed011/012 is not yet known installed, and a zero-row API metadata probe returns404/PGRST205 for parent_families. Navigation repair does not activate missing database tables.
 
 

@@ -1,5 +1,9 @@
 # Parent Plus Coach — development checkpoint
 
+## AM-only Parent attendance integration —17November2026
+
+Current work remains on `AM/consolidated`; no merge to other branches is authorized. A staging-only public API candidate delegates to the private approved-link/session projection. The Parent service checks account identity and validates response/cursor shape. A separate native attendance panel handles class-date selection, refresh, paging, errors and stale child responses. It renders only with `EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE=true` in development/test, with an approved connection; production is disabled. The candidate has not been installed in Supabase. Existing account UUIDs/login, schema001–014 and other live app journeys are retained. See `docs/PARENT_ATTENDANCE_INTEGRATION.md` for exact verification and remaining provider/concurrency gates.
+
 ## Owner-authorized promotion to main —17November2026
 
 Owner explicitly requests “Commit everything in the main branch.” Inspection confirms GitHub main at0db8f74 contains only its initial README/one commit; completed application work was saved on codex/coach-foundation and reviewed MM branches. Earlier branch-specific work and the explicit-review rule explain why those commits were not yet on main. This instruction authorizes a normal merge to main, preserving source history; it does not authorize live Supabase SQL or changing provider settings.

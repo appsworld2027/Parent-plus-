@@ -11,6 +11,7 @@ beforeAll(async()=>{
  db=await supabaseDatabase();
  for(const path of ['supabase/candidates/202611170015_workspace_foundation.sql','supabase/candidates/202611170016_workspace_authorization.sql'])await db.exec(readFileSync(path,'utf8'));
  await db.exec(readFileSync(file,'utf8'));await db.exec(readFileSync(file,'utf8'));
+ await db.exec(readFileSync('supabase/candidates/parent_attendance_api.sql','utf8'));
 },30000);
 beforeEach(async()=>{
  await db.exec('begin');
@@ -45,4 +46,10 @@ it('pages deterministically without repeating the last session',async()=>{
  expect(new Set([...first.rows,...second.rows].map(x=>x.session_id)).size).toBe(55);
 });
 it('rejects a half-specified cursor',async()=>{await expect(page(71,'2026-11-16','2026-11-16T10:00Z')).rejects.toMatchObject({code:'22023'});});
+it('allows only approved own-child reads through the staging API wrapper',async()=>{
+ await db.exec('set local role authenticated');
+ expect((await db.query('select * from public.get_parent_attendance_sessions($1,$2)',[id(71),'2026-11-16'])).rows).toHaveLength(1);
+ await actor(3);expect((await db.query('select * from public.get_parent_attendance_sessions($1,$2)',[id(71),'2026-11-16'])).rows).toEqual([]);
+});
+it.each(['anon','service_role'])('keeps the staging API unavailable to %s',async role=>{await db.exec(`set local role ${role}`);await expect(db.query('select * from public.get_parent_attendance_sessions($1,$2)',[id(71),'2026-11-16'])).rejects.toMatchObject({code:'42501'});});
 it.each(['anon','authenticated','service_role'])('does not expose the candidate to %s',async role=>{await db.exec(`set local role ${role}`);await expect(page()).rejects.toMatchObject({code:'42501'});});
