@@ -1,3 +1,11 @@
+## Current class-read correctness checkpoint — 17 November 2026
+
+No SQL update is needed for this change. Class context now reads sessions, batches, students and enrolments in ID-ordered keyset pages of at most 500 records. Every page retains academy scope; session pages also retain the academy-local date boundaries. A short page is not assumed complete, because API settings can impose a lower cap. The reader stops on an empty page and rejects failed, malformed, repeated or reversed pages rather than returning an incomplete context. Enrolment IDs are included for deterministic paging. Display sorting remains chronological for sessions and name-based for batches/students.
+
+Reproduction: the actual browser/SDK fixture with 1201 students and only the final student enrolled showed a false empty class under the old unpaged read. The test failed before implementation and passes after paging. Nine pager cases and two actual-SDK transport tests cover a lower server cap, tail retention after earlier-row deletion, failed later pages, malformed/nonprogress data and persistent academy/date filters. The test fixture now models ID cursors, ordering and API row limits; it does not call Supabase. A fixture hook that returned its mock was corrected to return void, preventing it from being treated as a cleanup function.
+
+This is not an atomic snapshot across tables/pages. Existing checked attendance writes still revalidate current roster/session/revision and reject stale saves. The F2 scoped server projections and performance/native/provider acceptance remain separate work. Read [the 12 delivery steps](CONSOLIDATION_ACCEPTANCE_LEDGER.md#twelve-delivery-steps-to-legacy-retirement) for full consolidation closure; the older setup instructions below are historical and must not cause already-installed migrations to run again.
+
 # Classes and attendance: setup and phone acceptance
 
 Version 0.3.0 adds dated classes, attendance, one private device draft and actual-record Today figures. The final source needs migrations **002, 003 and 004** after your confirmed migration 001. A combined file below applies those upgrades in order; do not recreate the project or repeat 001.

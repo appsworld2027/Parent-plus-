@@ -3497,6 +3497,102 @@
       "tests": [
         "tests/parent-model.test.ts::counts only the selected child and current week from saved records, including an empty week"
       ]
+    },
+    {
+      "id": "UT-0E16E8A1C29E",
+      "status": "implemented",
+      "criteria": "keeps academy and local-day filters on every SDK page",
+      "tests": [
+        "tests/classes-service.test.ts::keeps academy and local-day filters on every SDK page"
+      ]
+    },
+    {
+      "id": "UT-F8B114426B28",
+      "status": "implemented",
+      "criteria": "rejects the entire class context if any later API page fails",
+      "tests": [
+        "tests/classes-service.test.ts::rejects the entire class context if any later API page fails"
+      ]
+    },
+    {
+      "id": "UT-EFA0E32B73F4",
+      "status": "implemented",
+      "criteria": "loads records beyond the API page cap, including a final short page",
+      "tests": [
+        "tests/class-paging.test.ts::loads records beyond the API page cap, including a final short page"
+      ]
+    },
+    {
+      "id": "UT-10F9ACD0180F",
+      "status": "implemented",
+      "criteria": "rejects a failed later page instead of returning an incomplete roster",
+      "tests": [
+        "tests/class-paging.test.ts::rejects a failed later page instead of returning an incomplete roster"
+      ]
+    },
+    {
+      "id": "UT-6F1C432FC85B",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"000002\"},{\"id\":\"000001\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"000002\"},{\"id\":\"000001\"}]}"
+      ]
+    },
+    {
+      "id": "UT-393D57DA5802",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"000001\"},{\"id\":\"000001\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"000001\"},{\"id\":\"000001\"}]}"
+      ]
+    },
+    {
+      "id": "UT-9F6CCE814ECA",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{\"id\":\"\"}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{\"id\":\"\"}]}"
+      ]
+    },
+    {
+      "id": "UT-BEB0E670EB0C",
+      "status": "implemented",
+      "criteria": "rejects invalid or unordered page {\"rows\":[{}]}",
+      "tests": [
+        "tests/class-paging.test.ts::rejects invalid or unordered page {\"rows\":[{}]}"
+      ]
+    },
+    {
+      "id": "UT-EA01D434FAE5",
+      "status": "implemented",
+      "criteria": "rejects an API that repeats the cursor instead of looping or duplicating records",
+      "tests": [
+        "tests/class-paging.test.ts::rejects an API that repeats the cursor instead of looping or duplicating records"
+      ]
+    },
+    {
+      "id": "UT-7A4ED0F4B87B",
+      "status": "implemented",
+      "criteria": "rejects a null success payload rather than showing a false empty result",
+      "tests": [
+        "tests/class-paging.test.ts::rejects a null success payload rather than showing a false empty result"
+      ]
+    },
+    {
+      "id": "UT-4998B3EACD8B",
+      "status": "implemented",
+      "criteria": "retains the unread tail when an earlier row disappears between pages",
+      "tests": [
+        "tests/class-paging.test.ts::retains the unread tail when an earlier row disappears between pages"
+      ]
+    },
+    {
+      "id": "SC-5B894CFBD73E",
+      "status": "implemented",
+      "criteria": "attendance includes an enrolled student beyond the API response cap",
+      "tests": [
+        "e2e/classes.spec.ts::attendance includes an enrolled student beyond the API response cap"
+      ]
     }
   ]
 }

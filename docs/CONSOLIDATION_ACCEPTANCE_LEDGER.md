@@ -21,6 +21,27 @@ Owner authorization, 17 November 2026: implement Destination AM code and DB chan
 
 **When Source can be decommissioned:** after R01–R07 pass with exact evidence and R08 is accepted. There is no defensible calendar date yet; missing provider/native/restore/data-disposition evidence controls the date, not the number of merged files. Further independent feature development can continue on AM after its relevant quality gates pass; it does not require premature source retirement. Vercel is back in scope; GitLab remains deferred until resumed or explicitly waived at final closure.
 
+## Twelve delivery steps to legacy retirement
+
+These are 12 delivery steps grouped under the eight retirement gates above, not 12 commands or 12 commits. Each includes GPT-run verification, a GitHub-verified code checkpoint, clear gaps and repeated repair loops. Source Git and Supabase become eligible for retirement only after steps 1–11 pass or their nonblocking deferrals are explicitly accepted; step 12 performs the controlled cutover. Common future features not implemented in Source need an explicit disposition, not automatic implementation to retire Source.
+
+| Step / deliverable | Status and exit criterion |
+| --- | --- |
+| 1. Automated build/test/evidence foundation (R01) | BASELINE PASS:348unit/DB,89browser, lint/types/exports, real-PG jobs and hosted final gate. Latest documentation checkpoint167b3d7/run44061920410 also passed. Extend scenarios with each change; gate failure blocks progression. |
+| 2. Safe Destination DB baseline and Parent read (R02) | BASELINE INSTALLED:014plus20261117090944, checked grants/record totals and real-PG replay. App UI remains opt-in; real-provider acceptance is in step9. |
+| 3. Complete shared authorization (R04/R05) | OPEN: convert public RPCs, direct grants, views, Storage and OCR to accepted memberships/assignments; retain owner/guardian/consent boundaries and revocation races. |
+| 4. Workspace/context selection and onboarding (R04) | OPEN: multiple academy affiliations, explicit role context, account/academy-scoped drafts/caches/in-flight requests and native navigation without leaks or lost work. |
+| 5. Courses, class setup and recurring schedules (R04) | IN PROGRESS: close class-read truncation first; then destination-native courses/weekly rules and setup/retry recovery, with timezone/DST and duplicate/lost-response tests. |
+| 6. Enrolment and attendance lifecycle parity (R04) | OPEN: versioned states/events/recovery and agreed extra attendance statuses; preserve current history, fee and complete-roster safeguards. |
+| 7. Remaining Parent delivery parity (R04) | OPEN: weekly saved facts, report-only signals, safe typed/versioned items and accepted bilingual surfaces. Preserve reviewed feedback/media consent; reports never confirm attendance or handover. |
+| 8. Migrate real Source records (R06) | BLOCKED on verified owner mapping for two placeholder accounts, one owning a child. Preserve all 3 workspaces / 2 children / 1 class; reconcile actual Source dependencies, preserve provenance/relationships and verify counts/permissions. Never auto-merge accounts by email or silently approve guardian links. |
+| 9. Full security, real-provider and native acceptance (R03/R05) | OPEN: direct API/Storage attacks, real accounts/email/recovery/OCR, devices/accessibility, relevant load/index checks, preview-browser authentication and resolved/accepted security findings. Source existing tests alone are not proof. |
+| 10. Migration/rollback/restore rehearsal (R07) | OPEN: reconcile actual Destination migration history, reconstruct in disposable/staging environment, test compatibility after new writes, restore backup and verify protected relationships/financial/media evidence. |
+| 11. Destination-only acceptance and documentation (R07) | OPEN: clean checkout with Source Git/DB unavailable, full accepted Coach/Parent scenarios, correct network destinations, current canonical docs and every mandatory Master/Addendum deliverable accepted; address or explicitly waive deferred GitLab scope. |
+| 12. Controlled final promotion and retirement (R08) | NOT READY: present the exact release, obtain applicable final merge/cutover acceptance, archive recoverably, revoke only Source-specific dependencies, verify Destination again. Keep AM-only work until another target merge is explicitly instructed. Do not delete real Source records prematurely. |
+
+Current position: steps 1–2 establish the baseline; step 5 has an independent correctness fix in progress while steps 3–4 require the broader authorization conversion. A completed baseline is not completion of the entire feature or provider gate. No calendar retirement date is promised until remaining mapping, implementation and acceptance dependencies are measured and closed.
+
 ## Master Mission final deliverables: all19 tracked
 
 | ID / deliverable | Current state, evidence and closure requirement |

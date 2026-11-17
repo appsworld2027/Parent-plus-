@@ -40,6 +40,14 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       const state = window.__coachFixture;
       const payload = init?.body ? JSON.parse(String(init.body)) : {};
       const method = init?.method ?? (input instanceof Request ? input.method : 'GET');
+      const pageRows=(values:{id?:string}[])=>{
+        const filter=url.searchParams.get('id');
+        let rows=[...values];
+        if(filter?.startsWith('gt.'))rows=rows.filter(row=>!!row.id&&row.id>filter.slice(3));
+        if(url.searchParams.get('order')?.startsWith('id.'))rows.sort((a,b)=>(a.id??'').localeCompare(b.id??''));
+        const offset=Number(url.searchParams.get('offset')??0);
+        return rows.slice(offset,offset+Math.min(1000,Number(url.searchParams.get('limit')??1000)));
+      };
       const persistRoster = () => sessionStorage.setItem('__fictional_roster', JSON.stringify(state.roster));
       const persistClasses = () => sessionStorage.setItem('__fictional_classes', JSON.stringify({ classes: state.classes, attendance: state.attendance }));
       state.calls.push(url.pathname);
@@ -155,21 +163,22 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/class_sessions')) {
         if (options.missingClassMigration) { status = 400; data = { code: '42703', message: 'Missing class column' }; }
         else {
-          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const filter = url.searchParams.get('id');
+          const id = filter?.startsWith('eq.')?filter.slice(3):null;
           const times = url.searchParams.getAll('starts_at');
           const from = times.find(t => t.startsWith('gte.'))?.slice(4);
           const until = times.find(t => t.startsWith('lt.'))?.slice(3);
           const rows = state.classes.filter(c => (!id || c.id === id) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
-          if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : rows;
+          if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : pageRows(rows);
         }
       } else if (url.pathname.endsWith('/attendance')) {
         const id = url.searchParams.get('session_id')?.replace(/^eq\./, '') ?? '';
         data = Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ student_id, status }));
-      } else if (url.pathname.endsWith('/students')) data = state.roster.students.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
+      } else if (url.pathname.endsWith('/students')) data = pageRows(state.roster.students);
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;
         data = options.missingRosterMigration ? { code: '42703', message: 'Fictional missing column' } : state.roster.contacts;
-      } else if (url.pathname.endsWith('/enrolments')) data = state.roster.enrolments.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
+      } else if (url.pathname.endsWith('/enrolments')) data = pageRows(state.roster.enrolments.map((row,index)=>({...row,id:row.id??`eeeeeeee-0000-0000-0000-${String(index).padStart(12,'0')}`})));
       else if (url.pathname.endsWith('/batches')) {
         if (method === 'POST') {
           const batch = { ...payload, archived_at: null };
@@ -177,7 +186,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (index < 0) state.roster.batches.push(batch); else state.roster.batches[index] = batch;
           persistRoster();
         }
-        data = state.roster.batches.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
+        data = pageRows(state.roster.batches);
       } else { status = 400; data = { message: 'Unexpected fixture request' }; }
       return new Response(status === 204 ? null : JSON.stringify(data), { status,
         headers: { 'Content-Type': 'application/json', 'X-Supabase-Api-Version': '2024-01-01' } });

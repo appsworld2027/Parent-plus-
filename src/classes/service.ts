@@ -2,6 +2,7 @@ import { supabase } from '../auth/client';
 import { diagnostics } from '../diagnostics';
 import type { ClassContext, ClassDraft, ClassSession, Marks } from './model';
 import { classValues, dayRange, fingerprint } from './model';
+import {CLASS_PAGE_SIZE,readClassRows} from './paging';
 
 export function classFailure(error: unknown, fallback: string) {
   const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : '';
@@ -15,14 +16,24 @@ export function classFailure(error: unknown, fallback: string) {
 export async function loadClasses(academy: string, date: string, timezone: string): Promise<ClassContext> {
   if (!supabase) throw new Error('Client unavailable');
   const range = dayRange(date, timezone);
-  const results = await Promise.all([
-    supabase.from('class_sessions').select('id,batch_id,starts_at,ends_at,room,status,attendance_revision').eq('academy_id', academy).gte('starts_at', range.start).lt('starts_at', range.end).order('starts_at'),
-    supabase.from('batches').select('id,name,room,monthly_fee_paise,archived_at').eq('academy_id', academy).order('name'),
-    supabase.from('students').select('id,name,age_years,archived_at').eq('academy_id', academy).order('name'),
-    supabase.from('enrolments').select('student_id,batch_id,starts_on,ends_on').eq('academy_id', academy),
+  async function rows<T>(table:string,fields:string,dated=false):Promise<T[]> {
+    return readClassRows<T>(after=>{
+      let query=supabase!.from(table).select(fields).eq('academy_id',academy).order('id').limit(CLASS_PAGE_SIZE);
+      if(dated)query=query.gte('starts_at',range.start).lt('starts_at',range.end);
+      if(after!==null)query=query.gt('id',after);
+      return query;
+    });
+  }
+  const [sessions,batches,students,enrolments]=await Promise.all([
+    rows<ClassContext['sessions'][number]>('class_sessions','id,batch_id,starts_at,ends_at,room,status,attendance_revision',true),
+    rows<ClassContext['batches'][number]>('batches','id,name,room,monthly_fee_paise,archived_at'),
+    rows<ClassContext['students'][number]>('students','id,name,age_years,archived_at'),
+    rows<ClassContext['enrolments'][number]>('enrolments','id,student_id,batch_id,starts_on,ends_on'),
   ]);
-  for (const result of results) if (result.error) throw result.error;
-  return { sessions: results[0].data ?? [], batches: results[1].data ?? [], students: results[2].data ?? [], enrolments: results[3].data ?? [] } as ClassContext;
+  sessions.sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at)||a.id.localeCompare(b.id));
+  batches.sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
+  students.sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
+  return {sessions,batches,students,enrolments};
 }
 export async function saveClass(academy: string, draft: ClassDraft, timezone: string) {
   if (!supabase) throw new Error('Client unavailable');

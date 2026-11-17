@@ -1,5 +1,13 @@
 # Parent Plus Coach — development checkpoint
 
+## Class pagination loop and twelve-step retirement plan — 17 November 2026
+
+AM/consolidated only; Source and other branches unchanged. Closed the known class-context API truncation risk with ID keyset paging and strict progress/error handling, preserving academy/local-date filters and existing checked-write rules. A browser reproduction with 1201 students failed before the change and passes afterward; focused 9 pager + 2 SDK transport cases passed. No live SQL or real records were changed in this slice.
+
+Fresh full GPT loop: lint, TypeScript,359 unit/DB cases,90 headless scenarios, web/Android JS exports and exact runtime-report verification passed. Registry now maps 449 narrow unit/DB/browser scenarios. Execution-input fingerprint: `44ebf1a4b0375999767e256aa6b89d596166991a881d66bdb9348c4677b8159d`. Hosted checks are inspected after publication; local evidence is not a hosted run or real-device/provider result. Existing-document links and diff are checked separately.
+
+The existing consolidation ledger now defines 12 delivery steps under its 8 retirement gates. Baseline steps 1–2 are established; broader authorization/context/course/lifecycle/Parent parity, verified real-data migration, provider/device/security, restore and Destination-only rehearsal remain. Source retirement eligibility follows steps 1–11; step 12 is controlled final promotion/disconnection, preserving a recoverable archive. Owner mapping for the two Source placeholder identities remains unanswered; do not infer it from the request to continue engineering. Protected-preview sharing approval and automatic Vercel author/team authorization also remain separate pending items. GitLab stays deferred unless resumed or explicitly waived.
+
 ## AM quality loop and live Parent DB reader — 17 November 2026
 
 Current work remains on AM/consolidated. Owner authorized Destination code/DB changes, Vercel branch previews and continuous build/test feedback. Existing documents remain authoritative; no parallel tracker was created. See [retirement gates R01–R08](docs/CONSOLIDATION_ACCEPTANCE_LEDGER.md#active-buildsync-loop-and-source-retirement-tracker).
