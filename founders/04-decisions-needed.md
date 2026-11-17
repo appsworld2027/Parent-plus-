@@ -1,6 +1,6 @@
 # Decisions needed
 
-Continue current sprint delivery while adopting the shared documentation and testing rules.
+Continue current sprint delivery. AI owns technical review, testing, validation, fixes and routine engineering decisions. Founders receive a clear recommendation and decide product priorities, material user-experience tradeoffs and release approval.
 
 - Review this documentation PR before merging.
 - Keep scope, sensitive architecture, and release decisions with the founders under the existing workflow.
