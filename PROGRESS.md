@@ -12,6 +12,8 @@ This completes the isolated kernel checkpoint, not F2 or the platform release. A
 
 Publish integration: first push to the legacy development branch stopped because GitHub had newer owner commits2febefe/d3b1d68. Inspected their new AGENTS/shared-workflow guidance and preserved both commits via a forward merge on `MM/workspace-authorization-kernel-20261117`. No force push, rebase or owner-branch overwrite. The combined CI retains least-privilege permissions/JUnit validation and the new PG17 job. Exact JUnit command passes288/288 in56.92s; XML validates with zero failures/errors/skips and workflow YAML parses. This work goes through a review PR into codex/coach-foundation; no PR merge is authorised by the new guidance. Hosted CI results follow separately.
 
+Review [PR4](https://github.com/appsworld2027/Parent-plus-/pull/4) is open as a draft. Its first GitHub PostgreSQL job passes in21seconds and the unit/JUnit stages pass. A final test-only improvement checks history's exact inclusive-start/exclusive-end timestamp using the record itself, avoiding dependence on fixture speed; all43focused cases pass4.91s. Latest head CI evidence is tracked in the PR body. No implementation/runtime SQL changed in that follow-up and no PR was merged.
+
 ## Robust multi-workspace foundation — F0/F1 checkpoint17November2026
 
 Owner asked how to establish a robust multi-academy/independent/admin-only/Parent model. Clarified that Supabase changes ARE required: no owner action during preparation, disposable SQL first, then real Supabase staging Auth/Storage/email/API validation and authorised production activation. Owner replied “Yes…robust…Continue.” Current production project/logins and001–014 remain. No production SQL or app UI change in this milestone.

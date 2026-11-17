@@ -122,8 +122,13 @@ it('requires history grants for every child mentioned by a group note',async()=>
  await db.exec(`update coach_private.workspace_history_grants set expires_at=now()-interval '1 second' where student_id='${id(22)}'`);expect(await feedbackAccess(54)).toBe(false);
 });
 it('checks history date boundaries, grant revocation and archived branch',async()=>{
- await history();await db.exec("update coach_private.workspace_history_grants set recorded_until=now()-interval '30 days'-interval '1 second'");expect(await feedbackAccess(52)).toBe(false);
- await db.exec("update coach_private.workspace_history_grants set recorded_until=now()-interval '29 days',revoked_at=now()");expect(await feedbackAccess(52)).toBe(false);
+ await history();
+ // Use the source record's exact timestamp, not fixture setup/runner speed.
+ await db.query('update coach_private.workspace_history_grants set recorded_until=(select recorded_at from public.observations where id=$1)',[id(52)]);
+ expect(await feedbackAccess(52)).toBe(false);
+ await db.exec("update coach_private.workspace_history_grants set recorded_from=recorded_until,recorded_until=recorded_until+interval '1 second'");
+ expect(await feedbackAccess(52)).toBe(true);
+ await db.exec('update coach_private.workspace_history_grants set revoked_at=now()');expect(await feedbackAccess(52)).toBe(false);
  await db.exec(`update coach_private.workspace_history_grants set revoked_at=null;update coach_private.workspace_branches set archived_at=now() where id='${id(61)}'`);expect(await feedbackAccess(52)).toBe(false);
 });
 it('limits correction capabilities by branch and expiry; does not turn them into an editing API',async()=>{
