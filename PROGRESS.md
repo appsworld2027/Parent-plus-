@@ -14,6 +14,8 @@ Publish integration: first push to the legacy development branch stopped because
 
 Review [PR4](https://github.com/appsworld2027/Parent-plus-/pull/4) is open as a draft. Its first GitHub PostgreSQL job passes in21seconds and the unit/JUnit stages pass. A final test-only improvement checks history's exact inclusive-start/exclusive-end timestamp using the record itself, avoiding dependence on fixture speed; all43focused cases pass4.91s. Latest head CI evidence is tracked in the PR body. No implementation/runtime SQL changed in that follow-up and no PR was merged.
 
+CI integration found that Playwright clears the unit JUnit file from its default test-results directory before the job's final upload. Moved the existing unit-evidence upload immediately after validation, before Playwright startup, preserving the shared quality-evidence practice. YAML/order checks pass; final hosted completion/artifact evidence is recorded in PR4. Superseded runs are cancelled to avoid duplicate CI use.
+
 ## Robust multi-workspace foundation — F0/F1 checkpoint17November2026
 
 Owner asked how to establish a robust multi-academy/independent/admin-only/Parent model. Clarified that Supabase changes ARE required: no owner action during preparation, disposable SQL first, then real Supabase staging Auth/Storage/email/API validation and authorised production activation. Owner replied “Yes…robust…Continue.” Current production project/logins and001–014 remain. No production SQL or app UI change in this milestone.

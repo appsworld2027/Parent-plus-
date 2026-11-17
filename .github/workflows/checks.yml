@@ -71,6 +71,14 @@ jobs:
               raise SystemExit("FAIL: Test evidence is empty, failing, or skipped")
           print("PASS: JUnit evidence validated")
           PY
+      # Playwright clears test-results/ at startup; retain unit evidence first.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-test-evidence-${{ github.run_attempt }}
+          path: test-results/vitest-junit.xml
+          if-no-files-found: warn
+          retention-days: 14
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run export:web
@@ -80,10 +88,3 @@ jobs:
         with:
           name: browser-failure-evidence
           path: test-results/
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: app-test-evidence-${{ github.run_attempt }}
-          path: test-results/vitest-junit.xml
-          if-no-files-found: warn
-          retention-days: 14
