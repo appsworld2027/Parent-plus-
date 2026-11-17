@@ -84,6 +84,8 @@ The source status text below is historical catalogue evidence. Newer source chec
 
 ## Evidence and gaps
 
+AM branch implementation update: `PARENT_ATTENDANCE_INTEGRATION.md` records the isolated Parent attendance projection and destination decoder/date port. This advances implementation preparation; source signals, weekly facts, public API/UI, complete scenario coverage and deployment acceptance remain unfinished.
+
 This is a complete source catalogue inventory, not exhaustive code or edge-case coverage. Destination evidence entrypoints: `PROGRESS.md`, `docs/VALIDATION.md`, `docs/MULTI_WORKSPACE_VALIDATION.md`, `tests/`, and `e2e/`. Source evidence entrypoints at the pinned snapshot: `docs/BUILD_PROGRESS.md`, `docs/QUALITY_EVIDENCE.md`, `quality/requirements.json`, and `docs/quality/2026-11-10-parent-attendance-checkpoint.md`.
 
 Missing before full consolidation can be accepted: exact cross-repository scenario-to-test mapping; full schema/function/grant comparison; destination-native feature implementation; isolated migration/rollback and concurrency verification; real Supabase staging/provider acceptance; branch-protection configuration and validation; source connection cleanup. Vercel and GitLab remain deferred by owner instruction. Existing destination product/privacy decisions take precedence over historical source catalogue priorities.
