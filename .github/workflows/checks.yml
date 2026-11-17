@@ -4,6 +4,8 @@ on:
     branches: [main, codex/coach-foundation]
     paths-ignore: ['**/*.md', 'docs/images/**']
   pull_request:
+permissions:
+  contents: read
 jobs:
   foundation:
     runs-on: ubuntu-latest
@@ -18,7 +20,36 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npm run check
+      - run: npm run typecheck
+      - name: Run unit tests and write JUnit evidence
+        run: |
+          mkdir -p test-results
+          npm test -- --reporter=default --reporter=junit --outputFile.junit=test-results/vitest-junit.xml
+      - name: Validate unit test evidence
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          report = Path("test-results/vitest-junit.xml")
+          if not report.is_file() or report.stat().st_size == 0:
+              raise SystemExit("FAIL: JUnit report missing or empty")
+
+          root = ET.parse(report).getroot()
+          if root.tag not in {"testsuite", "testsuites"}:
+              raise SystemExit("FAIL: Invalid JUnit root")
+
+          cases = list(root.iter("testcase"))
+          failures = list(root.iter("failure"))
+          errors = list(root.iter("error"))
+          skipped = list(root.iter("skipped"))
+          print(f"Test cases: {len(cases)}")
+          print(f"Failures: {len(failures)}; errors: {len(errors)}; skipped: {len(skipped)}")
+          if not cases or failures or errors or skipped:
+              raise SystemExit("FAIL: Test evidence is empty, failing, or skipped")
+          print("PASS: JUnit evidence validated")
+          PY
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run export:web
@@ -28,3 +59,10 @@ jobs:
         with:
           name: browser-failure-evidence
           path: test-results/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-test-evidence-${{ github.run_attempt }}
+          path: test-results/vitest-junit.xml
+          if-no-files-found: warn
+          retention-days: 14
