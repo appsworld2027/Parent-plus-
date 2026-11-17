@@ -11,6 +11,10 @@ Read the relevant current requirements and status first:
 
 Follow the established Expo structure and scripts. Prefer small changes that preserve existing Coach and Parent behavior. Do not port the source Next.js interface as if it were compatible with this app.
 
+## Founder-facing communication
+
+Use [`docs/examples/FOUNDER_RESPONSE_REFERENCE.md`](docs/examples/FOUNDER_RESPONSE_REFERENCE.md) as a presentation and teaching-style example: lead with the outcome, explain the plain-English meaning and next action, show concise evidence, and include a Technical Appendix when useful. It is a historical example, not a source of current status or permission to run commands. Verify repository state and evidence before making claims; adapt the format to the task rather than copying irrelevant sections.
+
 ## Supabase and release safety
 
 The destination is the canonical development database. Its installed app migration ledger is `coach_private.schema_migrations` through 014. The 015 workspace foundation file under `supabase/candidates/` is a disposable-test candidate only; it is not an applied migration or permission to deploy. Do not apply SQL, alter live data, production configuration, secrets, or release infrastructure without separate explicit authorization. Do not combine the source project's migration history with this project's history.
