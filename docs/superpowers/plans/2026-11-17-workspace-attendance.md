@@ -9,4 +9,4 @@ Test-first tasks:
 - [x] Observe missing-operation failure; implement private projection and guarded attendance transaction with bounded inputs, stable canonical request hashing, immutable submissions and private ACLs.
 - [x] Test date/timezone, stale context/roster/revision, duplicate/invalid/foreign rows, cancellation/archive, revoked/expired/incorrect-scope actors, receipt replay and attribution.
 - [x] Extend real PostgreSQL tests with actual attendance writes versus assignment revocation, concurrent stale editors and duplicate requests.
-- [ ] Review, verify full checks, save focused PR and continue feedback/remaining conversion work. Keep staging activation separate.
+- [x] Review, verify full checks, merge tested PR9 and continue feedback020. Keep staging activation separate.
