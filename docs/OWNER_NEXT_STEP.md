@@ -1,5 +1,11 @@
 # Current owner step — website0.13.0 / Parent0.3
 
+## Current verification discrepancy — 17 November 2026
+
+Owner reports update014 installed, but the live API still returns404/PGRST205 for the new approval table and404/PGRST202 for both new request RPCs; old Parent relation/function return401/42501. Do not repeat installation blindly. Ask for one read-only owner query checking the014ledger marker, to_regclass('public.parent_connection_requests') and to_regprocedure('public.get_parent_connection_requests()'). All true points toward cache/API visibility; missing objects points toward incomplete installation. Screenshot/result is needed before deciding the correction. Existing App checks and native build for0791763 both succeeded.
+
+The activation instructions below remain reference, not the immediate next action.
+
 ## Required new security activation
 
 Owner explicitly authorised closing the guardian identity gap. The verified-email + Coach approval flow is published in0.13.0; hosted fixture checks pass4/4. Live server enforcement remains pending014 installation. It needs **only supabase/update_014.sql**, after already installed001–013. Do not repeat the old combined scripts, Google key or scanning-function setup.

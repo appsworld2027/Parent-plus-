@@ -1,5 +1,11 @@
 # Parent Plus Coach — development checkpoint
 
+## Update014 owner report — 17 November 2026; API discrepancy unresolved
+
+Owner first reported “Success no rows returned”, then after a requested read-only version check reported “Update14 installed”. Treat installation as owner-reported, not independently confirmed. Fresh public-key/anonymous checks find parent_connection_requests404/PGRST205 and both new request RPCs404/PGRST202; existing parent_families and get_parent_coach_connections return401/42501 as expected. One bounded control retry reproduces the new-table absence. Email confirmation remains required (mailer_autoconfirm=false). No private rows, authenticated session, mail, or writes were used. Do NOT call live014 ready and do NOT ask to blindly rerun the long migration. Next owner query should check version ledger AND to_regclass(public.parent_connection_requests) AND to_regprocedure(public.get_parent_connection_requests()) in their SQL editor to distinguish incomplete installation from API schema-cache visibility.
+
+Both source0791763 App checks43859794515 and Android43859794507 are now confirmed SUCCESS. Hosted fixture evidence remains4/4, not live Supabase acceptance. Current workspace commands work after environment startup.
+
 ## Published guardian/child approval0.13.0 / Parent0.3.0 — live014 activation pending
 
 Published source **0791763ca15888024eb888689b21c0b0213c6472**, Vercel deployment8ntkcG7wDtxTYTbAqEQKmH94Nhka succeeded. [Hosted identity QA](docs/PARENT_IDENTITY_HOSTED_QA.md) passes4/4 in41.577s: no feedback while pending, explicit Coach approval then Parent update/reload, wrong-email refusal without student details, rejection, and missing014 warning/private records. Fictional transport only; temporary access state removed. GitHub43859794515 has completed its TypeScript/automated step successfully; full browser/export run and Android43859794507 were still running at this checkpoint. The protection is NOT live in Supabase until the owner runs only supabase/update_014.sql. Give one action at a time: Copy raw file from GitHub, then paste whole file in existing SQL editor and Run; expect202611160014. Do not repeat001–013 or Google setup.
