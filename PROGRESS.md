@@ -1,5 +1,13 @@
 # Parent Plus Coach — development checkpoint
 
+## Staff-aware attendance transactions —17November2026
+
+Continued from tested staff PR8 without waiting for another product prompt. Candidate019 adds a minimum class attendance projection and actual assigned-instructor save with full dated roster/context/revision validation, fixed request receipts and immutable teacher/account/membership/display/marks snapshots. Owner/admin-only management does not become teaching authorship. New tables/functions stay private; existing attendance, old migrations and live accounts remain. [Attendance QA and limits](docs/WORKSPACE_ATTENDANCE_QA.md); [plan](docs/superpowers/plans/2026-11-17-workspace-attendance.md).
+
+Observed missing-operation RED. First targeted24integration cases pass7.45s; fresh TypeScript/full388tests35files pass100.73s. Real PostgreSQL21/21cases pass, including four new actual attendance races: assignment removal before save, stale competing instructors, identical concurrent requests and write-before-revoke with later replay denial. Read-only review found no additional concrete issue. No new public/client grant, live SQL, real records/messages or UI activation. Owner confirms there is no separate staging project; do not test candidates on live Supabase.
+
+Staff PR8 sourceff799057 passed hosted CI44070115347 (foundation/browser/exports and17PostgreSQL cases) and was normally merged into main6adde0b513b5f1f8f82e128bce9337aaff8579ab, preserving history. During follow-up, main's earlier post-PR7 run44063069293 was found to have86/87browser passes: the WhatsApp confirmation case did not find its link after clicking the checkbox. Newer identical-runtime staff CI passed, but this historical failure is being investigated rather than hidden. Its exact cause/repair and final019CI evidence belong in the follow-up PR.
+
 ## Private staff onboarding and teaching assignments —17November2026
 
 Continued directly from main162fe27 under the owner's instruction to build carefully and keep moving. New private018 implements owner-issued email-bound offers, current verified recipient preview/acceptance, explicit staff/optional Coach profiles, separate mutually accepted ownership handoff and bounded batch/class assignments. Joining grants no teaching roster until an explicit assignment. Workspace-local staff projection omits Auth IDs/emails, other employment and family data. No live SQL, provider settings, real records or messages changed. [Staff behavior/QA and activation gates](docs/WORKSPACE_STAFF_QA.md); [plan](docs/superpowers/plans/2026-11-17-workspace-staff-lifecycle.md).
