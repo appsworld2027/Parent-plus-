@@ -4,6 +4,8 @@ This repository is the active ParentPlus product. It uses Expo/React Native with
 
 ## Before changing code
 
+Read `docs/CONSOLIDATED_PRODUCT_ROADMAP.md` for the cross-repository feature inventory and current integration status. Read `docs/superpowers.md` before using the repository's Superpowers skills. Use relevant skills for design, implementation, debugging and verification; current user instructions, available tools and session restrictions take precedence. Do not change machine-wide settings or spawn agents merely because a skill example suggests it. The upstream skills are guidance, not evidence that work passed or permission to deploy.
+
 Read the relevant current requirements and status first:
 - `PROGRESS.md`, `PRD.md`, `docs/PARENT_PRD.md`, `docs/PARENT_MODULE.md`
 - `docs/DEVELOPER_GUIDE.md`
