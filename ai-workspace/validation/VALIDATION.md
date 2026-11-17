@@ -1,3 +1,17 @@
+# Documentation reorganization — 17 November 2026
+
+Validated on `AM/consolidated`, documentation commit `7d6e3b1`, using Node24.22.1, npm11.9.0 and Python3.12.14. This records current-instance checks; no merge, deployment or live database action was performed.
+
+- All98 original docs files accounted for:14 moved into existing founders folders and84 into existing ai-workspace folders. The move inventory records exact paths. All39 images, HTML prototypes and JSON snapshots are byte-identical to their previous versions; historical source-inventory identities remain intact.
+- `python3 scripts/check-documentation-links.py`:338 static local document/image targets, zero missing. Separate fragment audit:8 local Markdown anchors, zero missing. External URLs and dynamic prototype asset expressions were not checked online.
+- `git diff --check`:passed. `npm run check`:lint, typecheck and all359 unit/PGlite cases in37 files passed. `npm run test:e2e`:all90 browser cases passed using fictional transport and system Chromium. `npm run export:web`:passed.
+- Interactive Expo startup on18082 returned HTTP200 HTML and its3,641,287-byte JavaScript bundle. Readiness includes fixture browser journeys, not live signed-in Supabase behavior.
+- No CI, dependencies, SQL or app behavior changed. One app-source comment now points to the moved architecture document. Native APK checks are retired on this branch; separate real-PostgreSQL/provider/device checks were not run for these documentation changes. Independent review remains pending.
+
+Cloud onboarding:locked dependencies installed, Git read access verified, and tested installation/startup instructions saved to the environment draft. Publication and fresh-task restoration remain unverified and require the environment settings review/save/publish flow.
+
+---
+
 # Validation record
 
 App version: 0.1.0. Module 0/1 records below were recorded on 11 November 2026. Module 2 is recorded on 12 November 2026 (Asia/Kolkata). Validation is current-instance evidence, not proof of a new machine's restored state. Later sections supersede earlier implementation status.
