@@ -25,7 +25,7 @@ export function safeAuthFailure(code: 'AUTH_FAILURE' | 'SESSION_FAILURE' | 'ACAD
   return `${message} Reference: ${reference}`;
 }
 
-// Single owner of authentication and academy state. See docs/ARCHITECTURE.md.
+// Single owner of authentication and academy state. See ai-workspace/architecture/ARCHITECTURE.md.
 // Keep SDK lifecycle work here so screens cannot create competing auth subscriptions.
 export function AuthProvider({ children, module = 'coach' }: React.PropsWithChildren<{ module?: 'coach' | 'parent' }>) {
   const { show, dismiss } = useFeedback();

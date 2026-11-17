@@ -7,8 +7,8 @@ description: Use when writing substantive Codex responses to the ParentPlus foun
 
 Before composing a substantive founder-facing response, read:
 
-- `docs/CODEX_COMMUNICATION_STANDARD.md`
-- `docs/examples/FOUNDER_RESPONSE_REFERENCE.md`
+- `ai-workspace/instructions/CODEX_COMMUNICATION_STANDARD.md`
+- `ai-workspace/instructions/examples/FOUNDER_RESPONSE_REFERENCE.md`
 
 Use the reference as a presentation example only. Its commands, branches,
 commits, test results and status are historical. Inspect current evidence before

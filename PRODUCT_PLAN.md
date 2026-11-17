@@ -1,11 +1,11 @@
 # Parent Plus Coach — two-day pilot product plan
 
-**Historical-plan notice, 17 November 2026:** newer owner direction in `PRD.md`, `docs/PARENT_PRD.md` and `docs/CONSOLIDATED_PRODUCT_ROADMAP.md` governs current development. Parent is now an implemented separate workspace; payment collection remains shelved. The original two-day sequencing below is not a delivery promise or an instruction to defer Parent again. Current release evidence and open gates belong in `PROGRESS.md`.
+**Historical-plan notice, 17 November 2026:** newer owner direction in `PRD.md`, `founders/product/PARENT_PRD.md` and `founders/product/CONSOLIDATED_PRODUCT_ROADMAP.md` governs current development. Parent is now an implemented separate workspace; payment collection remains shelved. The original two-day sequencing below is not a delivery promise or an instruction to defer Parent again. Current release evidence and open gates belong in `PROGRESS.md`.
 
-**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [docs/PARENT_PRD.md](docs/PARENT_PRD.md) and [docs/PARENT_MODULE.md](docs/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
+**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in founders/prototypes/. Read [founders/product/PARENT_PRD.md](founders/product/PARENT_PRD.md) and [ai-workspace/features/PARENT_MODULE.md](ai-workspace/features/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
 
 
-**Current owner priority (16November2026):** feedback-first, easy batch/class setup, coach-reviewed WhatsApp, held Parent snapshots and consented class media. Fee collection/gateway work is shelved. This supersedes older payment-first sequencing and no-parent-sharing exclusions below. See [current reset](docs/COACH_FEEDBACK_RESET.md) and PRD1.6. Exact prototype styling is blocked by the missing original Coach reference.
+**Current owner priority (16November2026):** feedback-first, easy batch/class setup, coach-reviewed WhatsApp, held Parent snapshots and consented class media. Fee collection/gateway work is shelved. This supersedes older payment-first sequencing and no-parent-sharing exclusions below. See [current reset](founders/product/COACH_FEEDBACK_RESET.md) and PRD1.6. Exact prototype styling is blocked by the missing original Coach reference.
 
 
 Status: revised implementation baseline. See [BUILD_PLAN.md](BUILD_PLAN.md) for the module sequence, testing gates, diagnostics, payment approach, and owner setup steps. That document governs the revised two-day scope.
@@ -182,8 +182,8 @@ Batch rosters, membership from either entry point, summary-first monthly fees an
 
 ### Photo-assisted onboarding
 
-Students/Add Student and batch pages must offer register/form capture or image selection, AI extraction, review/edit/skip, existing-name linking and explicit confirmed import. This is a required workflow addition; details and external activation dependencies are in [PHOTO_ONBOARDING.md](docs/PHOTO_ONBOARDING.md), PRDSTU-03 and migration009. No real AI service is activated by the source change alone.
+Students/Add Student and batch pages must offer register/form capture or image selection, AI extraction, review/edit/skip, existing-name linking and explicit confirmed import. This is a required workflow addition; details and external activation dependencies are in [PHOTO_ONBOARDING.md](ai-workspace/features/PHOTO_ONBOARDING.md), PRDSTU-03 and migration009. No real AI service is activated by the source change alone.
 
 ### Cloud Vision implementation selected
 
-The owner chose Cloud Vision for capture→auto-fill→confirmation. Candidate0.8.0 replaces the unactivated GPT reader, reuses confirmed imports and adds conservative text/table mapping plus a shared monthly attempt limit. [Current behavior and activation](docs/PHOTO_ONBOARDING.md) supersedes the initial provider choice; no real scans are accepted until the private function/key and missing009/010 are configured.
+The owner chose Cloud Vision for capture→auto-fill→confirmation. Candidate0.8.0 replaces the unactivated GPT reader, reuses confirmed imports and adds conservative text/table mapping plus a shared monthly attempt limit. [Current behavior and activation](ai-workspace/features/PHOTO_ONBOARDING.md) supersedes the initial provider choice; no real scans are accepted until the private function/key and missing009/010 are configured.

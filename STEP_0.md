@@ -2,7 +2,7 @@
 
 You do not need to install coding tools or write code. This step prepares access so Codex can build and test the app. Start with Supabase; complete other accounts in parallel where convenient.
 
-Current setup and acceptance position is in [PROGRESS.md](PROGRESS.md) and [owner next steps](docs/OWNER_NEXT_STEP.md). The original preparation instructions below are retained for reference; do not repeat completed project/email setup or treat Expo authorization as necessary for the working GitHub preview route.
+Current setup and acceptance position is in [PROGRESS.md](PROGRESS.md) and [owner next steps](founders/getting-started/OWNER_NEXT_STEP.md). The original preparation instructions below are retained for reference; do not repeat completed project/email setup or treat Expo authorization as necessary for the working GitHub preview route.
 
 ## A. Your first task: Supabase development project
 

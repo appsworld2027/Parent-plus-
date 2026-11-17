@@ -1,6 +1,6 @@
 # Build confidence
 
-Read [hosted QA](../docs/VERCEL_QA.md), [workspace validation gates](../docs/MULTI_WORKSPACE_VALIDATION.md), and the newest [progress entry](../PROGRESS.md) together. A passing test count alone does not establish release readiness.
+Read [hosted QA](../ai-workspace/validation/VERCEL_QA.md), [workspace validation gates](../ai-workspace/validation/MULTI_WORKSPACE_VALIDATION.md), and the newest [progress entry](../PROGRESS.md) together. A passing test count alone does not establish release readiness.
 
 Existing reports distinguish local, CI, hosted, database-candidate, and device evidence. Unrun scenarios and open release gates remain visible.
 
