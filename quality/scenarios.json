@@ -4721,6 +4721,118 @@
       "tests": [
         "tests/apverse-parent-profile.test.ts::returns an API error without disguising it as an empty child list"
       ]
+    },
+    {
+      "id": "UT-C101A9010001",
+      "status": "implemented",
+      "criteria": "reads APVerse child creation status for the verified owner",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::reads current creation status under the verified owner account"
+      ]
+    },
+    {
+      "id": "UT-C101A9010002",
+      "status": "implemented",
+      "criteria": "an empty APVerse child creation status creates no synthetic profile",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::represents an empty APVerse creation status without inventing a profile"
+      ]
+    },
+    {
+      "id": "UT-C101A9010003",
+      "status": "implemented",
+      "criteria": "creates or reconciles an APVerse child using an explicit retry request identity",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::creates or reconciles a profile using the server request identity and allowlisted result"
+      ]
+    },
+    {
+      "id": "UT-C101A9010004",
+      "status": "implemented",
+      "criteria": "acknowledges only the exact APVerse child creation intent",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::acknowledges only the exact current intent after account verification"
+      ]
+    },
+    {
+      "id": "UT-C101A9010005",
+      "status": "implemented",
+      "criteria": "fences an uncertain APVerse child creation request under the verified owner",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fences a validated uncertain request for the verified owner"
+      ]
+    },
+    {
+      "id": "UT-C101A9010006",
+      "status": "implemented",
+      "criteria": "checks APVerse child creation history under the verified owner",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::checks child creation history for the verified owner"
+      ]
+    },
+    {
+      "id": "UT-C101A9010007",
+      "status": "implemented",
+      "criteria": "does not issue APVerse child creation RPCs after account mismatch or sign-out",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::does not call APVerse for an account mismatch or missing account"
+      ]
+    },
+    {
+      "id": "UT-C101A9010008",
+      "status": "implemented",
+      "criteria": "rejects invalid APVerse child creation requests before RPC calls",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::rejects malformed operation inputs before account or RPC access"
+      ]
+    },
+    {
+      "id": "UT-C101A9010009",
+      "status": "implemented",
+      "criteria": "rejects multiple APVerse child creation status rows",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fails closed on too many current rows from APVerse"
+      ]
+    },
+    {
+      "id": "UT-C101A9010010",
+      "status": "implemented",
+      "criteria": "rejects malformed child identifiers in APVerse creation results",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fails closed on malformed child id from APVerse"
+      ]
+    },
+    {
+      "id": "UT-C101A9010011",
+      "status": "implemented",
+      "criteria": "rejects overlong child names in APVerse creation results",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fails closed on unbounded child name from APVerse"
+      ]
+    },
+    {
+      "id": "UT-C101A9010012",
+      "status": "implemented",
+      "criteria": "rejects acknowledged results that contradict a new APVerse child creation",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fails closed on contradictory begin disposition from APVerse"
+      ]
+    },
+    {
+      "id": "UT-C101A9010013",
+      "status": "implemented",
+      "criteria": "rejects APVerse child creation responses for a different request ID",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::fails closed on different request id from APVerse"
+      ]
+    },
+    {
+      "id": "UT-C101A9010014",
+      "status": "implemented",
+      "criteria": "does not expose APVerse child creation provider errors to the UI",
+      "tests": [
+        "tests/apverse-child-creation.test.ts::does not expose private RPC error details to the Parent UI"
+      ]
     }
   ]
 }
