@@ -27,7 +27,7 @@ Reviewed: 12 November 2026. Start with [current progress](../../PROGRESS.md), th
 1. [PROGRESS.md](../../PROGRESS.md): current source/build, verification limits, blockers and next steps.
 2. [PRD.md](../../PRD.md): product requirements and acceptance criteria.
 3. [ARCHITECTURE.md](../architecture/ARCHITECTURE.md): current runtime/data/build flows, with diagrams. [Product decisions](../../founders/product/PRODUCT_DECISIONS.md) explains the current tradeoffs.
-4. [BUILD_PLAN.md](../../BUILD_PLAN.md): module sequence and test gates.
+4. [BUILD_PLAN.md](../plans/BUILD_PLAN.md): module sequence and test gates.
 5. [VALIDATION.md](../validation/VALIDATION.md) and [ISSUES.md](../validation/ISSUES.md): actual test/build evidence and known failures. Older entries are history; read the dated follow-ups.
 6. Follow the relevant entry point in the map below, then its tests and migration.
 

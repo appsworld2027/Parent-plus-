@@ -6,3 +6,4 @@ Navigation for existing records; dates and deployment limits inside each documen
 - [CONSOLIDATED PRODUCT ROADMAP ](CONSOLIDATED_PRODUCT_ROADMAP.md)
 - [PARENT PRD ](PARENT_PRD.md)
 - [PRODUCT DECISIONS ](PRODUCT_DECISIONS.md)
+- [Product plan](PRODUCT_PLAN.md)

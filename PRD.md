@@ -3,7 +3,7 @@
 Version: 1.8 · simpler private feedback save, 17 November 2026
 Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](ai-workspace/validation/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](founders/product/PRODUCT_DECISIONS.md) and [developer handover](ai-workspace/development/DEVELOPER_GUIDE.md).
-Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
+Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](founders/getting-started/STEP_0.md).
 
 
 ## Current priority — owner corrections, 16 November 2026
@@ -160,7 +160,7 @@ Codex handles code, tests, diagnosis, migrations, build configuration, and docum
 
 Required dependencies: Supabase project, approved backend access or dashboard deployment route, functional email sender/redirects, gateway test access and webhook route, Android build/signing access, and a test phone. Start gateway verification early; do not block independent application work on pending live approval.
 
-Follow [STEP_0.md](STEP_0.md) to begin. Account/project creation does not establish that backend connectivity, tests, or application behavior work; verify them during implementation.
+Follow [founders/getting-started/STEP_0.md](founders/getting-started/STEP_0.md) to begin. Account/project creation does not establish that backend connectivity, tests, or application behavior work; verify them during implementation.
 
 
 ## Owner workflow clarification
