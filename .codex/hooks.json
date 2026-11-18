@@ -1,0 +1,38 @@
+{
+  "description": "Check ParentPlus skills and remind Codex to select applicable workflows.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "statusMessage": "Checking ParentPlus skills"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "statusMessage": "Checking task skills"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "statusMessage": "Checking ParentPlus skills"
+          }
+        ]
+      }
+    ]
+  }
+}
