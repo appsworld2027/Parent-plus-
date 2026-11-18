@@ -394,7 +394,7 @@ Diagnostics/recovery improvements and real-phone checks run alongside the module
 - APK: `com.parentplus.coach.preview`, ARM64, development signed; 26,351,470 bytes. SHA-256 `6d359a7ec5edf9e04fecc58b41767388896d3c4bbddcfcb927b90f370cf34239`.
 - Real settings-only auth probe passed: reachable, public key accepted, email enabled, confirmation required, anonymous profile records denied. This does not independently establish real-user session/recovery tests.
 - Owner confirmed migration `202611110001`, email provider and redirect settings. A subsequent filtered version query returned all four expected rows, confirming 002–004 at `2026-11-12 06:57:00.026915+00`. Do not repeat those setup tasks.
-- [Detailed validation](ai-workspace/validation/VALIDATION.md), [issue history](ai-workspace/validation/ISSUES.md), [roster deployment](ai-workspace/database/setup/ROSTER_SETUP.md), [PRD](PRD.md), [build sequence](BUILD_PLAN.md).
+- [Detailed validation](ai-workspace/validation/VALIDATION.md), [issue history](ai-workspace/validation/ISSUES.md), [roster deployment](ai-workspace/database/setup/ROSTER_SETUP.md), [PRD](PRD.md), [build sequence](ai-workspace/plans/BUILD_PLAN.md).
 
 ## Right resume order
 
