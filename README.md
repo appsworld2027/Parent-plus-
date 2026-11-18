@@ -1,5 +1,7 @@
 # ParentPlus — Coach and Parent
 
+MM development uses the single [`MM/development`](https://github.com/appsworld2027/Parent-plus-/tree/MM/development) branch. Do not commit or automatically merge MM work into `main`. New features are paused; current maintenance is branch consolidation and regression verification. [Branch rules and cleanup evidence](docs/MM_BRANCH_CONSOLIDATION.md).
+
 **[Open the app](https://parent-plus-varcel.vercel.app)** — use this normal production address. Branch/PR preview links can require a separate Vercel account sign-in. [Latest hosted verification](docs/VERCEL_QA.md).
 
 ParentPlus is a mobile-first Expo/React Native application with two workspaces:

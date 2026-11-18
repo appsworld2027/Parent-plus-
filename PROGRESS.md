@@ -1,5 +1,11 @@
 # Parent Plus Coach — development checkpoint
 
+## MM branch consolidation —18November2026
+
+Owner paused feature development, then explicitly authorized consolidating all MM branches, retesting the complete existing app and deleting only the old merged MM refs. The latest instruction supersedes17November main-promotion authorization: future MM work stays on one `MM/development` branch; no main commits or release without a new explicit instruction. AM/codex/build-status and live Supabase/provider/production settings are outside this cleanup.
+
+Initial audit found8remote MM names and10local MM names (two local-only),18refs total. Every exact tip is an ancestor of main`f858aad85577c1e49ae24f06ba260778ecb83ddd`, with0unmerged commits. Created `MM/development` from that saved baseline; explicit integration reports Already up to date, with no content conflict or app/source change. A verified standalone Git bundle preserves all original refs; inventory and SHA256 are in [the consolidation report](docs/MM_BRANCH_CONSOLIDATION.md). Current instructions/navigation and the existing check workflow now name the canonical MM branch. No app files are deleted or modified by branch cleanup. Regression, hosted-fixture/source checks, independent final review and fresh ref/ancestry/lease gates must pass before old refs are removed; exact results/deletion outcome are recorded in that report after execution.
+
 ## Curriculum-aware feedback foundation —18November2026
 
 Owner requests real learning context for spoken/typed feedback: coach curriculum, per-child stages, class content/plans, evidenced milestones and a Parent-visible journey. This changes product requirements: PRD1.10LRN-01–06 and ParentPAR-09. Began private021after015–020, preserving the existing public001–014 app and guardian review. No owner SQL or provider setup action is ready; no live database, email/message, account, audio or AI request was used.
