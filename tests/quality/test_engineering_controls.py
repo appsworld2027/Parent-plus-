@@ -28,6 +28,17 @@ class StartupHookTests(unittest.TestCase):
         self.assertIn('skill', output['hookSpecificOutput']['additionalContext'].lower())
         self.assertNotIn('private prompt', result.stdout + result.stderr)
 
+    def test_each_task_includes_skill_descriptions_for_automatic_selection(self):
+        hook = ROOT / 'scripts/codex_skill_hook.py'
+        event = {'cwd': str(ROOT), 'hook_event_name': 'UserPromptSubmit', 'prompt': 'fix a failing test'}
+        result = subprocess.run([sys.executable, str(hook)], input=json.dumps(event), text=True, capture_output=True, check=True)
+        context = json.loads(result.stdout)['hookSpecificOutput']['additionalContext']
+        self.assertIn('systematic-debugging', context)
+        self.assertIn('test-driven-development', context)
+        self.assertIn('verification-before-completion', context)
+        self.assertIn('Use when encountering any bug', context)
+        self.assertNotIn(event['prompt'], context)
+
     def test_subagent_receives_same_repository_instructions(self):
         hook = ROOT / 'scripts/codex_skill_hook.py'
         result = subprocess.run([sys.executable, str(hook)], input=json.dumps({'cwd': str(ROOT), 'hook_event_name': 'SubagentStart'}), text=True, capture_output=True, check=True)
@@ -35,7 +46,75 @@ class StartupHookTests(unittest.TestCase):
         self.assertEqual(output['hookEventName'], 'SubagentStart')
         self.assertIn('Repository AGENTS.md', output['additionalContext'])
 
-    def test_stops_if_skill_check_fails(self):
+    def test_hook_launcher_refuses_to_execute_a_changed_script(self):
+        config = json.loads((ROOT / '.codex/hooks.json').read_text())
+        command = config['hooks']['SessionStart'][0]['hooks'][0]['command']
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            (root / 'scripts/codex_skill_hook.py').write_text('print("UNTRUSTED_SCRIPT_EXECUTED")\n')
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            result = subprocess.run(command, cwd=root, shell=True, input=json.dumps({'cwd': tmp, 'hook_event_name': 'SessionStart'}), text=True, capture_output=True)
+            self.assertNotIn('UNTRUSTED_SCRIPT_EXECUTED', result.stdout)
+            self.assertIn('"continue": false', result.stdout)
+
+    def test_launcher_reports_missing_script_to_subagent(self):
+        config = json.loads((ROOT / '.codex/hooks.json').read_text())
+        command = config['hooks']['SubagentStart'][0]['hooks'][0]['command']
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(['git', 'init', '-q', tmp], check=True)
+            result = subprocess.run(command, cwd=tmp, shell=True, input=json.dumps({'cwd': tmp, 'hook_event_name': 'SubagentStart'}), text=True, capture_output=True, check=True)
+            output = json.loads(result.stdout)
+            self.assertFalse(output['continue'])
+            self.assertIn('Stop and report', output['hookSpecificOutput']['additionalContext'])
+
+    def test_hook_rejects_a_changed_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            (root / 'quality').mkdir()
+            shutil.copy(ROOT / 'scripts/codex_skill_hook.py', root / 'scripts')
+            (root / 'quality/superpowers-manifest.json').write_text('{}')
+            (root / 'AGENTS.md').write_text('instructions')
+            subprocess.run(['git', 'init', '-q', tmp], check=True)
+            result = subprocess.run([sys.executable, str(root / 'scripts/codex_skill_hook.py')], input=json.dumps({'cwd': tmp, 'hook_event_name': 'SessionStart'}), text=True, capture_output=True, check=True)
+            output = json.loads(result.stdout)
+            self.assertFalse(output['continue'])
+            self.assertIn('manifest changed', output['stopReason'])
+
+    def test_changed_pinned_skill_is_reported_to_subagent(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            (root / 'quality').mkdir()
+            (root / '.agents').mkdir()
+            shutil.copy(ROOT / 'scripts/codex_skill_hook.py', root / 'scripts')
+            shutil.copy(ROOT / 'quality/superpowers-manifest.json', root / 'quality')
+            shutil.copytree(ROOT / '.agents/skills', root / '.agents/skills')
+            target = root / '.agents/skills/using-superpowers/SKILL.md'
+            target.write_bytes(target.read_bytes() + b'\nchanged')
+            (root / 'AGENTS.md').write_text('instructions')
+            subprocess.run(['git', 'init', '-q', tmp], check=True)
+            result = subprocess.run([sys.executable, str(root / 'scripts/codex_skill_hook.py')], input=json.dumps({'cwd': tmp, 'hook_event_name': 'SubagentStart'}), text=True, capture_output=True, check=True)
+            output = json.loads(result.stdout)
+            self.assertFalse(output['continue'])
+            self.assertIn('Superpowers file changed', output['stopReason'])
+            self.assertIn('Stop and report', output['hookSpecificOutput']['additionalContext'])
+
+    def test_hook_does_not_execute_a_changed_quality_checker(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'scripts').mkdir()
+            shutil.copy(ROOT / 'scripts/codex_skill_hook.py', root / 'scripts')
+            marker = root / 'executed'
+            (root / 'scripts/quality_gate.py').write_text('from pathlib import Path\nPath('+repr(str(marker))+').write_text("executed")\n')
+            (root / 'AGENTS.md').write_text('instructions')
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            result = subprocess.run([sys.executable, str(root / 'scripts/codex_skill_hook.py')], input=json.dumps({'cwd': str(root), 'hook_event_name': 'SessionStart'}), text=True, capture_output=True, check=True)
+            self.assertFalse(marker.exists())
+            self.assertFalse(json.loads(result.stdout)['continue'])
+
+    def test_stops_if_pinned_manifest_is_missing(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'scripts').mkdir()
