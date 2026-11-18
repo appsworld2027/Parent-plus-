@@ -4,6 +4,9 @@
 **Owner:** ParentPlus engineering and founder workspace
 **Purpose:** Give founders and AI agents one predictable way to find, use, validate, and close work.
 
+Use the [documentation status map](DOCUMENTATION_STATUS_MAP.md) to distinguish
+current sources of truth from supporting and historical material.
+
 ## The simple flow
 
 ```text
