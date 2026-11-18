@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "command": "python3 -I -c 'import hashlib,io,json,pathlib,sys\npayload=sys.stdin.read()\ntry:\n p=pathlib.Path(sys.argv[1]);data=p.read_bytes()\n if hashlib.sha256(data).hexdigest()!='\"'\"'001fe1e40744d631a3d666cdc596e0e427657ef378bdd94339d75fa26257fff6'\"'\"': raise ValueError('\"'\"'Hook script changed; review and renew hook trust'\"'\"')\n sys.stdin=io.StringIO(payload)\n exec(compile(data,str(p),'\"'\"'exec'\"'\"'),{'\"'\"'__name__'\"'\"':'\"'\"'__main__'\"'\"','\"'\"'__file__'\"'\"':str(p)})\nexcept Exception as error:\n reason='\"'\"'ParentPlus skill check could not run: '\"'\"'+str(error)\n response={'\"'\"'continue'\"'\"':False,'\"'\"'stopReason'\"'\"':reason,'\"'\"'systemMessage'\"'\"':reason}\n try:\n  event=json.loads(payload).get('\"'\"'hook_event_name'\"'\"')\n  if event=='\"'\"'SubagentStart'\"'\"': response['\"'\"'hookSpecificOutput'\"'\"']={'\"'\"'hookEventName'\"'\"':event,'\"'\"'additionalContext'\"'\"':reason+'\"'\"'. Stop and report this failure; do not claim the skill check passed.'\"'\"'}\n except Exception: pass\n print(json.dumps(response))\n' \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
             "statusMessage": "Checking ParentPlus skills"
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "command": "python3 -I -c 'import hashlib,io,json,pathlib,sys\npayload=sys.stdin.read()\ntry:\n p=pathlib.Path(sys.argv[1]);data=p.read_bytes()\n if hashlib.sha256(data).hexdigest()!='\"'\"'001fe1e40744d631a3d666cdc596e0e427657ef378bdd94339d75fa26257fff6'\"'\"': raise ValueError('\"'\"'Hook script changed; review and renew hook trust'\"'\"')\n sys.stdin=io.StringIO(payload)\n exec(compile(data,str(p),'\"'\"'exec'\"'\"'),{'\"'\"'__name__'\"'\"':'\"'\"'__main__'\"'\"','\"'\"'__file__'\"'\"':str(p)})\nexcept Exception as error:\n reason='\"'\"'ParentPlus skill check could not run: '\"'\"'+str(error)\n response={'\"'\"'continue'\"'\"':False,'\"'\"'stopReason'\"'\"':reason,'\"'\"'systemMessage'\"'\"':reason}\n try:\n  event=json.loads(payload).get('\"'\"'hook_event_name'\"'\"')\n  if event=='\"'\"'SubagentStart'\"'\"': response['\"'\"'hookSpecificOutput'\"'\"']={'\"'\"'hookEventName'\"'\"':event,'\"'\"'additionalContext'\"'\"':reason+'\"'\"'. Stop and report this failure; do not claim the skill check passed.'\"'\"'}\n except Exception: pass\n print(json.dumps(response))\n' \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
             "statusMessage": "Checking task skills"
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
+            "command": "python3 -I -c 'import hashlib,io,json,pathlib,sys\npayload=sys.stdin.read()\ntry:\n p=pathlib.Path(sys.argv[1]);data=p.read_bytes()\n if hashlib.sha256(data).hexdigest()!='\"'\"'001fe1e40744d631a3d666cdc596e0e427657ef378bdd94339d75fa26257fff6'\"'\"': raise ValueError('\"'\"'Hook script changed; review and renew hook trust'\"'\"')\n sys.stdin=io.StringIO(payload)\n exec(compile(data,str(p),'\"'\"'exec'\"'\"'),{'\"'\"'__name__'\"'\"':'\"'\"'__main__'\"'\"','\"'\"'__file__'\"'\"':str(p)})\nexcept Exception as error:\n reason='\"'\"'ParentPlus skill check could not run: '\"'\"'+str(error)\n response={'\"'\"'continue'\"'\"':False,'\"'\"'stopReason'\"'\"':reason,'\"'\"'systemMessage'\"'\"':reason}\n try:\n  event=json.loads(payload).get('\"'\"'hook_event_name'\"'\"')\n  if event=='\"'\"'SubagentStart'\"'\"': response['\"'\"'hookSpecificOutput'\"'\"']={'\"'\"'hookEventName'\"'\"':event,'\"'\"'additionalContext'\"'\"':reason+'\"'\"'. Stop and report this failure; do not claim the skill check passed.'\"'\"'}\n except Exception: pass\n print(json.dumps(response))\n' \"$(git rev-parse --show-toplevel)/scripts/codex_skill_hook.py\"",
             "statusMessage": "Checking ParentPlus skills"
           }
         ]
