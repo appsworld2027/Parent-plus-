@@ -1,6 +1,8 @@
 # How Parent Plus Coach works today
 
-Current deployed0.13 architecture remains a single-owner academy model with separate private Parent families, shared verified Auth, email-bound guardian invitations and explicit Coach match approval (installed001–014). The multi-workspace replacement is [specified here](MULTI_WORKSPACE_FOUNDATION.md). Private F1storage and F2permission-kernel candidates are tested in disposable databases, including real PostgreSQL transaction races; [kernel QA](../validation/WORKSPACE_AUTHORIZATION_QA.md) explains scope and remaining work. They are outside active migrations and have no live APIs or app UI. Do not describe the proposed memberships/workspace picker as deployed. Earlier dated sections below describe historical versions; PROGRESS.md is the current evidence checkpoint.
+**Owner direction, 17 November 2026:** current deployment and product acceptance use the Expo web app on Vercel. Automated tests remain in GitHub Actions; deployed preview and browser acceptance use Vercel. APK build, installation, emulator and device-test workflows are retired. Historical APK artifacts and records below are not current release steps.
+
+The current database compatibility model still differs by branch: AM branches target APVerse, while non-AM branches remain on MM until each feature adapter and complete regression pass. Read [the live comparison](LIVE_DATABASE_COMPARISON.md), [the target design](CONSOLIDATED_DATABASE_DESIGN.md) and [PROGRESS.md](../../PROGRESS.md) before treating a proposed workspace/Parent flow as live.
 
 
 Reviewed: 15 November 2026. Current candidate0.8.0 uses the Cloud Vision flow appended below; earlier module descriptions are historical. Feature development has resumed; this describes existing code, including work whose live deployment is still pending. [Progress and acceptance](../../PROGRESS.md) is the status record; [PRD](../../PRD.md) defines the intended product.
@@ -9,7 +11,8 @@ Reviewed: 15 November 2026. Current candidate0.8.0 uses the Cloud Vision flow ap
 
 ```mermaid
 flowchart TD
-    Coach["Coach using the installed Android app"] --> UI["App screens: login, academy setup, roster, classes, attendance and observations"]
+    Coach["Coach using mobile or desktop browser"] --> Vercel["Vercel-hosted Expo web app"]
+    Vercel --> UI["App screens: login, academy setup, roster, classes, attendance and observations"]
     UI --> Client["Supabase client: public project settings + signed-in session"]
     Client --> Auth["Supabase Auth: account, email verification, login"]
     Auth --> Email["Confirmation or recovery email to the coach"]
@@ -22,12 +25,13 @@ flowchart TD
     API --> UI
     Client --> Store["Phone SecureStore: saved session, verifier, diagnostics, one attendance draft and one private observation draft"]
     Developer["Developer edits source and tests"] --> Git["GitHub: source, plans, tests and migrations"]
-    Git --> Actions["GitHub Actions: automated checks and Android build"]
-    Actions --> APK["Downloadable internal-preview APK"]
-    APK --> Coach
+    Git --> Actions["GitHub Actions: automated quality checks"]
+    Git --> Preview["Vercel branch preview"]
+    Actions --> Preview
+    Preview --> Browser["Hosted browser acceptance"]
 ```
 
-The installed app talks directly to Supabase over HTTPS; it does not need a running laptop or Codex session. GitHub is used to develop and distribute builds. New GitHub source does not automatically update an installed APK. No custom application server or payment integration is deployed yet.
+The hosted app talks directly to Supabase over HTTPS; it does not need a running laptop or Codex session. GitHub stores source and runs automated checks; Vercel hosts the web deployment. Branch preview availability and Supabase environment correctness must be verified independently. No custom application server or payment integration is deployed yet.
 
 The roster paths require migration 002; classes/attendance require migrations 003/004. The owner has confirmed versions 001–004 installed through the filtered version query; app/API and device acceptance remain pending. Email receipt/login are owner-reported; the 0.2.1 crash repair is not yet phone-verified.
 
@@ -38,8 +42,8 @@ The roster paths require migration 002; classes/attendance require migrations 00
 | Location | Contents | Important limit |
 | --- | --- | --- |
 | GitHub development branch | App source, plans, SQL migrations, automated tests, fictional screenshots | Never store private student records or privileged credentials here |
-| GitHub Actions artifacts | APK and safe build evidence | Download retention is 14 days; APKs are not committed to Git |
-| GitHub `build-status` branch | Small per-source build reports | Reports are written at job start/end, not a live stream of each build step |
+| GitHub Actions | Automated check results and test evidence | A green CI result does not prove hosted provider or real-user behavior |
+| Vercel | Web build and branch/production deployments | Verify the exact deployment and run hosted browser acceptance |
 | Supabase Auth | User identities and authentication sessions managed by the provider | An academy contact record does not create a parent login |
 | Supabase PostgreSQL | Academy, students, contacts, batches and enrolments; schema also exists for later modules | Table existence does not mean the feature is implemented |
 | Android SecureStore | Session/verifier, bounded safe diagnostics, one attendance draft and one private observation draft through chunked adapters | Observation drafts include private note text; attendance drafts hold scoped IDs/statuses. No full offline roster cache |
@@ -224,31 +228,24 @@ UI guards preserve edits during handled failures and block navigation while save
 
 See [action feedback](../features/ACTION_FEEDBACK.md) for the 0.3.1 notification path. Success/info/error notices reserve a fixed row outside scrolling; device-draft messages explicitly do not assert a class save. Notice text remains in UI memory, separate from persisted enumerated diagnostic metadata.
 
-## 8. Code-to-APK delivery
+## 8. Code-to-Vercel delivery
 
 ```mermaid
 flowchart TD
-    Code["Developer saves code and meaningful tests"] --> Local["Run relevant local checks"]
-    Local --> Git["Push to GitHub development branch"]
-    Git --> CI["App checks: types, tests, browser flows and exports"]
-    Git --> Build["Android preview workflow"]
-    Build --> Start["Record start; set up Node, Java and cached tools"]
-    Start --> Checks["Install dependencies; types/tests; SDK installer checks"]
-    Checks --> Probe["Settings-only live auth probe; safe evidence; non-blocking"]
-    Probe --> SDK["Checksum-verified SDK tools; required packages"]
-    SDK --> Native["Clean Expo native generation; Gradle ARM64 + x86_64 release build"]
-    Native --> Verify["Verify signature and native ABI headers; record source SHA and SHA-256"]
-    Verify --> Artifact["Upload APK and evidence; record final outcome"]
-    Artifact --> Install["Coach downloads ZIP and installs APK update"]
+    Code["Developer changes code and scenarios"] --> Local["Run lint, types and unit/database checks"]
+    Local --> Git["Push to authorized AM branch"]
+    Git --> CI["GitHub Actions: automated checks and evidence"]
+    Git --> Preview["Vercel: branch preview build"]
+    CI --> Gate{"Required checks pass?"}
+    Gate -->|yes| Browser["Run hosted browser scenarios on exact preview"]
+    Gate -->|no| Fix["Repair and repeat the loop"]
+    Browser --> Gate2{"Product and security acceptance?"}
+    Gate2 -->|yes, with release approval| Production["Promote/deploy through Vercel"]
+    Gate2 -->|no| Fix
+    Fix --> Local
 ```
 
-The build installs Java 17 as a compilation toolchain and runs Gradle on Java 21. Command-line tools 20 avoid the secondary bootstrap download that failed earlier. SDK/Gradle archives are verified. Preview builds have a separate app ID and development signing; production keys and Google Play distribution remain separate.
-
-The branch-specific `android-preview-sdk20-v2` concurrency group isolates previews from unfinished legacy diagnostics. A newer source run supersedes an older run in this group. Native success, browser success and phone acceptance are separate facts. App checks are viewed in Actions; `build-status` is the explicit native start/end report branch.
-
-The live probe checks settings/key acceptance and denial of anonymous profile reads. It does not create users, send emails or read private records. Its failure does not automatically stop APK compilation (`continue-on-error`); inspect its booleans separately. Build reports describe start/end and can themselves fail to publish; missing/stale evidence requires investigation, not a guessed outcome.
-
-GitHub builds provide the working preview route without Expo login. `eas.json` is an alternative profile configuration, not evidence that an Expo project is linked or a production release exists. There is no continuous monitor or automatic APK update service running.
+This is the current web deployment path. GitHub CI and Vercel builds are separate checks; a passing app test does not prove that a protected preview is accessible or connected to the right Supabase project. Confirm the exact preview URL, branch and project target before hosted acceptance. APK and emulator steps are retired.
 
 ## 9. What is deliberately outside the current working flow
 

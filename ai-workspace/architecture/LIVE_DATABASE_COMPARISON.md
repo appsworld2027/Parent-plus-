@@ -2,7 +2,7 @@
 
 # Live Supabase comparison and destination gaps
 
-Read-only inspection: 17 November 2026. Source: `fmavpazczahxeusqbxuh`; destination: `zcgcnycnanqkbdlwojln`. All new repository files belong only to `AM/consolidated`. No DDL, data migration, provider setting, storage or deployment was changed.
+Inventory baseline: 17 November 2026. Source/AM: `fmavpazczahxeusqbxuh`; destination/MM: `zcgcnycnanqkbdlwojln`. All repository work belongs on `AM/consolidated`; APVerse Git remains read-only. The separately authorized APVerse ACL migration is recorded above and no application data was moved or deleted. MM's schema, storage and app were not changed.
 
 ## Scope and limits
 
@@ -25,6 +25,18 @@ Function body hashes establish equality/difference, not correctness. Full semant
 | Custom business enums/domains/sequences |0/0/0 |0/0/0 |
 
 Both have 27 managed Auth tables and 10 managed Storage tables in the inspected schemas. Including those managed tables, table totals are 78 and 68; do not confuse those with application table counts. Seven event triggers exist on each project with matching definitions. Their grant_pg_cron/pg_net handlers do not mean those extensions are installed.
+
+### Full-schema sweep and hidden MM application objects — 17 November 2026
+
+The inventory was repeated across every non-system schema, not only `public`. All MM application tables are in `public` and `coach_private`; no additional product tables were found in `auth`, `storage`, `realtime`, `vault`, `extensions`, `graphql`, `graphql_public` or migration schemas. The six MM `coach_private` tables are `roster_scan_usage`, `roster_imports`, `vision_scan_months`, `feedback_review_requests`, `parent_link_invites` and `schema_migrations`. The last is MM's private application migration ledger, not a product table to copy. Its 15 entries cover MM versions `001`–`014` and the standalone Parent reader. APVerse has no `coach_private` schema/tables; its 41 application tables are all in `public`.
+
+MM also has three public views (`fee_invoice_balances`, `coach_media_consents`, `parent_feedback_feed`), 16 `coach_private` routines (15 `SECURITY DEFINER`), six Storage policies and two private buckets. These helpers and policies refer to MM's academy/student/link and object-path model, so they cannot be copied verbatim into APVerse. Its two Edge Functions are `scan-roster` and `clever-processor`; APVerse has none. Both projects have the same five installed extensions. Supabase-managed Auth, Storage, Realtime, Vault, extension and migration objects are platform infrastructure, not application schema sync targets.
+
+MM's `coach_private` tables have RLS enabled and no direct table grants to `anon`, `authenticated` or `service_role`; some private helper functions have narrowly granted authenticated execution. Storage policies call those helpers and bind to MM's two buckets. Preserve the no-direct-table-access boundary and port each required operation only after adapting its workspace, child and guardian authority checks.
+
+Owner branch rule: `AM/*` branches are intended to use APVerse; every non-AM branch stays on MM. The current AM app's checked-in fallback URL still points to MM while APVerse feature compatibility is incomplete. Do not switch that runtime endpoint until the APVerse adapters and complete Coach/Parent regression pass; this avoids sending the currently MM-shaped app to an incompatible schema.
+
+Parent academic reader parity: APVerse exposes authenticated `app_parent_sessions` scoped to child + workspace and backed by active guardian/workspace-child/enrollment authority. MM uses `get_parent_attendance_sessions` over its private-family and approved-link model and aggregates across academies. A tested local adapter enumerates authorized APVerse workspaces, merges session pages globally, normalizes the shared workspace contract and preserves AP-only `excused`/`make_up` statuses. It is not wired into the app yet; AP child/private-family profile integration and remaining Coach/Parent adapters are still required before AM runtime routing can safely point at APVerse. No live child/session was read or changed during this pass.
 
 Only `public.profiles` and `public.batches` share table names, and both differ. There are 39 source-only and 29 destination-only qualified application table names. Only `public.rls_auto_enable()` shares an application-schema function signature; 100 source-only signatures are not 100 missing product features. Many are private helpers, recovery protocols or compatibility/testing controls.
 

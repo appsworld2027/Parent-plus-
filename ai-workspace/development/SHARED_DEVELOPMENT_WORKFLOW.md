@@ -25,4 +25,4 @@ Branch prefixes are a team convention; available GitHub metadata did not establi
 
 ## Verification
 
-Run the repository's relevant checks and include results in the pull request. Existing app checks include `npm run check`, `npm run test:e2e`, `npm run export:web`, and `npm run export:android`. A reviewer should verify GitHub Actions results before merging. Vercel and GitLab checks are outside the current consolidation scope.
+Run the repository's relevant checks and include results in the pull request. Current app checks include `npm run check`, `npm run test:e2e`, and `npm run export:web`. Verify GitHub Actions results and the exact Vercel branch preview/browser scenarios before release. APK builds and APK-based testing are retired. GitLab mirroring remains deferred.

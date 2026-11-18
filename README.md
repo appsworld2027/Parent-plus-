@@ -28,7 +28,6 @@ npm ci
 npm run check
 npm run test:e2e
 npm run export:web
-npm run export:android
 ```
 
 Use fictional data in tests. Keep guardian verification and explicit Coach approval, academy/family isolation, reviewed Parent feedback, and consented media protections intact. Never commit secrets or personal records.

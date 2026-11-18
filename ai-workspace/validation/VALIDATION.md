@@ -1,5 +1,10 @@
 # Documentation reorganization — 17 November 2026
 
+# Current verification policy — 17 November 2026
+
+The owner retired APK builds, APK-based checks, emulator and device acceptance. Current release verification uses GitHub Actions automated checks and the exact Vercel web deployment/browser scenarios. The dated Android/APK results below are preserved as historical evidence and are not current gates.
+
+
 Validated on `AM/consolidated`, documentation commit `7d6e3b1`, using Node24.22.1, npm11.9.0 and Python3.12.14. This records current-instance checks; no merge, deployment or live database action was performed.
 
 - All98 original docs files accounted for:14 moved into existing founders folders and84 into existing ai-workspace folders. The move inventory records exact paths. All39 images, HTML prototypes and JSON snapshots are byte-identical to their previous versions; historical source-inventory identities remain intact.

@@ -1,5 +1,10 @@
 # Parent Plus Coach: module-by-module build and support plan
 
+# Current delivery direction — 17 November 2026
+
+The owner moved deployment and browser acceptance to Vercel and retired APK builds, APK-based tests, emulator and device acceptance. This supersedes historical Android pilot steps below; retain their records only as history. Current changes use the existing lint/type/unit/database checks, Playwright, web export, GitHub Actions and exact Vercel preview acceptance.
+
+
 **F2 kernel checkpoint,17November2026:** current-account/scoped class/feedback/history/finance decisions and owner-only revocation functions are implemented only as an isolated private candidate. [Execution and limits](ai-workspace/validation/WORKSPACE_AUTHORIZATION_QA.md). Complete public/API/storage conversion and staff lifecycle are still F2work; no production change or owner installation step follows this checkpoint. The existing F3–F5 gates remain.
 
 **Current foundation priority,17November2026:** owner wants robust multi-academy/independent/admin-only/Parent separation and authorised continuing implementation. Follow [foundation contract](ai-workspace/architecture/MULTI_WORKSPACE_FOUNDATION.md) and [release gates](ai-workspace/validation/MULTI_WORKSPACE_VALIDATION.md). F0design/inventory is written; F1private SQL candidate is tested only in disposable databases. Next F2converts server permissions and scoped APIs, F3onboarding/workspace UI, F4real Supabase staging plus migration rehearsal/backup/compatibility, F5live acceptance and measured rollout. These supersede the old single-owner build assumptions. No production SQL015 is delivered now; installed001–014 and existing accounts remain. Earlier milestone descriptions below are history.

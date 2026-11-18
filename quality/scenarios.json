@@ -3237,17 +3237,17 @@
     {
       "id": "UT-22EB1C2EDA84",
       "status": "implemented",
-      "criteria": "preserves unrecorded attendance and whitelists the output",
+      "criteria": "normalizes an MM academy row to the cross-branch workspace contract and whitelists output",
       "tests": [
-        "tests/parent-attendance-contract.test.ts::preserves unrecorded attendance and whitelists the output"
+        "tests/parent-attendance-contract.test.ts::normalizes an MM academy row to the cross-branch workspace contract and whitelists output"
       ]
     },
     {
       "id": "UT-9EC701359904",
       "status": "implemented",
-      "criteria": "rejects malformed destination rows {\"attendance_status\":\"make_up\"}",
+      "criteria": "rejects malformed destination rows {\"attendance_status\":\"unknown\"}",
       "tests": [
-        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"attendance_status\":\"make_up\"}"
+        "tests/parent-attendance-contract.test.ts::rejects malformed destination rows {\"attendance_status\":\"unknown\"}"
       ]
     },
     {
@@ -4504,6 +4504,126 @@
       "criteria": "APVerse RLS event trigger remains active without client EXECUTE grants",
       "tests": [
         "tests/apverse-event-trigger-acl.test.ts::the APVerse RLS event trigger still enables RLS after client EXECUTE is revoked"
+      ]
+    },
+    {
+      "id": "UT-F9E2167A72F8",
+      "status": "implemented",
+      "criteria": "APVerse attendance rows convert to the allowlisted Parent session contract",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::adapts APVerse session rows to the shared Parent attendance contract and omits private fields"
+      ]
+    },
+    {
+      "id": "UT-93E38D2AC442",
+      "status": "implemented",
+      "criteria": "APVerse attendance paging preserves recorded status and cursor ordering",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::preserves recorded attendance, validates the returned next cursor, and sends a validated cursor"
+      ]
+    },
+    {
+      "id": "UT-F906FBA34FB6",
+      "status": "implemented",
+      "criteria": "APVerse excused attendance remains visible",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::preserves APVerse-only attendance outcome excused"
+      ]
+    },
+    {
+      "id": "UT-C9E01D557E19",
+      "status": "implemented",
+      "criteria": "APVerse make-up attendance remains visible",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::preserves APVerse-only attendance outcome make_up"
+      ]
+    },
+    {
+      "id": "UT-7DEBE8EFC1A0",
+      "status": "implemented",
+      "criteria": "APVerse unknown session statuses fail closed",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: unknown session status"
+      ]
+    },
+    {
+      "id": "UT-8CED8EDC55B6",
+      "status": "implemented",
+      "criteria": "APVerse unknown attendance statuses fail closed",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: unknown attendance status"
+      ]
+    },
+    {
+      "id": "UT-94ADA0ACF95C",
+      "status": "implemented",
+      "criteria": "APVerse non-positive session duration fails closed",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: non-positive session duration"
+      ]
+    },
+    {
+      "id": "UT-5077FE7D8B73",
+      "status": "implemented",
+      "criteria": "APVerse cursor mismatch fails closed",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: cursor that is not the last returned row"
+      ]
+    },
+    {
+      "id": "UT-E70FBD0A84A8",
+      "status": "implemented",
+      "criteria": "APVerse response date mismatch fails closed",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: different response date"
+      ]
+    },
+    {
+      "id": "UT-FA36805074A2",
+      "status": "implemented",
+      "criteria": "APVerse attendance request is denied after account change",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::does not call the database when the signed-in account changes"
+      ]
+    },
+    {
+      "id": "UT-3D248573F77B",
+      "status": "implemented",
+      "criteria": "Shared Parent contract accepts APVerse excused attendance",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::preserves APVerse attendance outcome excused"
+      ]
+    },
+    {
+      "id": "UT-4318DFF30575",
+      "status": "implemented",
+      "criteria": "Shared Parent contract accepts APVerse make-up attendance",
+      "tests": [
+        "tests/parent-attendance-contract.test.ts::preserves APVerse attendance outcome make_up"
+      ]
+    },
+    {
+      "id": "SC-A7AB40089C6F",
+      "status": "implemented",
+      "criteria": "Parent can read excused and make-up outcomes without rewriting them",
+      "tests": [
+        "e2e/parent-attendance.spec.ts::Parent sees APVerse excused and make-up attendance outcomes without rewriting them"
+      ]
+    },
+    {
+      "id": "UT-5BE294C4B5E1",
+      "status": "implemented",
+      "criteria": "merges every authorized APVerse workspace into one chronological Parent timeline",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::merges Parent attendance from every authorized APVerse workspace in chronological order"
+      ]
+    },
+    {
+      "id": "UT-0A4A8E17097D",
+      "status": "implemented",
+      "criteria": "uses one global cursor without skipping rows across workspace streams",
+      "tests": [
+        "tests/apverse-parent-attendance.test.ts::uses one global cursor when the merged workspace stream exceeds 50 sessions"
       ]
     }
   ]

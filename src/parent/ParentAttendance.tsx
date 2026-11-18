@@ -1,13 +1,14 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {ActivityIndicator,Pressable,StyleSheet,TextInput,View} from 'react-native';
 import {Text} from '../ui/Typography';
-import {mondayOf,type AttendanceSession} from './attendance';
+import {mondayOf,type AttendanceSession,type AttendanceStatus} from './attendance';
 import {loadAttendancePage} from './attendanceService';
 import {diagnostics} from '../diagnostics';
 function failure(message:string) {
  try{return `${message} Reference: ${diagnostics.record('PARENT_ATTENDANCE_FAILURE').reference}`;}
  catch{return message;}
 }
+function attendanceLabel(status:AttendanceStatus){return status==='make_up'?'make-up session':status;}
 export function ParentAttendance({owner,child,initialDay}:{owner:string;child:string;initialDay:string}) {
  const [day,setDay]=useState(initialDay),[revision,setRevision]=useState(0);
  const [state,setState]=useState<{day:string;rows:AttendanceSession[];loading:boolean;more:boolean;error:string}>({day:'',rows:[],loading:false,more:false,error:''});
@@ -35,7 +36,7 @@ export function ParentAttendance({owner,child,initialDay}:{owner:string;child:st
   {state.loading&&<ActivityIndicator accessibilityLabel="Loading attendance"/>}
   {!!state.error&&<Text role="alert" style={s.text}>{state.error}</Text>}
   {!state.loading&&!state.error&&state.day===day&&!visible.length&&<Text style={s.text}>No shared classes for this date.</Text>}
-  {visible.map(row=><View key={row.session_id} style={s.row}><Text style={s.title}>{row.academy_name} · {row.batch_name}</Text><Text style={s.text}>{new Date(row.starts_at).toISOString().slice(0,16).replace('T',' ')} UTC · {row.session_status}</Text><Text style={s.text}>{row.attendance_status===null?'Attendance not recorded':`Coach recorded: ${row.attendance_status}`}</Text></View>)}
+  {visible.map(row=><View key={row.session_id} style={s.row}><Text style={s.title}>{row.workspace_name} · {row.batch_name}</Text><Text style={s.text}>{new Date(row.starts_at).toISOString().slice(0,16).replace('T',' ')} UTC · {row.session_status}</Text><Text style={s.text}>{row.attendance_status===null?'Attendance not recorded':`Coach recorded: ${attendanceLabel(row.attendance_status)}`}</Text></View>)}
   {state.more&&state.day===day&&<Pressable accessibilityRole="button" disabled={state.loading} onPress={()=>{void more();}} style={s.button}><Text style={s.text}>Load more attendance</Text></Pressable>}
  </View>;
 }

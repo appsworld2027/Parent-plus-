@@ -38,7 +38,7 @@ Reviewed: 12 November 2026. Start with [current progress](../../PROGRESS.md), th
 | `index.ts` | Crypto initialization order and app registration | `src/auth/installCrypto.ts` |
 | `App.tsx` | Workspace shell, tab navigation, support, roster navigation guards | `src/ui/ConfirmDialog.tsx`, `e2e/foundation.spec.ts` |
 | `src/config.ts`, `config/public-client.json` | Validate public connection/environment settings | `tests/config.test.ts`, `.env.example` |
-| `src/version.ts`, `app.json`, `app.config.js` | Version/revision labels and preview application ID | APK build script and validation record |
+| `src/version.ts`, `app.json`, `app.config.js` | Version/revision labels and Expo/web application metadata | Vercel deployment and hosted QA record |
 | `src/auth/AuthGate.tsx` | Login/signup/recovery forms, academy form and screen selection | `e2e/auth.spec.ts`, `tests/auth.test.ts` |
 | `src/auth/AuthProvider.tsx` | Session/academy state, auth events, callbacks and refresh | `src/auth/rules.ts`, `src/auth/client.ts` |
 | `src/auth/client.ts` | Single SDK client, storage selection and bounded request timeout | Public config and session adapter |
@@ -56,11 +56,7 @@ Reviewed: 12 November 2026. Start with [current progress](../../PROGRESS.md), th
 | `tests/native-accessibility.test.ts` | Check literal roles against actual RN Android supported enum | ANDROID-001; web/type checks alone missed this |
 | `e2e/support/backend.ts` | Fictional SDK transport for browser flows | Never deploy as a live backend |
 | `.github/workflows/checks.yml` | Browser/automated/export pipeline | `playwright.config.ts` |
-| `.github/workflows/android-preview.yml` | Native preview build and evidence | `scripts/install-android-sdk.py`, `build-android-preview.py` |
-| `scripts/build_support.py`, `test_android_installer.py`, `test_apk_architectures.py` | Safe build-error redaction, installer checks and APK ABI/ELF verification | BUILD-002 in ai-workspace/validation/ISSUES.md |
 | `scripts/check-live-auth.mjs` | Read-only live settings/security probe | Its safe boolean report; not a user login test |
-| `scripts/github-build-status.cjs` | Publish per-revision start/final reports over Git | `build-status` branch, not app data |
-| `scripts/diagnose-build.cjs` | Historical diagnostic experiment | Not invoked by the current Android workflow |
 
 The HTML references define product/design intent. The working app is native React Native components. Generated `android/` and `ios/` folders are ignored; durable changes belong in app config, plugins or documented scripts, not only generated output.
 
@@ -75,8 +71,6 @@ npm ci
 npm run check
 npx playwright install chromium
 npm run test:e2e
-python3 scripts/test_android_installer.py
-npm run export:android
 npm run export:web
 ```
 
@@ -91,7 +85,7 @@ EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 npm_config_cache=/tmp/parentplus-npm-cache PL
 
 Expo offline mode skips metadata requests; it does not replace the backend or bypass TLS. Playwright starts its own Expo server on port 18081 and refuses an existing server. If a previous test process still owns the port, inspect it before stopping only that test process. Do not reuse an unknown server.
 
-For interactive local UI work, `npm run web` or `npm start` runs Expo. Bundle exports are not APKs. For native previews use [the existing GitHub workflow](ANDROID_PREVIEW.md), whose environment provisions the SDK/Java/Gradle requirements. The build script regenerates native output with `prebuild --clean`. Do not run it over uncommitted manual native edits.
+For interactive local UI work, `npm run web` or `npm start` runs Expo. The active deployment and browser acceptance path is Vercel. Android APK builds, installation tests and emulator/device acceptance are retired; old run records are historical evidence only.
 
 ## 4. Database changes and deployment
 
@@ -263,9 +257,8 @@ Scope each row to the feature's risk. Mark truly inapplicable scenarios with a r
 | --- | --- |
 | App logic/types/SQL contracts | `npm run check` = TypeScript + Vitest, including PGlite integration. It currently does not run ESLint. |
 | User-visible flow or shared Auth/state | `npm run test:e2e`; fictional SDK/browser transport. Check relevant denial/recovery cases, then broad regressions for shared changes. |
-| Native/web compatibility | `npm run export:web`, `npm run export:android`; exports do not compile/install an APK or test iOS. |
+| Web compatibility | `npm run export:web`; then verify the deployed Vercel preview and browser journeys. |
 | Workspace locks/authority concurrency | `npm run test:workspace:postgres` with the documented explicitly disposable loopback DB or labeled test container. Never point this at Supabase. PGlite is not multiple independent PostgreSQL connections. |
-| Android build-tool/ABI changes | Existing `scripts/test_android_installer.py`, `scripts/test_apk_architectures.py`, APK build and actual install/lifecycle gates as applicable. |
 | Real email/Auth/Storage/OCR behavior | Authorized local/staging provider journeys; fictional responses cannot substitute. No secret/PII in artifacts. |
 | Documentation/instruction/template only | Check full diff, paths/links, current facts and whitespace; no new APK or mirrored implementation tests needed. |
 

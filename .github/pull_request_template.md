@@ -18,7 +18,7 @@ What changed and why?
 - [ ] `npm run check` (or explain why not relevant)
 - [ ] `npm run test:e2e` (or explain why not relevant)
 - [ ] `npm run export:web` (or explain why not relevant)
-- [ ] `npm run export:android` (or explain why not relevant)
+- [ ] Exact Vercel preview and hosted browser result checked when available (or explain blocker)
 - [ ] CI result reviewed
 - [ ] No focused/skipped/zero-test run presented as complete evidence
 - [ ] Implemented/candidate/live status and remaining acceptance gaps are explicit

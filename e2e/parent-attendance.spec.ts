@@ -1,6 +1,6 @@
 import {test,expect,type Page} from '@playwright/test';
 import {parentBackend} from './support/parentBackend';
-declare global {interface Window {__attendanceFixture:{fail:boolean;hold:boolean;started:boolean;finished:boolean};}}
+declare global {interface Window {__attendanceFixture:{fail:boolean;hold:boolean;started:boolean;finished:boolean;attendanceStatus:string|null};}}
 async function setup(page:Page){
  await parentBackend(page);
  await page.addInitScript(()=>{
@@ -9,7 +9,7 @@ async function setup(page:Page){
   s.families=[{id:id(61),owner_id:id(1),parent_name:'Fictional Parent',name:'Family',timezone:'Asia/Kolkata'}];
   s.children=[{id:id(71),family_id:id(61),name:'Ria',born_on:null,color:'sun',archived_at:null},{id:id(72),family_id:id(61),name:'Asha',born_on:null,color:'sky',archived_at:null}];
   s.links=s.children.map((child,i)=>({id:id(81+i),academy_id:id(11),student_id:id(21+i),child_id:child.id,active:true,academy_name:'Academy',student_name:child.name}));
-  const state:Window['__attendanceFixture']={fail:false,hold:false,started:false,finished:false};
+  const state:Window['__attendanceFixture']={fail:false,hold:false,started:false,finished:false,attendanceStatus:null};
   window.__attendanceFixture=state;
   const original=window.fetch.bind(window);
   window.fetch=async(input,init)=>{
@@ -17,7 +17,7 @@ async function setup(page:Page){
    if(!new URL(raw,location.origin).pathname.endsWith('/get_parent_attendance_sessions'))return original(input,init);
    const p=JSON.parse(String(init?.body));
    if(p.target_child===id(71)){state.started=true;while(state.hold)await new Promise(resolve=>{setTimeout(resolve,20);});state.finished=true;}
-   return new Response(JSON.stringify(state.fail?{code:'unavailable'}:[{session_id:id(41),academy_id:id(11),academy_name:'Academy',batch_name:p.target_child===id(71)?'Ria class':'Asha class',starts_at:`${p.target_day}T10:00:00Z`,ends_at:`${p.target_day}T11:00:00Z`,session_status:'scheduled',attendance_status:null}]),{status:state.fail?503:200,headers:{'Content-Type':'application/json'}});
+   return new Response(JSON.stringify(state.fail?{code:'unavailable'}:[{session_id:id(41),academy_id:id(11),academy_name:'Academy',batch_name:p.target_child===id(71)?'Ria class':'Asha class',starts_at:`${p.target_day}T10:00:00Z`,ends_at:`${p.target_day}T11:00:00Z`,session_status:'scheduled',attendance_status:state.attendanceStatus}]),{status:state.fail?503:200,headers:{'Content-Type':'application/json'}});
   };
 
  });
@@ -31,6 +31,11 @@ test('Parent sees unrecorded attendance; a failed refresh never becomes a false 
  await expect(page.getByText('Attendance not recorded',{exact:true})).toHaveCount(0);
  await expect(page.getByText('No shared classes for this date.',{exact:true})).toHaveCount(0);
  await page.evaluate(()=>{window.__attendanceFixture.fail=false;});await page.getByRole('button',{name:'Refresh attendance',exact:true}).click();await expect(page.getByText('Attendance not recorded',{exact:true})).toBeVisible();
+});
+test('Parent sees APVerse excused and make-up attendance outcomes without rewriting them',async({page})=>{
+ await setup(page);await page.evaluate(()=>{window.__attendanceFixture.attendanceStatus='make_up';});
+ await page.getByRole('button',{name:'Refresh attendance',exact:true}).click();
+ await expect(page.getByText('Coach recorded: make-up session',{exact:true})).toBeVisible();
 });
 test('switching children ignores a late previous-child response',async({page})=>{
  await setup(page);await expect(page.getByText('Academy · Ria class',{exact:true})).toBeVisible();
