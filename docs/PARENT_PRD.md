@@ -1,6 +1,6 @@
 # Parent Plus — Parent module requirements
 
-Version0.1 ·16November2026. Authorised directly by the owner after re-sharing `Parent_Plus_Aurora.html` and the Coach prototype. This starts a separate Parent experience using the existing Supabase/Auth project. It supersedes the earlier blanket deferral of the parent app. Main Coach priorities remain easy teaching setup and reviewed parent feedback; fee collection stays shelved.
+Version0.2 ·18November2026. Authorised directly by the owner after re-sharing `Parent_Plus_Aurora.html` and the Coach prototype. This starts a separate Parent experience using the existing Supabase/Auth project. It supersedes the earlier blanket deferral of the parent app. Main Coach priorities remain easy teaching setup and reviewed parent feedback; fee collection stays shelved.
 
 | ID | First-slice requirement | Acceptance |
 | --- | --- | --- |
@@ -12,6 +12,9 @@ Version0.1 ·16November2026. Authorised directly by the owner after re-sharing `
 | PAR-06 | Parent control of class media permission | Separate photo/video/parent-sharing decisions; default deny; account-based denial cannot be raised by Coach; all group subjects checked on access |
 | PAR-07 | Truthful media and delivery | Only selected approved media; short private previews; no automatic external messages or claims of push/read receipt |
 | PAR-08 | Follow supplied visual reference with native components | Dark Aurora surfaces, header/artwork, child chips, typography and bottom navigation; never deploy the mock HTML as the app |
+| PAR-09 / LRN-06 | View a child's Coach-reviewed curriculum journey, current stage and evidenced milestones | Per-curriculum child progression; current verified guardian connection; separately reviewed child-only snapshots; no planned-as-achieved claims, private raw notes or peer data. New requirement: UI/publication not built in private021 |
+
+18November clarification: Parent feedback must interpret the Coach's spoken/typed observation against actual class content, curriculum goals and the child's stage/history, preserving uncertainty. It is not merely transcription/translation. [Learning design](superpowers/specs/2026-11-18-learning-context-design.md) and [LRN scenario ledger](LEARNING_CONTEXT_QA.md) define the first isolated backend slice and remaining UI, provider, publication and real-account gates.
 
 First target is mobile web in the existing Vercel project; source remains React Native for later separate native packaging. One family owner and one active family connection per academy student are explicit first-slice limits. Existing Coach use does not depend on Parent onboarding.
 

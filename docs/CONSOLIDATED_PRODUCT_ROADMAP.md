@@ -84,6 +84,8 @@ The source status text below is historical catalogue evidence. Newer source chec
 
 ## Evidence and gaps
 
+18November2026 learning-context checkpoint: owner prioritizes meaningful spoken/typed Coach feedback grounded in curriculum, class plan and individual stages, with a reviewed Parent journey. New destinationLRN-01–06/PAR-09requirements are recorded in the PRDs. Private021 implements the first storage/context slice only; [QA](LEARNING_CONTEXT_QA.md) records actual evidence and remaining activation/UI/provider/Parent gates. This supports futureM2-13/14/19/21/22/23/37/38/48 work but does not mark those catalogue items complete. There remain exactly58source catalogue rows; destination acceptance is tracked separately.
+
 This is a complete source catalogue inventory, not exhaustive code or edge-case coverage. Destination evidence entrypoints: `PROGRESS.md`, `docs/VALIDATION.md`, `docs/MULTI_WORKSPACE_VALIDATION.md`, `tests/`, and `e2e/`. Source evidence entrypoints at the pinned snapshot: `docs/BUILD_PROGRESS.md`, `docs/QUALITY_EVIDENCE.md`, `quality/requirements.json`, and `docs/quality/2026-11-10-parent-attendance-checkpoint.md`.
 
 Missing before full consolidation can be accepted: exact cross-repository scenario-to-test mapping; full schema/function/grant comparison; destination-native feature implementation; isolated migration/rollback and concurrency verification; real Supabase staging/provider acceptance; branch-protection configuration and validation; source connection cleanup. Vercel and GitLab remain deferred by owner instruction. Existing destination product/privacy decisions take precedence over historical source catalogue priorities.
