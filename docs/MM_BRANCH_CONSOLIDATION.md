@@ -40,8 +40,8 @@ Verified standalone Git bundle: `/workspace/ParentPlus-MM-backups/20261118-mm-be
 | Web and Android exports | Both succeed | PASS: web and Android exports |
 | Existing public Vercel app | Production-compatible fixture suite, phone/desktop entry/recovery smoke and source/bundle identity;0real sends/writes | PASS:91/91hosted cases,308.687seconds; phone/desktop smoke PASS;0real backend/provider attempts/page/console errors |
 | Independent review | Exact canonical commit, ancestry and full backup/ref mapping validated | PASS: `/root/vercel_testing` reviewed exact2dc9835scope, containment, backup restore and hosted evidence; final docs-only update reviewed before retirement |
-| Remote main/other-owner refs | Same as initial snapshot immediately before/after cleanup | PASS initial/fresh preflight snapshot; post-cleanup check pending |
-| Branch retirement | Canonical+backup pushed, expected tips still contained, no open old-MM PRs; atomic SHA-leased deletion; safe local branch deletion | NOT EXECUTED |
+| Remote main/other-owner refs | Same as initial snapshot immediately before/after cleanup | PASS: all protected remote tips and local main unchanged after cleanup |
+| Branch retirement | Canonical+backup pushed, expected tips still contained, no open old-MM PRs; atomic SHA-leased deletion; safe local branch deletion | PASS:8remote+10localold MM refs retired; only canonical MM/development remains |
 
 The initial snapshot is evidence, not permission to delete a later updated tip. Re-read current refs immediately before cleanup; if any MM ref changed, preserve/integrate it and repeat relevant checks before retrying. Delete only the explicit inventoried branch names, never wildcard-delete other owners' refs. Use remote expected-SHA leases and atomic deletion. Locally use `git branch -d` only when each tip is reachable from the current canonical head. Do not force-delete an unmerged branch or discard files.
 
@@ -52,6 +52,21 @@ Fresh complete canonical CI: [run44238197529](https://github.com/appsworld2027/P
 Production remains0.13.2/Parent0.3.0, asset`index-b0e75d4b1b846210a8183da18d4f7ffe.js`, SHA256`4b913f3f68c4c23147c60121605d91e1d0802b03f7ddca7fb0af5ddb249b8229`. Root and plain recovery return200with usable forms on412×915and1440×1000viewports, no overflow/alerts/errors. All91per-test guard files were independently read back; they record no real external/Supabase/provider attempt. Artifacts: `/tmp/parentplus-mm-consolidation-20261118/{summary.json,results.json,public-smoke.json,backup-review.json}` plus91guard records; workspace artifacts may expire.
 
 The final pre-cleanup evidence change is Markdown-only and preserves the exact tested runtime/workflow/tests. Its real fast-forward canonical update and eight expected-SHA MM deletions are pushed together atomically, including a lease on the canonical branch. This avoids relying on a no-op refspec as a server-side guard. Any protected-ref change is a failure requiring re-audit, not an unqualified cleanup success.
+
+## Completed retirement
+
+Completed after fresh preflight, full tests, hosted checks, independently restored backup and exact docs/script review. The server atomically advanced canonical from tested`2dc9835`to documentation-only evidence commit`524ae75473ee6238b588a03a7b3220b44122ca27` while deleting the eight exact old remote MM refs. Every ref had an expected-SHA lease, including the actual canonical update. All ten old local branches then passed ordinary `git branch -d` checks. No force-delete of an unmerged branch, application-file removal, reset, rebase or force history rewrite occurred.
+
+Post-cleanup remote and local listings contain exactly one MM branch, `MM/development`. All original tips remain ancestors of canonical and the remote backup tag. Protected-ref comparison returned an empty changes map. These refs retain their exact pre-cleanup tips:
+
+| Protected remote branch | Unchanged SHA |
+| --- | --- |
+| `main` | `f858aad85577c1e49ae24f06ba260778ecb83ddd` |
+| `AM/consolidated` | `632beb6473b76589fc0d9205e0fa62392bead8a4` |
+| `codex/coach-foundation` | `b6c9006eacc02f6908306b9070ba4f60d0316018` |
+| `build-status` | `2a5a8ef012a86be94945c7ef2f9a11264a46d331` |
+
+The final report update is Markdown-only and does not alter the tested runtime, test suite or CI workflow. Deletion receipt: `/tmp/parentplus-mm-cleanup-receipt.json`; durable original tips remain in the committed inventory. New feature work remains paused. Future MM commits stay on the canonical branch; promotion to main requires a new explicit owner instruction.
 
 ## Test boundaries
 
