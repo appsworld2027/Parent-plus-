@@ -1,7 +1,7 @@
 # ParentPlus documentation operating system
 
-**Status:** Active  
-**Owner:** ParentPlus engineering and founder workspace  
+**Status:** Active
+**Owner:** ParentPlus engineering and founder workspace
 **Purpose:** Give founders and AI agents one predictable way to find, use, validate, and close work.
 
 ## The simple flow
