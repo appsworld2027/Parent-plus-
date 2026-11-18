@@ -4625,6 +4625,78 @@
       "tests": [
         "tests/apverse-parent-attendance.test.ts::uses one global cursor when the merged workspace stream exceeds 50 sessions"
       ]
+    },
+    {
+      "id": "UT-A18E499DF2C1",
+      "status": "implemented",
+      "criteria": "APVerse Parent child listing returns only verified account-owned child identifiers and names",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::loads only APVerse children owned by the verified parent and strips extra database fields"
+      ]
+    },
+    {
+      "id": "UT-A2F7BF1AE765",
+      "status": "implemented",
+      "criteria": "APVerse child listing is not requested under a mismatched signed-in account",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::does not query APVerse when the signed-in account does not match the requested parent"
+      ]
+    },
+    {
+      "id": "UT-A333E5A92E5D",
+      "status": "implemented",
+      "criteria": "APVerse child listing rejects malformed child identifiers",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects malformed APVerse child profiles: invalid child id"
+      ]
+    },
+    {
+      "id": "UT-A47B92C8FE10",
+      "status": "implemented",
+      "criteria": "APVerse child listing rejects blank child names",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects malformed APVerse child profiles: blank child name"
+      ]
+    },
+    {
+      "id": "UT-A5C4E19B73D6",
+      "status": "implemented",
+      "criteria": "APVerse child listing rejects repeated child identifiers",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects malformed APVerse child profiles: duplicate child id"
+      ]
+    },
+    {
+      "id": "UT-A6D908F12B44",
+      "status": "implemented",
+      "criteria": "APVerse child listing rejects unordered profile rows",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects malformed APVerse child profiles: unsorted child ids"
+      ]
+    },
+    {
+      "id": "UT-A7E2B43C910A",
+      "status": "implemented",
+      "criteria": "APVerse child listing enforces the server's 100-child result limit",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects malformed APVerse child profiles: more than 100 child rows"
+      ]
+    },
+    {
+      "id": "UT-A8B5D67F204C",
+      "status": "implemented",
+      "criteria": "APVerse child listing rejects a response after the signed-in account changes",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::rejects an account change while the child list is loading"
+      ]
+    },
+    {
+      "id": "UT-A9C3E75D10F2",
+      "status": "implemented",
+      "criteria": "APVerse child-list API errors remain errors rather than empty profiles",
+      "tests": [
+        "tests/apverse-parent-profile.test.ts::returns an API error without disguising it as an empty child list"
+      ]
     }
   ]
 }
