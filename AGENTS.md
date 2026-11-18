@@ -45,6 +45,10 @@ For this repository, all GitHub reads and writes must use the `appsworld2027` co
 
 For Vercel, use the `appsworld2027` team and the linked `parent-plus-varcel` project. Keep project, team, repository, and commit identity aligned before reporting a connection or deployment failure. First use the connected app's available authorization or reconnect flow and the highest permitted app scope. Never put raw tokens in chat, source files, logs, commits or URLs. If the service requires a founder authorization step that Codex cannot complete, stop only after trying the supported fallback and give one exact sign-in/approve action; do not silently postpone the task or ask for a token to be pasted.
 
+## All-tool authorization routing
+
+This rule applies to every external tool or service used by ParentPlus, including GitHub, Supabase, Bitwarden, Vercel, Expo, PostHog, Fly.io, Docker, Hugging Face or other AI providers, Google Cloud and any future connector. At task start, select the connected account that matches the repository and environment, request the highest available permission already granted, and try the tool's normal authorization, reconnect, or HTTPS/API fallback before declaring a blocker. Do not wait for the founder to name a tool or permission. If a service is not connected or requires an interactive owner approval that Codex cannot complete, state the exact service and one exact approval action; never invent a connection, use a different owner's account, or place a secret in chat, source, logs, commits or URLs.
+
 For relevant app changes, use the existing checks: `npm run check`, `npm run test:e2e`, and `npm run export:web`; verify deployment and browser journeys on Vercel previews. APK builds and APK-based testing are retired. For SQL candidates, use the isolated database validation described in `ai-workspace/validation/MULTI_WORKSPACE_VALIDATION.md`; do not use a live project as a test database. Report what ran and what did not.
 
 ## AI operating system — parallel adoption
