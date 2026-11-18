@@ -1,6 +1,6 @@
 # Product requirements: Parent Plus Coach
 
-Version: 1.9 · reliable browser recovery and tab isolation, 17 November 2026
+Version: 1.10 · curriculum-aware feedback and individual learning journeys, 18 November 2026
 Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](docs/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](docs/PRODUCT_DECISIONS.md) and [developer handover](docs/DEVELOPER_GUIDE.md).
 Companion documents: [build sequence](BUILD_PLAN.md), [product plan](PRODUCT_PLAN.md), [Step 0 setup guide](STEP_0.md).
@@ -65,6 +65,12 @@ Screens that merely show sample data or success messages do not satisfy these cr
 | SCH-01 | P0 | Create/edit/cancel dated sessions with start/end and location | Changes affect the selected occurrence; cancelled sessions remain distinguishable |
 | ATT-01 | P0 | Present/late/absent, mark all present, atomic attendance save | Save/reopen/retry returns one correct record per session/student; partial batch saves cannot silently succeed |
 | OBS-01 | P0 | Text observation for selected child or batch; draft and recorded states | Draft survives restart; recorded audience is fixed explicitly; failed save retains entered text |
+| LRN-01 | P0 | Coach-defined versioned curriculum with stages and learning objectives | Published versions preserve historical class meaning; current authorized management only; invalid/cross-workspace references denied |
+| LRN-02 | P0 | Individual curriculum placement and journey | Same-batch children can occupy different stages; one child can follow several curricula; explicit dated stage changes never imply mastery |
+| LRN-03 | P0 | Class content/lesson plan linked to relevant curriculum objectives | Mixed-stage class plans retain exact version references; context selects only the chosen child's applicable goals; missing context is visible |
+| LRN-04 | P0 | Evidence-backed milestones and progress | Actual authorized Coach and exact recorded single-child source revision required; no attainment inferred from attendance, planned lessons or AI; withdrawals/corrections retain original evidence and permissions |
+| LRN-05 | P0 | Spoken/typed feedback interpreted using the class plan and child's learning context | Preserve actual observation and uncertainty, distinguish planned/prior/current evidence, request clarification where needed; one Coach review before sharing; no autonomous progression or sending |
+| LRN-06 | P0 | Parent sees the child's reviewed journey and milestones | Approved guardian/child connection and explicit Coach-reviewed immutable snapshot only; raw notes/drafts, another student's data and unreviewed stage changes never appear |
 | FEE-01 | Later | Monthly overview of distinct students, expected/collected/pending fees, batch summaries and student drilldown; record receipts from a student row | Unbilled eligible students contribute to pending totals; no invoice-creation prerequisite; trusted charge/receipt save atomically; snapshots and corrections remain auditable |
 | PAY-01 | Later | Authenticated server creates/reuses invoice payment link; coach shares explicitly | Guardian can use hosted test checkout without parent app; app cannot override trusted invoice amount |
 | PAY-02 | Later | Verify payment server-side and reconcile pending state | Only validated provider paid/captured state creates a gateway payment; invalid/replayed events do not corrupt balances |
@@ -79,6 +85,11 @@ Screens that merely show sample data or success messages do not satisfy these cr
 | SCH-02 | P1 | Bounded recurring-session generation | Preview, duplicate prevention, and per-occurrence editing work |
 
 ## 6. Core journeys
+
+### Curriculum-aware feedback (new owner requirement,18November2026)
+Coach defines curriculum/stages/objectives → places each student independently → links class plan/content to applicable goals → speaks/types an actual observation → assistant prepares a contextual draft using a bounded authorized context → Coach reviews/edits → existing authorized child connection and review release the Parent update and journey snapshot. Planned lessons are not completed achievements. Child identity is selected/verified before processing; ambiguous requests ask for clarification rather than guessing. Preserve teacher attribution, version references, retries and corrections.
+
+Current slice is private learning storage/context and provider-independent request preparation only. Speech/AI execution, Coach plan/placement UI and Parent journey publication/UI remain unimplemented. [Design](docs/superpowers/specs/2026-11-18-learning-context-design.md) and [scenario/evidence ledger](docs/LEARNING_CONTEXT_QA.md) distinguish this foundation from feature completion. The broader58-item catalogue is not reclassified as done by this work.
 
 ### Teaching
 Sign in → create academy → create batch → add student and contact → enrol student → schedule session → save attendance → save/record observation → reopen app and inspect history.
