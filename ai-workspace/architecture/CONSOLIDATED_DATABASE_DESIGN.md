@@ -20,6 +20,10 @@ MM's `scan-roster` has `verify_jwt=false` but its handler validates the bearer t
 
 Use APVerse as the AM integration target and preserve its workspace, membership, guardian and workflow concepts. Bring MM's implemented product capabilities into that model while keeping its family/child and academic identities separate. Keep the MM project and its app data unchanged during this integration. The target contract remains `ai-workspace/architecture/MULTI_WORKSPACE_FOUNDATION.md`; acceptance remains `ai-workspace/validation/MULTI_WORKSPACE_VALIDATION.md`.
 
+### Branch-scoped Supabase client configuration
+
+`config/public-client.json` is the safe MM default and includes its expected project reference. An AM Vercel Preview must override `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `EXPO_PUBLIC_SUPABASE_PROJECT_REF` together, scoped only to the AM branch; the app fails closed if the configured reference does not match the URL host. Non-AM previews keep the MM defaults. Publishable keys are browser-visible by design; never put a service-role/secret key in an `EXPO_PUBLIC_` variable. This check prevents accidental URL/reference mismatch; Vercel branch scoping remains an operational setting and must be verified on the actual deployment.
+
 The main-branch consolidation also includes the tested private F2 kernel described in [WORKSPACE_AUTHORIZATION_QA.md](../validation/WORKSPACE_AUTHORIZATION_QA.md). The earlier standalone eligibility prototype is retired as a compatibility sentinel so it cannot overwrite the canonical helper. All production/API/storage integration and staging gates below remain; merging source code does not apply either candidate to Supabase.
 
 ```mermaid

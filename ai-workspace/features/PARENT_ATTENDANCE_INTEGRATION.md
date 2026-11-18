@@ -32,6 +32,10 @@ Read-only catalog inspection confirms APVerse's `app_list_created_children()` re
 
 Test-first evidence: the new profile adapter test failed because the module was absent, then passed **9/9 focused cases** after implementation; TypeScript also passed. The reader is not wired into `ParentApp`, does not create/edit child profiles, and does not replace MM's current family loader. It is an integration building block only. The AM app must not target APVerse until the complete Parent identity/profile/write path and Coach APIs are adapted and verified.
 
+## AM/MM client project isolation — 18 November 2026
+
+`config/public-client.json` now records the MM fallback project reference. `readConfig` accepts the optional `EXPO_PUBLIC_SUPABASE_PROJECT_REF` and fails closed when it is malformed or differs from the Supabase URL host. Branch-specific Vercel configuration must set URL, publishable key and expected reference together: APVerse only for AM, MM for non-AM. Playwright now uses a fictional project URL/reference pair. Test-first mismatch cases pass; the complete local gate passes 16 control checks, 498 unit/database tests, 92 browser scenarios, web export and exact receipt. This guard does not discover the Git branch itself; actual Vercel environment scoping still needs verification. Vercel currently blocks the AM-author deployment before build under `team-configuration`, so no hosted AM preview was produced.
+
 ## App contract and remaining gates
 
 `src/parent/attendance.ts` whitelists returned fields, rejects malformed/duplicate/unordered/oversized pages and preserves null attendance. Monday calculation includes real-calendar validation. `attendanceService.ts` verifies the expected current account before calling the staging API and rejects reversed/repeated cursor pages. `ParentAttendance.tsx` provides date selection, refresh, loading/error/empty states and paging. An owner/child/link keyed instance and request generations discard old child/date responses. No records are persisted by this reader. Class times are explicitly labeled UTC; date selection uses academy-local dates on the server.

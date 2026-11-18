@@ -3419,6 +3419,30 @@
       ]
     },
     {
+      "id": "UT-B1E8D409C2F7",
+      "status": "implemented",
+      "criteria": "accepts the configured Supabase project reference when it matches the URL",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > accepts a branch-pinned project reference when it matches the Supabase URL"
+      ]
+    },
+    {
+      "id": "UT-B2A6730E1C5D",
+      "status": "implemented",
+      "criteria": "fails closed when the configured Supabase project reference differs from the URL",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > fails closed when the branch-pinned project reference does not match the URL"
+      ]
+    },
+    {
+      "id": "UT-B3C51F8A709E",
+      "status": "implemented",
+      "criteria": "rejects an invalid configured Supabase project reference",
+      "tests": [
+        "tests/config.test.ts::safe startup configuration > rejects malformed branch-pinned project references"
+      ]
+    },
+    {
       "id": "UT-3DCD1139E730",
       "status": "implemented",
       "criteria": "requires an explicit international recipient and rejects link injection or ambiguous local numbers",

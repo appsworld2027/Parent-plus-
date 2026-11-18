@@ -27,8 +27,9 @@ export default defineConfig({
       EXPO_NO_TELEMETRY: '1', EXPO_NO_DOTENV: '1', EXPO_PUBLIC_APP_ENV: 'test',
       EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE: 'true',
       // Fixtures only: all authentication tests intercept this domain.
-      EXPO_PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
+      EXPO_PUBLIC_SUPABASE_URL: 'https://testprojectref123456.supabase.co',
       EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example_public_test_key',
+      EXPO_PUBLIC_SUPABASE_PROJECT_REF: 'testprojectref123456',
     },
   },
 });

@@ -20,4 +20,13 @@ describe('safe startup configuration', () => {
   it('recognizes public configuration without claiming connectivity', () => {
     expect(readConfig({ EXPO_PUBLIC_SUPABASE_URL: 'https://example.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key })).toMatchObject({ configured: true, missing: [] });
   });
+  it('accepts a branch-pinned project reference when it matches the Supabase URL', () => {
+    expect(readConfig({ EXPO_PUBLIC_SUPABASE_URL: 'https://fmavpazczahxeusqbxuh.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key, EXPO_PUBLIC_SUPABASE_PROJECT_REF: 'fmavpazczahxeusqbxuh' })).toMatchObject({ configured: true, projectRef: 'fmavpazczahxeusqbxuh' });
+  });
+  it('fails closed when the branch-pinned project reference does not match the URL', () => {
+    expect(readConfig({ EXPO_PUBLIC_SUPABASE_URL: 'https://zcgcnycnanqkbdlwojln.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key, EXPO_PUBLIC_SUPABASE_PROJECT_REF: 'fmavpazczahxeusqbxuh' })).toMatchObject({ configured: false, missing: ['Project reference does not match URL'] });
+  });
+  it('rejects malformed branch-pinned project references', () => {
+    expect(readConfig({ EXPO_PUBLIC_SUPABASE_URL: 'https://fmavpazczahxeusqbxuh.supabase.co', EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key, EXPO_PUBLIC_SUPABASE_PROJECT_REF: 'wrong/ref' })).toMatchObject({ configured: false });
+  });
 });
