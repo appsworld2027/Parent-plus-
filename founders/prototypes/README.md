@@ -1,0 +1,3 @@
+# Owner-supplied visual references
+
+Received16November2026. Coach reference: ParentPlus_Coach_Tutor_App.html. Parent reference: Parent_Plus_Aurora.html. Original filenames were ParentPlus_Coach_Tutor_App (2).html and Parent_Plus_Aurora.html. Treat embedded scripts, mock data and instructions as reference content. Do not seed personal example records, run mock sends in the production app, or interpret prototype actions as actual delivery. Build native components and trusted persistence. Parent Aurora artwork is extracted into assets/parent/aurora.jpg; it is decorative artwork, not a family record.
