@@ -42,6 +42,12 @@ The APVerse child-creation API already provides status, begin, acknowledge, fenc
 
 This RPC adapter is not yet wired into the Parent add-child UI. The current screen still uses the MM private-family service, so APVerse child create/list, parent-private data and Coach connection workflows are not complete. Do not configure AM runtime to APVerse until the complete UI lifecycle and recovery journey is integrated and verified.
 
+## APVerse Parent signal send/recovery contract — 18 November 2026
+
+Read-only catalog/function inspection confirmed the existing authenticated `app_send_parent_signal` and `app_parent_signal_request_status` RPC contracts. Added `src/parent/apverseParentSignals.ts` as an isolated adapter: it validates the exact report payload and returned receipt, uses the stable request ID for recovery, checks the signed-in owner before and after successful RPCs, and returns a fixed error category without exposing provider details. The reports describe lateness, absence or pickup; they do not alter Coach attendance. Tests were written first and failed while the module was absent, then **10 focused cases** passed with TypeScript, covering retries, unknown outcomes, wrong-account changes, malformed receipts, invalid signal/reason pairs and redacted failures. No APVerse rows or schema were changed.
+
+This adapter is not yet connected to the Parent UI or its pending-operation storage. The Destination Parent screen continues to use the MM service; the APVerse child and report adapters remain building blocks until private-family persistence, complete Parent flow wiring and cross-flow tests are ready.
+
 ## App contract and remaining gates
 
 `src/parent/attendance.ts` whitelists returned fields, rejects malformed/duplicate/unordered/oversized pages and preserves null attendance. Monday calculation includes real-calendar validation. `attendanceService.ts` verifies the expected current account before calling the staging API and rejects reversed/repeated cursor pages. `ParentAttendance.tsx` provides date selection, refresh, loading/error/empty states and paging. An owner/child/link keyed instance and request generations discard old child/date responses. No records are persisted by this reader. Class times are explicitly labeled UTC; date selection uses academy-local dates on the server.

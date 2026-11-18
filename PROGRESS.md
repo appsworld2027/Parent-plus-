@@ -12,6 +12,10 @@
 | AM data direction | Latest owner direction permits deleting AM/source records; retain and sync the database architecture and behavior. No record data was migrated or deleted in this checkpoint. |
 | Retirement | Not ready. The existing 12-step ledger has steps 1–2 established, step 5 partial and the remaining parity, security/provider, restore and destination-only acceptance steps open. The one-hour request is a target; current evidence does not support a safe one-hour retirement promise. |
 
+## AM Parent signal recovery adapter — 18 November 2026
+
+Added an isolated, authenticated APVerse Parent signal send/recovery adapter and 10 contract scenarios on `AM/consolidated`. It reuses the stable request identity, validates the returned receipt against the original child/session/type/reason, rechecks the signed-in account and returns redacted error categories. It does not write attendance and is not wired to the Parent screen. Fresh full local quality receipt passed: 16 quality-control tests, lint, TypeScript, 522 unit/database tests, 92 browser scenarios and Expo web export; `quality_gate.py verify`, 358 documentation links and `git diff --check` also passed. This remains a building block, not a Parent workflow or database sync. No live schema or records changed. The commit and GitHub Actions result are still pending.
+
 **Next loop:** complete the source-only asset and feature disposition; finish the APVerse-vs-MM object and authorization comparison; add/test AM-only additive schema slices in disposable PostgreSQL before any APVerse deployment; then wire and verify Parent/Coach journeys and rerun the ledger. See [the existing acceptance ledger](founders/decisions/CONSOLIDATION_ACCEPTANCE_LEDGER.md) and [database comparison](ai-workspace/architecture/LIVE_DATABASE_COMPARISON.md).
 
 ## AM APVerse Parent profile and attendance adapters — 18 November 2026

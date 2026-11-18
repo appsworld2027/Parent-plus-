@@ -4833,6 +4833,86 @@
       "tests": [
         "tests/apverse-child-creation.test.ts::does not expose private RPC error details to the Parent UI"
       ]
+    },
+    {
+      "id": "UT-C101A9020001",
+      "status": "implemented",
+      "criteria": "sends an account-bound APVerse Parent report with stable request identity",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::sends a canonical Parent report with the stable request identity and no actor-supplied account id"
+      ]
+    },
+    {
+      "id": "UT-C101A9020002",
+      "status": "implemented",
+      "criteria": "recovers a known APVerse Parent report by the exact original request and payload",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::checks a known retry result using the exact original payload and request id"
+      ]
+    },
+    {
+      "id": "UT-C101A9020003",
+      "status": "implemented",
+      "criteria": "preserves unknown APVerse Parent report outcome for explicit retry",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::keeps an unknown request distinct from a failed or empty report"
+      ]
+    },
+    {
+      "id": "UT-C101A9020004",
+      "status": "implemented",
+      "criteria": "blocks APVerse Parent report calls for missing or changed owner",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::does not call APVerse for a missing or different signed-in owner"
+      ]
+    },
+    {
+      "id": "UT-C101A9020005",
+      "status": "implemented",
+      "criteria": "rejects invalid APVerse Parent report scope and signal pairs before RPC",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::rejects invalid scope, request identity, signal type and reason before network access"
+      ]
+    },
+    {
+      "id": "UT-C101A9020006",
+      "status": "implemented",
+      "criteria": "rejects mismatched APVerse Parent report receipts",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::rejects a valid-looking receipt for a different child/session/request or changed payload"
+      ]
+    },
+    {
+      "id": "UT-C101A9020007",
+      "status": "implemented",
+      "criteria": "fails closed on malformed APVerse Parent report recovery responses",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::fails closed on malformed retry status and malformed known receipts"
+      ]
+    },
+    {
+      "id": "UT-C101A9020008",
+      "status": "implemented",
+      "criteria": "classifies APVerse authorization/conflict responses without exposing provider details",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::classifies authorization and changed-request responses without exposing provider details"
+      ]
+    },
+    {
+      "id": "UT-C101A9020009",
+      "status": "implemented",
+      "criteria": "rechecks owner identity after an in-flight APVerse Parent report",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::rechecks the account after an in-flight report RPC"
+      ]
+    },
+    {
+      "id": "UT-C101A9020010",
+      "status": "implemented",
+      "criteria": "does not claim success or expose transport errors for an uncertain APVerse Parent report",
+      "tests": [
+        "tests/apverse-parent-signals.test.ts::does not expose an RPC network error as a saved or empty report"
+      ]
     }
   ]
 }
