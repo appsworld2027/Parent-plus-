@@ -9,16 +9,16 @@ Branch: MM/ai-organization-setup, based on current main (74de4bbb105641fb0ea3872
 - Local cloud checkout is AM/consolidated, clean. GitHub connector was used for remote inspection and setup branch content.
 
 ## Checklist
-- [x] P1 initial repo, branch/PR and workflow discovery. Full framework compatibility and permission inventory still in progress.
-- [ ] P2 role cards and governance.
-- [ ] P3 safe configuration and control validation.
-- [ ] P4 one-team demonstration.
+- [~] P1 Repository safety assessment: partially complete. Inspected repository guidance, roadmap, current checks, clean local checkout, PR #19 and current main. Existing product code and workflows are extensive. Not yet completed: full inventory of repository modules, settings/branch protections, complete framework compatibility evidence, and explicit safety assessment for adding AI tooling. No production changes made.
+- [ ] P2 role cards and governance. 11 names/functional slots are listed, but no operational role instructions, permissions, measurable criteria, or tested governance workflow exist yet.
+- [~] P3 Framework setup: partial feasibility checks only. Superpowers already exists in the repo and is documented. Spec Kit 1.4.2 generated Codex skills in a disposable workspace. Cezar 0.20.0 completed a mock Codex step and its local dashboard answered on loopback in a prior cloud task. These were not installed/configured on this branch. Live Cezar isolation, persistent settings, CI branch protections and repeatable integration tests remain unverified.
+- [~] P4 One-team pilot: synthetic feedback implementation passed two tests in an isolated Docker container and GitHub Codex review reported no major findings for the prior pilot commit. This does not demonstrate a configured team or live orchestration.
 - [ ] P5 founder conflict/decision simulation.
 - [ ] P6 validate both teams.
 - [ ] P7 end-to-end acceptance.
 - [ ] Operating, recovery and maintenance guide.
 
-## Decisions
+## Founder milestone summary\n\n1. Repository safety: partial assessment completed. Inspection shows an established Expo app, detailed safety rules and CI. Full repo/module/settings review and formal go/no-go remain open.\n2. Cezar and Superpowers: Superpowers is already present. Cezar and Spec Kit have only been exercised in disposable mock/setup checks. They have not been integrated as live reusable workflows or fully acceptance-tested.\n3. Eleven agents: not configured. Names/slots are recorded in the master objective only.\n\n## Decisions
 - Keep PR #19 untouched. Its current base predates latest main and its diff is unexpectedly broad.
 - Use a separate MM branch from verified current main.
 - Reuse existing GitHub Actions, repository Superpowers skills, scenario IDs, and documentation structure.
