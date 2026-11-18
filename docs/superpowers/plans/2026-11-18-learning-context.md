@@ -41,7 +41,7 @@ Files: `src/learning/feedbackContext.ts`, `tests/learning-feedback-context.test.
 Files: `PRD.md`, `docs/PARENT_PRD.md`, `docs/CONSOLIDATED_PRODUCT_ROADMAP.md`, `docs/LEARNING_CONTEXT_QA.md`, `PROGRESS.md`, developer guide.
 
 - [x] Add stable requirement/scenario IDs before implementation and keep actual evidence separate from targets.
-- [ ] Run TypeScript/full automated tests and actual PostgreSQL checks appropriate to new SQL. Existing runtime has no new UI; explain why browser/provider/device reruns are excluded unless changes justify them.
-- [ ] Commit a concrete candidate; obtain independent review of exact commit and address findings with regressions.
-- [ ] Push and open a focused PR; existing CI regression/export checks must pass before any authorized merge. Do not activate Supabase candidate.
+- [x] Run TypeScript/full automated tests and actual PostgreSQL checks appropriate to new SQL. Existing runtime has no new UI; explain why browser/provider/device reruns are excluded unless changes justify them.
+- [x] Commit a concrete candidate; obtain independent review of exact commit and address findings with regressions.
+- [x] Push and open a focused PR; existing CI regression/export checks must pass before any authorized merge. Do not activate Supabase candidate.
 - [ ] Report completed slice, tests, source/PR, explicit UI/provider/Parent/staging/scale limits and next implementation step.
