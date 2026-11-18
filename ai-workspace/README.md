@@ -1,6 +1,16 @@
 # AI workspace
 
-Use existing technical documents as authoritative sources rather than copying their facts.
+Use existing technical documents as authoritative sources rather than copying
+their facts. Follow the task lifecycle: discover, read, plan, build, validate,
+close, and move ahead.
+
+## Start every task here
+
+1. Read [repository rules](../AGENTS.md).
+2. Read the [documentation operating system](../docs/DOCUMENTATION_OPERATING_SYSTEM.md).
+3. Find the authoritative requirement or roadmap item.
+4. Use an implementation plan for multi-step work.
+5. Finish with the [task closeout template](instructions/TASK_CLOSEOUT_TEMPLATE.md).
 
 - [Architecture](architecture/ARCHITECTURE.md) and [developer guide](development/DEVELOPER_GUIDE.md)
 - [Database design and snapshot limits](architecture/CONSOLIDATED_DATABASE_DESIGN.md)
@@ -19,5 +29,10 @@ Store new feature-specific specifications here only when no existing authoritati
 - [Validation evidence and release gates](validation/README.md)
 - [AI instructions and communication examples](instructions/README.md)
 - [Implementation plans](plans/README.md)
+
+## Document status
+
+When adding or updating a document, identify it as `Active`, `Reference`,
+`Historical`, or `Archive`. Only `Active` documents may define current work.
 
 Existing agent-instructions and test-plans remain in place. Product requirements, decisions, and prototypes are in the [founder workspace](../founders/README.md).
