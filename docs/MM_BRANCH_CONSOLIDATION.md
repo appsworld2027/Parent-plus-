@@ -27,23 +27,31 @@ The [machine-readable inventory](consolidation/mm-branches-20261118.json) preser
 
 ## Recovery backup
 
-Verified standalone Git bundle: `/workspace/ParentPlus-MM-backups/20261118-mm-before-cleanup.bundle`; 4,647,335bytes. SHA256 `44baaa515c2549304dc5a1a9e7357e8b8e47ad3bbf298595e5ae84009d7440cc`. It includes all18originalMMrefs plus the canonical baseline and passes `git bundle verify`. This workspace artifact may not survive environment replacement, so the pushed canonical history and a separately pushed annotated backup tag must also preserve every original tip before remote deletion. The inventory allows restoring any old name with its exact tip without reverting the canonical branch.
+Verified standalone Git bundle: `/workspace/ParentPlus-MM-backups/20261118-mm-before-cleanup.bundle`; 4,647,335bytes. SHA256 `44baaa515c2549304dc5a1a9e7357e8b8e47ad3bbf298595e5ae84009d7440cc`. It includes all18originalMMrefs plus the canonical baseline and passes `git bundle verify`. This workspace artifact may not survive environment replacement, so the pushed canonical history and annotated remote backup tag `backup/mm-consolidation-20261118` both preserve every original tip before remote deletion. That tag points to tested commit`2dc9835f5cb0dc95c5c1fc50f0d09d1afc1f4ae8`. Independent reviewer restored the bundle into a temporary bare repository: all18refs matched and `git fsck --full` exited0. The inventory allows restoring any old name with its exact tip without reverting the canonical branch.
 
 ## Required checks before deletion
 
 | Check | Expected result | Actual outcome |
 | --- | --- | --- |
-| Current source scope | No app/source/test/database/asset changes versus frozen baseline | PASS initial comparison; final check pending |
-| TypeScript/full automated suite | All current cases pass | NOT RUN for this consolidation |
-| Full browser regression | All95current fixture cases pass | NOT RUN for this consolidation |
-| Actual PostgreSQL transaction suite | All29cases pass in fictional isolated database | NOT RUN for this consolidation |
-| Web and Android exports | Both succeed | NOT RUN for this consolidation |
-| Existing public Vercel app | Production-compatible fixture suite, phone/desktop entry/recovery smoke and source/bundle identity;0real sends/writes | NOT RUN for this consolidation |
-| Independent review | Exact canonical commit, ancestry and full backup/ref mapping validated | Containment audit PASS; final review pending |
-| Remote main/other-owner refs | Same as initial snapshot immediately before/after cleanup | Final verification pending |
+| Current source scope | No app/source/test/database/asset changes versus frozen baseline | PASS: only Markdown/inventory and one CI trigger differ; runtime/source/tests/SQL/assets remain unchanged |
+| TypeScript/full automated suite | All current cases pass | PASS:471/471across38files |
+| Full browser regression | All95current fixture cases pass | PASS:95/95in fresh canonical CI,3.4minutes |
+| Actual PostgreSQL transaction suite | All29cases pass in fictional isolated database | PASS:29/29using independent PG17 connections in CI |
+| Web and Android exports | Both succeed | PASS: web and Android exports |
+| Existing public Vercel app | Production-compatible fixture suite, phone/desktop entry/recovery smoke and source/bundle identity;0real sends/writes | PASS:91/91hosted cases,308.687seconds; phone/desktop smoke PASS;0real backend/provider attempts/page/console errors |
+| Independent review | Exact canonical commit, ancestry and full backup/ref mapping validated | PASS: `/root/vercel_testing` reviewed exact2dc9835scope, containment, backup restore and hosted evidence; final docs-only update reviewed before retirement |
+| Remote main/other-owner refs | Same as initial snapshot immediately before/after cleanup | PASS initial/fresh preflight snapshot; post-cleanup check pending |
 | Branch retirement | Canonical+backup pushed, expected tips still contained, no open old-MM PRs; atomic SHA-leased deletion; safe local branch deletion | NOT EXECUTED |
 
 The initial snapshot is evidence, not permission to delete a later updated tip. Re-read current refs immediately before cleanup; if any MM ref changed, preserve/integrate it and repeat relevant checks before retrying. Delete only the explicit inventoried branch names, never wildcard-delete other owners' refs. Use remote expected-SHA leases and atomic deletion. Locally use `git branch -d` only when each tip is reachable from the current canonical head. Do not force-delete an unmerged branch or discard files.
+
+## Exact run and release identity
+
+Fresh complete canonical CI: [run44238197529](https://github.com/appsworld2027/Parent-plus-/actions/runs/44238197529), head`2dc9835f5cb0dc95c5c1fc50f0d09d1afc1f4ae8`, SUCCESS. No duplicate local browser campaign was run: that fresh CI supplies all95cases; the agent separately ran the public91-case production-compatible suite. The four omitted hosted cases require development-only controls and are covered by CI.
+
+Production remains0.13.2/Parent0.3.0, asset`index-b0e75d4b1b846210a8183da18d4f7ffe.js`, SHA256`4b913f3f68c4c23147c60121605d91e1d0802b03f7ddca7fb0af5ddb249b8229`. Root and plain recovery return200with usable forms on412×915and1440×1000viewports, no overflow/alerts/errors. All91per-test guard files were independently read back; they record no real external/Supabase/provider attempt. Artifacts: `/tmp/parentplus-mm-consolidation-20261118/{summary.json,results.json,public-smoke.json,backup-review.json}` plus91guard records; workspace artifacts may expire.
+
+The final pre-cleanup evidence change is Markdown-only and preserves the exact tested runtime/workflow/tests. Its real fast-forward canonical update and eight expected-SHA MM deletions are pushed together atomically, including a lease on the canonical branch. This avoids relying on a no-op refspec as a server-side guard. Any protected-ref change is a failure requiring re-audit, not an unqualified cleanup success.
 
 ## Test boundaries
 
