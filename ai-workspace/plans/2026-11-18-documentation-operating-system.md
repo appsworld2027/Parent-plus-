@@ -37,7 +37,7 @@
 
 - [x] Add founder and AI reading paths.
 - [x] Define the Discover → Read → Plan → Build → Validate → Close → Move ahead lifecycle.
-- [ ] Run the documentation link checker.
+- [x] Run the documentation link checker — 379 targets checked, 0 missing.
 
 ### Task 2: Add closeout and implementation templates
 
@@ -47,14 +47,14 @@
 
 - [x] Add required task evidence fields.
 - [x] Add the implementation plan for this documentation change.
-- [ ] Verify the files are linked from the indexes.
+- [x] Verify the files are linked from the indexes.
 
 ### Task 3: Verify and hand off
 
 **Files:**
 - Documentation files from Tasks 1–2 only.
 
-- [ ] Run `python3 scripts/check-documentation-links.py`.
-- [ ] Run `git diff --check`.
-- [ ] Confirm the changed-file list contains documentation only.
-- [ ] Commit and push to `AM/consolidated` without touching unrelated work.
+- [x] Run `python3 scripts/check-documentation-links.py`.
+- [x] Run `git diff --check`.
+- [x] Confirm the changed-file list contains documentation only.
+- [x] Commit and push to `AM/consolidated` without touching unrelated work.
