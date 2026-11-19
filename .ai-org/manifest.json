@@ -1,0 +1,6 @@
+{
+  "organization": "appsworld",
+  "adapterVersion": "1",
+  "source": "appsworld2027/parent-plus-ai-org",
+  "protectedActions": ["production", "destructive", "paid", "credentials", "legal-privacy"]
+}
