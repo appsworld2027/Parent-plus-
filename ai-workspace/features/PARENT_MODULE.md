@@ -19,6 +19,12 @@ Parent module0.1.0 / shared build0.11.0. Owner authorised the separate Parent bu
 
 ## Architecture and data boundaries
 
+### AM branch integration — 19 November 2026
+
+AM branches now have an additive APVerse schema migration `20261119014723_parent_private_family_records` for private moments, reminders and events attached to an APVerse-owned child. It binds every row to `owner_id` and verifies `children.created_by` in FORCE-RLS policies. This deliberately avoids importing MM's `parent_families`/`family_children` identity graph or exposing personal notes to a Coach or connected guardian. Five isolated SQL scenarios cover owner CRUD, another account/coach denial, forged child IDs, value bounds and anon/service-role denial; live grants and RLS were inspected after migration.
+
+This is currently database groundwork only. `ApVerseParentWorkspace` does not yet load or save these records, and Vercel AM still resolves to MM because APVerse branch variables remain unset. MM's existing Parent module remains unchanged for non-AM branches. The next required step is an APVerse-specific Parent data adapter and UI, followed by browser/API contract tests and actual authenticated preview acceptance; do not route AM to APVerse before those pass.
+
 `src/parent/ParentApp.tsx` owns the separate workspace; `model.ts` contains types/date/real-week calculations; `service.ts` owns paged authenticated requests. `App.tsx` selects this entry for `/parent` and shared auth callbacks with the Parent return marker. `AuthProvider module="parent"` still checks Auth but does not query or create an academy. Parent native components are reusable for a future separately packaged Android app; the current Parent deliverable is the mobile web workspace, not a separate verified Parent APK.
 
 Update012 adds `parent_families`, `family_children`, `family_moments`, `family_todos`, `family_events` and `parent_coach_links`. Family tables enforce owner RLS and child/family composite foreign keys. A coach does not gain access to family data by owning an academy; parent membership does not grant access to the academy's roster, contacts, ledger or raw observations. The same person may deliberately use the same Auth account for both roles, with ownership checked independently.

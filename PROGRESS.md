@@ -1,6 +1,6 @@
 # Parent Plus Coach — development checkpoint
 
-## Consolidation retirement snapshot — 18 November 2026
+## Consolidation retirement snapshot — 19 November 2026
 
 | Area | Verified position |
 | --- | --- |
@@ -8,9 +8,13 @@
 | Destination GitHub | `AM/consolidated` now contains `70f7678`; continue consolidation only on AM. Other branches retain MM database routing. |
 | AM code and CI | `70f7678` integrates APVerse Parent child listing and recoverable creation. Local full gate: 525 unit/database + 94 browser scenarios, lint, TypeScript, web export and exact receipt. GitHub run `44436145141` passed all four jobs. |
 | AM Vercel preview | Deployment `dpl_GLtZiTAtaDB27RE2N4fgQgSQ7kwC` for `70f7678` is READY. Project branch variables remain empty and the app fallback is MM project `zcgcnycnanqkbdlwojln`; this preview does not use APVerse. |
-| Live database sync | No MM-to-APVerse schema migration has been applied. Application-object inventory: APVerse 41 public tables / 101 routines; MM 25 public + 6 `coach_private` tables / 55 routines. Both have 4 triggers; APVerse has 95 application indexes / 4 policies / no Storage buckets or Edge Functions; MM has 75 indexes / 27 policies / 2 Storage buckets / 2 Edge Functions. Both have 5 extensions and no business enums. Independent histories: APVerse has 53 standard migration versions; MM has one standard migration record plus its own `coach_private.schema_migrations` ledger. These counts do not imply object or behavior parity. |
+| Live database sync | First additive AM parity slice installed on APVerse as `20261119014723_parent_private_family_records`: three owner-private Parent records tables, three indexes, three RLS policies and one narrow child-owner helper. Fresh catalog confirms RLS + FORCE RLS on all three tables; authenticated CRUD only; no anon/service table access. No MM rows or migration history copied. Inventory after this slice: APVerse 44 public tables / 102 routines / 98 indexes / 7 policies; MM 25 public + 6 `coach_private` tables / 55 routines. APVerse still has no Storage buckets or Edge Functions; MM has two buckets and two Edge Functions. Both have 4 application triggers, five extensions and no business enums. |
 | AM data direction | Latest owner direction permits deleting AM/source records; retain and sync the database architecture and behavior. No record data was migrated or deleted in this checkpoint. |
-| Retirement | Not ready. Steps 1–2 are established and step 5 is partial; product/API parity, real-provider/security acceptance, APVerse-targeted Vercel configuration, restore rehearsal and destination-only acceptance remain open. No source Git or database has been retired. |
+| Retirement | Not ready. First DB slice is live, but app adapters/UI and hosted authenticated scenario coverage are not integrated. Product/API parity, real-provider/security acceptance, APVerse-targeted Vercel configuration, restore rehearsal and destination-only acceptance remain open. No source Git or database has been retired. |
+
+## APVerse private Parent records schema — 19 November 2026
+
+Applied additive migration `20261119014723_parent_private_family_records` to APVerse (`fmavpazczahxeusqbxuh`) after isolated PostgreSQL validation. It adds `parent_family_moments`, `parent_family_todos`, and `parent_family_events`, keyed by authenticated owner and APVerse child. Access checks the live `children.created_by` owner; approved guardian links and coach roles do not confer access. Live catalog verification confirms FORCE RLS, one owner-only policy per table, authenticated CRUD grants, and no anonymous or service-role table grants. The helper is SECURITY DEFINER with a fixed search path; only authenticated may execute it. Five new PGlite scenarios pass. No records were inserted/copied/deleted, MM was untouched, and the APVerse Parent screen does not yet use these tables. Next: wire the APVerse Parent adapter and UI with full journey and cross-account E2E coverage before configuring AM Vercel variables.
 
 ## AM APVerse Parent child workspace integration — 19 November 2026
 

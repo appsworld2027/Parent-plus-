@@ -4953,6 +4953,46 @@
       "tests": [
         "e2e/apverse-parent.spec.ts::APVerse child-list errors never appear as a successful empty state"
       ]
+    },
+    {
+      "id": "UT-A91912000001",
+      "status": "implemented",
+      "criteria": "private family moments, reminders and events are available only to the verified child owner",
+      "tests": [
+        "tests/apverse-parent-private-records.test.ts::lets the verified child owner read and update their private family records"
+      ]
+    },
+    {
+      "id": "UT-A91912000002",
+      "status": "implemented",
+      "criteria": "another guardian or linked coach cannot read or write owner-private Parent records",
+      "tests": [
+        "tests/apverse-parent-private-records.test.ts::denies another guardian or linked coach access to the owner private records"
+      ]
+    },
+    {
+      "id": "UT-A91912000003",
+      "status": "implemented",
+      "criteria": "a caller cannot attach a private record to a child owned by another account",
+      "tests": [
+        "tests/apverse-parent-private-records.test.ts::rejects a child owned by someone else even when the caller forges owner_id"
+      ]
+    },
+    {
+      "id": "UT-A91912000004",
+      "status": "implemented",
+      "criteria": "private Parent records enforce field bounds and valid event chronology",
+      "tests": [
+        "tests/apverse-parent-private-records.test.ts::enforces private record bounds and event chronology"
+      ]
+    },
+    {
+      "id": "UT-A91912000005",
+      "status": "implemented",
+      "criteria": "anonymous and service roles receive no direct access to private Parent records",
+      "tests": [
+        "tests/apverse-parent-private-records.test.ts::grants no direct private-record access to anonymous or service roles"
+      ]
     }
   ]
 }
