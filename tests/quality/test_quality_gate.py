@@ -38,6 +38,10 @@ class EvidenceTests(unittest.TestCase):
     def test_accepts_exact_successful_case(self):
         self.assertEqual(self.report('<testsuites><testsuite><testcase classname="tests/a.test.ts" name="works"/></testsuite></testsuites>'), 1)
 
+    def test_accepts_apverse_browser_case_identity(self):
+        xml = '<testsuites><testsuite><testcase classname="coach-auth.spec.ts" name="selects APVerse workspace"/></testsuite></testsuites>'
+        self.assertEqual(self.report(xml, ('e2e-apverse/coach-auth.spec.ts::selects APVerse workspace',)), 1)
+
     def test_rejects_empty_failure_error_and_skipped(self):
         for body in ['', '<failure/>', '<error/>', '<skipped/>']:
             xml = '<testsuites/>' if not body else f'<testsuites><testcase classname="tests/a.test.ts" name="works">{body}</testcase></testsuites>'

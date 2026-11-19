@@ -5289,6 +5289,71 @@
       "tests": [
         "e2e/roster.spec.ts::UX-BAT-02 duplicate batch names are caught before a second batch is saved"
       ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-01",
+      "status": "implemented",
+      "criteria": "APVerse Coach workspace pages are loaded through the authenticated server cursor and validated before use",
+      "tests": [
+        "tests/coach-workspaces.test.ts::APVerse Coach workspaces > loads every active Coach workspace page using the server cursor"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-02",
+      "status": "implemented",
+      "criteria": "malformed workspace pages and non-advancing cursors are rejected",
+      "tests": [
+        "tests/coach-workspaces.test.ts::APVerse Coach workspaces > rejects malformed pages and a cursor that does not advance"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-03",
+      "status": "implemented",
+      "criteria": "APVerse workspace lookup errors remain errors and cannot appear as an empty successful workspace list",
+      "tests": [
+        "tests/coach-workspaces.test.ts::APVerse Coach workspaces > surfaces backend errors without treating them as an empty workspace list"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-TIMEZONE-01",
+      "status": "implemented",
+      "criteria": "only authenticated users can invoke the narrow time-zone function and direct table updates remain unavailable",
+      "tests": [
+        "tests/apverse-workspace-time-zone-access.test.ts::exposes the zone operation only to authenticated clients",
+        "tests/apverse-workspace-time-zone-access.test.ts::lets an active workspace owner set the missing zone without granting direct table updates"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-TIMEZONE-02",
+      "status": "implemented",
+      "criteria": "coaches, foreign workspaces, invalid time zones and attempts to change an already configured zone are denied",
+      "tests": [
+        "tests/apverse-workspace-time-zone-access.test.ts::denies coaches, foreign workspaces, invalid zones and changes after initial setup"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-04",
+      "status": "implemented",
+      "criteria": "Coach chooses a workspace explicitly and must configure an unset time zone before opening workspace routes",
+      "tests": [
+        "e2e-apverse/coach-auth.spec.ts::Coach chooses one of multiple APVerse workspaces and configures a missing time zone"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-05",
+      "status": "implemented",
+      "criteria": "workspace creation retries the same request identity after the time-zone setup response is lost",
+      "tests": [
+        "e2e-apverse/coach-auth.spec.ts::new APVerse workspace setup retries the same idempotent request after a lost time-zone step"
+      ]
+    },
+    {
+      "id": "SC-AM-COACH-WORKSPACE-06",
+      "status": "implemented",
+      "criteria": "workspace lookup failures block protected Coach routes and display a sanitized error",
+      "tests": [
+        "e2e-apverse/coach-auth.spec.ts::APVerse workspace lookup failure blocks Coach routes and shows a safe message"
+      ]
     }
   ]
 }

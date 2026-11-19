@@ -74,7 +74,11 @@ def validate_junit(path, expected):
     actual = []
     for c in cases:
         key = f"{c.get('classname')}::{c.get('name')}"
-        actual.append('e2e/' + key if key not in expected and 'e2e/' + key in expected else key)
+        for prefix in ('e2e/', 'e2e-apverse/'):
+            if key not in expected and prefix + key in expected:
+                key = prefix + key
+                break
+        actual.append(key)
     if len(actual) != len(set(actual)) or set(actual) != expected:
         raise ValueError(f'Test identities do not match collected plan: missing={sorted(expected-set(actual))[:5]}, extra={sorted(set(actual)-expected)[:5]}')
     return len(actual)
@@ -97,21 +101,26 @@ def collect():
     def output(args): return json.loads(subprocess.check_output(args, cwd=ROOT))
     units = output(['node', 'node_modules/vitest/vitest.mjs', 'list', '--json', '--no-staticParse', '--allowOnly=false'])
     unit_ids = [f"{Path(x['file']).relative_to(ROOT)}::{x['name']}" for x in units]
-    report = output(['node', 'node_modules/@playwright/test/cli.js', 'test', '--list', '--reporter=json'])
-    browser_ids = []
-    def visit(suite, groups=()):
-        for spec in suite.get('specs', []):
-            for test in spec['tests']:
-                if test.get('expectedStatus') != 'passed': raise ValueError('Browser test declared skipped/failing')
-            title = ' › '.join((*groups, spec['title']))
-            browser_ids.append(f"e2e/{spec['file']}::{title}")
-        for child in suite.get('suites', []): visit(child, (*groups, child['title']))
-    for suite in report['suites']: visit(suite)
-    for ids in (unit_ids, browser_ids):
+    def collect_browser(config_args, prefix):
+        report = output(['node', 'node_modules/@playwright/test/cli.js', 'test', *config_args, '--list', '--reporter=json'])
+        browser_ids = []
+        def visit(suite, groups=()):
+            for spec in suite.get('specs', []):
+                for test in spec['tests']:
+                    if test.get('expectedStatus') != 'passed': raise ValueError('Browser test declared skipped/failing')
+                title = ' › '.join((*groups, spec['title']))
+                browser_ids.append(f"{prefix}{spec['file']}::{title}")
+            for child in suite.get('suites', []): visit(child, (*groups, child['title']))
+        for suite in report['suites']: visit(suite)
+        return browser_ids
+
+    browser_ids = collect_browser([], 'e2e/')
+    apverse_browser_ids = collect_browser(['--config=playwright.apverse.config.ts'], 'e2e-apverse/')
+    for ids in (unit_ids, browser_ids, apverse_browser_ids):
         if not ids or len(ids) != len(set(ids)): raise ValueError('Empty or duplicate collected identities')
     registry = json.loads((ROOT / 'quality/scenarios.json').read_text())
-    validate_registry(registry['scenarios'], set(unit_ids) | set(browser_ids))
-    return {'unit': unit_ids, 'browser': browser_ids}
+    validate_registry(registry['scenarios'], set(unit_ids) | set(browser_ids) | set(apverse_browser_ids))
+    return {'unit': unit_ids, 'browser': browser_ids, 'apverse_browser': apverse_browser_ids}
 
 
 def plan():
@@ -120,10 +129,10 @@ def plan():
     inventory = collect()
     value = {'schema': 1, 'started_ns': time.time_ns(), 'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
              'fingerprint': source_fingerprint(), 'inventory': inventory,
-             'selected': ['lint', 'typecheck', 'unit', 'browser', 'web-export'],
+             'selected': ['lint', 'typecheck', 'unit', 'browser', 'apverse-browser', 'web-export'],
              'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT')}
     (OUTPUT / 'plan.json').write_text(json.dumps(value, indent=2) + '\n')
-    print(f"Planned full regression: {len(inventory['unit'])} unit/DB, {len(inventory['browser'])} browser scenarios")
+    print(f"Planned full regression: {len(inventory['unit'])} unit/DB, {len(inventory['browser'])} MM app browser, {len(inventory['apverse_browser'])} APVerse browser scenarios")
     return value
 
 
@@ -145,13 +154,13 @@ def verify():
 def run():
     # Clear only this gate's reports so old green files cannot satisfy a new run.
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for name in ('unit-junit.xml', 'browser-junit.xml', 'quality/receipt.json'):
+    for name in ('unit-junit.xml', 'browser-junit.xml', 'apverse_browser-junit.xml', 'quality/receipt.json'):
         (ROOT / 'test-results' / name).unlink(missing_ok=True)
     value = plan()
     steps = [
         ['npm', 'run', 'quality:self-test'], ['npm', 'run', 'lint'], ['npm', 'run', 'typecheck'],
         ['npm', 'test', '--', '--allowOnly=false', '--reporter=default', '--reporter=junit', '--outputFile.junit=test-results/unit-junit.xml'],
-        ['npm', 'run', 'test:e2e'], ['npm', 'run', 'export:web'],
+        ['npm', 'run', 'test:e2e'], ['npm', 'run', 'test:e2e:apverse'], ['npm', 'run', 'export:web'],
     ]
     for step in steps:
         print('RUN', ' '.join(step), flush=True)
@@ -160,7 +169,7 @@ def run():
         check_skill_installation()
     _, counts = verify()
     receipt = {**value, 'counts': counts, 'commands': steps, 'result': 'passed',
-               'reports': {name: hashlib.sha256((ROOT / f'test-results/{name}-junit.xml').read_bytes()).hexdigest() for name in ('unit', 'browser')}}
+               'reports': {name: hashlib.sha256((ROOT / f'test-results/{name}-junit.xml').read_bytes()).hexdigest() for name in value['inventory']}}
     (OUTPUT / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print('PASS full build loop; receipt binds inputs, exact cases and report bytes')
 

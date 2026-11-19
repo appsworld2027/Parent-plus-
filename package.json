@@ -37,6 +37,7 @@
     "test:watch": "vitest",
     "test:workspace:postgres": "node scripts/test-workspace-concurrency.mjs",
     "test:e2e": "playwright test",
+    "test:e2e:apverse": "node scripts/test-e2e-apverse.mjs",
     "check": "npm run lint && npm run typecheck && npm test",
     "export:web": "expo export --platform web",
     "prepare:owner-sql": "node scripts/prepare-owner-sql.mjs",

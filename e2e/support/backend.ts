@@ -8,10 +8,10 @@ const user = { id: '00000000-0000-0000-0000-000000000001', email: 'coach@example
   created_at: '2026-01-01T00:00:00Z', app_metadata: {}, user_metadata: {}, identities: [] };
 declare global {
   interface Window {
-    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean; observations: Observation[]; observationRecipients: Record<string, string[]>; observationVersions: Record<string, { revision: number; note: string; status: string; saved_at: string }[]>; failObservation: boolean; loseObservationResponse: boolean; holdObservation: boolean };
+    __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean; observations: Observation[]; observationRecipients: Record<string, string[]>; observationVersions: Record<string, { revision: number; note: string; status: string; saved_at: string }[]>; failObservation: boolean; loseObservationResponse: boolean; holdObservation: boolean; coachWorkspaces: { id: string; name: string; time_zone: string | null }[]; failWorkspaceList: boolean; failWorkspaceZone: boolean; workspaceCreateCalls: { p_name: string; p_type: string; p_request_id: string }[]; workspaceCreationReceipts: Record<string,string> };
   }
 }
-export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; secondaryAccount?:boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean; missingObservationMigration?: boolean } = {}) {
+export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; secondaryAccount?:boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean; missingObservationMigration?: boolean; coachWorkspaces?:{id:string;name:string;time_zone:string|null}[];failWorkspaceList?:boolean } = {}) {
   // A transport fixture installed before the real app/SDK loads. No Supabase
   // request can leave this browser; authentication and storage code are unchanged.
   await page.addInitScript(({ user, options }) => {
@@ -27,7 +27,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
     const teaching = JSON.parse(sessionStorage.getItem('__fictional_classes') ?? 'null') ?? {
       classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };
     const notes = JSON.parse(sessionStorage.getItem('__fictional_observations') ?? 'null') ?? { observations: [], recipients: {}, versions: {} };
-    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false, observations: notes.observations, observationRecipients: notes.recipients, observationVersions: notes.versions, failObservation: false, loseObservationResponse: false, holdObservation: false };
+    window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false, observations: notes.observations, observationRecipients: notes.recipients, observationVersions: notes.versions, failObservation: false, loseObservationResponse: false, holdObservation: false, coachWorkspaces: options.coachWorkspaces ?? [], failWorkspaceList: options.failWorkspaceList ?? false, failWorkspaceZone: false, workspaceCreateCalls: [], workspaceCreationReceipts: {} };
     const selectedAccount=options.secondaryAccount?{...user,id:'00000000-0000-0000-0000-000000000002',email:'second@example.test'}:user;
     const account = options.unverified ? { ...selectedAccount, email_confirmed_at: null } : selectedAccount;
     const original = window.fetch.bind(window);
@@ -70,6 +70,30 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         data = url.pathname.endsWith('/signup') ? { user, session: null } : {};
       }
       else if (url.pathname.endsWith('/logout')) status = 204;
+      else if (url.pathname.endsWith('/rpc/app_today_academies')) {
+        if (state.failWorkspaceList) { status = 500; data = { message: 'Fictional workspace list failure' }; }
+        else {
+          const after=typeof payload.p_after==='string'?payload.p_after:null;
+          const rows=state.coachWorkspaces.filter(row=>!after||row.id>after).sort((a,b)=>a.id.localeCompare(b.id));
+          const page=rows.slice(0,50);
+          data={academies:page.map(row=>({workspace_id:row.id,name:row.name,time_zone:row.time_zone})),next_after:rows.length>50?page.at(-1)?.id??null:null};
+        }
+      } else if (url.pathname.endsWith('/rpc/create_workspace')) {
+        state.workspaceCreateCalls.push(payload);
+        if (state.failCreate) { status = 500; data = { message: 'Internal private database text' }; }
+        else {
+          let id=state.workspaceCreationReceipts[payload.p_request_id];
+          if(!id){id='00000000-0000-0000-0000-000000000099';state.workspaceCreationReceipts[payload.p_request_id]=id;state.coachWorkspaces.push({id,name:payload.p_name,time_zone:null});}
+          data=id;
+        }
+      } else if (url.pathname.endsWith('/rpc/configure_private_workspace_zone')) {
+        if(state.failWorkspaceZone){status=500;data={message:'Fictional workspace-zone failure'};}
+        else {
+          const row=state.coachWorkspaces.find(value=>value.id===payload.p_workspace_id);
+          if(!row){status=403;data={code:'42501',message:'Workspace zone access denied'};}
+          else {row.time_zone=payload.p_zone;data=null;}
+        }
+      }
       else if (url.pathname.endsWith('/academies')) {
         status = options.failAcademy ? 500 : 200;
         data = options.failAcademy ? { message: 'private schema failure' } : state.academy

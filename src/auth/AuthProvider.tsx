@@ -2,6 +2,8 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { AppState, Linking, Platform } from 'react-native';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './client';
+import { listCoachWorkspaces } from './coachWorkspaces';
+import { appConfig } from '../config';
 import { parseAuthLink } from './rules';
 import { clearFeedbackJourney } from '../parent/feedbackJourney';
 import { diagnostics } from '../diagnostics';
@@ -9,10 +11,11 @@ import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { useFeedback } from '../ui/ActionFeedback';
 
-export type Academy = { id: string; name: string; timezone: string; currency: string };
+export type Academy = { id: string; name: string; timezone: string; currency?: string; timezoneConfigured?: boolean };
 type AuthState = {
   module: 'coach' | 'parent';
   session: Session | null; loading: boolean; academy: Academy | null;
+  academyChoices: Academy[]; selectAcademy: (id: string) => void;
   academyLoading: boolean; error: string; recovery: boolean;
   reload: () => void; logout: () => Promise<string | null>;
   finishRecovery: () => void; refreshAcademy: () => void;
@@ -32,6 +35,8 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [academy, setAcademy] = useState<Academy | null>(null);
+  const [academyChoices, setAcademyChoices] = useState<Academy[]>([]);
+  const selectedAcademyId = useRef<string | null>(null);
   const [academyLoading, setAcademyLoading] = useState(false);
   // Tie academy readiness to the token that was actually checked. A refreshed/new
   // session must not briefly reveal a workspace validated for the previous token.
@@ -50,7 +55,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
         if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
-        diagnostics.clear(); setAcademy(null); setRecovery(false);
+        diagnostics.clear(); setAcademy(null); setAcademyChoices([]); selectedAcademyId.current = null; setRecovery(false);
         // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
         draftCleanup.current = Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
@@ -73,9 +78,10 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   }, [revision]);
 
   useEffect(() => {
-    if (!supabase || !session) { setAcademy(null); setAcademyLoading(false); setCheckedSession(''); return; }
+    if (!supabase || !session) { setAcademy(null); setAcademyChoices([]); selectedAcademyId.current = null; setAcademyLoading(false); setCheckedSession(''); return; }
     let active = true;
     setAcademyLoading(true); setAcademy(null); setError('');
+    setAcademyChoices([]);
     void (async () => {
       try {
         const user = await supabase.auth.getUser();
@@ -85,9 +91,35 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
           return;
         }
         if (module === 'parent') return;
-        const result = await supabase.from('academies').select('id,name,timezone,currency').eq('owner_id', user.data.user.id).maybeSingle();
-        if (result.error) throw result.error;
-        if (active) setAcademy(result.data);
+        if (appConfig.projectRef === 'fmavpazczahxeusqbxuh') {
+          const workspaces = await listCoachWorkspaces(async (name, args) => {
+            const result = await supabase!.rpc(name, args);
+            return { data: result.data, error: result.error };
+          });
+          const choices: Academy[] = workspaces.map(workspace => ({
+            id: workspace.id,
+            name: workspace.name,
+            timezone: workspace.timezone ?? 'Asia/Kolkata',
+            timezoneConfigured: workspace.timezone !== null,
+          }));
+          if (active) {
+            setAcademyChoices(choices);
+            const selected = choices.find(choice => choice.id === selectedAcademyId.current);
+            const next = selected ?? (choices.length === 1 ? choices[0] : null);
+            selectedAcademyId.current = next?.id ?? null;
+            setAcademy(next);
+          }
+        } else {
+          const result = await supabase.from('academies').select('id,name,timezone,currency').eq('owner_id', user.data.user.id).maybeSingle();
+          if (result.error) throw result.error;
+          if (active) {
+            const choices = result.data ? [result.data] : [];
+            setAcademyChoices(choices);
+            const next = choices.find(choice => choice.id === selectedAcademyId.current) ?? result.data;
+            selectedAcademyId.current = next?.id ?? null;
+            setAcademy(next);
+          }
+        }
       } catch {
         if (active) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
       } finally { if (active) { setCheckedSession(session.access_token); setAcademyLoading(false); } }
@@ -148,7 +180,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       // End this device session. Account deletion and other-device logout are separate.
       const result = await supabase.auth.signOut({ scope: 'local' });
       if (result.error) throw result.error;
-      setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
+      setSession(null); setAcademy(null); setAcademyChoices([]); selectedAcademyId.current = null; setError(''); setRecovery(false); diagnostics.clear();
       const cleanupError = await draftCleanup.current;
       if (cleanupError) { setError(cleanupError); return cleanupError; }
       await diagnostics.flush();
@@ -157,7 +189,12 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
   }, [show, dismiss]);
 
-  return <Context.Provider value={{ module, session, loading, academy,
+  const selectAcademy = useCallback((id: string) => {
+    const selected = academyChoices.find(choice => choice.id === id);
+    if (selected) { selectedAcademyId.current = selected.id; setAcademy(selected); }
+  }, [academyChoices]);
+
+  return <Context.Provider value={{ module, session, loading, academy, academyChoices, selectAcademy,
     academyLoading: academyLoading || (!!session && checkedSession !== session.access_token), error, recovery,
     reload: () => { setLoading(true); setRevision(x => x + 1); }, logout,
     finishRecovery: () => setRecovery(false), refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;

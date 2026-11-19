@@ -1,13 +1,14 @@
 import { WorkspaceSwitcher } from '../ui/WorkspaceSwitcher';
 import { SignOutButton } from './SignOutButton';
 import React, { useEffect, useState } from 'react';
+import { randomUUID } from 'expo-crypto';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '../ui/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAuth, safeAuthFailure } from './AuthProvider';
-import { authRedirect, supabase } from './client';
+import { appSessionStorage, authRedirect, supabase } from './client';
 import { AuthMode, validateAuth } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
 
@@ -18,11 +19,11 @@ function Button({ title, onPress, disabled = false, soft = false }: { title: str
     <Text style={[s.buttonLabel, soft && s.softLabel, parent && (soft ? s.parentText : s.parentButtonText)]}>{title}</Text>
   </Pressable>;
 }
-function Field({ label, value, onChange, password = false, email = false }: { label: string; value: string; onChange: (value: string) => void; password?: boolean; email?: boolean }) {
+function Field({ label, value, onChange, password = false, email = false, disabled = false }: { label: string; value: string; onChange: (value: string) => void; password?: boolean; email?: boolean; disabled?: boolean }) {
   const parent = useAuth().module === 'parent';
   return <View style={s.field}><Text style={[s.label,parent&&s.parentText]}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={onChange}
     secureTextEntry={password} autoCapitalize={password || email ? 'none' : 'words'} autoCorrect={false}
-    keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput]} maxLength={password ? 200 : email ? 320 : 100} /></View>;
+    keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput,disabled&&{opacity:0.65}]} editable={!disabled} maxLength={password ? 200 : email ? 320 : 100} /></View>;
 }
 function Page({ children, signup = false, disabled = false }: React.PropsWithChildren<{ signup?: boolean; disabled?: boolean }>) {
   const parent = useAuth().module === 'parent';
@@ -123,29 +124,102 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
 function AcademySetup() {
   const auth = useAuth();
   const feedback = useFeedback();
+  const apverse = appConfig.projectRef === 'fmavpazczahxeusqbxuh';
   const [name, setName] = useState('');
   const [owner, setOwner] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useFeedbackMessage('error', 'Workspace needs attention');
+  const [setupReady, setSetupReady] = useState(!apverse);
+  const [attemptLocked, setAttemptLocked] = useState(false);
+  const requestId = React.useRef('');
+  const storageKey = apverse && auth.session ? `parentplus.coach-workspace-setup.v1.${auth.session.user.id}` : '';
+  useEffect(() => {
+    if (!apverse || !storageKey) { setSetupReady(true); return; }
+    let active = true;
+    void appSessionStorage.getItem(storageKey).then(saved => {
+      if (!active) return;
+      if (saved) {
+        const value = JSON.parse(saved) as { requestId?: unknown; name?: unknown };
+        if (typeof value.requestId !== 'string' || !/^[0-9a-f-]{36}$/i.test(value.requestId)
+          || typeof value.name !== 'string' || value.name.trim().length < 2 || value.name.length > 120) {
+          throw new Error('Saved workspace request is invalid');
+        }
+        requestId.current = value.requestId;
+        setName(value.name);
+        setAttemptLocked(true);
+      } else requestId.current = randomUUID();
+      setSetupReady(true);
+    }).catch(() => {
+      if (active) setError('A previous workspace setup could not be restored safely. Sign out and reconnect before retrying.');
+    });
+    return () => { active = false; };
+  }, [apverse,storageKey,setError]);
   async function save() {
     if (busy) return;
-    if (!name.trim() || !owner.trim()) { setError('Enter your name and academy name.'); return; }
+    if (!name.trim() || (!apverse && !owner.trim())) { setError(apverse ? 'Enter your workspace name.' : 'Enter your name and academy name.'); return; }
     setBusy(true); setError(''); feedback.dismiss();
     try {
-      const result = await supabase!.rpc('create_academy', { academy_name: name.trim(), owner_name: owner.trim() });
-      if (result.error) throw result.error;
+      if (apverse) {
+        const request = requestId.current || randomUUID();
+        requestId.current = request;
+        await appSessionStorage.setItem(storageKey, JSON.stringify({ requestId: request, name: name.trim() }));
+        setAttemptLocked(true);
+        const created = await supabase!.rpc('create_workspace', { p_name: name.trim(), p_type: 'academy', p_request_id: request });
+        if (created.error) throw created.error;
+        if (typeof created.data !== 'string' || !/^[0-9a-f-]{36}$/i.test(created.data)) throw new Error('Workspace creation response was invalid');
+        const zone = await supabase!.rpc('configure_private_workspace_zone', { p_workspace_id: created.data, p_zone: 'Asia/Kolkata' });
+        if (zone.error) throw zone.error;
+        await appSessionStorage.removeItem(storageKey);
+      } else {
+        const result = await supabase!.rpc('create_academy', { academy_name: name.trim(), owner_name: owner.trim() });
+        if (result.error) throw result.error;
+      }
       feedback.show({ kind: 'success', title: 'Workspace created', message: 'Your academy was saved. Loading your workspace…', source: 'academy-created' });
       auth.refreshAcademy();
-    } catch { setError(safeAuthFailure('ACADEMY_FAILURE', 'Your academy could not be saved. Your entries are still here; try again.')); }
+    } catch { setError(safeAuthFailure('ACADEMY_FAILURE', apverse ? 'Workspace setup is not complete. Your request is saved; retry to safely continue the same setup.' : 'Your academy could not be saved. Your entries are still here; try again.')); }
     finally { setBusy(false); }
   }
-  return <Page><Text style={s.kicker}>MAKE YOURSELF AT HOME</Text><Text accessibilityRole="header" style={s.title}>Your academy, your way.</Text>
+  return <Page><Text style={s.kicker}>MAKE YOURSELF AT HOME</Text><Text accessibilityRole="header" style={s.title}>{apverse ? 'Your Coach workspace.' : 'Your academy, your way.'}</Text>
     <Text style={s.body}>Set up your workspace. You can add students and batches in the next module.</Text>
-    <View style={s.card}><Field label="Your name" value={owner} onChange={setOwner} /><Field label="Academy name" value={name} onChange={setName} />
-      <Text style={s.hint}>Starting with INR and Asia/Kolkata.</Text>
+    <View style={s.card}>{!apverse && <Field label="Your name" value={owner} onChange={setOwner} />}<Field label={apverse ? 'Workspace name' : 'Academy name'} value={name} onChange={setName} disabled={attemptLocked} />
+      <Text style={s.hint}>New workspaces use INR and Asia/Kolkata, the current ParentPlus defaults.</Text>
       {!!error && <Text style={s.error}>{error}</Text>}
-      <Button title={busy ? 'Saving…' : 'Create my workspace'} onPress={() => { void save(); }} disabled={busy} />
+      <Button title={busy ? 'Saving…' : 'Create my workspace'} onPress={() => { void save(); }} disabled={busy || !setupReady} />
       <SignOutButton disabled={busy} />
+    </View></Page>;
+}
+
+function WorkspaceSelection() {
+  const auth = useAuth();
+  return <Page><Text style={s.kicker}>YOUR COACH WORKSPACES</Text><Text accessibilityRole="header" style={s.title}>Where would you like to work?</Text>
+    <Text style={s.body}>Choose a workspace. Your access is checked again by APVerse whenever Coach data is requested.</Text>
+    <View style={s.card}>{auth.academyChoices.map(choice => <Pressable key={choice.id} accessibilityRole="button" accessibilityLabel={`Open ${choice.name}`} onPress={() => auth.selectAcademy(choice.id)} style={s.workspaceChoice}>
+      <Text style={s.workspaceName}>{choice.name}</Text><Text style={s.hint}>{choice.timezoneConfigured === false ? 'Time zone setup needed' : choice.timezone}</Text>
+    </Pressable>)}<SignOutButton /></View>
+  </Page>;
+}
+
+function WorkspaceTimeZoneSetup() {
+  const auth = useAuth();
+  const [busy,setBusy] = useState(false);
+  const [error,setError] = useFeedbackMessage('error','Workspace needs attention');
+  const academy = auth.academy!;
+  async function configure() {
+    if (busy || !supabase) return;
+    setBusy(true);setError('');
+    try {
+      const result = await supabase.rpc('configure_private_workspace_zone',{p_workspace_id:academy.id,p_zone:'Asia/Kolkata'});
+      if (result.error) throw result.error;
+      auth.refreshAcademy();
+    } catch (failure) {
+      const code=typeof failure==='object'&&failure&&'code' in failure?String(failure.code):'';
+      setError(code==='42501'?'Only an active workspace owner or admin can set its time zone. Ask the workspace owner to complete this setup.':safeAuthFailure('ACADEMY_FAILURE','The workspace time zone could not be saved. Retry or ask the owner to check workspace access.'));
+    } finally { setBusy(false); }
+  }
+  return <Page><Text style={s.kicker}>WORKSPACE SETUP</Text><Text accessibilityRole="header" style={s.title}>Set the workspace time zone.</Text>
+    <Text style={s.body}>{academy.name} has no time zone set. ParentPlus currently uses Asia/Kolkata for new workspaces; this setting controls class dates and attendance.</Text>
+    <View style={s.card}><Text style={s.sectionLabel}>Asia/Kolkata</Text>{!!error&&<Text style={s.error}>{error}</Text>}
+      <Button title={busy?'Saving…':'Use Asia/Kolkata'} onPress={()=>{void configure();}} disabled={busy}/><SignOutButton disabled={busy}/>
     </View></Page>;
 }
 
@@ -163,6 +237,8 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
   if (!auth.session) return <AuthForm onPreview={() => setPreview(true)} />;
   if (auth.error) return <Page><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
     <Button title="Retry connection" onPress={auth.reload} /><SignOutButton /></Page>;
+  if (auth.module === 'coach' && auth.academyChoices.length > 1 && !auth.academy) return <WorkspaceSelection />;
+  if (auth.module === 'coach' && auth.academy?.timezoneConfigured === false) return <WorkspaceTimeZoneSetup />;
   if (auth.module === 'coach' && !auth.academy) return <AcademySetup />;
   return <ErrorBoundary>{render()}</ErrorBoundary>;
 }
@@ -182,6 +258,7 @@ const s = StyleSheet.create({
   buttonLabel: { color: '#fff', fontWeight: '700', fontSize: 14 }, soft: { backgroundColor: '#EDF1EC' }, softLabel: { color: '#22303A' },
   hint: { color: '#5C6B73', fontSize: 12, lineHeight: 20 }, preview: { gap: 10, paddingTop: 10 },
   error: { color: '#8D2635', backgroundColor: '#FCE8EB', padding: 14, borderRadius: 12, lineHeight: 22 },
+  workspaceChoice:{padding:16,borderWidth:1,borderColor:'#CED8CC',borderRadius:14,gap:6},workspaceName:{color:'#22303A',fontSize:16,fontWeight:'700'},sectionLabel:{color:'#22303A',fontSize:16,fontWeight:'700'},
   notice: { color: '#1F6F6B', backgroundColor: '#DCEDEA', padding: 14, borderRadius: 12, lineHeight: 22 },
   footer: { color: '#63756F', textAlign: 'center', fontSize: 11, paddingVertical: 12 },
 });
