@@ -1,6 +1,6 @@
 # Parent attendance integration: isolated implementation
 
-**Current status, 17 November 2026:** the standalone reader migration20261117090944 is installed in Destination and grants were verified. App UI is opt-in development/test; F1/F2 staff candidates remain isolated. Earlier preparation sections below are historical; the live activation section records the current evidence.
+**Current status, 19 November 2026:** the standalone MM reader migration20261117090944 is installed in Destination and grants were verified. APVerse has its own authenticated reader; AM local UI now uses it read-only with paging and APVerse-only statuses. Local fixture-backed browser coverage passes; authenticated live APVerse acceptance and AM runtime routing remain gated. Earlier preparation sections below are historical; the live activation sections record actual evidence.
 
 17 November 2026. Working branch `AM/consolidated`. No merge into other branches or live SQL activation is authorized by this checkpoint.
 
@@ -96,3 +96,7 @@ Fresh local proof: lint/types,348 unit/database cases and89 browser scenarios pl
 Two new Playwright scenarios verify successful recoverable creation and a failed child list. They use fictional accounts and intercepted RPC responses, not APVerse records. Full local gate on `48bfc31` plus this working tree: 22 quality-gate self-tests; lint; TypeScript; 525 unit/database tests; 94 browser scenarios; web export; and exact runtime-identity receipt. Playwright traces were disabled for the local run because this shared filesystem repeatedly exhausted space while closing trace recordings; the committed CI configuration keeps failure traces enabled. No live Supabase schema or records were changed.
 
 The APVerse project is not yet selected by Vercel: branch-scoped URL/key/reference variables remain absent. Keep live runtime cutover blocked until the rest of Parent/Coach API parity and authorized provider acceptance are completed.
+
+## AM APVerse attendance UI integration — 19 November 2026
+
+The local AM Parent workspace now renders `ApVerseParentAttendance` for the selected APVerse child. It calls the previously reviewed `app_parent_academies`/`app_parent_sessions` reader through `loadApVerseAttendanceDay`, retaining global chronological paging and account checks. UI coverage distinguishes `attendance=null` from a Coach-recorded status and preserves APVerse `make_up`; it makes no attendance writes. A fictional browser scenario verifies the first page, next page and no write. Full local gate passes 536 unit/database + 96 browser cases, 22 gate checks, lint, types, web export and exact receipt. This new UI commit is not pushed yet; there is no GitHub/Vercel run for it and no real APVerse Parent login was used. APVerse Vercel variables stay unset; non-AM branches remain on MM.

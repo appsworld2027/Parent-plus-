@@ -38,6 +38,14 @@ async function setup(page:Page,failList=false){
    const payload=JSON.parse(String(init?.body??'{}'));
    state.calls.push(endpoint);
    const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
+   if(endpoint==='app_parent_academies')return reply({academies:[{workspace_id:'00000000-0000-0000-0000-000000000301',name:'North Academy',time_zone:'Asia/Kolkata'}],next_after:null});
+   if(endpoint==='app_parent_sessions'){
+    const after=payload.p_after_id!==null,base=Date.parse(`${payload.p_date}T08:00:00.000Z`);
+    const makeRow=(index:number,name:string)=>{const starts=new Date(base+index*60_000).toISOString(),ends=new Date(base+(index+45)*60_000).toISOString();return{id:`00000000-0000-0000-0000-${String(401+index).padStart(12,'0')}`,batch_id:'00000000-0000-0000-0000-000000000501',batch_name:name,starts_at:starts,ends_at:ends,status:'completed',attendance:index===0?null:index===1?{status:'make_up'}:{status:'present'}};};
+    const sessions=after?[makeRow(50,'Final class')]:Array.from({length:50},(_,index)=>makeRow(index,index===0?'Clay class':index===1?'Art class':`Class ${index+1}`));
+    const last=sessions.at(-1);
+    return reply({date:payload.p_date,time_zone:'Asia/Kolkata',server_now:new Date().toISOString(),sessions,next:after||!last?null:{id:last.id,starts_at:last.starts_at}});
+   }
    if(endpoint==='app_list_created_children')return reply(state.failList?{code:'unavailable'}:state.children.map(child=>({child_id:child.id,display_name:child.name})) ,state.failList?503:200);
    if(endpoint==='app_current_child_creation')return reply(state.current?[state.current]:[]);
    if(endpoint==='app_begin_child_creation'){
@@ -65,7 +73,7 @@ test('APVerse Parent can create a child through the recoverable account-bound fl
  await page.getByRole('button',{name:'Create child',exact:true}).click();
  await expect(page.getByRole('tab',{name:'Choose child Ari',exact:true})).toBeVisible();
  await expect(page.getByText('Child profile saved.',{exact:true})).toBeVisible();
- await expect.poll(()=>page.evaluate(()=>window.__apVerseParentFixture.calls)).toEqual(['app_list_created_children','app_current_child_creation','app_begin_child_creation','app_ack_child_creation','app_list_created_children']);
+ await expect.poll(()=>page.evaluate(()=>window.__apVerseParentFixture.calls)).toEqual(['app_list_created_children','app_current_child_creation','app_begin_child_creation','app_ack_child_creation','app_list_created_children','app_parent_academies','app_parent_sessions']);
 });
 
 test('APVerse child-list errors never appear as a successful empty state',async({page})=>{
@@ -93,11 +101,24 @@ test('APVerse Parent memories, reminders and events save for one child and survi
  await page.getByLabel('Event title',{exact:true}).fill('Art class');
  await page.getByLabel('Event location',{exact:true}).fill('Studio');
  await page.getByRole('button',{name:'Add event',exact:true}).click();
- await expect(page.getByText(/Art class/)).toBeVisible();
+ await expect(page.getByText(/^Art class ·/)).toBeVisible();
  await page.reload();
  await expect(page.getByRole('tab',{name:'Choose child Ari',exact:true})).toBeVisible();
  await expect(page.getByText('Museum visit · 45 minutes',{exact:true})).toBeVisible();
  await expect(page.getByRole('checkbox',{name:'Pack water',exact:true})).toHaveAttribute('aria-checked','true');
- await expect(page.getByText(/Art class/)).toBeVisible();
+ await expect(page.getByText(/^Art class ·/)).toBeVisible();
  await expect.poll(()=>page.evaluate(()=>window.__apVerseParentFixture.recordCalls.some(call=>call.endsWith(':parent_family_moments')))).toBe(true);
+});
+
+test('APVerse Parent shows saved and unrecorded academy attendance without changing it',async({page})=>{
+ await setup(page);
+ await page.getByLabel('Child name',{exact:true}).fill('Ari');
+ await page.getByRole('button',{name:'Create child',exact:true}).click();
+ await expect(page.getByRole('tab',{name:'Choose child Ari',exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Class attendance',exact:true})).toBeVisible();
+ await expect(page.getByText('Attendance not recorded',{exact:true})).toBeVisible();
+ await expect(page.getByText('Coach recorded: make-up session',{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Load more attendance',exact:true}).click();
+ await expect(page.getByText(/North Academy · Final class/)).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>window.__apVerseParentFixture.calls.includes('app_parent_sessions'))).toBe(true);
 });

@@ -5049,6 +5049,14 @@
       "tests": [
         "e2e/apverse-parent.spec.ts::APVerse Parent memories, reminders and events save for one child and survive reload"
       ]
+    },
+    {
+      "id": "SC-A91912000013",
+      "status": "implemented",
+      "criteria": "APVerse Parent displays child attendance including unrecorded and APVerse-only outcomes and pages without writing attendance",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse Parent shows saved and unrecorded academy attendance without changing it"
+      ]
     }
   ]
 }

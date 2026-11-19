@@ -9,6 +9,7 @@ import {SelectField,type SelectOption} from '../ui/SelectField';
 import {loadApVerseChildren,type ApParentProfileRpcClient,type ApVerseChildProfile} from './apverseParentProfile';
 import {runApVerseChildCreation,type ApChildCreationRpcClient} from './apverseChildCreation';
 import {loadApVerseParentRecords,saveApVerseParentRecord,type ApVerseParentRecords,type ApVerseParentRecordsClient} from './apverseParentRecords';
+import {ApVerseParentAttendance} from './ApVerseParentAttendance';
 
 type Pending={ownerId:string;name:string;requestId:string;priorIntentId:string|null};
 
@@ -119,6 +120,7 @@ export function ApVerseParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}
    {!loading&&!error&&children?.length===0&&<View style={s.card}><Text style={s.cardTitle}>No children yet.</Text><Text style={s.text}>Create a child profile to begin using your Parent workspace.</Text></View>}
    {!loading&&!error&&!!children?.length&&<View accessibilityRole="tablist" style={s.card}>{children.map(child=><Pressable key={child.id} accessibilityRole="tab" accessibilityLabel={`Choose child ${child.name}`} accessibilityState={{selected:selected===child.id}} onPress={()=>setSelected(child.id)} style={[s.child,selected===child.id&&s.childSelected]}><Text style={s.text}>{child.name}</Text></Pressable>)}</View>}
    {!!selectedChild&&<View style={s.card}><Text style={s.cardTitle}>{selectedChild.name}</Text><Text style={s.text}>Selected child profile</Text></View>}
+   {!!selectedChild&&owner&&<ApVerseParentAttendance owner={owner} child={selectedChild.id}/>}
    {!!selectedChild&&<View style={s.card}>
     <Text accessibilityRole="header" style={s.cardTitle}>Private family memories</Text>
     <Text style={s.text}>Only you can see these notes, reminders and plans.</Text>
