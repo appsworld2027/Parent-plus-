@@ -1,0 +1,11 @@
+scenario_id,feature_id,scenario_type,scenario,preconditions,expected_result,status,evidence
+PP-SC-001,PP-AUTH,Happy flow,Valid sign-in reaches the intended workspace,Valid test account exists,Correct workspace loads,NOT_RUN,No current execution evidence in this audit
+PP-SC-002,PP-AUTH,Negative,Invalid credentials are rejected,Invalid credentials,No session and clear error,NOT_RUN,No current execution evidence in this audit
+PP-SC-003,PP-PARENT,Happy flow,Create family and child then switch child,Disposable test account,Only owned family data is shown,NOT_RUN,No current execution evidence in this audit
+PP-SC-004,PP-INVITE,Negative,Invitation replay or expiry is rejected,Consumed or expired invitation,No second connection is created,NOT_RUN,No current execution evidence in this audit
+PP-SC-005,PP-FEEDBACK,Authorization/Security,Unlinked parent cannot read another child feed,Two isolated accounts,Private feed is denied,NOT_RUN,No current execution evidence in this audit
+PP-SC-006,PP-MEDIA,Privacy/Safety,Media is denied until parent permission is granted,Reviewed media and default-deny permission,No URL is issued before consent,NOT_RUN,No current execution evidence in this audit
+PP-SC-007,PP-MISSING,Boundary,Duplicate batch names are handled deterministically,Two batches with same candidate name,Clear validation or stable unique identity,NOT_RUN,Master QA prompt requires explicit coverage
+PP-SC-008,PP-MISSING-2,Negative,Invitation approval loop does not leave an orphan state,Invitation and approval transition,State reaches one terminal outcome,NOT_RUN,Master QA prompt requires explicit coverage
+PP-SC-009,PP-OBS,Regression,Pilot feedback visibility hides draft and shows published feedback,Pilot fixture,Only published feedback is visible,PASS,ai-workspace/pilots/parentplus-ai-pilot/feedback.test.mjs
+PP-SC-010,PP-COACH,Integration,Coach roster and Parent link preserve tenant isolation,Disposable workspaces,No cross-workspace records are exposed,NOT_RUN,No current execution evidence in this audit
