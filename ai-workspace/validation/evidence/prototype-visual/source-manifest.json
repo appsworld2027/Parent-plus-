@@ -1,0 +1,150 @@
+{
+  "baseline": "260047fbcbb66c90f0c3b19de3b9932c047fe974",
+  "sourceDigest": "db2e0a56e70391433749332453ea968331278c6c6b50704ff8dcab76c56dd069",
+  "files": [
+    {
+      "path": "App.tsx",
+      "sha256": "0ced3fdc3db5fd5de825c6b745809254356e81ae71c2ed26c6036c777c8ee930"
+    },
+    {
+      "path": "app.json",
+      "sha256": "e20c3471f7e8c50ce92820df26b64382237bc15191212cda5ceb4ca5855f7483"
+    },
+    {
+      "path": "assets/parent/aurora-header.png",
+      "sha256": "2e913ff6e8ba5f289448033a161e1c6eff0f7f2582649fd0e05777247978e80d"
+    },
+    {
+      "path": "e2e/prototype-visuals.spec.ts",
+      "sha256": "a1bf9c20ea94fdf6a5c12dbb3ac6e3ca81389b1994da621c8a8ac78803ff4637"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "fc0ba1723c7e3d633903aa9ba4156dc254bda61d79f6baace0dd53681c337570"
+    },
+    {
+      "path": "package.json",
+      "sha256": "c7f37f67fec516c14147a42f56caa3518468a6b89003d88200c9e343a245f780"
+    },
+    {
+      "path": "src/ErrorBoundary.tsx",
+      "sha256": "213cfc7a13c6833482cb6ec94f90bc770e3fee13eb24fd15f5d3b0dfeab337a4"
+    },
+    {
+      "path": "src/auth/AuthGate.tsx",
+      "sha256": "303296d9e76b719bd257bd74974c92b0a221148b6803507b4243b0ed38554cef"
+    },
+    {
+      "path": "src/auth/SignOutButton.tsx",
+      "sha256": "865075a4130f21445e462ece89e7d4b79ae9c8b2fea6f94f83c38b5d6b006323"
+    },
+    {
+      "path": "src/class-media/ClassMediaPanel.tsx",
+      "sha256": "a0a265fcb4893827b64a15499c871825eeabb13637fa97988ceef6ed30414ee7"
+    },
+    {
+      "path": "src/classes/ClassesScreen.tsx",
+      "sha256": "e56f5f3fd8a8ac00660d91471bd2a092b6a66a17efb1563db938f20480e56200"
+    },
+    {
+      "path": "src/classes/TodayClasses.tsx",
+      "sha256": "88df612efb04dad03a983ba5e7f2e963496f39942283ec8486b4bcb6970b9081"
+    },
+    {
+      "path": "src/fees/FeesScreen.tsx",
+      "sha256": "c15cc865056e30b4001b51ee8ad0152c574e59753a2880d43c356656365fe376"
+    },
+    {
+      "path": "src/observations/ObservationsScreen.tsx",
+      "sha256": "2bc182f9ddc3237aa0ba0d42974da1b2e01d8fb484bc2e4fe1df3b3542097917"
+    },
+    {
+      "path": "src/observations/OpenParentFeedback.tsx",
+      "sha256": "e494025f378f4b77fd6c15e52a1f66fb4e66ad1c6dc32df9c89e339e08176850"
+    },
+    {
+      "path": "src/observations/ParentModuleReview.tsx",
+      "sha256": "23eba78de25959a878a04fd1f62b72c1cd1f779beda1d902a198b15a78cee59b"
+    },
+    {
+      "path": "src/observations/WhatsAppReview.tsx",
+      "sha256": "8be9f07cbca2fae0cedd24992893ba91d6a2f1f6429f94e1fe303d73374aa6ce"
+    },
+    {
+      "path": "src/onboarding/CoachSetupCard.tsx",
+      "sha256": "d2ace8bbb7e5f531e5d0fcb077789ca27f7480b5cbd684687918d4f246a064f3"
+    },
+    {
+      "path": "src/onboarding/ScanRosterScreen.tsx",
+      "sha256": "b728a8b8f6814b42be61dc40567d4c45cd9b758ca92cc2c5bf5eeed0ef2f5695"
+    },
+    {
+      "path": "src/parent/ParentApp.tsx",
+      "sha256": "0ebbc7f206e76bd64b5db337f4c67dfb37f810d30f9d67554056753bc0d96dcd"
+    },
+    {
+      "path": "src/parent/ParentConnectionApprovals.tsx",
+      "sha256": "6a0d6fe751ca0517413542485e16eb369fbe094488a67bc63a41b89aff9ed317"
+    },
+    {
+      "path": "src/parent/ParentDecor.tsx",
+      "sha256": "90b6019a1255918ae4739fe31b8fb5b3ad733a86a1dff6fe691853fe69dba699"
+    },
+    {
+      "path": "src/parent/model.ts",
+      "sha256": "fc372cf08263ce8a7b019477518096cdd9060a22d24f272278c3b14f0c5d7548"
+    },
+    {
+      "path": "src/photos/PhotoControl.tsx",
+      "sha256": "dd6cddebbb622bb78f505b9bcaa0b14c56447cbb2aca190914a966474fb6c768"
+    },
+    {
+      "path": "src/roster/ParentLinkCard.tsx",
+      "sha256": "864a6108a7a7307bd72a120f135ec310331b6e22d124e30b649eb8193c5f697b"
+    },
+    {
+      "path": "src/roster/RosterScreen.tsx",
+      "sha256": "b6a4a01b59afa806c0dceec9ebc8cfd53c80d1c76cc997e1681dfaa5d5ebe901"
+    },
+    {
+      "path": "src/ui/ActionFeedback.tsx",
+      "sha256": "71eb962aecf123daddb543e02ae3bd467b7798ebfddb4ff8f3e3714895b46a65"
+    },
+    {
+      "path": "src/ui/ConfirmDialog.tsx",
+      "sha256": "fac336fbc10f488a6c6f528c46435f26477e4e0bb653411d522f83cfe70aec5f"
+    },
+    {
+      "path": "src/ui/FontLicense.tsx",
+      "sha256": "cb100d63ec41e908e48016235629435af7d9e47d067778aaaf12637486f00593"
+    },
+    {
+      "path": "src/ui/PrototypeFrame.tsx",
+      "sha256": "e59bde9e541718433e53a368457962c670e066126bc80e36d2e64b39c4598bc6"
+    },
+    {
+      "path": "src/ui/PrototypeIcon.tsx",
+      "sha256": "909e9a81ee631e21bf8b25c1c5e5b02fd056cf0f838401b75239002813d2e46c"
+    },
+    {
+      "path": "src/ui/SelectField.tsx",
+      "sha256": "d0504a9b00eaad35346909c55c8df472bd7dbe2c03554d4d4c52fb952a2ba8be"
+    },
+    {
+      "path": "src/ui/Typography.tsx",
+      "sha256": "4e72b3445e3b0c64b2708eebc7f6ae61baa03ddd18dfcc4be042544e1cd43d6b"
+    },
+    {
+      "path": "src/ui/WorkspaceSwitcher.tsx",
+      "sha256": "1747a5358c9b074d792e8a1616bb1e81f69dedb48f4f6e2f8ab3fc4cf15f825e"
+    },
+    {
+      "path": "src/ui/prototypeIcons.json",
+      "sha256": "fd8d1257d1065a8f4694534b202f77198d0cc4dc1bb6b4797305f0b812e97044"
+    },
+    {
+      "path": "src/ui/prototypeTheme.ts",
+      "sha256": "3398d832ec13c62831294b1b14554cc5d4cdb6cdd8b6ca38fd483789ca6c13ec"
+    }
+  ]
+}

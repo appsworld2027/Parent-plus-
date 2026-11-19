@@ -1,3 +1,4 @@
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import React, { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
@@ -32,4 +33,4 @@ export function OpenParentFeedback({academy,student,name,handoff,disabled,onWork
   }
   return <View style={s.wrap}><Pressable accessibilityRole="button" disabled={disabled||busy} onPress={()=>{void open();}} style={[s.button,(disabled||busy)&&{opacity:0.5}]}><Text style={s.label}>{busy?'Opening Parent…':`Open ${name}’s update in Parent`}</Text></Pressable><Text style={s.body}>For same-login testing, the invitation is restricted to your verified login email. Choose your family child, request the connection, then approve the match from Coach Today. Existing approved connections open directly.</Text>{!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}</View>;
 }
-const s=StyleSheet.create({wrap:{gap:8},button:{minHeight:48,padding:14,borderRadius:12,backgroundColor:'#1F6F6B'},label:{color:'#fff',fontWeight:'700'},body:{color:'#53676B',fontSize:13,lineHeight:20},error:{color:'#8E3434'}});
+const s = StyleSheet.create({wrap:{gap:8},button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,backgroundColor:c.white,alignItems:'center'},label:{color:c.black,fontSize:13.5,fontWeight:'800'},body:{color:c.muted,fontSize:13,lineHeight:20},error:{color:c.rose,fontSize:13,lineHeight:20}});

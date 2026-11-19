@@ -1,3 +1,4 @@
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import { OpenParentFeedback } from './OpenParentFeedback';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -96,4 +97,4 @@ export function ParentModuleReview({academy,observation,revision,disabled,onWork
     </>}
   </View>;
 }
-const s=StyleSheet.create({card:{padding:18,gap:14,borderRadius:16,backgroundColor:'#EEF2FB'},title:{fontSize:20,fontWeight:'700',color:'#22303A'},body:{fontSize:14,lineHeight:22,color:'#53676B'},label:{fontSize:14,fontWeight:'600',color:'#22303A'},button:{padding:14,minHeight:48,borderRadius:12,backgroundColor:'#DCE6F4',alignItems:'center'},check:{minHeight:48,justifyContent:'center'},disabled:{opacity:0.45},error:{color:'#8E3434'},item:{gap:8,paddingTop:12,borderTopWidth:1,borderColor:'#CDD7E5'}});
+const s = StyleSheet.create({card:{padding:12,gap:14,borderRadius:18,backgroundColor:c.surface,borderWidth:1,borderColor:c.border},title:{fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.text},body:{fontSize:13,lineHeight:20,color:c.muted},label:{fontSize:13,fontWeight:'700',color:c.text},button:{paddingVertical:13,paddingHorizontal:16,minHeight:44,borderRadius:14,backgroundColor:c.raised,alignItems:'center'},check:{minHeight:44,justifyContent:'center'},disabled:{opacity:0.45},error:{color:c.rose,fontSize:13,lineHeight:20},item:{gap:8,paddingTop:12,borderTopWidth:1,borderColor:c.border}});

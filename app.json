@@ -3,15 +3,15 @@
     "name": "Parent Plus Coach",
     "slug": "parentplus-coach",
     "owner": "appsworld2027",
-    "version": "0.13.3",
+    "version": "0.14.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 21,
+      "versionCode": 22,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",

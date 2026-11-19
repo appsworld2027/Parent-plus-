@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Text } from './Typography';
+import { prototypeColors as c, prototypeWeight } from './prototypeTheme';
 
 type Kind = 'success' | 'error' | 'info';
 type Options = { kind: Kind; title: string };
@@ -71,14 +72,8 @@ export function useFeedbackMessage(kind: Kind, title: string) {
   return [message, publish] as const;
 }
 const s = StyleSheet.create({
-  position: { paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' },
-  card: { width: '100%', maxWidth: 520, borderRadius: 16, borderWidth: 2, padding: 16,
-    shadowColor: '#22303A', shadowOpacity: 0.22, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 16 },
-  success: { backgroundColor: '#E6F4EC', borderColor: '#287552' },
-  failure: { backgroundColor: '#FCE8EB', borderColor: '#9E3542' },
-  information: { backgroundColor: '#E5F1F7', borderColor: '#38778A' },
-  title: { color: '#22303A', fontSize: 18, lineHeight: 25, fontWeight: '700', marginBottom: 6 },
-  message: { color: '#22303A', fontSize: 15, lineHeight: 23 },
-  dismiss: { minHeight: 44, alignSelf: 'flex-end', paddingHorizontal: 12, paddingVertical: 10, justifyContent: 'center' },
-  dismissLabel: { color: '#22303A', fontWeight: '700', fontSize: 14 },
+  position:{paddingHorizontal:18,paddingVertical:8,alignItems:'center'},card:{width:'100%',maxWidth:430,borderRadius:12,borderWidth:0,paddingVertical:10,paddingHorizontal:14,backgroundColor:c.white,shadowColor:c.black,shadowOpacity:.6,shadowRadius:30,shadowOffset:{width:0,height:10},elevation:12},
+  success:{backgroundColor:c.white},failure:{backgroundColor:c.white},information:{backgroundColor:c.white},
+  title:{color:c.black,fontSize:12.5,lineHeight:17.5,fontWeight:prototypeWeight(750),marginBottom:5},message:{color:c.black,fontSize:12.5,lineHeight:17.5},
+  dismiss:{minHeight:44,alignSelf:'flex-end',paddingHorizontal:11,paddingVertical:8,justifyContent:'center'},dismissLabel:{color:c.black,fontWeight:'800',fontSize:11.5},
 });

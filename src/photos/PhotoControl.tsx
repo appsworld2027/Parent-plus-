@@ -1,3 +1,4 @@
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import React,{useEffect,useRef,useState} from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
@@ -35,4 +36,4 @@ export function PhotoControl({academy,kind,id,exists,disabled=false,locked=false
     {locked&&photo&&<Text style={s.hint}>Recorded photo is fixed with this observation.</Text>}
   </View>;
 }
-const s=StyleSheet.create({box:{gap:10},title:{fontSize:16,fontWeight:'700',color:'#22303A'},hint:{fontSize:12,lineHeight:19,color:'#63756F'},avatar:{width:96,height:96,borderRadius:48},photo:{width:'100%',height:220,borderRadius:14},button:{minHeight:46,padding:13,borderRadius:12,backgroundColor:'#DCEDEA',alignItems:'center'},label:{color:'#1F6F6B',fontWeight:'700'}});
+const s = StyleSheet.create({box:{gap:10},title:{fontSize:13,fontWeight:'700',color:c.text},hint:{fontSize:11.5,lineHeight:17,color:c.muted},avatar:{width:96,height:96,borderRadius:48},photo:{width:'100%',height:220,borderRadius:14},button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,backgroundColor:c.raised,alignItems:'center'},label:{color:c.text,fontSize:13.5,fontWeight:'800'}});

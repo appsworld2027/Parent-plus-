@@ -14,6 +14,8 @@ This is a proposed full-product direction for founder review. It does not by its
 
 The revised prototypes are interactive design references. Their local state, sample records, previews, simulated sends, and success messages do not prove persistent or connected behavior. The prototype feature map itself marks identity, provider verification, shared APIs, permissions, media, messaging, payments, support, and marketplace functions as requiring backend or operational services. Treat prototype interactions as design intent until their acceptance criteria pass against the real app and authorized service.
 
+The owner's19November visual instruction makes the latest saved Coach/Tutor upload3 and Aurora Parent upload1 authoritative for existing screens' colors, typography, icons and control treatment. Apply their final CSS cascade, including late Aurora overrides and Coach's inline pastel accents; do not substitute a new theme. The [visual reference and acceptance criteria](ai-workspace/validation/PROTOTYPE_VISUAL_REFERENCE.md) record the exact source hashes and measurements. This visual requirement does not authorize prototype-only functionality or changes to identity, consent, approval or data access.
+
 ### Changes that need product reconciliation
 
 | Area | Full-product proposal | Existing first-slice or pilot boundary | Review required before delivery |

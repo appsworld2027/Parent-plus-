@@ -1,6 +1,7 @@
+import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useEffect, useRef, useState } from 'react';
-import { Linking, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '../ui/Typography';
+import { Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '../ui/Typography';
 import * as ImagePicker from 'expo-image-picker';
 import { randomUUID } from 'expo-crypto';
 import { supabase } from '../auth/client';
@@ -105,4 +106,4 @@ export function ClassMediaPanel({ academy, session, students, disabled, onWorkin
     </>}
   </View>;
 }
-const s=StyleSheet.create({card:{padding:16,gap:14,backgroundColor:'#F0F5F1',borderRadius:16},title:{fontSize:18,fontWeight:'700',color:'#22303A'},body:{fontSize:14,lineHeight:22,color:'#53676B'},label:{fontSize:14,fontWeight:'600',color:'#22303A'},button:{minHeight:48,padding:14,borderRadius:12,backgroundColor:'#DCEDEA',alignItems:'center'},check:{minHeight:48,justifyContent:'center'},input:{minHeight:48,borderRadius:12,borderWidth:1,borderColor:'#CED8CC',padding:12,fontSize:16,backgroundColor:'#fff'},disabled:{opacity:0.45},error:{color:'#8E3434'},item:{gap:8,borderTopWidth:1,borderColor:'#CED8CC',paddingTop:12}});
+const s = StyleSheet.create({card:{padding:12,gap:14,backgroundColor:c.surface,borderRadius:18,borderWidth:1,borderColor:c.border},title:{fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.text},body:{fontSize:13,lineHeight:20,color:c.muted},label:{fontSize:12,fontWeight:prototypeWeight(750),color:c.muted},button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,backgroundColor:c.raised,alignItems:'center'},check:{minHeight:44,justifyContent:'center'},input:{minHeight:44,borderRadius:12,borderWidth:1,borderColor:c.border,paddingVertical:10,paddingHorizontal:11,fontSize:13,backgroundColor:c.raised,color:c.text},disabled:{opacity:0.45},error:{color:c.rose,fontSize:13,lineHeight:20},item:{gap:8,borderTopWidth:1,borderColor:c.border,paddingTop:12}});

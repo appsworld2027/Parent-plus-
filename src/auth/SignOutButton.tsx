@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text } from '../ui/Typography';
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { observationDrafts } from '../observations/localDrafts';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
@@ -34,4 +35,4 @@ export function SignOutButton({ disabled = false }: { disabled?: boolean }) {
       confirmLabel="Remove drafts and sign out" cancelLabel="Keep editing" onConfirm={() => { void finish(); }} onCancel={() => setConfirm(false)} />
   </>;
 }
-const s = StyleSheet.create({ button: { backgroundColor: '#EDF1EC', minHeight: 48, padding: 15, borderRadius: 13, alignItems: 'center' }, label: { color: '#22303A', fontSize: 14, fontWeight: '700' } });
+const s=StyleSheet.create({button:{backgroundColor:c.raised,minHeight:44,padding:13,borderRadius:14,alignItems:'center'},label:{color:c.white,fontSize:13.5,fontWeight:'800'}});

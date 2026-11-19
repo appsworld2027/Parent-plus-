@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from './ui/Typography';
+import { prototypeColors as c } from './ui/prototypeTheme';
 import { diagnostics } from './diagnostics';
 
 // Recovers React render failures. Event-handler/async errors need their own catches;
@@ -25,9 +26,9 @@ export class ErrorBoundary extends React.Component<React.PropsWithChildren, { fa
   }
 }
 const styles = StyleSheet.create({
-  page: { flex: 1, padding: 28, justifyContent: 'center', backgroundColor: '#F3F5F1', gap: 16 },
-  title: { fontSize: 24, fontWeight: '700', color: '#22303A' },
-  text: { fontSize: 16, color: '#5C6B73' },
-  button: { backgroundColor: '#1F6F6B', padding: 16, borderRadius: 14 },
-  label: { color: '#fff', fontWeight: '700', textAlign: 'center' },
+  page: { flex: 1, padding: 28, justifyContent: 'center', backgroundColor: c.background, gap: 16 },
+  title: { fontSize: 24, fontWeight: '700', color: c.white },
+  text: { fontSize: 16, color: c.muted },
+  button: { backgroundColor: c.white, padding: 16, borderRadius: 14 },
+  label: { color: c.black, fontWeight: '700', textAlign: 'center' },
 });
