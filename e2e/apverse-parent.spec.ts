@@ -41,7 +41,7 @@ async function setup(page:Page,failList=false){
    if(endpoint==='app_parent_academies')return reply({academies:[{workspace_id:'00000000-0000-0000-0000-000000000301',name:'North Academy',time_zone:'Asia/Kolkata'}],next_after:null});
    if(endpoint==='app_parent_sessions'){
     const after=payload.p_after_id!==null,base=Date.parse(`${payload.p_date}T08:00:00.000Z`);
-    const makeRow=(index:number,name:string)=>{const starts=new Date(base+index*60_000).toISOString(),ends=new Date(base+(index+45)*60_000).toISOString();return{id:`00000000-0000-0000-0000-${String(401+index).padStart(12,'0')}`,batch_id:'00000000-0000-0000-0000-000000000501',batch_name:name,starts_at:starts,ends_at:ends,status:'completed',attendance:index===0?null:index===1?{status:'make_up'}:{status:'present'}};};
+    const makeRow=(index:number,name:string)=>{const starts=new Date(base+index*60_000).toISOString(),ends=new Date(base+(index+45)*60_000).toISOString();return{id:`00000000-0000-0000-0000-${String(401+index).padStart(12,'0')}`,batch_id:'00000000-0000-0000-0000-000000000501',batch_name:name,starts_at:starts,ends_at:ends,status:'completed',version:1,can_signal:false,own_latest_signal:null,attendance:index===0?null:index===1?{status:'make_up'}:{status:'present'}};};
     const sessions=after?[makeRow(50,'Final class')]:Array.from({length:50},(_,index)=>makeRow(index,index===0?'Clay class':index===1?'Art class':`Class ${index+1}`));
     const last=sessions.at(-1);
     return reply({date:payload.p_date,time_zone:'Asia/Kolkata',server_now:new Date().toISOString(),sessions,next:after||!last?null:{id:last.id,starts_at:last.starts_at}});

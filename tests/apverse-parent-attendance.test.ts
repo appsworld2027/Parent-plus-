@@ -17,8 +17,16 @@ function routedClient(handler:(name:string,args:Record<string,unknown>)=>unknown
 
 it('adapts APVerse session rows to the shared Parent attendance contract and omits private fields',async()=>{
  const fake=client({...response,sessions:[{...row,private_note:'never expose'}]});
- await expect(loadApVerseAttendancePage(fake.value,{ownerId:ids.owner,childId:ids.child,workspaceId:ids.workspace,workspaceName:'North Academy',day:'2026-11-16'})).resolves.toEqual({rows:[{session_id:ids.session,workspace_id:ids.workspace,workspace_name:'North Academy',batch_name:'Drawing',starts_at:row.starts_at,ends_at:row.ends_at,session_status:'scheduled',attendance_status:null}],next:null});
+ await expect(loadApVerseAttendancePage(fake.value,{ownerId:ids.owner,childId:ids.child,workspaceId:ids.workspace,workspaceName:'North Academy',day:'2026-11-16'})).resolves.toEqual({rows:[{session_id:ids.session,workspace_id:ids.workspace,workspace_name:'North Academy',batch_name:'Drawing',starts_at:row.starts_at,ends_at:row.ends_at,session_status:'scheduled',attendance_status:null,session_version:1,can_signal:true,own_latest_signal:null}],next:null});
  expect(fake.rpc).toHaveBeenCalledWith('app_parent_sessions',{p_child_id:ids.child,p_workspace_id:ids.workspace,p_date:'2026-11-16',p_batch_id:null,p_after_start:null,p_after_id:null});
+});
+
+it('retains only validated session version, report eligibility and the signed-in parent latest signal',async()=>{
+ const latest={id:'00000000-0000-0000-0000-000000000045',child_id:ids.child,actor_id:ids.owner,type:'missing_today',reason:'unwell',created_at:'2026-11-16T09:00:00Z'};
+ const fake=client({...response,sessions:[{...row,own_latest_signal:latest,extra:'private'}]});
+ const page=await loadApVerseAttendancePage(fake.value,{ownerId:ids.owner,childId:ids.child,workspaceId:ids.workspace,workspaceName:'North Academy',day:'2026-11-16'});
+ expect(page.rows[0]).toMatchObject({session_version:1,can_signal:true,own_latest_signal:{id:latest.id,type:'missing_today',reason:'unwell',created_at:latest.created_at}});
+ expect(page.rows[0]).not.toHaveProperty('actor_id');
 });
 
 it('preserves recorded attendance, validates the returned next cursor, and sends a validated cursor',async()=>{
@@ -42,6 +50,10 @@ it.each([
  ['non-positive session duration',{...response,sessions:[{...row,ends_at:row.starts_at}] }],
  ['cursor that is not the last returned row',{...response,next:{starts_at:'2026-11-16T12:00:00Z',id:ids.session}}],
  ['different response date',{...response,date:'2026-11-15'}],
+ ['invalid session version',{...response,sessions:[{...row,version:0}]}],
+ ['invalid signal permission flag',{...response,sessions:[{...row,can_signal:'true'}]}],
+ ['latest signal belongs to another child',{...response,sessions:[{...row,own_latest_signal:{id:'00000000-0000-0000-0000-000000000045',child_id:ids.workspace,actor_id:ids.owner,type:'running_late',reason:null,created_at:'2026-11-16T09:00:00Z'}}]}],
+ ['latest signal belongs to another account',{...response,sessions:[{...row,own_latest_signal:{id:'00000000-0000-0000-0000-000000000045',child_id:ids.child,actor_id:ids.workspace,type:'running_late',reason:null,created_at:'2026-11-16T09:00:00Z'}}]}],
 ])('rejects malformed APVerse response: %s',async (_reason,data)=>{
  const fake=client(data);
  await expect(loadApVerseAttendancePage(fake.value,{ownerId:ids.owner,childId:ids.child,workspaceId:ids.workspace,workspaceName:'North Academy',day:'2026-11-16'})).rejects.toThrow('Invalid APVerse attendance response');

@@ -6,38 +6,51 @@ export type ApAttendanceRpcClient={
  rpc:(name:string,args:Record<string,unknown>)=>Promise<{data:unknown;error:unknown|null}>;
 };
 export type ApAttendanceCursor={session_id:string;starts_at:string};
-export type ApAttendancePage={rows:AttendanceSession[];next:ApAttendanceCursor|null};
+export type ApVerseParentSignalSummary={id:string;type:'running_late'|'missing_today'|'dropped_off'|'picked_up';reason:'unwell'|'travelling'|'other'|null;created_at:string};
+export type ApVerseAttendanceSession=AttendanceSession&{session_version:number;can_signal:boolean;own_latest_signal:ApVerseParentSignalSummary|null};
+export type ApAttendancePage={rows:ApVerseAttendanceSession[];next:ApAttendanceCursor|null};
 export type ApAttendanceQuery={ownerId:string;childId:string;workspaceId:string;workspaceName:string;day:string;after?:ApAttendanceCursor};
 export type ApVerseDayQuery={ownerId:string;childId:string;day:string;after?:ApAttendanceCursor};
 
 const isRecord=(value:unknown):value is Record<string,unknown>=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const isUuid=(value:unknown):value is string=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 const isStamp=(value:unknown):value is string=>typeof value==='string'&&/T.*(?:Z|[+-]\d\d:\d\d)$/.test(value)&&Number.isFinite(Date.parse(value));
+const signalTypes=['running_late','missing_today','dropped_off','picked_up'] as const;
+const signalReasons=['unwell','travelling','other'] as const;
 const afterCursor=(value:AttendanceSession,after:ApAttendanceCursor)=>Date.parse(value.starts_at)>Date.parse(after.starts_at)||(Date.parse(value.starts_at)===Date.parse(after.starts_at)&&value.session_id.toLowerCase()>after.session_id.toLowerCase());
 
 function decodeApPage(value:unknown,query:ApAttendanceQuery):ApAttendancePage|null {
  if(!isRecord(value)||value.date!==query.day||typeof value.time_zone!=='string'||!value.time_zone.trim()||!isStamp(value.server_now)||!Array.isArray(value.sessions)||value.sessions.length>50)return null;
  try{new Intl.DateTimeFormat('en',{timeZone:value.time_zone});}catch{return null;}
- const rows:unknown[]=[];
+ const rows:unknown[]=[],metadata:Array<Pick<ApVerseAttendanceSession,'session_version'|'can_signal'|'own_latest_signal'>>=[];
  for(const entry of value.sessions){
-  if(!isRecord(entry)||!isUuid(entry.id)||!isUuid(entry.batch_id)||typeof entry.batch_name!=='string'||!entry.batch_name.trim()||entry.batch_name.length>100||!isStamp(entry.starts_at)||!isStamp(entry.ends_at)||Date.parse(entry.ends_at)<=Date.parse(entry.starts_at)||!['scheduled','completed','cancelled'].includes(String(entry.status)))return null;
+  if(!isRecord(entry)||!isUuid(entry.id)||!isUuid(entry.batch_id)||typeof entry.batch_name!=='string'||!entry.batch_name.trim()||entry.batch_name.length>100||!isStamp(entry.starts_at)||!isStamp(entry.ends_at)||Date.parse(entry.ends_at)<=Date.parse(entry.starts_at)||!['scheduled','completed','cancelled'].includes(String(entry.status))||!Number.isSafeInteger(entry.version)||Number(entry.version)<1||typeof entry.can_signal!=='boolean')return null;
+  let latest:ApVerseParentSignalSummary|null=null;
+  if(entry.own_latest_signal!==null){
+   const signal=entry.own_latest_signal;
+   if(!isRecord(signal)||!isUuid(signal.id)||!isUuid(signal.child_id)||!isUuid(signal.actor_id)||signal.child_id.toLowerCase()!==query.childId.toLowerCase()||signal.actor_id.toLowerCase()!==query.ownerId.toLowerCase()||!signalTypes.includes(signal.type as typeof signalTypes[number])||!isStamp(signal.created_at))return null;
+   if(signal.type==='missing_today'?!signalReasons.includes(signal.reason as typeof signalReasons[number]):signal.reason!==null)return null;
+   latest={id:signal.id,type:signal.type as ApVerseParentSignalSummary['type'],reason:signal.reason as ApVerseParentSignalSummary['reason'],created_at:signal.created_at};
+  }
   let attendanceStatus:unknown=null;
   if(entry.attendance!==null){
    if(!isRecord(entry.attendance)||!['present','late','absent','excused','make_up'].includes(String(entry.attendance.status)))return null;
    attendanceStatus=entry.attendance.status;
   }
-  rows.push({session_id:entry.id,workspace_id:query.workspaceId,workspace_name:query.workspaceName,batch_name:entry.batch_name,starts_at:entry.starts_at,ends_at:entry.ends_at,session_status:entry.status,attendance_status:attendanceStatus});
+  rows.push({session_id:entry.id,workspace_id:query.workspaceId,workspace_name:query.workspaceName,batch_name:entry.batch_name,starts_at:entry.starts_at,ends_at:entry.ends_at,session_status:entry.status,attendance_status:attendanceStatus,session_version:Number(entry.version),can_signal:entry.can_signal,own_latest_signal:latest});
+  metadata.push({session_version:Number(entry.version),can_signal:entry.can_signal,own_latest_signal:latest});
  }
  const decoded=decodeAttendanceSessions(rows);
  if(!decoded||query.after&&decoded.some(row=>!afterCursor(row,query.after!)))return null;
+ const extended=decoded.map((row,index)=>({...row,...metadata[index]}));
  let next:ApAttendanceCursor|null=null;
  if(value.next!==null){
   if(!isRecord(value.next)||!isUuid(value.next.id)||!isStamp(value.next.starts_at)||decoded.length!==50)return null;
-  const last=decoded.at(-1);
+  const last=extended.at(-1);
   if(!last||last.session_id.toLowerCase()!==value.next.id.toLowerCase()||last.starts_at!==value.next.starts_at)return null;
   next={session_id:value.next.id,starts_at:value.next.starts_at};
  }
- return {rows:decoded,next};
+ return {rows:extended,next};
 }
 
 async function assertCurrentAccount(client:ApAttendanceRpcClient,ownerId:string){
@@ -71,7 +84,7 @@ export async function loadApVerseAttendancePage(client:ApAttendanceRpcClient,que
  await assertCurrentAccount(client,query.ownerId);
  const result=await client.rpc('app_parent_sessions',{p_child_id:query.childId,p_workspace_id:query.workspaceId,p_date:query.day,p_batch_id:null,p_after_start:query.after?.starts_at??null,p_after_id:query.after?.session_id??null});
  if(result.error)throw result.error;
- const page=decodeApPage(result.data,query);
+  const page=decodeApPage(result.data,query);
  if(!page)throw new Error('Invalid APVerse attendance response');
  await assertCurrentAccount(client,query.ownerId);
  return page;
@@ -97,7 +110,7 @@ export async function loadApVerseAttendanceDay(client:ApAttendanceRpcClient,quer
  const loadWorkspacePage=async(workspace:ApVerseWorkspace)=>{
   const result=await client.rpc('app_parent_sessions',{p_child_id:query.childId,p_workspace_id:workspace.workspace_id,p_date:query.day,p_batch_id:null,p_after_start:query.after?.starts_at??null,p_after_id:query.after?.session_id??null});
   if(result.error)throw result.error;
-  const page=decodeApPage(result.data,{...query,workspaceId:workspace.workspace_id,workspaceName:workspace.name});
+  const page=decodeApPage(result.data,{...query,ownerId:query.ownerId,workspaceId:workspace.workspace_id,workspaceName:workspace.name});
   if(!page)throw new Error('Invalid APVerse attendance response');
   return page;
  };
