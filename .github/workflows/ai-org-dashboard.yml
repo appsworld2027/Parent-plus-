@@ -1,0 +1,53 @@
+name: AppsWorld AI Organization dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+  issues: read
+  actions: read
+
+env:
+  AI_ORG_REPO: appsworld2027/parent-plus-ai-org
+
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build founder dashboard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dashboard
+          now="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          {
+            echo "# Parent Plus — AppsWorld AI Organization dashboard"
+            echo
+            echo "Generated: $now"
+            echo
+            echo "## Active agent/workflow activity"
+            echo
+            echo '| Status | Workflow/agent activity | Run | Updated | Identifiers |'
+            echo '|---|---|---|---|---|'
+            gh api "repos/$AI_ORG_REPO/actions/runs?per_page=20" --jq '.workflow_runs[] | "| \(.status)/\(.conclusion // \"running\") | \(.name) | [run \(.id)](\(.html_url)) | \(.updated_at) | Session/Response IDs are recorded when supplied by the runner |"' || true
+            echo
+            echo "## Parent Plus work queue"
+            echo
+            echo '| State | Task | Issue | Feature/Test/Session/Response IDs |'
+            echo '|---|---|---|---|'
+            gh api "repos/${GITHUB_REPOSITORY}/issues?state=open&per_page=50" --jq '.[] | select(.pull_request == null) | "| open | \(.title) | [#\(.number)](\(.html_url)) | identifiers are read from the issue body when supplied |"' || true
+            echo
+            echo "## Interpretation"
+            echo
+            echo "Routine technical work is autonomous. Founder attention is required only for product direction, material conflicts, credentials/secrets, paid services, production actions, or legal/privacy decisions."
+          } | tee dashboard/agent-dashboard.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload dashboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: parent-plus-agent-dashboard
+          path: dashboard/agent-dashboard.md
