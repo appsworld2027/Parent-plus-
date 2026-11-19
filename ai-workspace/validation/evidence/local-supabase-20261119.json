@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "environment": "local-real-supabase",
   "authFlow": "SDK PKCE with per-client in-memory proof",
-  "startedAt": "2026-11-19T01:00:22.573Z",
-  "source": "d950d6e1b4bbf237ed9d2bad39eb7a7a07d91eb9",
+  "startedAt": "2026-11-19T01:02:32.015Z",
+  "source": "a401e1a21afcaba78d7c985ccf60528b4d6c4d3c",
   "endpoints": {
     "api": "http://127.0.0.1:54321",
     "mail": "http://127.0.0.1:54324"
@@ -13,79 +13,79 @@
       "id": "LOCAL-AUTH-SIGNUP-COACH",
       "title": "Local signup and email verification: coach",
       "status": "passed",
-      "durationMs": 276
+      "durationMs": 205
     },
     {
       "id": "LOCAL-AUTH-SIGNUP-PARENT",
       "title": "Local signup and email verification: parent",
       "status": "passed",
-      "durationMs": 138
+      "durationMs": 122
     },
     {
       "id": "LOCAL-AUTH-SIGNUP-OTHERCOACH",
       "title": "Local signup and email verification: otherCoach",
       "status": "passed",
-      "durationMs": 125
+      "durationMs": 143
     },
     {
       "id": "LOCAL-AUTH-SIGNUP-OTHERPARENT",
       "title": "Local signup and email verification: otherParent",
       "status": "passed",
-      "durationMs": 168
+      "durationMs": 170
     },
     {
       "id": "LOCAL-AUTH-RECOVERY",
       "title": "Recovery email is delivered locally, redeemed and password accepted",
       "status": "passed",
-      "durationMs": 438
+      "durationMs": 368
     },
     {
       "id": "LOCAL-COACH-ROSTER",
       "title": "Authenticated Coach creates academy, batch, student and enrolment atomically",
       "status": "passed",
-      "durationMs": 193
+      "durationMs": 122
     },
     {
       "id": "LOCAL-PARENT-FAMILY",
       "title": "Parent creates two independent children; another account cannot read them",
       "status": "passed",
-      "durationMs": 132
+      "durationMs": 101
     },
     {
       "id": "LOCAL-PARENT-INVITE-IDENTITY",
       "title": "Only the intended verified guardian can preview an invitation",
       "status": "passed",
-      "durationMs": 33
+      "durationMs": 21
     },
     {
       "id": "LOCAL-PARENT-PENDING",
       "title": "Explicit target claim is idempotent and grants no feedback before separate Coach approval",
       "status": "passed",
-      "durationMs": 47
+      "durationMs": 32
     },
     {
       "id": "LOCAL-FEEDBACK-REVIEW",
       "title": "Recorded Coach feedback stays private until explicitly reviewed and queued",
       "status": "passed",
-      "durationMs": 38
+      "durationMs": 27
     },
     {
       "id": "LOCAL-PARENT-APPROVAL",
       "title": "Separate Coach approval exposes only the explicitly linked child snapshot",
       "status": "passed",
-      "durationMs": 26
+      "durationMs": 23
     },
     {
       "id": "LOCAL-STORAGE-PRIVATE",
       "title": "Real private Storage upload and owner download deny unrelated accounts",
       "status": "passed",
-      "durationMs": 136
+      "durationMs": 130
     },
     {
       "id": "LOCAL-PARENT-DISCONNECT",
       "title": "Disconnect removes current feedback access and stale claim cannot revive it",
       "status": "passed",
-      "durationMs": 44
+      "durationMs": 18
     }
   ],
   "limits": [
@@ -110,7 +110,7 @@
     "202611160014_verified_parent_connections.sql": "fcaff799cf0833060793e7106f9947ff79a3f27925518133a64b1b56515d81fc"
   },
   "runnerSha256": "97192e91f1664455048a5473781868e2c92025ae2eb79b9ddbd2cc45a94df875",
-  "finishedAt": "2026-11-19T01:00:24.429Z",
+  "finishedAt": "2026-11-19T01:02:33.544Z",
   "network": {
     "allowedRequests": 78,
     "blockedRequests": 0
@@ -121,30 +121,30 @@
     "blocked": 0
   },
   "lifecycle": {
-    "attemptId": "4e66b718-a480-4606-95ba-2c278f61afef",
+    "attemptId": "46b85d80-211a-41ea-801f-7bc232d65999",
     "command": "run",
-    "startedAt": "2026-11-19T00:59:20.844Z",
+    "startedAt": "2026-11-19T01:02:04.541Z",
     "stages": [
       {
         "name": "setup",
-        "startedAt": "2026-11-19T00:59:20.845Z",
+        "startedAt": "2026-11-19T01:02:04.543Z",
         "status": "passed",
-        "finishedAt": "2026-11-19T01:00:21.339Z"
+        "finishedAt": "2026-11-19T01:02:30.717Z"
       },
       {
         "name": "journeys",
-        "startedAt": "2026-11-19T01:00:21.339Z",
+        "startedAt": "2026-11-19T01:02:30.718Z",
         "status": "passed",
-        "finishedAt": "2026-11-19T01:00:24.440Z"
+        "finishedAt": "2026-11-19T01:02:33.553Z"
       },
       {
         "name": "cleanup",
-        "startedAt": "2026-11-19T01:00:24.440Z",
+        "startedAt": "2026-11-19T01:02:33.553Z",
         "status": "passed",
-        "finishedAt": "2026-11-19T01:00:27.922Z"
+        "finishedAt": "2026-11-19T01:02:36.967Z"
       }
     ],
-    "finishedAt": "2026-11-19T01:00:27.922Z"
+    "finishedAt": "2026-11-19T01:02:36.967Z"
   },
   "status": "passed"
 }
