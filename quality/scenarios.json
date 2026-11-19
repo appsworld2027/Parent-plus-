@@ -141,9 +141,9 @@
     {
       "id": "SC-481FE3379BD1",
       "status": "implemented",
-      "criteria": "one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload",
+      "criteria": "one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload"
+        "e2e/coach-parent-journey.spec.ts::one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload"
       ]
     },
     {
@@ -157,9 +157,9 @@
     {
       "id": "SC-CEBECCE4F5F4",
       "status": "implemented",
-      "criteria": "same-login shortcut cannot open or replace another parent\u2019s connection",
+      "criteria": "same-login shortcut cannot open or replace another parent’s connection",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent\u2019s connection"
+        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent’s connection"
       ]
     },
     {
@@ -1821,9 +1821,9 @@
     {
       "id": "UT-D3D0128B34D2",
       "status": "implemented",
-      "criteria": "returns only the actor\u2019s own accepted contexts without staff, family or other employment details",
+      "criteria": "returns only the actor’s own accepted contexts without staff, family or other employment details",
       "tests": [
-        "tests/workspace-authorization.test.ts::returns only the actor\u2019s own accepted contexts without staff, family or other employment details"
+        "tests/workspace-authorization.test.ts::returns only the actor’s own accepted contexts without staff, family or other employment details"
       ]
     },
     {
@@ -5096,6 +5096,198 @@
       "criteria": "APVerse Parent recovers a report after the server saves it and the response is lost, including across reload, without sending a duplicate",
       "tests": [
         "e2e/apverse-parent.spec.ts::APVerse Parent recovers a saved report after a lost response and reload"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-01",
+      "status": "implemented",
+      "criteria": "keeps existing same-tab proof readable after the storage upgrade",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > can read an existing same-tab verifier from before the storage upgrade"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-02",
+      "status": "implemented",
+      "criteria": "does not inherit cleanup ownership when the browser clones tab storage",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > does not inherit cleanup ownership when a browser clones a tab’s storage"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-03",
+      "status": "implemented",
+      "criteria": "expires proof copies in both storage locations",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > expires verifier copies in both storage locations"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-04",
+      "status": "implemented",
+      "criteria": "isolates per-tab SDK notification channels while retaining each session and shared proof",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > isolates SDK notification channels while preserving each tab’s persisted session and shared email proof"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-05",
+      "status": "implemented",
+      "criteria": "keeps verifier cleanup ownership and legacy fallback within the requesting tab",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > keeps cleanup ownership and legacy fallback local to the requesting tab"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-06",
+      "status": "implemented",
+      "criteria": "retains same-tab recovery when shared browser storage is unavailable",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > keeps same-tab email recovery available when shared browser storage is unavailable"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-07",
+      "status": "implemented",
+      "criteria": "never shares unrelated projects or keys with verifier-like suffixes",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > never shares other projects or arbitrary keys with a verifier-looking suffix"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-08",
+      "status": "implemented",
+      "criteria": "validates and preserves email flow identity before clearing URL history",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > preserves and validates the email flow identifier before clearing URL history"
+      ]
+    },
+    {
+      "id": "UT-AM-AUTH-TAB-09",
+      "status": "implemented",
+      "criteria": "shares only short-lived email proofs and keeps sessions in the requesting tab",
+      "tests": [
+        "tests/auth.test.ts::web email-link storage > shares only short-lived email verifiers between tabs and keeps sessions in their own tab"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-01",
+      "status": "implemented",
+      "criteria": "Parent recovery opens Parent in a new tab",
+      "tests": [
+        "e2e/auth.spec.ts::a Parent recovery email returns to Parent in a new tab"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-02",
+      "status": "implemented",
+      "criteria": "recovery email opens in the requesting browser",
+      "tests": [
+        "e2e/auth.spec.ts::a recovery email can open a new tab in the requesting browser"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-03",
+      "status": "implemented",
+      "criteria": "Coach recovery intent survives a later Parent recovery request",
+      "tests": [
+        "e2e/auth.spec.ts::an earlier Coach recovery keeps Coach intent after a later Parent recovery request"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-04",
+      "status": "implemented",
+      "criteria": "another account recovery cannot replace a signed-in workspace in another tab",
+      "tests": [
+        "e2e/auth.spec.ts::another account recovering in a second tab cannot replace this tab’s signed-in workspace"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-05",
+      "status": "implemented",
+      "criteria": "recovery retains its exact email flow after removing sensitive URL parameters",
+      "tests": [
+        "e2e/auth.spec.ts::recovery preserves its exact email flow after removing sensitive URL parameters"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-06",
+      "status": "implemented",
+      "criteria": "sign-out in one tab does not erase another tab’s pending recovery proof",
+      "tests": [
+        "e2e/auth.spec.ts::signing out one tab cannot erase another tab’s pending recovery email proof"
+      ]
+    },
+    {
+      "id": "SC-AM-AUTH-RECOVERY-07",
+      "status": "implemented",
+      "criteria": "direct recovery address opens a usable email request form",
+      "tests": [
+        "e2e/auth.spec.ts::the direct recovery address opens a usable email-request form without a broken-link error"
+      ]
+    },
+    {
+      "id": "SC-AM-PAR-CON-01",
+      "status": "implemented",
+      "criteria": "PAR-CON-01 explicitly selects the receiving sibling and retries the same uncertain invitation claim",
+      "tests": [
+        "e2e/parent-connections.spec.ts::PAR-CON-01 invitation requires an explicit sibling choice and an uncertain claim retries the same child"
+      ]
+    },
+    {
+      "id": "SC-AM-PAR-CON-02",
+      "status": "implemented",
+      "criteria": "PAR-CON-02 adds a sibling without losing the invitation and safely reuses retry identity",
+      "tests": [
+        "e2e/parent-connections.spec.ts::PAR-CON-02 add a different child keeps the invitation and uses one identity across lost saves and refresh failure"
+      ]
+    },
+    {
+      "id": "SC-AM-PAR-CON-03",
+      "status": "implemented",
+      "criteria": "PAR-CON-03 keeps approved academy feedback visible while another academy is pending",
+      "tests": [
+        "e2e/parent-connections.spec.ts::PAR-CON-03 pending academy B does not hide approved academy A updates or expose a sibling feed"
+      ]
+    },
+    {
+      "id": "SC-AM-PAR-CON-04",
+      "status": "implemented",
+      "criteria": "PAR-CON-04 allows correction after an explicitly rejected child save without losing the invitation",
+      "tests": [
+        "e2e/parent-connections.spec.ts::PAR-CON-04 an explicitly rejected child save can be corrected without losing the invitation"
+      ]
+    },
+    {
+      "id": "SC-AM-PAR-CON-05",
+      "status": "implemented",
+      "criteria": "PAR-CON-05 rejects impossible calendar birth dates before saving a child",
+      "tests": [
+        "e2e/parent-connections.spec.ts::PAR-CON-05 impossible calendar birth dates are rejected before starting a child save"
+      ]
+    },
+    {
+      "id": "UT-AM-ROSTER-DUPLICATE",
+      "status": "implemented",
+      "criteria": "normalized duplicate batch names are rejected while editing the existing batch remains valid",
+      "tests": [
+        "tests/roster.test.ts::roster input rules > UX-BAT-02 prevents normalized duplicate batch names but permits editing the same batch"
+      ]
+    },
+    {
+      "id": "SC-AM-UX-BAT-01",
+      "status": "implemented",
+      "criteria": "UX-BAT-01 loads archived saved batches clearly and keeps them read-only",
+      "tests": [
+        "e2e/roster.spec.ts::UX-BAT-01 load all saved batches includes clearly labelled archived batches without editing them"
+      ]
+    },
+    {
+      "id": "SC-AM-UX-BAT-02",
+      "status": "implemented",
+      "criteria": "UX-BAT-02 blocks normalized duplicate batch names before saving",
+      "tests": [
+        "e2e/roster.spec.ts::UX-BAT-02 duplicate batch names are caught before a second batch is saved"
       ]
     }
   ]
