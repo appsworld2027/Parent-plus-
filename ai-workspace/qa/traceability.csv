@@ -1,0 +1,7 @@
+trace_id,requirement_or_source,feature_id,scenario_id,implementation,evidence,status
+PP-TR-001,docs/AUTH_SETUP.md,PP-AUTH,PP-SC-001,App.tsx and auth modules,tests/auth.test.ts,PARTIAL
+PP-TR-002,ai-workspace/features/PARENT_MODULE.md,PP-PARENT,PP-SC-003,src/parent and Supabase migrations,docs/PARENT_MODULE.md,PARTIAL
+PP-TR-003,ai-workspace/features/PARENT_MODULE.md,PP-FEEDBACK,PP-SC-005,Parent feed service and RLS,docs/PARENT_MODULE.md,PARTIAL
+PP-TR-004,Master QA prompt,PP-MISSING,PP-SC-007,No confirmed implementation located,Audit evidence,OPEN
+PP-TR-005,Master QA prompt,PP-MISSING-2,PP-SC-008,No confirmed implementation located,Audit evidence,OPEN
+PP-TR-006,ai-workspace/pilots/parentplus-ai-pilot/specs/001-feedback-visibility/spec.md,PP-OBS,PP-SC-009,feedback.mjs pilot,ai-workspace/pilots/parentplus-ai-pilot/feedback.test.mjs,PASS
