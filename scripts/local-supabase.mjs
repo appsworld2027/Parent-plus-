@@ -97,7 +97,7 @@ function prepare() {
   for (const filename of ['.env', '.env.local', 'supabase/.env', 'supabase/.env.local']) {
     assert.ok(!existsSync(join(state, filename)), 'Unexpected environment file in isolated project.');
   }
-  const allNames = readdirSync(join(root, 'supabase/migrations')).filter(name => /^2026\d{8}_.+\.sql$/.test(name)).sort();
+  const allNames = readdirSync(join(root, 'supabase/migrations')).filter(name => /^2026\d{8,10}_.+\.sql$/.test(name)).sort();
   assert.ok(allNames.includes('20261117090944_parent_attendance_read.sql'), 'Review the APVerse-only attendance migration boundary.');
   const names = allNames.filter(name => name !== '20261117090944_parent_attendance_read.sql');
   assert.equal(names.length, 14, 'Review deployed migration boundary before extending the service stack.');
