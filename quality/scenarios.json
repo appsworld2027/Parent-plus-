@@ -5069,6 +5069,34 @@
         "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: latest signal belongs to another child",
         "tests/apverse-parent-attendance.test.ts::rejects malformed APVerse response: latest signal belongs to another account"
       ]
+    },
+    {
+      "id": "UT-A91912000015",
+      "status": "implemented",
+      "criteria": "stores a bounded owner and child scoped Parent report request before sending and preserves its exact identity and payload for safe recovery",
+      "tests": [
+        "tests/apverse-parent-signal-pending.test.ts::persists the exact owner, child, request identity and report payload across store recreation",
+        "tests/apverse-parent-signal-pending.test.ts::does not replace an unresolved report for the same class with a different payload",
+        "tests/apverse-parent-signal-pending.test.ts::removes only the exact saved request and keeps another class request",
+        "tests/apverse-parent-signal-pending.test.ts::fails closed on corrupt storage instead of treating an unresolved report as absent",
+        "tests/apverse-parent-signal-pending.test.ts::rejects malformed pending requests and records stored under a different owner"
+      ]
+    },
+    {
+      "id": "SC-A91912000016",
+      "status": "implemented",
+      "criteria": "APVerse Parent sends an informational report to Coach without writing attendance",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse Parent can submit a non-mutating report to the Coach"
+      ]
+    },
+    {
+      "id": "SC-A91912000017",
+      "status": "implemented",
+      "criteria": "APVerse Parent recovers a report after the server saves it and the response is lost, including across reload, without sending a duplicate",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse Parent recovers a saved report after a lost response and reload"
+      ]
     }
   ]
 }

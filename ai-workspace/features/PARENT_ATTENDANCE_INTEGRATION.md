@@ -2,6 +2,8 @@
 
 **Current status, 19 November 2026:** the standalone MM reader migration20261117090944 is installed in Destination and grants were verified. APVerse has its own authenticated reader; AM local UI now uses it read-only with paging and APVerse-only statuses. Local fixture-backed browser coverage passes; authenticated live APVerse acceptance and AM runtime routing remain gated. Earlier preparation sections below are historical; the live activation sections record actual evidence.
 
+**Latest AM update, 19 November 2026:** the Parent class-report screen is now wired to APVerse's existing send and request-status RPCs. It saves the exact request identity and payload in the app's platform storage before sending, checks an uncertain result before enabling same-request retry, and clears only the confirmed request. The report is informational and does not write attendance or prove arrival/pickup. Local test scenarios cover successful delivery and a server-saved report whose response is lost across reload. No live report was sent, no schema changed in this slice, and AM still routes through the existing MM fallback until the authenticated APVerse and deployment gates are complete. Current implementation is being quality-gated before its checkpoint; see `PROGRESS.md` for the latest counts and hosted status.
+
 17 November 2026. Working branch `AM/consolidated`. No merge into other branches or live SQL activation is authorized by this checkpoint.
 
 ## Product and source traceability

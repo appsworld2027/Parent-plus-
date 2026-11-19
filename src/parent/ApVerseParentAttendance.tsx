@@ -1,18 +1,29 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {ActivityIndicator,Pressable,StyleSheet,TextInput,View} from 'react-native';
 import {Text} from '../ui/Typography';
-import {supabase} from '../auth/client';
-import {loadApVerseAttendanceDay,type ApAttendanceCursor,type ApVerseDayQuery} from './apverseAttendance';
-import {mondayOf,type AttendanceSession} from './attendance';
+import {appSessionStorage,supabase} from '../auth/client';
+import {loadApVerseAttendanceDay,type ApAttendanceCursor,type ApVerseAttendanceSession,type ApVerseDayQuery} from './apverseAttendance';
+import {mondayOf} from './attendance';
+import {createApVerseParentSignalPendingStore,type ApVerseParentSignalPending} from './apverseParentSignalPending';
+import {ApVerseParentSignalPanel} from './ApVerseParentSignalPanel';
 
-type AttendanceState={day:string;rows:AttendanceSession[];next:ApAttendanceCursor|null;loading:boolean;error:string};
+type AttendanceState={day:string;rows:ApVerseAttendanceSession[];next:ApAttendanceCursor|null;loading:boolean;error:string};
+const pendingStore=createApVerseParentSignalPendingStore(appSessionStorage);
 const initialDay=()=>{const now=new Date();return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;};
-const statusLabel=(status:AttendanceSession['attendance_status'])=>status==='make_up'?'make-up session':status;
+const statusLabel=(status:ApVerseAttendanceSession['attendance_status'])=>status==='make_up'?'make-up session':status;
 
 export function ApVerseParentAttendance({owner,child}:{owner:string;child:string}){
  const [day,setDay]=useState(initialDay),[revision,setRevision]=useState(0);
  const [state,setState]=useState<AttendanceState>({day:'',rows:[],next:null,loading:false,error:''});
- const generation=useRef(0),busy=useRef(false);
+ const [pendingReports,setPendingReports]=useState<ApVerseParentSignalPending[]>([]),[pendingError,setPendingError]=useState('');
+ const generation=useRef(0),pendingGeneration=useRef(0),busy=useRef(false);
+ const currentScope=useRef({owner,child});currentScope.current={owner,child};
+ useEffect(()=>{
+  const request=++pendingGeneration.current;setPendingReports([]);setPendingError('');
+  if(!owner||!child)return()=>{pendingGeneration.current++;};
+  void pendingStore.list(owner,child).then(rows=>{if(request===pendingGeneration.current)setPendingReports(rows);}).catch(()=>{if(request===pendingGeneration.current)setPendingError('Pending reports could not be safely checked on this device. No new report can be sent until storage is available.');});
+  return()=>{pendingGeneration.current++;};
+ },[owner,child]);
  useEffect(()=>{
   const request=++generation.current;
   busy.current=true;setState({day,rows:[],next:null,loading:true,error:''});
@@ -35,6 +46,9 @@ export function ApVerseParentAttendance({owner,child}:{owner:string;child:string
   finally{if(request===generation.current)busy.current=false;}
  }
  const visible=state.day===day?state.rows:[];
+ function addPending(operation:ApVerseParentSignalPending){if(operation.ownerId.toLowerCase()===currentScope.current.owner.toLowerCase()&&operation.payload.child_id.toLowerCase()===currentScope.current.child.toLowerCase())setPendingReports(current=>[...current.filter(item=>item.payload.session_id.toLowerCase()!==operation.payload.session_id.toLowerCase()),operation]);}
+ function removePending(operation:ApVerseParentSignalPending){setPendingReports(current=>current.filter(item=>item.payload.session_id.toLowerCase()!==operation.payload.session_id.toLowerCase()||item.requestId.toLowerCase()!==operation.requestId.toLowerCase()));}
+ const visibleSessions=new Set(visible.map(row=>row.session_id.toLowerCase()));
  return <View style={s.card}>
   <Text accessibilityRole="header" style={s.title}>Class attendance</Text>
   <Text style={s.text}>Choose a date using each academy’s local calendar. Class times are shown in UTC.</Text>
@@ -42,12 +56,15 @@ export function ApVerseParentAttendance({owner,child}:{owner:string;child:string
   <Pressable accessibilityRole="button" onPress={()=>setRevision(value=>value+1)} style={s.button}><Text style={s.text}>Refresh attendance</Text></Pressable>
   {state.loading&&<ActivityIndicator accessibilityLabel="Loading attendance" color="#2EE6A6"/>}
   {!!state.error&&<Text accessibilityRole="alert" style={s.text}>{state.error}</Text>}
+  {!!pendingError&&<Text accessibilityRole="alert" style={s.text}>{pendingError}</Text>}
   {!state.loading&&!state.error&&state.day===day&&!visible.length&&<Text style={s.text}>No shared classes for this date.</Text>}
   {visible.map(row=><View key={row.session_id} style={s.row}>
    <Text style={s.title}>{row.workspace_name} · {row.batch_name}</Text>
    <Text style={s.text}>{new Date(row.starts_at).toISOString().slice(0,16).replace('T',' ')} UTC · {row.session_status}</Text>
    <Text style={s.text}>{row.attendance_status===null?'Attendance not recorded':`Coach recorded: ${statusLabel(row.attendance_status)}`}</Text>
+   {!pendingError&&(row.can_signal||pendingReports.some(item=>item.payload.session_id.toLowerCase()===row.session_id.toLowerCase()))&&<ApVerseParentSignalPanel owner={owner} child={child} row={row} pending={pendingReports.find(item=>item.payload.session_id.toLowerCase()===row.session_id.toLowerCase())??null} onPending={addPending} onPendingRemoved={removePending} onConfirmed={()=>setRevision(value=>value+1)}/>}
   </View>)}
+  {!pendingError&&pendingReports.filter(item=>!visibleSessions.has(item.payload.session_id.toLowerCase())).map(item=><ApVerseParentSignalPanel key={item.requestId} owner={owner} child={child} row={null} pending={item} onPending={addPending} onPendingRemoved={removePending} onConfirmed={()=>setRevision(value=>value+1)}/>)}
   {!!state.next&&state.day===day&&<Pressable accessibilityRole="button" disabled={state.loading} onPress={()=>{void loadMore();}} style={s.button}><Text style={s.text}>Load more attendance</Text></Pressable>}
  </View>;
 }

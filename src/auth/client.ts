@@ -17,6 +17,10 @@ const storage = createSessionStorage(Platform.OS === 'web' ? {
   removeItem: key => SecureStore.deleteItemAsync(key),
 });
 
+// Feature-specific recoverable operations share the app's platform-protected
+// storage implementation under their own namespaced keys.
+export const appSessionStorage = storage;
+
 // All feature services share this client and auth lock. Public config grants no
 // owner privileges: Supabase verifies the session and database access policies.
 export const supabase = appConfig.configured ? createClient(appConfig.url!, appConfig.publishableKey!, {
