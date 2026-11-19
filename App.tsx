@@ -11,6 +11,7 @@ import { ErrorBoundary } from './src/ErrorBoundary';
 import { AuthProvider, useAuth } from './src/auth/AuthProvider';
 import { AuthGate } from './src/auth/AuthGate';
 import { RosterScreen } from './src/roster/RosterScreen';
+import { ApVerseRosterScreen } from './src/roster/ApVerseRosterScreen';
 import { ClassesScreen } from './src/classes/ClassesScreen';
 import { ObservationsScreen } from './src/observations/ObservationsScreen';
 import { ParentConnectionApprovals } from './src/parent/ParentConnectionApprovals';
@@ -125,10 +126,10 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
           {auth.academy && <View style={styles.card}>
             <Action label="Write feedback for parents" onPress={() => navigate('Post')} />
-            <Action label="Create a batch" onPress={() => { setLaunchBatch(true); navigate('Students'); }} secondary />
+            <Action label={appConfig.projectRef === 'fmavpazczahxeusqbxuh' ? 'View students and groups' : 'Create a batch'} onPress={() => { if(appConfig.projectRef !== 'fmavpazczahxeusqbxuh')setLaunchBatch(true); navigate('Students'); }} secondary />
             <Action label="Schedule a class" onPress={() => { setClassLaunch({}); navigate('Schedule'); }} secondary />
           </View>}
-          {auth.academy&&<CoachSetupCard academy={auth.academy.id} onStart={()=>{setLaunchRosterSetup(true);navigate('Students');}}/>}
+          {auth.academy&&<CoachSetupCard academy={auth.academy.id} apVerse={appConfig.projectRef === 'fmavpazczahxeusqbxuh'} onStart={()=>{if(appConfig.projectRef !== 'fmavpazczahxeusqbxuh')setLaunchRosterSetup(true);navigate('Students');}}/>}
           {!auth.academy&&<View style={styles.card}><Text style={styles.sectionTitle}>Your classes and students belong here</Text><Text style={styles.small}>Sign in to load your workspace. No sample students, attendance or parent engagement figures are shown.</Text></View>}
         </> : screen === 'Support' ? <>
           <Text style={styles.eyebrow}>HERE TO HELP</Text>
@@ -158,7 +159,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           <FontLicense />
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy && appConfig.projectRef === 'fmavpazczahxeusqbxuh' ? <ApVerseRosterScreen key={auth.academy.id} workspace={auth.academy.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

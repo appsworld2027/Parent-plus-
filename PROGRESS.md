@@ -1,5 +1,16 @@
 # Parent Plus Coach — development checkpoint
 
+## AM APVerse Coach connected roster — 19 November 2026
+
+| Area | Current evidence |
+| --- | --- |
+| Coach roster | `AM/consolidated` now routes APVerse to a dedicated connected-child/group screen. It reads through the existing authenticated `app_enrollment_batches`, `app_batch_enrollments` and manager-only `app_enrollment_candidates` RPCs. Coaches see assigned groups and members; workspace managers can enroll only family-connected children into existing groups using `app_save_enrollment`. MM keeps its existing roster implementation. |
+| Guardrails | APVerse Coach roster does not create or edit child profiles/groups, import student lists, or read MM `students`, `batches` or `student_contacts` tables. It fails closed on malformed/service errors, enforces server-provided role scope, validates page cursors and reuses an enrollment request ID after an uncertain save. No migration or live Supabase data change was needed. |
+| Quality evidence | Full local `npm run quality:run` passed: 23 quality-control tests, lint, TypeScript, 568 unit/database tests, 112 MM browser scenarios, 8 APVerse browser scenarios, web export, 84 pinned Superpowers files and exact scenario/report receipt. APVerse browser tests use fictional auth/data transport; no live Coach account was exercised. |
+| Review and release | This slice remains confined to `AM/consolidated`. Independent review, hosted GitHub Actions, Vercel Preview and real APVerse Coach acceptance remain pending. No merge to MM/Main, production deployment, schema change or legacy retirement occurred. |
+
+Next: review the exact AM commit and verify hosted Actions/Preview checks. Then continue the separate APVerse Coach schedule/attendance and reviewed-feedback adapters; this roster slice does not certify those Coach flows or APVerse database retirement readiness.
+
 ## Active AM consolidation checkpoint — 19 November 2026
 
 | Area | Current evidence |

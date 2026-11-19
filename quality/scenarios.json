@@ -141,9 +141,9 @@
     {
       "id": "SC-481FE3379BD1",
       "status": "implemented",
-      "criteria": "one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload",
+      "criteria": "one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload"
+        "e2e/coach-parent-journey.spec.ts::one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload"
       ]
     },
     {
@@ -157,9 +157,9 @@
     {
       "id": "SC-CEBECCE4F5F4",
       "status": "implemented",
-      "criteria": "same-login shortcut cannot open or replace another parent’s connection",
+      "criteria": "same-login shortcut cannot open or replace another parent\u2019s connection",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent’s connection"
+        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent\u2019s connection"
       ]
     },
     {
@@ -1821,9 +1821,9 @@
     {
       "id": "UT-D3D0128B34D2",
       "status": "implemented",
-      "criteria": "returns only the actor’s own accepted contexts without staff, family or other employment details",
+      "criteria": "returns only the actor\u2019s own accepted contexts without staff, family or other employment details",
       "tests": [
-        "tests/workspace-authorization.test.ts::returns only the actor’s own accepted contexts without staff, family or other employment details"
+        "tests/workspace-authorization.test.ts::returns only the actor\u2019s own accepted contexts without staff, family or other employment details"
       ]
     },
     {
@@ -5111,7 +5111,7 @@
       "status": "implemented",
       "criteria": "does not inherit cleanup ownership when the browser clones tab storage",
       "tests": [
-        "tests/auth.test.ts::web email-link storage > does not inherit cleanup ownership when a browser clones a tab’s storage"
+        "tests/auth.test.ts::web email-link storage > does not inherit cleanup ownership when a browser clones a tab\u2019s storage"
       ]
     },
     {
@@ -5127,7 +5127,7 @@
       "status": "implemented",
       "criteria": "isolates per-tab SDK notification channels while retaining each session and shared proof",
       "tests": [
-        "tests/auth.test.ts::web email-link storage > isolates SDK notification channels while preserving each tab’s persisted session and shared email proof"
+        "tests/auth.test.ts::web email-link storage > isolates SDK notification channels while preserving each tab\u2019s persisted session and shared email proof"
       ]
     },
     {
@@ -5199,7 +5199,7 @@
       "status": "implemented",
       "criteria": "another account recovery cannot replace a signed-in workspace in another tab",
       "tests": [
-        "e2e/auth.spec.ts::another account recovering in a second tab cannot replace this tab’s signed-in workspace"
+        "e2e/auth.spec.ts::another account recovering in a second tab cannot replace this tab\u2019s signed-in workspace"
       ]
     },
     {
@@ -5213,9 +5213,9 @@
     {
       "id": "SC-AM-AUTH-RECOVERY-06",
       "status": "implemented",
-      "criteria": "sign-out in one tab does not erase another tab’s pending recovery proof",
+      "criteria": "sign-out in one tab does not erase another tab\u2019s pending recovery proof",
       "tests": [
-        "e2e/auth.spec.ts::signing out one tab cannot erase another tab’s pending recovery email proof"
+        "e2e/auth.spec.ts::signing out one tab cannot erase another tab\u2019s pending recovery email proof"
       ]
     },
     {
@@ -5353,6 +5353,94 @@
       "criteria": "workspace lookup failures block protected Coach routes and display a sanitized error",
       "tests": [
         "e2e-apverse/coach-auth.spec.ts::APVerse workspace lookup failure blocks Coach routes and shows a safe message"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-01",
+      "status": "implemented",
+      "criteria": "combines connected children with only authorized assigned batch memberships",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > combines only connected children and their authorized batch enrollments"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-02",
+      "status": "implemented",
+      "criteria": "manager-only candidate denial leaves assigned Coach roster read-only",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > limits a Coach to server-authorized assigned batches when manager-only candidates are denied"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-03",
+      "status": "implemented",
+      "criteria": "roster paging fetches all pages and rejects invalid or non-advancing cursors",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > loads all enrollment pages and rejects a cursor that does not advance"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-04",
+      "status": "implemented",
+      "criteria": "backend and malformed responses remain errors instead of fake empty rosters",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > keeps backend and malformed-response errors distinct from a genuinely empty roster"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-05",
+      "status": "implemented",
+      "criteria": "enrollment writes use one caller-owned idempotency identity and validate the receipt",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > saves one child enrollment with the caller-owned retry identity"
+      ]
+    },
+    {
+      "id": "UT-AM-AP-ROSTER-06",
+      "status": "implemented",
+      "criteria": "invalid enrollment receipts are rejected",
+      "tests": [
+        "tests/apverse-roster.test.ts::APVerse Coach roster > rejects an invalid enrollment receipt instead of claiming a save"
+      ]
+    },
+    {
+      "id": "SC-AM-AP-COACH-ROSTER-01",
+      "status": "implemented",
+      "criteria": "APVerse connected students and existing groups load without legacy roster reads",
+      "tests": [
+        "e2e-apverse/coach-roster.spec.ts::APVerse workspace shows connected children and groups without legacy roster reads"
+      ]
+    },
+    {
+      "id": "SC-AM-AP-COACH-ROSTER-02",
+      "status": "implemented",
+      "criteria": "workspace managers can enroll a connected child into an existing group with an idempotent request",
+      "tests": [
+        "e2e-apverse/coach-roster.spec.ts::workspace manager enrolls only an already-connected child into an existing group"
+      ]
+    },
+    {
+      "id": "SC-AM-AP-COACH-ROSTER-03",
+      "status": "implemented",
+      "criteria": "assigned Coaches see authorized membership but no enrollment controls",
+      "tests": [
+        "e2e-apverse/coach-roster.spec.ts::assigned coach sees authorized membership but no enrollment controls"
+      ]
+    },
+    {
+      "id": "SC-AM-AP-COACH-ROSTER-04",
+      "status": "implemented",
+      "criteria": "roster read failures show retry state rather than an empty success",
+      "tests": [
+        "e2e-apverse/coach-roster.spec.ts::APVerse roster failure shows retry state and never reports an empty roster"
+      ]
+    },
+    {
+      "id": "SC-AM-AP-COACH-ROSTER-05",
+      "status": "implemented",
+      "criteria": "lost enrollment responses safely retry with the same request identity and create one membership",
+      "tests": [
+        "e2e-apverse/coach-roster.spec.ts::lost enrollment response retries once with the same identity and no duplicate membership"
       ]
     }
   ]
