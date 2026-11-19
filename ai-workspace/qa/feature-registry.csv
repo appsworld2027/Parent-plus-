@@ -1,0 +1,11 @@
+feature_id,master_feature,feature,sub_feature,user_journey,source,status,evidence
+PP-AUTH,Foundation,Authentication,Sign-in and recovery,Parent or Coach signs in and recovers access,docs/AUTH_SETUP.md;tests/auth.test.ts,IMPLEMENTED_WITH_TESTS,tests/auth.test.ts; .github/workflows/checks.yml
+PP-PARENT,Parent workspace,Family workspace,Child setup and switching,Parent creates family and switches selected child,ai-workspace/features/PARENT_MODULE.md;tests/parent-database.test.ts,IMPLEMENTED_LOCAL_ONLY,docs/PARENT_MODULE.md
+PP-FEEDBACK,Parent workspace,Coach feedback,Reviewed per-child feed,Parent views only reviewed feedback for linked child,ai-workspace/features/PARENT_MODULE.md;tests/reviewed-feedback-database.test.ts,IMPLEMENTED_LOCAL_ONLY,docs/PARENT_MODULE.md
+PP-COACH,Coach workspace,Classes and roster,Class/roster workflows,Coach manages classes and roster,docs/CLASS_SETUP.md;tests/classes.test.ts;tests/roster.test.ts,IMPLEMENTED_WITH_TESTS,tests/classes.test.ts;tests/roster.test.ts
+PP-OBS,Coach workspace,Observations,Learning observations,Coach records and reviews observations,docs/OBSERVATIONS.md;tests/observations.test.ts,IMPLEMENTED_WITH_TESTS,tests/observations.test.ts
+PP-FEES,Coach workspace,Fees,Fee overview and payment records,Coach reviews fee records,docs/FEES.md;tests/fees.test.ts,IMPLEMENTED_WITH_TESTS,tests/fees.test.ts
+PP-INVITE,Parent-Coach connection,Invitation,Issue claim review and disconnect,Coach invites and Parent approves a child-specific connection,ai-workspace/features/PARENT_MODULE.md;tests/parent-identity-database.test.ts,IMPLEMENTED_LOCAL_ONLY,docs/PARENT_MODULE.md
+PP-MEDIA,Parent-Coach connection,Media permissions,Private signed media access,Parent permission controls media-bearing feedback,ai-workspace/features/PARENT_MODULE.md;tests/class-media.test.ts,IMPLEMENTED_LOCAL_ONLY,docs/PARENT_MODULE.md
+PP-MISSING,Product completeness,Missing scope,Notifications and retention,User receives notifications and manages retention/export,ai-workspace/features/PARENT_MODULE.md,NOT_IMPLEMENTED_OR_UNVERIFIED,docs/PARENT_MODULE.md
+PP-MISSING-2,Product completeness,Missing scope,Duplicate batch and invitation loop,Duplicate batch and approval-loop behavior is defined and tested,Master QA prompt;docs/ISSUES.md,PENDING_REVIEW,No execution evidence found in current audit

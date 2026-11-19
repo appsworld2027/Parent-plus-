@@ -1,5 +1,6 @@
-name: App checks
+name: Parent Plus full validation
 on:
+  workflow_dispatch:
   push:
     branches: [main, codex/coach-foundation, MM/development]
     paths-ignore: ['**/*.md', 'docs/images/**']

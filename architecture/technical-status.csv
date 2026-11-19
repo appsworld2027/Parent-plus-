@@ -1,0 +1,5 @@
+area,status,details,evidence,next_action
+AI Organization adapter,IMPLEMENTED,Parent Plus is connected through .ai-org manifest and adapter validation,.github/workflows/ai-org-dashboard.yml,Run hosted dashboard workflow
+Agent dashboard,IMPLEMENTED,Read-only scheduled/manual workflow summarizes AI Organization runs and Parent Plus issues,.github/workflows/ai-org-dashboard.yml,Review first scheduled artifact
+Database validation,BLOCKED,Workspace concurrency test needs disposable Supabase URL and key,testing/test-matrix.csv,Provide test environment configuration
+End-to-end validation,PENDING,Parent and Coach browser journeys remain to be executed,e2e/,Run Playwright against test environment
