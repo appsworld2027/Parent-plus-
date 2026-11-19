@@ -6,7 +6,7 @@
 
 ## Executive result
 
-The Master QA framework is connected to Parent Plus through product-specific registries, but the product is **not yet fully quality-verified**. One local pilot regression suite passed (2/2 tests). The normal `npm run check` is **BLOCKED** in this clone because dependencies are not installed (`tsc: not found`). Parent and Coach acceptance, authorization, privacy, performance, browser, deployment, rollback and failure-injection scenarios remain `NOT RUN` or `PENDING_REVIEW`.
+The Master QA framework is connected to Parent Plus through product-specific registries, but the product is **not yet fully quality-verified**. The isolated local validation passed TypeScript compilation, 38 unit-test files with 471 tests, and the pilot suite (2/2 tests). The workspace concurrency test is **BLOCKED** because its required Supabase URL is empty. Parent and Coach acceptance, authorization, privacy, performance, browser, deployment, rollback and failure-injection scenarios remain `NOT RUN` or `PENDING_REVIEW`.
 
 ## Coverage vs pass rate
 
@@ -15,10 +15,11 @@ The Master QA framework is connected to Parent Plus through product-specific reg
 | Feature records inventoried | 10 |
 | Scenario records | 10 |
 | Traceability records | 6 |
-| Executed scenarios | 1 |
-| Passed executed scenarios | 1 (pilot contains 2 assertions) |
-| Failed executed scenarios | 0 |
-| Not run / blocked / open | 9 scenario records |
+| Executed automated suites | 3 |
+| Passed automated suites | 3 (506 assertions/tests across typecheck, unit and pilot evidence) |
+| Failed automated suites | 0 |
+| Blocked suites | 1 (workspace concurrency: missing Supabase URL) |
+| Not run / blocked / open | 9 product scenario records plus 1 blocked infrastructure suite |
 | Release decision | **NO-GO — evidence incomplete** |
 
 ## Required QA categories
@@ -27,7 +28,7 @@ Happy, negative, validation, boundary, edge, regression, integration, API contra
 
 ## High-priority gaps
 
-1. Install dependencies and run the full local typecheck/unit suite.
+1. Provide a disposable Supabase URL/key pair and rerun workspace concurrency/database suites.
 2. Execute the Parent/Coach end-to-end journeys with disposable accounts and synthetic data.
 3. Verify batch visibility and duplicate batch-name behavior.
 4. Verify invitation approval-loop and missing-child-profile behavior.
