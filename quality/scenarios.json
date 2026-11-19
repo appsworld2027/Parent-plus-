@@ -4993,6 +4993,62 @@
       "tests": [
         "tests/apverse-parent-private-records.test.ts::grants no direct private-record access to anonymous or service roles"
       ]
+    },
+    {
+      "id": "UT-A91912000006",
+      "status": "implemented",
+      "criteria": "loads only the selected APVerse child records and returns allowlisted fields",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::loads only the selected APVerse child records and returns allowlisted fields"
+      ]
+    },
+    {
+      "id": "UT-A91912000007",
+      "status": "implemented",
+      "criteria": "does not query APVerse when the signed-in account differs from the selected Parent",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::does not query APVerse when the signed-in account differs from the selected Parent"
+      ]
+    },
+    {
+      "id": "UT-A91912000008",
+      "status": "implemented",
+      "criteria": "fails closed if a response includes a record for another child or owner",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::fails closed if a response includes a record for another child or owner"
+      ]
+    },
+    {
+      "id": "UT-A91912000009",
+      "status": "implemented",
+      "criteria": "retries a saved memory with its stable ID without creating a duplicate",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::retries a saved memory with its stable ID without creating a duplicate"
+      ]
+    },
+    {
+      "id": "UT-A91912000010",
+      "status": "implemented",
+      "criteria": "rejects invalid private Parent record values before database access",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::rejects invalid private Parent record values before database access"
+      ]
+    },
+    {
+      "id": "UT-A91912000011",
+      "status": "implemented",
+      "criteria": "does not report a successful save if the signed-in account changes during the request",
+      "tests": [
+        "tests/apverse-parent-records.test.ts::does not report a successful save if the signed-in account changes during the request"
+      ]
+    },
+    {
+      "id": "SC-A91912000012",
+      "status": "implemented",
+      "criteria": "APVerse Parent memories, reminders and events persist for the selected child across reload",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse Parent memories, reminders and events save for one child and survive reload"
+      ]
     }
   ]
 }
