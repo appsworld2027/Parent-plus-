@@ -23,7 +23,11 @@ Both projects have five installed extensions. All inventoried application tables
 
 APVerse has its own workspace-first model: `workspaces`, `workspace_memberships`, `workspace_children`, `children`, `courses`, `batches`, `schedule_sessions`, `enrollments`, attendance records, guardian/connection flows, Parent signals/items, and private family records. MM has an academy/student model plus richer live Coach workflow objects for fees, observations/review, media consent and private Storage, and roster scanning. Similar product concepts have different keys and authorization relationships, so their tables and RPCs are not interchangeable.
 
-The live APVerse routines include Parent attendance/week/item and report-signal endpoints. Therefore those features should be verified and integrated against APVerse's workspace/guardian permissions, not reimplemented by copying MM attendance tables. The main structural gaps to plan against are:
+The live APVerse routines include Parent attendance/week/item and report-signal endpoints. Therefore those features should be verified and integrated against APVerse's workspace/guardian permissions, not reimplemented by copying MM attendance tables.
+
+**Runtime compatibility finding:** the AM Coach app has no equivalent APVerse runtime selector yet. `App.tsx` routes the Parent surface separately, and the Parent module selects APVerse-specific code based on project reference. The Coach `AuthProvider` still queries `public.academies`; Coach roster/classes/observations/fees/media services call MM table and RPC names. A static scan of `src/auth`, `src/roster`, `src/classes`, `src/observations`, `src/fees`, `src/media`, `src/photos` and `src/rosterScan` found 30 distinct table/RPC identifiers; only `public.batches` matched APVerse by exact name. That name match is not a compatible contract—APVerse `batches` is workspace/course-scoped. Other AP functions may provide equivalent outcomes under different names, but the Coach adapter does not map them yet. Therefore an APVerse API URL or successful `/parent` HTTP response does not establish a working Coach journey.
+
+The main structural gaps to plan against are:
 
 - **Fees:** MM has invoice, payment and reversal tables/RPCs; matching APVerse fee objects were not found.
 - **Coach observations and reviewed Parent feedback:** MM has observations, versions, recipients, review requests and feed/handoff views; corresponding APVerse observation objects/RPCs were not found.
