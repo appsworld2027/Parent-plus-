@@ -3,7 +3,7 @@ import { ActivityIndicator, Image, Keyboard, Pressable, StyleSheet, TextInput, V
 import { Text } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } from './model';
-import { formatFee, parseBatchFee, validateStudent, batchStudents, proficiencyLabels } from './model';
+import { formatFee, validateBatch, validateStudent, batchStudents, proficiencyLabels } from './model';
 import { addBatchStudents, archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
 import { ParentLinkCard } from './ParentLinkCard';
 import { studentPhotoThumbnails } from '../photos/service';
@@ -38,6 +38,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
   const [search, setSearch] = useState('');
   const [batchFilter, setBatchFilter] = useState('all');
   const [showArchived, setShowArchived] = useState(false);
+  const [showAllBatches, setShowAllBatches] = useState(false);
   const [studentDraft, setStudentDraft] = useState<StudentDraft | null>(null);
   const [batchDraft, setBatchDraft] = useState<BatchDraft | null>(() => startWithBatch ? { id: randomUUID(), name: '', room: '', fee: '' } : null);
   const [profileId,setProfileId]=useState<string|null>(null);
@@ -71,6 +72,12 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
 
   useEffect(()=>{let active=true;setPhotoUrls({});if(data)void studentPhotoThumbnails(academy).then(urls=>{if(active)setPhotoUrls(urls);}).catch(()=>undefined);return()=>{active=false;};},[academy,data]);
   const batches = data?.batches.filter(b => !b.archived_at) ?? [];
+  const displayedBatches = data?.batches.filter(batch => showAllBatches || !batch.archived_at) ?? [];
+  async function loadAllBatches() {
+    setNotice('');
+    const fresh = await reload();
+    if (fresh) { setShowAllBatches(true); setActiveBatch(null); setNotice('All saved batches loaded for this academy.'); }
+  }
   const existingEnrolments = (student: string) => data?.enrolments.filter(e => e.student_id === student).map(e => e.batch_id) ?? [];
   function editStudent(student?: Student, batch?: string) {
     if (!data) return;
@@ -102,7 +109,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
   async function save() {
     if (writeLock.current) return;
     const invalid = batchDraft
-      ? !batchDraft.name.trim() ? 'Enter a batch name.' : parseBatchFee(batchDraft.fee) === null ? 'Enter a monthly fee in rupees, with up to two decimal places.' : null : studentDraft ? validateStudent(studentDraft) : 'Open a record first.';
+      ? validateBatch(batchDraft, data?.batches ?? []) : studentDraft ? validateStudent(studentDraft) : 'Open a record first.';
     if (invalid) { setError(invalid); onViewChange(); return; }
     writeLock.current = true; setBusy(true); setError(''); setNotice('');
     try {
@@ -142,7 +149,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
   }
   const profile = data?.students.find(student=>student.id===profileId);
   const profileBatches = profile ? data?.enrolments.filter(e=>e.student_id===profile.id&&e.starts_on<=today&&(!e.ends_on||e.ends_on>=today)).map(e=>data.batches.find(b=>b.id===e.batch_id)).filter((b):b is Batch=>!!b)??[] : [];
-  const selectedBatch = data?.batches.find(batch => batch.id === activeBatch);
+  const selectedBatch = data?.batches.find(batch => batch.id === activeBatch && !batch.archived_at);
   const members = data && activeBatch ? batchStudents(data, activeBatch, today) : [];
   const heading = batchDraft ? (studentDraft ? 'Create a batch for this student' : data?.batches.some(x => x.id === batchDraft.id) ? 'Edit batch' : 'Create a batch') : studentDraft ? (data?.students.some(x => x.id === studentDraft.id) ? 'Edit student' : 'Add a student')
     : profile ? profile.name : selectedBatch ? selectedBatch.name : tab === 'students' ? 'Your students' : 'Your batches';
@@ -217,7 +224,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
       <View style={s.card}>
         <View style={s.studentHeading}><Text style={s.title}>Batches ({profileBatches.length})</Text></View>
         {!profileBatches.length&&<Text style={s.body}>This student is not in a batch yet.</Text>}
-        {profileBatches.map(batch=><Button key={batch.id} label={`Open batch ${batch.name}`} soft disabled={working} onPress={()=>{setProfileId(null);setProfileAddBatch(false);setTab('batches');setActiveBatch(batch.id);onViewChange();}}/>)}
+        {profileBatches.map(batch=><View key={batch.id}>{!!batch.archived_at&&<Text style={s.body}>{batch.name} · Archived · read only</Text>}<Button label={`Open batch ${batch.name}`} soft disabled={working||!!batch.archived_at} onPress={()=>{setProfileId(null);setProfileAddBatch(false);setTab('batches');setActiveBatch(batch.id);onViewChange();}}/></View>)}
         {!profile.archived_at&&<Button label={profileAddBatch?'Close batch choices':'Add batch to this student'} disabled={working} onPress={()=>setProfileAddBatch(value=>!value)} />}
         {profileAddBatch&&<>
           <Text style={s.body}>Choose an existing batch. The student keeps their other batches.</Text>
@@ -282,12 +289,16 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
         </>}
       </> : <>
         <Button label="Create a batch" disabled={!data || loading || working} onPress={() => editBatch()} />
-        {data && !batches.length && <Text style={s.body}>No batches yet. Create your first teaching group.</Text>}
-        {batches.map(batch => <View key={batch.id} style={s.card}><Text style={s.title}>{batch.name}</Text>
+        <Button label="Load all saved batches" soft disabled={loading || working} onPress={()=>{void loadAllBatches();}} />
+        {showAllBatches && <Button label="Show active batches only" soft disabled={loading || working} onPress={()=>setShowAllBatches(false)} />}
+        {data && <Text style={s.body}>{showAllBatches?'Showing all saved batches':'Showing active batches'} for this academy: {batches.length} active, {data.batches.length-batches.length} archived.</Text>}
+        {data && !displayedBatches.length && <Text style={s.body}>{data.batches.length?'Earlier batches may be archived. Load all saved batches to review them.':'No batches yet. Create your first teaching group.'}</Text>}
+        {displayedBatches.map(batch => <View key={batch.id} style={s.card}><Text style={s.title}>{batch.name}</Text>
+          {!!batch.archived_at && <Text style={s.body}>Archived · read only</Text>}
           <Text style={s.body}>{batch.room || 'Location not set'} · {formatFee(batch.monthly_fee_paise)}/month</Text>
           <Text style={s.body}>{data ? batchStudents(data, batch.id, today).length : 0} active students</Text>
-          <Button label={`Open batch ${batch.name}`} disabled={working} onPress={() => { setActiveBatch(batch.id); setAddingMembers(false); onViewChange(); }} />
-          <Button label={`Edit ${batch.name}`} soft onPress={() => editBatch(batch)} />
+          <Button label={`Open batch ${batch.name}`} disabled={working || !!batch.archived_at} onPress={() => { setActiveBatch(batch.id); setAddingMembers(false); onViewChange(); }} />
+          <Button label={`Edit ${batch.name}`} soft disabled={working || !!batch.archived_at} onPress={() => editBatch(batch)} />
         </View>)}
       </>}
 

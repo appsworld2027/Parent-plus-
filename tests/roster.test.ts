@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { readFileSync } from 'node:fs';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { parseFee, validateStudent, type StudentDraft } from '../src/roster/model';
+import { parseFee, validateStudent, validateBatch, type StudentDraft } from '../src/roster/model';
 
 const uuid = (n: number) => `10000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
 const [user, otherUser, academy, otherAcademy, batch, otherBatch, student] = [1, 2, 11, 12, 21, 22, 31].map(uuid);
@@ -116,6 +116,17 @@ describe('atomic roster functions and permissions', () => {
 });
 
 describe('roster input rules', () => {
+  it('UX-BAT-02 prevents normalized duplicate batch names but permits editing the same batch', () => {
+    const existing={id:batch,name:'Clay   Club',room:'',monthly_fee_paise:0,archived_at:null};
+    const draft={id:otherBatch,name:'  cLaY club ',room:'',fee:''};
+    expect(validateBatch(draft,[existing])).toContain('already exists');
+    expect(validateBatch({...draft,name:'Ｃｌａｙ Club'},[existing])).toContain('already exists');
+    expect(validateBatch({...draft,id:batch},[existing])).toBeNull();
+    expect(validateBatch({...draft,id:batch},[existing,{...existing,id:otherBatch}])).toBeNull();
+    expect(validateBatch({...draft,name:'Clay Club Saturday'},[existing])).toBeNull();
+    expect(validateBatch(draft,[{...existing,archived_at:'2026-11-01'}])).toContain('archived');
+    expect(validateBatch({...draft,id:batch},[{...existing,archived_at:'2026-11-01'}])).toContain('read only');
+  });
   it('converts rupees to paise without floating-point rounding', () => {
     expect(parseFee('2500.50')).toBe(250050);
     expect(parseFee('0.29')).toBe(29);

@@ -1,6 +1,6 @@
 import type { ParentRequest } from './identity';
 import { localParts } from '../classes/model';
-export const parentVersion='0.3.0';
+export const parentVersion='0.3.1';
 export const parentColors = { sun:'#FFD23F',rose:'#FF5D8F',sky:'#3ABEFF',mint:'#2EE6A6',grape:'#A27BFF',tang:'#FF8A3D' };
 export type Family = { id:string;owner_id:string;parent_name:string;name:string;timezone:string };
 export type Child = { id:string;family_id:string;name:string;born_on:string|null;color:keyof typeof parentColors;archived_at:string|null };

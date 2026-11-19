@@ -17,6 +17,28 @@ async function createBatch(page: Page) {
   await expect(page.getByRole('status')).toContainText('Batch saved');
   await expect(page.getByText('Room 1 · ₹2,500.5/month')).toBeVisible();
 }
+test('UX-BAT-02 duplicate batch names are caught before a second batch is saved',async({page})=>{
+  await openRoster(page);await createBatch(page);
+  await page.getByRole('button',{name:'Create a batch',exact:true}).click();
+  await page.getByRole('textbox',{name:'Batch name',exact:true}).fill('  fictional   CLAY club ');
+  await page.getByRole('button',{name:'Save batch',exact:true}).click();
+  await expect(page.getByRole('alert')).toContainText('already exists');
+  expect(await page.evaluate(()=>window.__coachFixture.roster.batches.length)).toBe(1);
+});
+test('UX-BAT-01 load all saved batches includes clearly labelled archived batches without editing them',async({page})=>{
+  await openRoster(page);
+  await page.evaluate(()=>{const r=window.__coachFixture.roster;r.batches.push({id:'archived-batch',name:'Earlier Clay Group',room:'Old room',monthly_fee_paise:0,archived_at:'2026-11-01'});r.students.push({id:'archived-member',name:'Earlier Group Learner',age_years:7,archived_at:null});r.enrolments.push({student_id:'archived-member',batch_id:'archived-batch',starts_on:'2020-01-01',ends_on:null});});
+  await page.getByRole('button',{name:'Batches',exact:true}).click();
+  await expect(page.getByText('Earlier Clay Group',{exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Load all saved batches',exact:true}).click();
+  await expect(page.getByText('Earlier Clay Group',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Edit Earlier Clay Group',exact:true})).toBeDisabled();
+  await page.getByRole('button',{name:'Show active batches only',exact:true}).click();
+  await expect(page.getByText('Earlier Clay Group',{exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Students',exact:true}).click();
+  await page.getByRole('button',{name:'View profile for Earlier Group Learner',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Open batch Earlier Clay Group',exact:true})).toBeDisabled();
+});
 test('batch and student can be created, edited, reloaded, searched, and archived', async ({ page }) => {
   await openRoster(page); await createBatch(page);
   await page.getByRole('button', { name: 'Edit Fictional Clay Club', exact: true }).click();

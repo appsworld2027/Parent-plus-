@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import type { Child, CoachLink, Family, FamilyEvent, Moment, ParentPermission, Todo } from '../../src/parent/model';
 import type { ParentRequest } from '../../src/parent/identity';
 import { classMediaBackend } from './classMediaBackend';
-type ParentFixture={requests:ParentRequest[];inviteEmails:Record<string,string>;accountEmail?:string;identityMissing?:boolean;holdConnections?:boolean;connectionReads?:number;families:Family[];children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:(CoachLink&{parent_user_id?:string})[];permissions:ParentPermission[];invites:Record<string,{student:string;used:boolean}>;loseMoment:boolean;missing:boolean;writes:string[]};
+type ParentFixture={requests:ParentRequest[];inviteEmails:Record<string,string>;accountEmail?:string;identityMissing?:boolean;holdConnections?:boolean;connectionReads?:number;rejectChild?:boolean;loseChild?:boolean;failChildRefresh?:boolean;loseClaim?:boolean;claimTargets?:string[];families:Family[];children:Child[];moments:Moment[];todos:Todo[];events:FamilyEvent[];links:(CoachLink&{parent_user_id?:string})[];permissions:ParentPermission[];invites:Record<string,{student:string;used:boolean}>;loseMoment:boolean;missing:boolean;writes:string[]};
 declare global {interface Window {__parentFixture:ParentFixture;}}
 export async function parentBackend(page:Page){
   await classMediaBackend(page);
@@ -22,11 +22,15 @@ export async function parentBackend(page:Page){
         const key=tables[endpoint] as 'families'|'children'|'moments'|'todos'|'events';
         const list=state[key] as {id:string}[];
         if(method==='POST'){
-          const payload=JSON.parse(String(init?.body));const previous=list.findIndex(row=>row.id===payload.id);if(previous<0)list.push(payload);else list[previous]=payload;
+          const payload=JSON.parse(String(init?.body));
+          if(endpoint==='family_children'&&state.rejectChild){state.rejectChild=false;persist();return reply({code:'23514',message:'Fictional rejected child details'},400);}
+          const previous=list.findIndex(row=>row.id===payload.id);if(previous<0)list.push(payload);else list[previous]=payload;
           state.writes.push(`${endpoint}:${payload.id}`);persist();
           if(endpoint==='family_moments'&&state.loseMoment){state.loseMoment=false;persist();throw new TypeError('Fictional lost memory result');}
+          if(endpoint==='family_children'&&state.loseChild){state.loseChild=false;persist();throw new TypeError('Fictional lost child result');}
           return reply(payload);
         }
+        if(endpoint==='family_children'&&state.failChildRefresh){state.failChildRefresh=false;persist();return reply({code:'XX000'},500);}
         return reply(list.slice(Number(url.searchParams.get('offset')??0),Number(url.searchParams.get('offset')??0)+Number(url.searchParams.get('limit')??1000)));
       }
       if(['get_parent_connection_requests','get_coach_parent_requests'].includes(endpoint)){
@@ -63,12 +67,15 @@ export async function parentBackend(page:Page){
           const code=Array.from(crypto.getRandomValues(new Uint8Array(32)),value=>value.toString(16).padStart(2,'0')).join('');state.invites[code]={student:p.target_student,used:false};state.inviteEmails[code]=p.guardian_email.trim().toLowerCase();persist();return reply(code);
         }
         if(endpoint==='preview_parent_link'||endpoint==='claim_parent_link'){
+          if(endpoint==='claim_parent_link')(state.claimTargets??=[]).push(p.target_child);
           const invite=state.invites[p.invite_code];if(!invite||state.inviteEmails[p.invite_code]!== (state.accountEmail??'coach@example.test'))return reply({code:'22023'},400);
           if(invite.used){const previous=state.requests.find(row=>row.student_id===invite.student&&row.child_id===p.target_child&&row.status==='pending');return previous?reply(previous.id):reply({code:'22023'},400);}
           if(endpoint==='preview_parent_link')return reply({academy_name:'Fictional Test Academy',student_name:window.__coachFixture.roster.students.find(child=>child.id===invite.student)?.name??'Student'});
           const child=state.children.find(row=>row.id===p.target_child);if(!child)return reply({code:'42501'},403);
           const request:ParentRequest={id:crypto.randomUUID(),academy_id:'academy-test',student_id:invite.student,child_id:child.id,parent_user_id:'00000000-0000-0000-0000-000000000001',guardian_email:state.accountEmail??'coach@example.test',parent_name:state.families.find(row=>row.id===child.family_id)?.parent_name??'Parent',child_name:child.name,born_on:child.born_on,status:'pending',link_id:null};
-          state.requests.push(request);invite.used=true;persist();return reply(request.id);
+          state.requests.push(request);invite.used=true;persist();
+          if(state.loseClaim){state.loseClaim=false;persist();throw new TypeError('Fictional lost claim result');}
+          return reply(request.id);
         }
         if(endpoint==='parent_media_permission'){
           const permission=state.permissions.find(value=>value.link_id===p.target_link)!;permission.allow_photos=p.photos;permission.allow_videos=p.videos;permission.allow_parent_sharing=p.sharing;persist();return reply(null);

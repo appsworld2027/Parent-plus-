@@ -21,7 +21,7 @@ test('one login: class feedback → review/share → family and child setup → 
   await page.getByLabel('Your parent name',{exact:true}).fill('Coach also testing Parent');await page.getByLabel('Family name',{exact:true}).fill('Our test family');await page.getByRole('button',{name:'Create my family workspace',exact:true}).click();
   await page.getByRole('button',{name:'Add my first child',exact:true}).click();await page.getByLabel('Child name',{exact:true}).fill('My child Ria');await page.getByRole('button',{name:'Save child',exact:true}).click();
   expect(await page.evaluate(()=>window.__parentFixture.links.length)).toBe(0);
-  await page.getByRole('button',{name:'Connect child and view update',exact:true}).click();await expect(page.getByRole('combobox',{name:'Child receiving this feedback',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Connect child and view update',exact:true}).click();await expect(page.getByRole('combobox',{name:'Child receiving this feedback',exact:true})).toHaveValue('');await page.getByRole('combobox',{name:'Child receiving this feedback',exact:true}).selectOption(await page.evaluate(()=>window.__parentFixture.children[0].id));
   await page.getByRole('button',{name:'Review coach invitation',exact:true}).click();await expect(page.getByText('Coach student: Fictional Ria → Your child: My child Ria',{exact:true})).toBeVisible();
   await page.getByRole('checkbox',{name:'This is the right coach and child',exact:true}).check();await page.getByRole('button',{name:'Request coach approval',exact:true}).click();
   await expect(page.getByText('Waiting for coach approval',{exact:true})).toBeVisible();

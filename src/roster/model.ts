@@ -18,6 +18,23 @@ export function parseFee(rupees: string): number | null {
 }
 // A teaching batch needs no billing setup. Keep financial input parsing strict.
 export function parseBatchFee(value: string): number | null { return parseFee(value.trim() || '0'); }
+// UX guard over the currently loaded academy roster. Database uniqueness and
+// concurrent writers require a separate server-side policy; names are not IDs.
+export function validateBatch(draft: BatchDraft, batches: Batch[]): string | null {
+  if (!draft.name.trim() || draft.name.trim().length > 100) return 'Enter a batch name, up to 100 characters.';
+  if (parseBatchFee(draft.fee) === null) return 'Enter a monthly fee in rupees, with up to two decimal places.';
+  const normalized = (value: string) => value.normalize('NFKC').trim().replace(/\s+/gu, ' ').toLowerCase();
+  const previous = batches.find(batch => batch.id === draft.id);
+  if (previous?.archived_at) return 'Archived batches are read only.';
+  // Existing legacy duplicates must not block unrelated edits. Only creating
+  // or renaming a batch can introduce a new duplicate in this client flow.
+  if (previous && normalized(previous.name) === normalized(draft.name)) return null;
+  const duplicate = batches.find(batch => batch.id !== draft.id && normalized(batch.name) === normalized(draft.name));
+  if (duplicate) return duplicate.archived_at
+    ? 'An archived batch with this name already exists. Load all saved batches to review it or choose a different name.'
+    : 'A batch with this name already exists. Open the existing batch or choose a different name.';
+  return null;
+}
 export function validateStudent(draft: StudentDraft): string | null {
   if (draft.proficiency && !Object.hasOwn(proficiencyLabels,draft.proficiency)) return 'Choose a valid proficiency level.';
   if (!draft.name.trim() || draft.name.trim().length > 100) return 'Enter a student name, up to 100 characters.';

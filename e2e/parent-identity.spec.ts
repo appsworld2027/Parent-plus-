@@ -5,7 +5,7 @@ async function setup(page:Page){
  await parentBackend(page);await login(page);
  await page.evaluate(()=>{const s=window.__parentFixture;s.families.push({id:'family',owner_id:'00000000-0000-0000-0000-000000000001',name:'Family',parent_name:'Parent',timezone:'Asia/Kolkata'});s.children.push({id:'child',family_id:'family',name:'Family Ria',born_on:'2018-04-12',color:'sun',archived_at:null});s.invites['b'.repeat(64)]={student:window.__coachFixture.roster.students[0].id,used:false};s.inviteEmails['b'.repeat(64)]='coach@example.test';sessionStorage.setItem('__fictional_parent',JSON.stringify(s));});
  await page.getByRole('link',{name:'Open Parent space',exact:true}).click();
- await page.getByRole('tab',{name:'Parent Explore',exact:true}).click();await page.getByRole('button',{name:'Connect a coach',exact:true}).click();await page.getByLabel('Coach invitation code',{exact:true}).fill('b'.repeat(64));
+ await page.getByRole('tab',{name:'Parent Explore',exact:true}).click();await page.getByRole('button',{name:'Connect a coach',exact:true}).click();await page.getByLabel('Coach invitation code',{exact:true}).fill('b'.repeat(64));await page.getByRole('combobox',{name:'Child receiving this feedback',exact:true}).selectOption('child');
 }
 test('forwarded invitation is refused for the wrong verified email before student details are shown',async({page})=>{
  await setup(page);await page.evaluate(()=>{window.__parentFixture.accountEmail='wrong@example.test';});await page.getByRole('button',{name:'Review coach invitation',exact:true}).click();
