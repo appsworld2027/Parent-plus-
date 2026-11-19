@@ -8,6 +8,26 @@ This is the repository’s full-product requirements draft. It sets the directio
 
 The [earlier Coach PRD](https://github.com/appsworld2027/Parent-plus-/blob/26bc034cc995a657bbb1bf51a5064c36ad96088d/PRD.md) and the [Parent first-slice requirements](founders/product/PARENT_PRD.md) retain detailed requirements for the existing application. The [original Word document](founders/product/Parent_Plus_Full_Product_PRD.docx) preserves the supplied draft.
 
+## Product review and relationship to the current app
+
+This is a proposed full-product direction for founder review. It does not by itself approve a release scope, change the current pilot priorities, or describe behavior already present in the app. Use [current progress](PROGRESS.md), the [Coach pilot requirements](https://github.com/appsworld2027/Parent-plus-/blob/26bc034cc995a657bbb1bf51a5064c36ad96088d/PRD.md), the [Aurora first-slice requirements](founders/product/PARENT_PRD.md), and the [consolidated roadmap](founders/product/CONSOLIDATED_PRODUCT_ROADMAP.md) to understand implementation and previously agreed boundaries.
+
+The revised prototypes are interactive design references. Their local state, sample records, previews, simulated sends, and success messages do not prove persistent or connected behavior. The prototype feature map itself marks identity, provider verification, shared APIs, permissions, media, messaging, payments, support, and marketplace functions as requiring backend or operational services. Treat prototype interactions as design intent until their acceptance criteria pass against the real app and authorized service.
+
+### Changes that need product reconciliation
+
+| Area | Full-product proposal | Existing first-slice or pilot boundary | Review required before delivery |
+| --- | --- | --- | --- |
+| Account access | Phone OTP is the initial path, with a supported alternative undecided. | Existing Coach pilot requirements specify email and password with verification and recovery. The Parent slice reuses the existing account credentials. | Agree on account methods and migration or coexistence behavior before changing authentication. |
+| Guardians and child access | Multiple guardians and helpers with delegated permissions. | The Parent first slice limits family ownership and active connections. Multi-guardian authority remains a later decision. | Define who may invite, what each role can see or change, and how consent and revocation work. |
+| Discovery and trials | Public provider discovery, listing trust, trial requests, capacity, and enrollment conversion. | Marketplace and trial services are not implemented in the current Parent slice. | Choose the first provider segment, verification policy, geography, booking rules, and release boundary. |
+| Payments | Parent payment records, provider invoices, collections, reconciliation, refunds, and billing. | Fee collection and gateway work are shelved under the current Coach pilot direction. | Reconfirm commercial model and explicitly sequence payment work before treating these requirements as active delivery. |
+| Parent and provider data | Shared identity, enrollment, session, consent, messaging, and API records. | The current app has distinct family and academy records and an explicit invitation connection. Shared login does not merge family and academy ownership. | Specify the canonical data model and safe migration path while preserving existing authorization and isolation. |
+| Family development and progress | Unified development history, class evidence, and family activities across the product. | Private family records stay separate. Coach feedback is reviewed and shared through explicit, child-scoped connections. | Define each shared data category, evidence standard, consent, and historical access behavior. |
+| Platform and launch | Responsive web/mobile-ready experiences, broad operating workflows, analytics, support, and safety operations. | Current app delivery and release gates are tracked separately in progress and validation records. | Select platform, MVP scope, legal/geographic constraints, owners, and measurable launch gates. |
+
+Until these decisions are resolved, the phased P0/P1/P2 sequence in this draft is a recommendation for discussion, not an approved commitment. New functionality should retain the current app's verified identity, explicit child connection, reviewed feedback, consented media, and fail-closed access rules.
+
 This PRD defines the complete intended product across the Parent and Coach/Tutor experiences. It translates the product audit and mapped prototypes into modules, submodules, functional requirements, shared data rules, acceptance outcomes, and a phased delivery boundary. It distinguishes prototype concepts from production requirements; screens in the HTML demos do not imply that accounts, messaging, bookings, payments, or shared data are live.
 
 ## 1. Product summary
