@@ -1,5 +1,7 @@
 # Repository guidance
 
+Apply the workspace Codex response and delivery standard in `/workspace/AGENTS.md`: use status-title responses, feature hierarchy, architecture status, evidence-backed progress, and a structured test matrix for every executed test.
+
 This repository is the active ParentPlus product. It uses Expo/React Native with separate Coach and Aurora Parent workspaces and the destination Supabase project. Keep both tested journeys and destination-specific privacy rules intact.
 
 ## Before changing code
