@@ -20,6 +20,7 @@ jobs:
       - name: Build founder dashboard
         env:
           GH_TOKEN: ${{ github.token }}
+          AI_ORG_TOKEN: ${{ secrets.AI_ORG_TOKEN }}
         run: |
           set -euo pipefail
           mkdir -p dashboard
@@ -33,7 +34,11 @@ jobs:
             echo
             echo '| Status | Workflow/agent activity | Run | Updated | Identifiers |'
             echo '|---|---|---|---|---|'
-            gh api "repos/$AI_ORG_REPO/actions/runs?per_page=20" --jq '.workflow_runs[] | "| \(.status)/\(.conclusion // \"running\") | \(.name) | [run \(.id)](\(.html_url)) | \(.updated_at) | Session/Response IDs are recorded when supplied by the runner |"' || true
+            if [ -n "${AI_ORG_TOKEN:-}" ]; then
+              GH_TOKEN="$AI_ORG_TOKEN" gh api "repos/$AI_ORG_REPO/actions/runs?per_page=20" --jq '.workflow_runs[] | "| \(.status)/\(.conclusion // \"running\") | \(.name) | [run \(.id)](\(.html_url)) | \(.updated_at) | Session/Response IDs are recorded when supplied by the runner |"'
+            else
+              echo '| unavailable | AI Organization runs | — | — | Configure optional `AI_ORG_TOKEN` secret for cross-repository visibility |'
+            fi
             echo
             echo "## Parent Plus work queue"
             echo
