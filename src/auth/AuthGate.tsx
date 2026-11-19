@@ -38,7 +38,13 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const auth = useAuth();
   const parent = auth.module === 'parent';
   const feedback = useFeedback();
-  const [selected, setSelected] = useState<AuthMode>(() => Platform.OS === 'web' && /\/(coach|parent)\/signup\/?$/.test(globalThis.location?.pathname ?? '') ? 'signup' : 'login');
+  const [selected, setSelected] = useState<AuthMode>(() => {
+    if(Platform.OS==='web'){
+      if(/\/(coach|parent)\/signup\/?$/.test(globalThis.location?.pathname??''))return 'signup';
+      if(globalThis.location?.pathname==='/auth/recovery')return 'recover';
+    }
+    return 'login';
+  });
   const mode = forceRecovery ? 'updatePassword' : selected;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -72,7 +78,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       } else if (mode === 'recover') {
         const result = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authRedirect(true,auth.module) });
         if (result.error) throw result.error;
-        setMessage('If an account exists, a recovery email will arrive. Open the newest link on this device.');
+        setMessage(`If an account exists, a recovery email will arrive. Open the newest link ${Platform.OS==='web'?'in this browser':'on this device'}.`);
       } else {
         const result = await supabase.auth.updateUser({ password });
         if (result.error) throw result.error;

@@ -1,5 +1,11 @@
 # Issue record
 
+## AUTH-RECOVERY-002 — Live reset redirect and email-tab proof
+
+17November2026: the owner reported that a real reset email opened a page at localhost:3000. Deliberately invalid routing probes confirmed the live Supabase Site URL fallback for both default and explicit public callback paths. Owner changed Site URL to the normal public origin; repeat probes now resolve to the public root and `/auth/recovery`. No additional redirect-field edit or database migration was necessary; no account password or real email was changed/sent by the coding environment.
+
+Code inspection and observed failing regressions exposed additional browser issues: tab-only PKCE proofs were unavailable in a fresh email tab; the SDK flow ID was removed before exchange; cross-tab SDK session broadcasts could replace another tab's displayed account state; later Parent intent could override an earlier Coach email; shared cleanup indexes let one tab's logout erase another tab's pending proof. Candidate0.13.2 uses addressed expiring proof slots, local cleanup ownership, per-document SDK channels/stable persisted key mapping, and explicit flow/module callbacks. Direct `/auth/recovery` opens a request form without creating a session. Existing sessions/native SecureStore and password policy remain. [Current setup and acceptance boundaries](AUTH_SETUP.md); exact verification/release evidence is in PROGRESS.md and the PR.
+
 ## ENV-001 — Direct backend access blocked
 
 - Status: external limitation, not resolved.

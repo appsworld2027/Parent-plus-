@@ -11,7 +11,7 @@ declare global {
     __coachFixture: { academy: boolean; failCreate: boolean; calls: string[]; pkceMethods: string[]; roster: Roster; failStudent: boolean; loseStudentResponse: boolean; classes: ClassSession[]; attendance: Record<string, Marks>; failAttendance: boolean; loseAttendanceResponse: boolean; failClass: boolean; failArchive: boolean; holdAttendance: boolean; observations: Observation[]; observationRecipients: Record<string, string[]>; observationVersions: Record<string, { revision: number; note: string; status: string; saved_at: string }[]>; failObservation: boolean; loseObservationResponse: boolean; holdObservation: boolean };
   }
 }
-export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean; missingObservationMigration?: boolean } = {}) {
+export async function backend(page: Page, options: { academy?: boolean; failLogin?: boolean; failAcademy?: boolean; unverified?: boolean; secondaryAccount?:boolean; missingRosterMigration?: boolean; readyClass?: boolean; missingClassMigration?: boolean; missingObservationMigration?: boolean } = {}) {
   // A transport fixture installed before the real app/SDK loads. No Supabase
   // request can leave this browser; authentication and storage code are unchanged.
   await page.addInitScript(({ user, options }) => {
@@ -28,7 +28,8 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       classes: options.readyClass ? [{ id: classId, batch_id: batchId, starts_at: `${today}T10:30:00.000Z`, ends_at: `${today}T11:30:00.000Z`, room: 'Room 1', status: 'scheduled', attendance_revision: 0 }] : [], attendance: {} };
     const notes = JSON.parse(sessionStorage.getItem('__fictional_observations') ?? 'null') ?? { observations: [], recipients: {}, versions: {} };
     window.__coachFixture = { academy: options.academy ?? false, failCreate: false, calls: [], pkceMethods: [], roster, failStudent: false, loseStudentResponse: false, classes: teaching.classes, attendance: teaching.attendance, failAttendance: false, loseAttendanceResponse: false, failClass: false, failArchive: false, holdAttendance: false, observations: notes.observations, observationRecipients: notes.recipients, observationVersions: notes.versions, failObservation: false, loseObservationResponse: false, holdObservation: false };
-    const account = options.unverified ? { ...user, email_confirmed_at: null } : user;
+    const selectedAccount=options.secondaryAccount?{...user,id:'00000000-0000-0000-0000-000000000002',email:'second@example.test'}:user;
+    const account = options.unverified ? { ...selectedAccount, email_confirmed_at: null } : selectedAccount;
     const original = window.fetch.bind(window);
     window.fetch = async (input, init) => {
       const raw = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
@@ -59,7 +60,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         } else {
           const expires = Math.floor(Date.now() / 1000) + 3600;
           const part = (value: object) => btoa(JSON.stringify(value)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-          data = { access_token: `${part({ alg: 'HS256', typ: 'JWT' })}.${part({ sub: user.id, exp: expires })}.fictional_signature`,
+          data = { access_token: `${part({ alg: 'HS256', typ: 'JWT' })}.${part({ sub: account.id, exp: expires })}.fictional_signature`,
             token_type: 'bearer', expires_in: 3600, expires_at: expires, refresh_token: 'fictional-refresh-token', user: account };
         }
       } else if (url.pathname.endsWith('/user')) data = account;

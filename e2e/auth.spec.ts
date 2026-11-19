@@ -110,3 +110,85 @@ test('a recovery code opens password update and removes the code from browser hi
   await page.getByRole('button', { name: 'Save new password' }).click();
   await expect(page.getByRole('heading', { name: 'Your academy, your way.' })).toBeVisible();
 });
+
+test('a recovery email can open a new tab in the requesting browser',async({page,context})=>{
+ await backend(page);await page.goto('/');
+ await page.getByRole('button',{name:'Forgot password?',exact:true}).click();
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');
+ await page.getByRole('button',{name:'Send recovery email',exact:true}).click();
+ await expect(page.getByRole('status')).toContainText('If an account exists');
+ const flow=await page.evaluate(()=>Object.keys(localStorage).map(key=>key.match(/-flow-([a-zA-Z0-9_-]{8,64})-code-verifier$/)?.[1]).find(Boolean));expect(flow).toBeTruthy();
+ const recovery=await context.newPage();await backend(recovery);
+ await recovery.goto(`/auth/recovery?code=fictional-recovery-new-tab&sb_flow_id=${flow}&module=coach`);
+ await expect(recovery.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();
+ await expect(recovery).not.toHaveURL(/fictional-recovery-new-tab/);
+});
+
+test('recovery preserves its exact email flow after removing sensitive URL parameters',async({page})=>{
+ await backend(page);await page.goto('/');await page.getByRole('button',{name:'Forgot password?',exact:true}).click();
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');await page.getByRole('button',{name:'Send recovery email',exact:true}).click();
+ await expect(page.getByRole('status')).toContainText('If an account exists');
+ const flow=await page.evaluate(()=>{
+  let result='';
+  for(const key of Object.keys(localStorage)){
+   const match=key.match(/-flow-([a-zA-Z0-9_-]{8,64})-code-verifier$/);if(match)result=match[1];
+   if(key.endsWith('-auth-token-code-verifier'))localStorage.removeItem(key);
+  }
+  return result;
+ });
+ expect(flow).toMatch(/^[a-f0-9]{32}$/);
+ await page.goto(`/auth/recovery?code=fictional-exact-flow&sb_flow_id=${flow}`);
+ await expect(page.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();await expect(page).not.toHaveURL(/sb_flow_id|fictional-exact-flow/);
+});
+
+test('a Parent recovery email returns to Parent in a new tab',async({page,context})=>{
+ await backend(page);await page.goto('/parent');await page.getByRole('button',{name:'Forgot password?',exact:true}).click();
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');await page.getByRole('button',{name:'Send recovery email',exact:true}).click();
+ await expect(page.getByRole('status')).toContainText('If an account exists');
+ const flow=await page.evaluate(()=>Object.keys(localStorage).map(key=>key.match(/-flow-([a-zA-Z0-9_-]{8,64})-code-verifier$/)?.[1]).find(Boolean));expect(flow).toBeTruthy();
+ const recovery=await context.newPage();await backend(recovery);await recovery.goto(`/auth/recovery?code=fictional-parent-reset&sb_flow_id=${flow}&module=parent`);
+ await expect(recovery.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();await expect(recovery).toHaveURL(/\/parent$/);
+});
+
+test('the direct recovery address opens a usable email-request form without a broken-link error',async({page})=>{
+ await backend(page);await page.goto('/auth/recovery');
+ await expect(page.getByRole('heading',{name:'Let’s get you back in.',exact:true})).toBeVisible();
+ await expect(page.getByRole('alert')).toHaveCount(0);
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');
+ await page.getByRole('button',{name:'Send recovery email',exact:true}).click();
+ await expect(page.getByRole('status')).toContainText('If an account exists');
+});
+
+test('another account recovering in a second tab cannot replace this tab’s signed-in workspace',async({page,context})=>{
+ await backend(page,{academy:true});await login(page);await expect(page.getByRole('tab',{name:'Students',exact:true})).toBeVisible();
+ const recovery=await context.newPage();await backend(recovery,{secondaryAccount:true});await recovery.goto('/');
+ await recovery.getByRole('button',{name:'Forgot password?',exact:true}).click();await recovery.getByLabel('Email address',{exact:true}).fill('second@example.test');
+ await recovery.getByRole('button',{name:'Send recovery email',exact:true}).click();await expect(recovery.getByRole('status')).toContainText('If an account exists');
+ await recovery.goto('/auth/recovery?code=fictional-second-account');
+ await expect(recovery.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();
+ // Allow browser auth notifications and the resulting React render to settle.
+ await page.evaluate(()=>new Promise<void>(resolve=>{requestAnimationFrame(()=>requestAnimationFrame(()=>{resolve();}));}));
+ await expect(page.getByRole('tab',{name:'Students',exact:true})).toBeVisible();
+ await page.reload();await expect(page.getByRole('tab',{name:'Students',exact:true})).toBeVisible();
+});
+
+test('an earlier Coach recovery keeps Coach intent after a later Parent recovery request',async({page,baseURL})=>{
+ await backend(page);await page.goto('/auth/recovery');
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');await page.getByRole('button',{name:'Send recovery email',exact:true}).click();await expect(page.getByRole('status')).toContainText('If an account exists');
+ const flow=await page.evaluate(()=>Object.keys(localStorage).map(key=>key.match(/-flow-([a-zA-Z0-9_-]{8,64})-code-verifier$/)?.[1]).find(Boolean));
+ expect(flow).toBeTruthy();await page.goto('/parent');await page.getByRole('button',{name:'Forgot password?',exact:true}).click();
+ await page.getByLabel('Email address',{exact:true}).fill('coach@example.test');await page.getByRole('button',{name:'Send recovery email',exact:true}).click();await expect(page.getByRole('status')).toContainText('If an account exists');
+ await page.goto(`/auth/recovery?code=fictional-earlier-coach&sb_flow_id=${flow}&module=coach`);
+ await expect(page.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();await expect(page).toHaveURL(new URL('/',baseURL!).href);
+});
+
+test('signing out one tab cannot erase another tab’s pending recovery email proof',async({page,context})=>{
+ await backend(page,{academy:true});await login(page);await expect(page.getByRole('tab',{name:'Students',exact:true})).toBeVisible();
+ const request=await context.newPage();await backend(request);await request.goto('/auth/recovery');
+ await request.getByLabel('Email address',{exact:true}).fill('coach@example.test');await request.getByRole('button',{name:'Send recovery email',exact:true}).click();await expect(request.getByRole('status')).toContainText('If an account exists');
+ const flow=await request.evaluate(()=>Object.keys(localStorage).map(key=>key.match(/-flow-([a-zA-Z0-9_-]{8,64})-code-verifier$/)?.[1]).find(Boolean));expect(flow).toBeTruthy();
+ await page.getByRole('button',{name:'Open support and diagnostics',exact:true}).click();await page.getByRole('button',{name:'Sign out',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Sign in',exact:true})).toBeVisible();
+ const recovery=await context.newPage();await backend(recovery);await recovery.goto(`/auth/recovery?code=fictional-preserved-email&sb_flow_id=${flow}`);
+ await expect(recovery.getByRole('heading',{name:'Choose a new password.',exact:true})).toBeVisible();
+});

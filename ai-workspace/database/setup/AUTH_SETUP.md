@@ -1,6 +1,14 @@
 # Email authentication setup
 
-**Current-state notice, 17 November 2026:** this is the historical setup and acceptance guide. Read the latest `PROGRESS.md` before acting; do not repeat saved redirect/provider configuration or SQL setup. The current app uses shared email/password Auth with confirmation and PKCE recovery. Multi-workspace authority remains an isolated candidate. Earlier APK/setup status below describes its original checkpoint, not today's full repository state.
+**Current-state notice, 19 November 2026:** this is the setup and acceptance guide. Read `PROGRESS.md` before acting; do not repeat saved redirect/provider configuration or SQL setup. The app uses shared email/password Auth with confirmation and PKCE recovery. Multi-workspace authority remains an isolated candidate. Android package setup below is historical; APK testing/builds are retired.
+
+## Browser recovery and tab isolation — 19 November 2026
+
+A recovery request starts in the browser where the parent or coach expects to open the email. If the email app opens a new tab in the same browser profile and site origin, that tab can redeem its exact, short-lived PKCE proof. The signed-in session remains in each tab's session storage; no password, access token or refresh token is copied to shared browser storage. If the flow is opened in another browser/profile, request a fresh email from the intended ParentPlus address.
+
+The public `/auth/recovery` address opens the password-reset request form; it does not sign anyone in without a valid one-time email code. The callback retains Coach or Parent navigation intent and removes sensitive query data before completing the session exchange. Automated browser tests use fictional email/auth responses. Live email delivery and a real account password update have not been exercised by those tests.
+
+No database migration is required for this fix. Do not paste passwords, email URLs, codes, or tokens into chat.
 
 The initial database migration was confirmed by the owner's Supabase screenshot: version `202611110001` has an applied timestamp. No further setup SQL is needed for the current login/academy module.
 

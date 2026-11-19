@@ -1,6 +1,6 @@
 # Product requirements: Parent Plus Coach
 
-Version: 1.8 · simpler private feedback save, 17 November 2026
+Version: 1.9 · reliable browser recovery and tab isolation, 19 November 2026
 Status: product requirement baseline. Reviewed against the owner’s app feedback: batch management and fees must follow the coach journey; both profile and observation photos are required. Current implementation, build evidence and acceptance gaps are tracked in [PROGRESS.md](PROGRESS.md) and [validation](ai-workspace/validation/VALIDATION.md).
 Working agreement: refresh technical docs after substantial changes; review PRD/progress once per active working day. Material requirement changes and critical blockers are recorded immediately. See [product decisions](founders/product/PRODUCT_DECISIONS.md) and [developer handover](ai-workspace/development/DEVELOPER_GUIDE.md).
 Companion documents: [build sequence](ai-workspace/plans/BUILD_PLAN.md), [product plan](founders/product/PRODUCT_PLAN.md), [Step 0 setup guide](founders/getting-started/STEP_0.md).
