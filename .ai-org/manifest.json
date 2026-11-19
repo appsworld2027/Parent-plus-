@@ -2,5 +2,13 @@
   "organization": "appsworld",
   "adapterVersion": "1",
   "source": "appsworld2027/parent-plus-ai-org",
+  "entrypoints": {
+    "founderCommand": "scripts/founder-command.mjs",
+    "founderInterface": ".codex/FOUNDER_COMMANDS.md",
+    "discoveryWorkflow": ".github/workflows/ai-pm-discovery.yml",
+    "intakeWorkflow": ".github/workflows/founder-intake.yml",
+    "planningWorkflow": ".github/workflows/product-planning.yml",
+    "qaWorkflow": ".github/workflows/multi-agent-qa.yml"
+  },
   "protectedActions": ["production", "destructive", "paid", "credentials", "legal-privacy"]
 }
