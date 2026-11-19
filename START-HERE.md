@@ -37,3 +37,7 @@ Discover → Read → Plan → Build → Validate → Close → Move ahead
 Every meaningful task should leave behind a plan, validation evidence, and a
 short closeout record. Existing documents remain in their current founder and
 AI folders while the navigation is improved in controlled batches.
+
+## Isolated service validation
+
+See [feature coverage](ai-workspace/validation/FEATURE_COVERAGE.md) and [local Supabase service tests](ai-workspace/validation/LOCAL_SUPABASE_TESTING.md) for the optional, disposable service test harness.

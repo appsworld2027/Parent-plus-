@@ -26,7 +26,8 @@
     "eslint": "10.15.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "8.73.0",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "supabase": "3.2.0"
   },
   "scripts": {
     "start": "expo start",
@@ -46,7 +47,12 @@
     "quality:verify": "python3 scripts/quality_gate.py verify",
     "quality:self-test": "python3 -m unittest discover -s tests/quality -v",
     "quality:run": "python3 scripts/quality_gate.py run",
-    "test:parent:postgres": "node scripts/test-parent-attendance-postgres.mjs"
+    "test:parent:postgres": "node scripts/test-parent-attendance-postgres.mjs",
+    "test:services:guards": "node --test tests/local-supabase/guards.check.mjs",
+    "test:services": "node scripts/local-supabase.mjs run",
+    "test:services:up": "node scripts/local-supabase.mjs up",
+    "test:services:run": "node scripts/local-supabase.mjs test",
+    "test:services:down": "node scripts/local-supabase.mjs down"
   },
   "private": true,
   "overrides": {

@@ -50,4 +50,5 @@ __pycache__/
 *.pyc
 
 # Supabase CLI local metadata
+.local-supabase/
 supabase/.temp/
