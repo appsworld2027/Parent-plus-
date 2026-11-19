@@ -1,5 +1,11 @@
 # Parent Plus Coach — development checkpoint
 
+## Reported roster and Parent-flow repairs —19November2026
+
+Owner supplies five broken-flow observations. Investigation and bug repair resume on canonicalMM/development only; new feature work and main promotion remain paused. User explicitly retains separate Coach approval. Owner is unsure whose child appears in unexpected feedback, so existing live mapping remains a possible unverified identity mismatch; no private account records or live invitations are accessed/sent and no automatic reassignment is attempted.
+
+Source investigation confirms paginated roster loading already requests all saved batches for one academy, but archived rows are hidden and normalized name checks are absent. Parent connect silently defaults to the selected/first family child; profiles are not automatically created from Coach student records. A second confirmed UI bug replaces already-approved updates when any connection for that child is pending. [Defect/coverage ledger](docs/BROKEN_FLOW_QA.md) tracks each note, confirmed cause, regression and remaining live-account/provider boundary. CandidateCoach0.13.3/Parent0.3.1 fixes these UI paths without SQL/role/grant changes; focused browser25/25and strengthened2/2cases pass; fresh full TypeScript/472automated tests across38files pass79.80seconds. Exact commit review and full canonical CI evidence follow separately. Existing001–014/candidates015–021 stay unchanged.
+
 ## MM branch consolidation —18November2026
 
 Owner paused feature development, then explicitly authorized consolidating all MM branches, retesting the complete existing app and deleting only the old merged MM refs. The latest instruction supersedes17November main-promotion authorization: future MM work stays on one `MM/development` branch; no main commits or release without a new explicit instruction. AM/codex/build-status and live Supabase/provider/production settings are outside this cleanup.
