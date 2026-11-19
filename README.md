@@ -12,8 +12,9 @@ The destination Supabase project is the canonical development database. Its inst
 ## Start here
 
 - [Current progress](PROGRESS.md)
-- [Coach requirements](PRD.md)
-- [Parent requirements](docs/PARENT_PRD.md)
+- [Full product requirements for Parent and Coach](PRD.md)
+- [Aurora Parent pilot requirements](founders/product/PARENT_PRD.md)
+- [Revised Parent and Coach prototypes](founders/prototypes/README.md)
 - [Parent access design](docs/PARENT_MODULE.md)
 - [Developer guide](docs/DEVELOPER_GUIDE.md)
 - [Multi-workspace foundation](docs/MULTI_WORKSPACE_FOUNDATION.md)
