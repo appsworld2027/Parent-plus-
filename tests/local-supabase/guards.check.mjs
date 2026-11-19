@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {project, apiUrl, mailUrl, checkDockerHost, checkNetwork, checkContainer, checkVolume, checkStatus} from '../../scripts/local-supabase-guards.mjs';
+import {project, apiUrl, mailUrl, resourceCandidates, checkDockerHost, checkNetwork, checkContainer, checkVolume, checkStatus} from '../../scripts/local-supabase-guards.mjs';
 
 test('LOCAL-GUARD-01: remote Docker hosts are refused before provisioning', () => {
   checkDockerHost('unix:///var/run/docker.sock');
@@ -15,6 +15,7 @@ test('LOCAL-GUARD-02: foreign or exposed networks are refused', () => {
   for (const override of [{Name: 'foreign'}, {Internal: true}, {Labels: {}}, {Options: {}}]) {
     assert.throws(() => checkNetwork({...network, ...override}));
   }
+  assert.throws(() => checkNetwork({...network, Containers: {unexpected: {Name: 'foreign'}}}));
 });
 test('LOCAL-GUARD-03: a matching name never authorizes foreign or exposed containers', () => {
   const container = {Name: `/supabase_db_${project}`, Config: {Labels: {'com.supabase.cli.project': project}},
@@ -48,4 +49,11 @@ test('LOCAL-GUARD-05: a leftover volume is not owned merely because its name mat
   checkVolume(volume);
   assert.throws(() => checkVolume({...volume, Labels: {}}));
   assert.throws(() => checkVolume({...volume, Name: 'supabase_db_other'}));
+});
+test('LOCAL-GUARD-06: unexpected label-selected resources cannot bypass name validation', () => {
+  const ownName = `supabase_db_${project}`;
+  const names = resourceCandidates([ownName, 'unrelated'], [ownName, 'unexpected-labelled-resource']);
+  assert.deepEqual(names, [ownName, 'unexpected-labelled-resource']);
+  assert.throws(() => checkVolume({Name: names[1], Labels: {'com.supabase.cli.project': project}}));
+  assert.throws(() => checkContainer({Name: `/${names[1]}`, Config: {Labels: {'com.supabase.cli.project': project}}}));
 });

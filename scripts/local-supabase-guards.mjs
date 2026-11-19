@@ -4,6 +4,11 @@ export const project = 'parentplus-local-test';
 export const apiUrl = 'http://127.0.0.1:54321';
 export const mailUrl = 'http://127.0.0.1:54324';
 
+export function resourceCandidates(allNames, labelledNames) {
+  // The CLI may select by project label at teardown, even when a resource name is unexpected.
+  return [...new Set([...allNames.filter(name => name.endsWith(`_${project}`)), ...labelledNames])];
+}
+
 export function checkDockerHost(host) {
   assert.ok(typeof host === 'string' && /^unix:\/\/\//.test(host),
     'Local Docker socket required; remote Docker endpoints are refused.');
@@ -15,6 +20,10 @@ export function checkNetwork(network) {
   assert.equal(network.Internal, false, 'Use the supported local bridge network.');
   assert.equal(network.Options?.['com.docker.network.bridge.host_binding_ipv4'], '127.0.0.1',
     'Test services must bind to loopback.');
+  for (const container of Object.values(network.Containers ?? {})) {
+    assert.ok(container.Name?.startsWith('supabase_') && container.Name.endsWith(`_${project}`),
+      'Foreign container attached to the test network.');
+  }
 }
 
 export function checkContainer(container) {

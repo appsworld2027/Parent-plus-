@@ -5,7 +5,7 @@ import {readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync}
 import {fileURLToPath} from 'node:url';
 import {resolve, join} from 'node:path';
 import assert from 'node:assert/strict';
-import {project, apiUrl, mailUrl, checkDockerHost, checkNetwork, checkContainer, checkVolume, checkStatus} from './local-supabase-guards.mjs';
+import {project, apiUrl, mailUrl, resourceCandidates, checkDockerHost, checkNetwork, checkContainer, checkVolume, checkStatus} from './local-supabase-guards.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const state = join(root, '.local-supabase');
@@ -57,8 +57,8 @@ function docker(args) {
 }
 function jsonDocker(args) { return JSON.parse(docker(args)); }
 function ownedContainers() {
-  return docker(['ps', '-a', '--format', '{{.Names}}']).split('\n')
-    .filter(name => name.endsWith(`_${project}`))
+  return resourceCandidates(docker(['ps', '-a', '--format', '{{.Names}}']).split('\n').filter(Boolean),
+    docker(['ps', '-a', '--filter', `label=com.supabase.cli.project=${project}`, '--format', '{{.Names}}']).split('\n').filter(Boolean))
     .map(name => jsonDocker(['inspect', name])[0]);
 }
 function assertOwned() {
@@ -66,7 +66,9 @@ function assertOwned() {
   if (networks.includes(project)) checkNetwork(jsonDocker(['network', 'inspect', project])[0]);
   const containers = ownedContainers();
   containers.forEach(checkContainer);
-  for (const name of docker(['volume', 'ls', '--format', '{{.Name}}']).split('\n').filter(name => name.endsWith(`_${project}`))) {
+  const volumes = resourceCandidates(docker(['volume', 'ls', '--format', '{{.Name}}']).split('\n').filter(Boolean),
+    docker(['volume', 'ls', '--filter', `label=com.supabase.cli.project=${project}`, '--format', '{{.Name}}']).split('\n').filter(Boolean));
+  for (const name of volumes) {
     checkVolume(jsonDocker(['volume', 'inspect', name])[0]);
   }
   return containers;
