@@ -1,0 +1,137 @@
+{
+  "base_main": "f858aad85577c1e49ae24f06ba260778ecb83ddd",
+  "branches": [
+    {
+      "ref": "refs/heads/MM/feedback-save-flow-20261117",
+      "branch": "MM/feedback-save-flow-20261117",
+      "sha": "2b7cab57d3aab8b2fc58878e5cc2e6c4755f3a38",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/learning-context-20261118",
+      "branch": "MM/learning-context-20261118",
+      "sha": "d3b1d459c9dcbe367e137e9975761c3213de9205",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/password-recovery-20261117",
+      "branch": "MM/password-recovery-20261117",
+      "sha": "5e18c750aef5646685d0452b8517e0d5452fb846",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/promote-all-work-to-main-20261117",
+      "branch": "MM/promote-all-work-to-main-20261117",
+      "sha": "206b86b8c1778beeccdc1f7f394c28d441d80b13",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/vercel-public-entry-20261117",
+      "branch": "MM/vercel-public-entry-20261117",
+      "sha": "778a09d7059129bdc8e41a0b9df11f1f0eab24a0",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/workspace-attendance-20261117",
+      "branch": "MM/workspace-attendance-20261117",
+      "sha": "c211b72b1f593b08a8c0cd00f880c0834080697e",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/workspace-authorization-kernel-20261117",
+      "branch": "MM/workspace-authorization-kernel-20261117",
+      "sha": "4769d006265395559b50990ece437c544cdf6c2d",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/workspace-feedback-20261117",
+      "branch": "MM/workspace-feedback-20261117",
+      "sha": "14dbda0a5b204ec2a4b1728c9d4fd5f1b2a762be",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/workspace-roster-transactions-20261117",
+      "branch": "MM/workspace-roster-transactions-20261117",
+      "sha": "a1f290c8030b1e90d2483bc8aa9560d9140cfb02",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/heads/MM/workspace-staff-lifecycle-20261117",
+      "branch": "MM/workspace-staff-lifecycle-20261117",
+      "sha": "ff799057cd99878c85b3993b30907104250a6648",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/feedback-save-flow-20261117",
+      "branch": "MM/feedback-save-flow-20261117",
+      "sha": "2b7cab57d3aab8b2fc58878e5cc2e6c4755f3a38",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/learning-context-20261118",
+      "branch": "MM/learning-context-20261118",
+      "sha": "d3b1d459c9dcbe367e137e9975761c3213de9205",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/password-recovery-20261117",
+      "branch": "MM/password-recovery-20261117",
+      "sha": "5e18c750aef5646685d0452b8517e0d5452fb846",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/vercel-public-entry-20261117",
+      "branch": "MM/vercel-public-entry-20261117",
+      "sha": "778a09d7059129bdc8e41a0b9df11f1f0eab24a0",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/workspace-attendance-20261117",
+      "branch": "MM/workspace-attendance-20261117",
+      "sha": "c211b72b1f593b08a8c0cd00f880c0834080697e",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/workspace-feedback-20261117",
+      "branch": "MM/workspace-feedback-20261117",
+      "sha": "14dbda0a5b204ec2a4b1728c9d4fd5f1b2a762be",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/workspace-roster-transactions-20261117",
+      "branch": "MM/workspace-roster-transactions-20261117",
+      "sha": "a1f290c8030b1e90d2483bc8aa9560d9140cfb02",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    },
+    {
+      "ref": "refs/remotes/origin/MM/workspace-staff-lifecycle-20261117",
+      "branch": "MM/workspace-staff-lifecycle-20261117",
+      "sha": "ff799057cd99878c85b3993b30907104250a6648",
+      "ancestor_of_main": true,
+      "commits_not_in_main": 0
+    }
+  ],
+  "backup": {
+    "path": "/workspace/ParentPlus-MM-backups/20261118-mm-before-cleanup.bundle",
+    "sha256": "44baaa515c2549304dc5a1a9e7357e8b8e47ad3bbf298595e5ae84009d7440cc",
+    "bytes": 4647335,
+    "verified": true
+  }
+}

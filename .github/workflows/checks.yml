@@ -2,7 +2,7 @@ name: Parent Plus full validation
 on:
   workflow_dispatch:
   push:
-    branches: [main, codex/coach-foundation]
+    branches: [main, codex/coach-foundation, MM/development]
     paths-ignore: ['**/*.md', 'docs/images/**']
   pull_request:
 permissions:

@@ -1,6 +1,10 @@
 # Repository guidance
 
-Apply the workspace Codex response and delivery standard in `/workspace/AGENTS.md`: use status-title responses, feature hierarchy, architecture status, evidence-backed progress, and a structured test matrix for every executed test.
+## Current MM branch rule — owner instruction,18November2026
+
+All MM development belongs on the single canonical `MM/development` branch. Do not implement or commit on `main`, create new `MM/<task>` branches, or automatically merge/push MM work into `main`. The owner's latest instruction supersedes the earlier17November promotion authorization. A future main release/merge requires a new explicit owner instruction. Keep AM branches, legacy codex branches, production settings and live Supabase untouched unless separately authorized. New feature development remains paused; current authorized maintenance is the owner-reported roster/Parent-flow defect investigation, scoped repairs and verification. This does not authorize unrelated features or a main release. See [shared workflow](docs/SHARED_DEVELOPMENT_WORKFLOW.md) and [consolidation evidence](docs/MM_BRANCH_CONSOLIDATION.md).
+
+Before removing an old MM branch, preserve its exact tip in the canonical history/backup, recheck current remote SHA and ancestry, pass the complete existing regression/export/database checks and independent review, then delete only the inventoried contained MM refs. Branch cleanup never authorizes deleting application files or rewriting history.
 
 This repository is the active ParentPlus product. It uses Expo/React Native with separate Coach and Aurora Parent workspaces and the destination Supabase project. Keep both tested journeys and destination-specific privacy rules intact.
 

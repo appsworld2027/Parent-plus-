@@ -1,3 +1,3 @@
-# docs/DEVELOPER_GUIDE.md moved
+# Developer guide moved
 
-The document now lives at [`ai-workspace/development/DEVELOPER_GUIDE.md`](ai-workspace/development/DEVELOPER_GUIDE.md).
+See the [canonical developer guide](../ai-workspace/development/DEVELOPER_GUIDE.md).

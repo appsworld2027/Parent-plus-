@@ -23,6 +23,11 @@ import { createFamily, loadFamily, loadParentData, parentFailure, saveFamilyReco
 
 type Tab='Home'|'Week'|'Together'|'Explore';
 type Sheet='child'|'moment'|'todo'|'event'|'connect'|'activity'|'profile'|'consent';
+function validBirthDate(value:string,today:string) {
+  if(!value)return true;
+  const timestamp=Date.parse(`${value}T00:00:00Z`);
+  return /^\d{4}-\d{2}-\d{2}$/.test(value)&&value>='1900-01-01'&&value<=today&&Number.isFinite(timestamp)&&new Date(timestamp).toISOString().slice(0,10)===value;
+}
 function Button({title,action,disabled=false,soft=false}:{title:string;action:()=>void;disabled?:boolean;soft?:boolean}) {return <Pressable accessibilityRole="button" disabled={disabled} onPress={action} style={[s.button,soft&&s.soft,disabled&&s.disabled]}><Text style={[s.buttonText,soft&&s.ink]}>{title}</Text></Pressable>;}
 function Field({label,value,change,kind='text',disabled=false,multiline=false,max=160}:{label:string;value:string;change:(value:string)=>void;kind?:'text'|'date'|'time'|'number';disabled?:boolean;multiline?:boolean;max?:number}) {
   return <View style={s.field}><Text style={s.label}>{label}</Text>{Platform.OS==='web'&&['date','time'].includes(kind)?React.createElement('input',{'aria-label':label,type:kind,value,disabled,onChange:(e:React.ChangeEvent<HTMLInputElement>)=>change(e.target.value),style:{height:48,width:'100%',boxSizing:'border-box',padding:12,borderRadius:15,border:'1px solid #313A45',backgroundColor:'#20262F',color:'#F9FBFC',fontSize:16,colorScheme:'dark'}}):<TextInput accessibilityLabel={label} value={value} onChangeText={change} editable={!disabled} maxLength={max} multiline={multiline} keyboardType={kind==='number'?'number-pad':'default'} autoCorrect={false} autoCapitalize="none" style={[s.input,multiline&&s.multiline]} />}</View>;
@@ -40,10 +45,13 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   const [name,setName]=useState(''),[detail,setDetail]=useState(''),[date,setDate]=useState(''),[time,setTime]=useState('16:00'),[endTime,setEndTime]=useState('17:00'),[minutes,setMinutes]=useState('0');
   const [color,setColor]=useState<keyof typeof parentColors>('sun'),[idea,setIdea]=useState(activities[0]);
   const [invite,setInvite]=useState(''),[invitePreview,setInvitePreview]=useState<{academy_name:string;student_name:string}|null>(null),[confirmed,setConfirmed]=useState(false);
+  const [connectTarget,setConnectTarget]=useState(''),[addingConnectChild,setAddingConnectChild]=useState(false),[savedConnectChild,setSavedConnectChild]=useState(''),[childSaveAttempted,setChildSaveAttempted]=useState(false);
+  const connectChildDraft=useRef<{id:string;family_id:string;name:string;born_on:string|null;color:keyof typeof parentColors}|null>(null);
   const [mediaPreview,setMediaPreview]=useState<{id:string;url:string}|null>(null);
   const [connection,setConnection]=useState<CoachLink|null>(null),[photos,setPhotos]=useState(false),[videos,setVideos]=useState(false),[sharing,setSharing]=useState(false);
   const familyId=useRef(randomUUID()),formId=useRef(randomUUID()),lock=useRef(false),generation=useRef(0),alive=useRef(true);
   const children=data?.children.filter(child=>!child.archived_at)??[],child=children.find(value=>value.id===selected)??children[0];
+  const connectChild=children.find(value=>value.id===connectTarget);
   const pendingJourney=data?.connectionRequests?.find(request=>request.academy_id===journey?.academy&&request.student_id===journey?.student&&request.status==='pending');
   const pendingForChild=data?.connectionRequests?.filter(request=>request.child_id===child?.id&&request.status==='pending')??[];
   const today=parentToday(family?.timezone??'Asia/Kolkata'),stats=data&&child?parentWeek(data,child.id,today):null;
@@ -51,10 +59,12 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   const links=data?.links.filter(row=>row.child_id===child?.id&&row.active)??[];
   const todos=data?.todos.filter(row=>row.child_id===child?.id)??[],moments=data?.moments.filter(row=>row.child_id===child?.id).sort((a,b)=>b.occurred_on.localeCompare(a.occurred_on))??[];
   const events=data?.events.filter(row=>row.child_id===child?.id).sort((a,b)=>a.starts_at.localeCompare(b.starts_at))??[];
-  const refresh=useCallback(async()=>{
+  const refresh=useCallback(async(expectedChild?:string)=>{
     if(!owner){setLoading(false);return false;}
     const version=++generation.current;setLoading(true);
-    try{const next=await loadFamily(owner);const records=next?await loadParentData(next.id):null;if(version!==generation.current)return;setFamily(next);setData(records);
+    try{const next=await loadFamily(owner);const records=next?await loadParentData(next.id):null;if(version!==generation.current)return;
+      if(expectedChild&&!records?.children.some(item=>item.id===expectedChild&&!item.archived_at))throw new Error('Saved child is not available yet');
+      setFamily(next);setData(records);
       if(next&&records)setSelected(current=>{
         const active=records.children.filter(item=>!item.archived_at);
         if(active.some(item=>item.id===current))return current;
@@ -80,12 +90,13 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   },[journey,data,loading]);
   async function run(action:()=>Promise<void>) {
     if(lock.current)return;lock.current=true;setBusy(true);setError('');
-    try{await action();}catch(failure){if(alive.current)setError(failure instanceof Error&&/^(Enter |Choose |Review |Use |The end|This invitation|Sign in with|The Parent connection)/.test(failure.message)?failure.message:parentFailure(failure));}
+    try{await action();}catch(failure){if(alive.current)setError(failure instanceof Error&&/^(Enter |Choose |Review |Use |The end|This invitation|Sign in with|The Parent connection|Child saved)/.test(failure.message)?failure.message:parentFailure(failure));}
     finally{lock.current=false;if(alive.current)setBusy(false);}
   }
   async function refreshedAfterSave(message:string) {setNotice(message);setSheet(null);setDirty(false);if(!await refresh())setError('Saved, but this view could not refresh. Refresh your family records before entering it again.');}
   function open(next:Sheet) {
     if(busy)return;formId.current=randomUUID();setSheet(next);setConnection(null);setDirty(false);setError('');setName('');setDetail('');setDate(next==='child'?'':today);setTime('16:00');setEndTime('17:00');setMinutes('0');setInvite('');setInvitePreview(null);setConfirmed(false);
+    setConnectTarget('');setAddingConnectChild(false);setSavedConnectChild('');setChildSaveAttempted(false);connectChildDraft.current=null;
   }
   function change(set:(value:string)=>void,value:string){set(value);setDirty(true);}
   function close(){if(busy)return;if(dirty)setDiscard(true);else setSheet(null);}
@@ -98,7 +109,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
     const base={id:formId.current,family_id:family.id,child_id:child?.id};
     if(sheet==='child'){
       if(!name.trim()||name.trim().length>100)throw new Error('Enter a child name, up to 100 characters.');
-      if(date&&(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date>today||date<'1900-01-01'))throw new Error('Choose a valid birth date, or leave it blank.');
+      if(!validBirthDate(date,today))throw new Error('Choose a valid birth date, or leave it blank.');
       await saveFamilyRecord('family_children',{id:base.id,family_id:family.id,name:name.trim(),born_on:date||null,color});setSelected(base.id);
     }else if(!child)throw new Error('Choose a child first.');
     else if(sheet==='moment'||sheet==='activity'){
@@ -114,13 +125,43 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
     }
     await refreshedAfterSave(sheet==='child'?'Child saved to your family.':'Saved to your family.');
   }
+  function beginConnectChild() {
+    formId.current=randomUUID();connectChildDraft.current=null;setSavedConnectChild('');setChildSaveAttempted(false);
+    setName('');setDate('');setColor('sun');setConnectTarget('');setConfirmed(false);setAddingConnectChild(true);setDirty(true);
+  }
+  async function saveConnectChild() {
+    if(!family)return;
+    if(!connectChildDraft.current){
+      if(!name.trim()||name.trim().length>100)throw new Error('Enter a child name, up to 100 characters.');
+      if(!validBirthDate(date,today))throw new Error('Choose a valid birth date, or leave it blank.');
+      connectChildDraft.current={id:formId.current,family_id:family.id,name:name.trim(),born_on:date||null,color};
+    }
+    // Keep the same identity and values if the server saved but its reply was lost.
+    const draft=connectChildDraft.current;setChildSaveAttempted(true);
+    if(!savedConnectChild){
+      try{await saveFamilyRecord('family_children',draft);setSavedConnectChild(draft.id);}
+      catch(failure){
+        const code=failure&&typeof failure==='object'&&'code'in failure?String(failure.code):'';
+        // A definite validation/constraint/permission rejection made no write.
+        // Transport failures have no SQL code: retain their exact retry intent.
+        if(/^(22|23)/.test(code)||code==='42501'){
+          connectChildDraft.current=null;setChildSaveAttempted(false);
+          throw new Error('Review the child details and try again. The save was rejected; your invitation is kept.');
+        }
+        throw failure;
+      }
+    }
+    if(!await refresh(draft.id))throw new Error('Child saved, but profiles could not refresh. Retry loading child profiles to continue.');
+    setConnectTarget(draft.id);setAddingConnectChild(false);setSavedConnectChild('');setChildSaveAttempted(false);connectChildDraft.current=null;setConfirmed(false);setDirty(true);
+  }
   async function previewInvite() {
     if(!supabase||!invite.trim().match(/^[0-9a-f]{64}$/))throw new Error('Enter the complete invitation code from your coach.');
     const result=await supabase.rpc('preview_parent_link',{invite_code:invite.trim()});if(result.error)throw new Error(identityFailure(result.error));setInvitePreview(result.data);setConfirmed(false);
   }
   async function connect() {
-    if(!supabase||!child||!confirmed||!invitePreview)return;
-    const result=await supabase.rpc('claim_parent_link',{invite_code:invite.trim(),target_child:child.id});if(result.error)throw new Error(identityFailure(result.error));
+    if(!supabase||!connectChild||addingConnectChild||!confirmed||!invitePreview)return;
+    const result=await supabase.rpc('claim_parent_link',{invite_code:invite.trim(),target_child:connectChild.id});if(result.error)throw new Error(identityFailure(result.error));
+    setSelected(connectChild.id);
     await refreshedAfterSave('Connection request sent. Feedback stays private until the coach verifies and approves the guardian and child match.');
   }
   function openConsent(link:CoachLink) {
@@ -139,7 +180,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
     // Open only after the parent explicitly asks. The private URL is not stored.
     if(Platform.OS==='web')setMediaPreview({id,url:result.data.signedUrl});else await Linking.openURL(result.data.signedUrl);
   }
-  const feedbackCards=()=>pendingForChild.length?<View style={s.card}><Text style={s.cardTitle}>Waiting for coach approval</Text><Text style={s.muted}>Your verified account requested this child connection. Feedback stays private until the coach approves the match.</Text><Button title="Check connection approval" soft disabled={busy||loading} action={()=>{void refresh();}} /></View>:feedback.length?feedback.map(item=><View key={item.id} style={[s.card,item.id===focusedFeedback&&{borderColor:'#2EE6A6',borderWidth:2}]}>{item.id===focusedFeedback&&<Text accessibilityRole="header" style={s.cardTitle}>Your shared class update</Text>}<Text style={s.overline}>{item.snapshot.academy_name} · COACH FEEDBACK</Text><Text style={s.cardTitle}>{item.snapshot.student_name}</Text><Text style={s.text}>{item.snapshot.note}</Text><Text style={s.muted}>Reviewed {localParts(item.reviewed_at,family?.timezone??'Asia/Kolkata').date}</Text>{item.snapshot.media_ids.map((id,index)=><Button key={id} title={`Prepare private class media ${index+1}`} soft disabled={busy} action={()=>{void run(()=>previewMedia(id));}} />)}{mediaPreview&&item.snapshot.media_ids.includes(mediaPreview.id)&&Platform.OS==='web'&&React.createElement('a',{href:mediaPreview.url,target:'_blank',rel:'noopener noreferrer',style:{color:'#3ABEFF'}},'Open private preview (expires in 60 seconds)')}</View>):<View style={s.card}><Text style={s.cardTitle}>{links.length?'Your coach is connected':'A place for their little breakthroughs'}</Text><Text style={s.muted}>{links.length?'Reviewed updates will appear here. Check your class media choices in Explore if your coach has included photos or videos.':'Connect your coach with their invitation code. Only feedback reviewed for your child will appear here.'}</Text><Button title={links.length?'Manage coach media choices':'Connect a coach'} soft disabled={!child||busy} action={()=>links.length?setTab('Explore'):open('connect')} /></View>;
+  const feedbackCards=()=><>{pendingForChild.length>0&&<View style={s.card}><Text style={s.cardTitle}>Waiting for coach approval</Text><Text style={s.muted}>A new connection for {child?.name} is waiting for coach approval. Feedback from that connection stays private; updates from approved connections remain available below.</Text><Button title="Check connection approval" soft disabled={busy||loading} action={()=>{void refresh();}} /></View>}{feedback.length?feedback.map(item=><View key={item.id} style={[s.card,item.id===focusedFeedback&&{borderColor:'#2EE6A6',borderWidth:2}]}>{item.id===focusedFeedback&&<Text accessibilityRole="header" style={s.cardTitle}>Your shared class update</Text>}<Text style={s.overline}>{item.snapshot.academy_name} · COACH FEEDBACK</Text><Text style={s.cardTitle}>{item.snapshot.student_name}</Text><Text style={s.text}>{item.snapshot.note}</Text><Text style={s.muted}>Reviewed {localParts(item.reviewed_at,family?.timezone??'Asia/Kolkata').date}</Text>{item.snapshot.media_ids.map((id,index)=><Button key={id} title={`Prepare private class media ${index+1}`} soft disabled={busy} action={()=>{void run(()=>previewMedia(id));}} />)}{mediaPreview&&item.snapshot.media_ids.includes(mediaPreview.id)&&Platform.OS==='web'&&React.createElement('a',{href:mediaPreview.url,target:'_blank',rel:'noopener noreferrer',style:{color:'#3ABEFF'}},'Open private preview (expires in 60 seconds)')}</View>):pendingForChild.length?null:<View style={s.card}><Text style={s.cardTitle}>{links.length?'Your coach is connected':'A place for their little breakthroughs'}</Text><Text style={s.muted}>{links.length?'Reviewed updates will appear here. Check your class media choices in Explore if your coach has included photos or videos.':'Connect your coach with their invitation code. Only feedback reviewed for your child will appear here.'}</Text><Button title={links.length?'Manage coach media choices':'Connect a coach'} soft disabled={!child||busy} action={()=>links.length?setTab('Explore'):open('connect')} /></View>}</>;
   const section=(title:string,action?:()=>void,label='Add')=><View style={s.sectionHead}><Text style={s.sectionTitle}>{title}</Text>{action&&<Pressable accessibilityRole="button" disabled={busy} onPress={action}><Text style={s.link}>{label}</Text></Pressable>}</View>;
   const hour=Number(localParts(new Date().toISOString(),family?.timezone??'Asia/Kolkata').time.slice(0,2));
   const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
@@ -184,7 +225,23 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
       {sheet==='todo'&&<Field label="Reminder" value={name} change={value=>change(setName,value)} disabled={busy} />}
       {sheet==='event'&&<><Field label="Family plan title" value={name} change={value=>change(setName,value)} disabled={busy} /><Field label="Family plan date" kind="date" value={date} change={value=>change(setDate,value)} disabled={busy} /><Field label="Family plan start time" kind="time" value={time} change={value=>change(setTime,value)} disabled={busy} /><Field label="Family plan end time" kind="time" value={endTime} change={value=>change(setEndTime,value)} disabled={busy} /><Field label="Family plan location" value={detail} change={value=>change(setDetail,value)} disabled={busy} /></>}
       {['child','moment','activity','todo','event'].includes(sheet??'')&&<Button title={busy?'Saving…':sheet==='child'?'Save child':sheet==='activity'?'We did this — save time':'Save family record'} disabled={busy} action={()=>{void run(saveSheet);}} />}
-      {sheet==='connect'&&<><SelectField label="Child receiving this feedback" value={child?.id??''} disabled={busy} options={children.map(item=>({value:item.id,label:item.name}))} onChange={id=>{setSelected(id);setConfirmed(false);setDirty(true);}} /><Text style={s.text}>Ask your coach to create an invitation for their student record. Request a match for {child?.name}. Your verified email, parent name, child name and optional birth date will be shared with the coach for approval. Feedback stays private until that approval.</Text><Field label="Coach invitation code" value={invite} change={value=>{change(setInvite,value);setInvitePreview(null);setConfirmed(false);}} disabled={busy} max={64} /><Button title="Review coach invitation" soft disabled={busy||!child||data?.identityReady===false} action={()=>{void run(previewInvite);}} />{invitePreview&&<><Text style={s.cardTitle}>{invitePreview.academy_name}</Text><Text style={s.text}>Coach student: {invitePreview.student_name} → Your child: {child?.name}</Text><Check title="This is the right coach and child" checked={confirmed} disabled={busy} action={()=>setConfirmed(value=>!value)} /><Button title="Request coach approval" disabled={busy||!confirmed} action={()=>{void run(connect);}} /></>}</>}
+      {sheet==='connect'&&<>
+        <Text style={s.text}>Choose the child this invitation is for. If this is a different child, create their private family profile here first. No child is matched automatically.</Text>
+        <SelectField label="Child receiving this feedback" value={connectTarget} disabled={busy||addingConnectChild} options={[{value:'',label:'Choose a child — required'},...children.map(item=>({value:item.id,label:item.name}))]} onChange={id=>{setConnectTarget(id);setConfirmed(false);setDirty(true);}} />
+        {!addingConnectChild?<Button title="Add a different child" disabled={busy} action={beginConnectChild} />:<View style={s.card}>
+          <Text accessibilityRole="header" style={s.cardTitle}>Add a different child</Text>
+          <Text style={s.muted}>Enter this child's own details. Your invitation stays here. Saving this profile does not connect a coach or release feedback.</Text>
+          <Field label="New child name" value={name} change={value=>change(setName,value)} disabled={busy||childSaveAttempted} max={100} />
+          <Field label="New child birth date (optional)" kind="date" value={date} change={value=>change(setDate,value)} disabled={busy||childSaveAttempted} />
+          {childSaveAttempted&&<Text style={s.muted}>Retry here if saving is interrupted. The same child record will be reused.</Text>}
+          <Button title={savedConnectChild?'Retry loading child profiles':'Save child and continue'} disabled={busy} action={()=>{void run(saveConnectChild);}} />
+          <Button title="Use an existing child instead" soft disabled={busy||childSaveAttempted} action={()=>{setAddingConnectChild(false);setConfirmed(false);}} />
+        </View>}
+        <Text style={s.text}>{connectChild?`Request a match for ${connectChild.name}. `:''}Your verified email, parent name, child name and optional birth date will be shared with the coach for approval. Feedback stays private until that approval.</Text>
+        <Field label="Coach invitation code" value={invite} change={value=>{change(setInvite,value);setInvitePreview(null);setConfirmed(false);}} disabled={busy} max={64} />
+        <Button title="Review coach invitation" soft disabled={busy||!connectChild||addingConnectChild||data?.identityReady===false} action={()=>{void run(previewInvite);}} />
+        {invitePreview&&connectChild&&!addingConnectChild&&<><Text style={s.cardTitle}>{invitePreview.academy_name}</Text><Text style={s.text}>Coach student: {invitePreview.student_name} → Your child: {connectChild.name}</Text><Check title="This is the right coach and child" checked={confirmed} disabled={busy} action={()=>setConfirmed(value=>!value)} /><Button title="Request coach approval" disabled={busy||!confirmed||data?.identityReady===false} action={()=>{void run(connect);}} /></>}
+      </>}
       {sheet==='consent'&&connection&&<><Text style={s.text}>{connection.academy_name} · {child?.name}</Text><Text style={s.muted}>Choose what this coach may capture and share for your child. No choice is required to read text feedback. Withdrawing media permission removes current access to affected media and cancels its held feedback; an already-open preview can last up to 60 seconds.</Text><Check title="Allow class photos of my child" checked={photos} disabled={busy} action={()=>{setPhotos(value=>!value);setConfirmed(false);setDirty(true);}} /><Check title="Allow class videos of my child" checked={videos} disabled={busy} action={()=>{setVideos(value=>!value);setConfirmed(false);setDirty(true);}} /><Check title="Allow approved class media to be shared with linked parents" checked={sharing} disabled={busy} action={()=>{setSharing(value=>!value);setConfirmed(false);setDirty(true);}} /><Check title="I am the guardian and confirm these choices" checked={confirmed} disabled={busy} action={()=>setConfirmed(value=>!value)} /><Button title="Save my media choices" disabled={busy||!confirmed} action={()=>{void run(saveConsent);}} /></>}
       {sheet==='profile'&&<><Text style={s.cardTitle}>{family?.name??'Your private family workspace'}</Text><Text style={s.muted}>{family?.parent_name} · {family?.timezone??'Asia/Kolkata'}</Text>{children.map(value=><View key={value.id} style={s.card}><Text style={s.cardTitle}>{value.name}</Text><Text style={s.muted}>{value.born_on?`Birthday: ${value.born_on}`:'Birthday not entered'}</Text><Button title={`Edit child ${value.name}`} soft disabled={busy} action={()=>{open('child');formId.current=value.id;setName(value.name);setDate(value.born_on??'');setColor(value.color);}} /></View>)}<Text style={s.text}>One family owner is supported in this version. Additional caregivers will be supported later.</Text>{connection&&<><Text style={s.text}>Disconnect {connection.academy_name}? Coach feedback access will be removed; your private memories stay in your family.</Text><Check title="Disconnect this coach connection" checked={confirmed} disabled={busy} action={()=>setConfirmed(value=>!value)} /><Button title="Confirm disconnect coach" disabled={busy||!confirmed} action={()=>{void run(async()=>{const result=await supabase!.rpc('disconnect_parent_link',{target_link:connection.id});if(result.error)throw result.error;setConnection(null);await refreshedAfterSave('Coach disconnected. Your family records are kept.');});}} /></>}{onExitPreview?<Button title="Return to Parent sign in" action={onExitPreview} soft />:<SignOutButton />}<FontLicense dark /></>}
     </ScrollView></View></View></Modal>

@@ -48,3 +48,7 @@ test-results/
 artifacts/
 __pycache__/
 *.pyc
+
+# Disposable Supabase services, local keys and captured test mail
+.local-supabase/
+supabase/.temp/
