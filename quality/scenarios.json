@@ -4913,6 +4913,46 @@
       "tests": [
         "tests/apverse-parent-signals.test.ts::does not expose an RPC network error as a saved or empty report"
       ]
+    },
+    {
+      "id": "UT-F4A31FBAAFD0",
+      "status": "implemented",
+      "criteria": "uses APVerse project to select the APVerse Parent experience",
+      "tests": [
+        "tests/parent-runtime.test.ts::routes the APVerse project to the APVerse Parent experience"
+      ]
+    },
+    {
+      "id": "UT-97015ECF1288",
+      "status": "implemented",
+      "criteria": "keeps MM as the default Parent backend experience",
+      "tests": [
+        "tests/parent-runtime.test.ts::keeps the MM Parent experience as the default"
+      ]
+    },
+    {
+      "id": "UT-84A2CE97CD77",
+      "status": "implemented",
+      "criteria": "allows APVerse runtime override only in test builds",
+      "tests": [
+        "tests/parent-runtime.test.ts::allows the APVerse preview override only in test builds"
+      ]
+    },
+    {
+      "id": "SC-B79850FFB605",
+      "status": "implemented",
+      "criteria": "APVerse Parent child creation completes the recoverable account-bound flow",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse Parent can create a child through the recoverable account-bound flow"
+      ]
+    },
+    {
+      "id": "SC-1551739ACCE2",
+      "status": "implemented",
+      "criteria": "APVerse Parent child-list failures never appear as successful empty state",
+      "tests": [
+        "e2e/apverse-parent.spec.ts::APVerse child-list errors never appear as a successful empty state"
+      ]
     }
   ]
 }

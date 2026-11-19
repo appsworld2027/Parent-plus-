@@ -14,7 +14,7 @@ export default defineConfig({
   use: {
     baseURL: hostedURL ?? 'http://127.0.0.1:18081',
     viewport: { width: 412, height: 915 },
-    trace: 'retain-on-failure',
+    trace: process.env.PLAYWRIGHT_TRACE === 'off' ? 'off' : 'retain-on-failure',
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {},
   },
