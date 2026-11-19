@@ -1,0 +1,69 @@
+# Disposable services only. Never copy into the destination deployment configuration.
+project_id = "parentplus-local-test"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+health_timeout = "3m"
+
+[db.seed]
+enabled = false
+
+[realtime]
+enabled = false
+
+[studio]
+enabled = false
+
+[local_smtp]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+[storage.s3_protocol]
+enabled = false
+
+[storage.vector]
+enabled = false
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:18082"
+additional_redirect_urls = ["http://127.0.0.1:18082/auth/recovery"]
+jwt_expiry = 3600
+enable_signup = true
+enable_anonymous_sign_ins = false
+minimum_password_length = 10
+
+[auth.email]
+enabled = true
+enable_confirmations = true
+double_confirm_changes = true
+max_frequency = "1s"
+
+# Synthetic accounts only; Mailpit captures these without external SMTP delivery.
+[auth.rate_limit]
+email_sent = 1000
+sign_in_sign_ups = 1000
+token_verifications = 1000
+token_refresh = 1000
+
+[auth.sms]
+enabled = false
+
+[edge_runtime]
+enabled = false
+
+[analytics]
+enabled = false

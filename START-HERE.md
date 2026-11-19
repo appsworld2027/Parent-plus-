@@ -9,6 +9,8 @@ One shared product, two founders, versioned AI working rules.
 - [What is working now?](founders/03-current-status.md)
 - [What needs our decision?](founders/04-decisions-needed.md)
 - [Can we trust the latest build?](founders/05-quality-report.md)
+- [Feature-by-feature testing coverage and remaining gaps](ai-workspace/validation/FEATURE_COVERAGE.md)
+- [Recreate the test environment in another account/workspace](ai-workspace/validation/LOCAL_SUPABASE_TESTING.md)
 
 ## Documentation workflow
 
