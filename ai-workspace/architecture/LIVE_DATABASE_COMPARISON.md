@@ -1,6 +1,43 @@
-**Current delta, 19 November 2026:** MM retains the tested Parent reader migration `20261117090944` (3 functions, no new application tables). APVerse now has additive migration `20261119014723_parent_private_family_records`: `parent_family_moments`, `parent_family_todos`, `parent_family_events`, one child-owner authorization helper, three indexes and three owner-only RLS policies. Live grants were verified; no rows were copied/deleted and MM was untouched. Current APVerse inventory is 44 public application tables / 102 routines / 98 indexes / 7 policies; MM remains 25 public + 6 private tables / 55 routines / 75 indexes / 27 policies. The owner permits deletion of AM/source records only after destination behavior no longer depends on them. This is one schema slice, not feature parity: the APVerse Parent screen does not yet use the new tables. The detailed object/body comparison remains the 17 November snapshot pending a regenerated diff. See [current progress](../../PROGRESS.md#consolidation-retirement-snapshot--19-november-2026) and [Parent attendance activation evidence](../features/PARENT_ATTENDANCE_INTEGRATION.md#live-destination-activation--17-november-2026).
+**Current delta, 19 November 2026:** APVerse includes additive Parent family-record tables from migration `20261119014723_parent_private_family_records`; no rows were copied or deleted and MM was untouched. A fresh live catalog and advisor comparison was completed after the earlier 17 November metadata snapshot. See the current results below and [progress tracker](../../PROGRESS.md#active-am-consolidation-checkpoint--19-november-2026). Parent attendance and report-signal RPCs exist in APVerse; availability at the database layer does not prove the AM app is integrated or authenticated journeys are accepted.
 
 # Live Supabase comparison and destination gaps
+
+## Fresh live verification — 19 November 2026
+
+This read-only check used the connected APVerse and MM Supabase projects. It inspected live catalog metadata, migration ledgers, advisor summaries and table grants. No SQL was written, no user records were read, and no live project was changed.
+
+| Application object | APVerse (AM target) | MM (current app/data baseline) |
+| --- | --- | --- |
+| Tables | 44 public | 25 public + 6 `coach_private` (one is the private migration ledger) |
+| Routines | 101 public + 1 `parent_private` helper | 39 public + 16 `coach_private` |
+| Indexes | 101 public | 68 public + 7 `coach_private` |
+| RLS policies | 7 public | 27 public |
+| App triggers / views | 4 / 0 public | 4 / 3 public |
+| Storage buckets / Edge Functions | 0 / 0 | 2 / 2 |
+| Application enums | 0 | 0 |
+| Migration ledgers | 55 standard entries, latest `20261119014723` | 1 standard entry plus 15 `coach_private.schema_migrations` entries |
+
+Both projects have five installed extensions. All inventoried application tables have RLS; APVerse forces RLS on three tables. Ledger counts and names are intentionally different: do not copy or replay either project's history into the other.
+
+### Product capability comparison
+
+APVerse has its own workspace-first model: `workspaces`, `workspace_memberships`, `workspace_children`, `children`, `courses`, `batches`, `schedule_sessions`, `enrollments`, attendance records, guardian/connection flows, Parent signals/items, and private family records. MM has an academy/student model plus richer live Coach workflow objects for fees, observations/review, media consent and private Storage, and roster scanning. Similar product concepts have different keys and authorization relationships, so their tables and RPCs are not interchangeable.
+
+The live APVerse routines include Parent attendance/week/item and report-signal endpoints. Therefore those features should be verified and integrated against APVerse's workspace/guardian permissions, not reimplemented by copying MM attendance tables. The main structural gaps to plan against are:
+
+- **Fees:** MM has invoice, payment and reversal tables/RPCs; matching APVerse fee objects were not found.
+- **Coach observations and reviewed Parent feedback:** MM has observations, versions, recipients, review requests and feed/handoff views; corresponding APVerse observation objects/RPCs were not found.
+- **Class media and consent:** MM has class media, coach photos, consent records and two private Storage buckets with scoped policies; APVerse has no Storage buckets or matching media/consent tables/RPCs.
+- **Roster scanning:** MM has private scan/import/quota tables and two Edge Functions; APVerse has no Edge Functions or matching scan/import routines.
+
+These are schema/API evidence gaps, not a final feature audit. Before deciding a feature is missing from the product, inspect its UI/service implementation and exact authorization behavior. The recommended canonical direction is to retain APVerse identities, workspace membership, child/guardian and recovery contracts, then design additive APVerse-native adapters for each accepted MM feature.
+
+### Security and performance review
+
+Supabase's current security advisors report RLS-enabled tables without policies (38 APVerse, 6 MM) and authenticated `SECURITY DEFINER` function warnings (40 APVerse, 31 MM). A direct-grant query found zero `anon` or `authenticated` table grants on those policyless tables, zero `anon` execution on checked definer functions, and fixed `search_path` settings on checked definer functions. This is consistent with an RPC-mediated access pattern, but it does not prove every RPC validates workspace, child and guardian authority; review the callable functions individually before considering the findings closed. Both projects also have leaked-password protection disabled.
+
+Performance advisors reported unindexed foreign keys (49 APVerse, 56 MM) and unused indexes (13 APVerse, 3 MM). These are investigation candidates, not instructions to add/drop indexes without query plans and workload evidence. No advisor finding was changed as part of this read-only review.
+
 
 Inventory baseline: 17 November 2026. Source/AM: `fmavpazczahxeusqbxuh`; destination/MM: `zcgcnycnanqkbdlwojln`. All repository work belongs on `AM/consolidated`; APVerse Git remains read-only. The separately authorized APVerse ACL migration is recorded above and no application data was moved or deleted. MM's schema, storage and app were not changed.
 
