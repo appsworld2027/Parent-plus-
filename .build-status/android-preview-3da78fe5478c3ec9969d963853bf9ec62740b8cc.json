@@ -1,11 +1,34 @@
 {
-  "state": "running",
+  "state": "success",
   "sourceSha": "3da78fe5478c3ec9969d963853bf9ec62740b8cc",
-  "updatedAt": "2026-11-19T14:16:15.930Z",
+  "updatedAt": "2026-11-19T14:26:15.951Z",
   "runId": 44541898543,
   "runUrl": "https://github.com/appsworld2027/Parent-plus-/actions/runs/44541898543",
-  "apkUrl": null,
-  "build": null,
+  "apkUrl": "https://github.com/appsworld2027/Parent-plus-/actions/runs/44541898543/artifacts/14539481166",
+  "build": {
+    "sourceSha": "3da78fe5478c3ec9969d963853bf9ec62740b8cc",
+    "package": "com.parentplus.coach.preview",
+    "architecture": "arm64-v8a,x86_64",
+    "architectures": [
+      "arm64-v8a",
+      "x86_64"
+    ],
+    "nativeLibraries": {
+      "arm64-v8a": 18,
+      "x86_64": 18
+    },
+    "signing": "development",
+    "cameraPresentMicrophoneAbsent": true,
+    "bytes": 48134945,
+    "sha256": "7d5e11a9bb4307c63ae2bb55c63770344f3145392611fdaabf6d6d7bf54a7db7"
+  },
   "failure": null,
-  "liveAuth": null
+  "liveAuth": {
+    "checkedAt": "2026-11-19T14:17:36.931Z",
+    "reachable": true,
+    "keyAccepted": true,
+    "emailEnabled": true,
+    "confirmationRequired": true,
+    "anonymousRecordsBlocked": true
+  }
 }
