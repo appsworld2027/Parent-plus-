@@ -1,5 +1,23 @@
 # Parent Plus Coach — development checkpoint
 
+## Active AM consolidation checkpoint — 19 November 2026
+
+| Area | Current evidence |
+| --- | --- |
+| AM code | `AM/consolidated` is pushed at `615e782beb0282f215cf96c5a1cc9900b289d297`. This pass ported the Main password-recovery repair and MM roster/Parent connection repairs, added a disposable service-test harness, and registered all new scenarios in the quality gate. Commits use `Appsworld MM <spngmm@gmail.com>`; the connected GitHub profile is `appsworld2027` with that verified email. |
+| Local checks | Lint, TypeScript, 556 automated unit/database tests, 22 engineering-control tests, 6 local-service safety guards, quality-plan collection (556 unit/database + 112 browser identities) and web export pass. The full browser run recorded 111/112 because the workspace ran out of disk while writing a screenshot; the sole affected test passed on a focused rerun. This is not recorded as a clean single-run full-browser pass. |
+| Hosted checks | Run [`44483017629`](https://github.com/appsworld2027/Parent-plus-/actions/runs/44483017629) failed before test execution because the quality registry omitted 24 new scenarios; registry entries were added. Run [`44483504076`](https://github.com/appsworld2027/Parent-plus-/actions/runs/44483504076) passed: 556/556 automated tests, 112/112 browser cases, exact identity receipt, web export and both PostgreSQL jobs. Artifact [`14509324862`](https://github.com/appsworld2027/Parent-plus-/actions/runs/44483504076/artifacts/14509324862) stores the test evidence. |
+| AM Vercel | Preview [`dpl_24TSNoDu1forsjctceFpfVVN15QC`](https://vercel.com/appsworld2027/parent-plus-varcel/24TSNoDu1forsjctceFpfVVN15QC) for `615e782` is READY; `/parent` returned HTTP 200 and the built bundle includes the APVerse endpoint. Branch variables were previously verified against APVerse; no real authenticated session was tested. Production remains unchanged. |
+| Branch sync | Password recovery and roster/Parent fixes are ported. Remote `main` has since advanced to `be788dc` and MM/development remains at `2e838fe`; full Main/MM feature sync is not complete. The MM-shaped learning-context candidate depends on workspace and observation objects absent from APVerse and must not be applied unchanged. The AI Organization dashboard/adapter commits still need selective integration and access-boundary review. |
+| AI Organization milestone | The external AppsWorld AI Organization tracker marks M1–5 and M7 complete; latest tracked Actions run [`44477812712`](https://github.com/appsworld2027/parent-plus-ai-org/actions/runs/44477812712) passed. M6 (controlled ParentPlus connection) was only at read-only discovery. ParentPlus integration remains active and is not yet accepted. |
+| Database | Read-only catalog: APVerse 44 public tables, 101 routines, 101 indexes, 7 policies, 4 application table triggers, 0 views, 0 Storage buckets, 0 Edge Functions; MM has 25 public + 6 `coach_private` tables, 55 routines, 75 indexes, 27 policies, 4 application table triggers, 3 views, 2 buckets and 2 Edge Functions. All inventoried application tables have RLS; APVerse has FORCE RLS on three Parent tables. Extensions match; neither has business enums. No database change occurred in this pass. Prior APVerse Parent-private-records migration remains additive and contains no MM data. |
+| Full sync/retirement | Not complete. Histories and object contracts differ; matching names/counts do not authorize copying functions, policies, indexes or migration ledgers. The source Git and MM database must stay available until APVerse parity, authenticated Coach/Parent acceptance, restore rehearsal and destination-only operation pass. |
+| Environment limits | This workspace has about 84 MB free disk, so the Docker Supabase service campaign cannot start locally (needs several GB); no container was created. A loopback-only PostgreSQL URL is not configured locally. GitHub's isolated PostgreSQL jobs passed. |
+
+Next: finish selected Main/MM code and AI Organization integration; run the optional real-service campaign in GitHub Actions; adapt and validate missing APVerse schema/API contracts one feature at a time; then complete authenticated Preview and destination-only retirement gates. No founder action is required for this code checkpoint.
+
+## Historical retirement snapshot — superseded by active checkpoint above
+
 ## Consolidation retirement snapshot — 19 November 2026
 
 | Area | Verified position |

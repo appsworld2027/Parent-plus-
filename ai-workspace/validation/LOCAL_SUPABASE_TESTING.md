@@ -38,7 +38,7 @@ npm run test:workspace:postgres
 npm run export:web
 ```
 
-APK/Android build and testing are retired. Vercel Preview deployment checks are a separate web release check and are not performed by this local service workflow.
+APK/Android build and testing are retired. Vercel Preview deployment checks are a separate web release check and are not performed by this service workflow. Pushes to `AM/consolidated` that change app code, migrations, tests, service-runner files or this workflow start the hosted disposable service campaign.
 
 The PostgreSQL command requires the isolated empty test database described in [workspace validation](MULTI_WORKSPACE_VALIDATION.md). It must not point at the local Supabase database or production. In this managed Linux workspace, use the cache/browser settings in [developer guide](../development/DEVELOPER_GUIDE.md); Docker and child-process checks may need the execution tool's local permission grant.
 

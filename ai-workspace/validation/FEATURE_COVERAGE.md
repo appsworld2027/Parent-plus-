@@ -102,7 +102,7 @@ The catalogue is historical source scope, not the destination release contract. 
 
 ## Portable environment and account boundaries
 
-The canonical real-service setup/run guide is [LOCAL_SUPABASE_TESTING.md](LOCAL_SUPABASE_TESTING.md). The imported harness has not yet completed a fresh run from `AM/consolidated`; current guard evidence and any local-service campaign results must be recorded here only after rerun. Historical 13/13 service scenarios and 472 automated tests were reported on the source branch and are not inherited AM passes. These API scenarios do not establish hosted APVerse, browser, device or full feature acceptance. The separately invoked [service workflow](../../.github/workflows/local-service-tests.yml) does not replace app checks.
+The canonical real-service setup/run guide is [LOCAL_SUPABASE_TESTING.md](LOCAL_SUPABASE_TESTING.md). The imported harness has not yet completed a fresh run from `AM/consolidated`; current guard evidence and any local-service campaign results must be recorded here only after rerun. Historical 13/13 service scenarios and 472 automated tests were reported on the source branch and are not inherited AM passes. These API scenarios do not establish hosted APVerse, browser, device or full feature acceptance. Relevant AM pushes start the [service workflow](../../.github/workflows/local-service-tests.yml); it does not replace the app checks.
 
 Existing repeatable layers are defined in [package.json](../../package.json), [Playwright config](../../playwright.config.ts), [CI](../../.github/workflows/checks.yml) and the [PostgreSQL runner](../../scripts/test-workspace-concurrency.mjs):
 

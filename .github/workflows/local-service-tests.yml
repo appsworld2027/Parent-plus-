@@ -1,6 +1,17 @@
 name: Disposable Supabase service tests
-# Optional, explicitly invoked service campaign; existing required checks are unchanged.
 on:
+  push:
+    branches: [AM/consolidated]
+    paths:
+      - '.github/workflows/local-service-tests.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/local-supabase*.mjs'
+      - 'supabase/**'
+      - 'tests/**'
+      - 'src/**'
+      - 'e2e/**'
+  # Also allow an explicit rerun after the workflow reaches the default branch.
   workflow_dispatch:
 permissions:
   contents: read
