@@ -1299,6 +1299,60 @@ Report activation, supply, value, retention, commercial reliability and operatio
 
 ## 10. Prioritization and release gates
 
+### 10.1 Deployment readiness status
+
+**Current assessment on 19 November 2026: tested development candidate; deployment readiness is unverified.** The full-product scope and P0/P1/P2 sequencing remain draft recommendations. Passing automated checks, producing a preview, or merging documentation does not establish that the product is safe or complete to deploy. Current evidence is recorded in [PROGRESS.md](PROGRESS.md), [validation](ai-workspace/validation/VALIDATION.md), [hosted verification](ai-workspace/validation/VERCEL_QA.md), [roster and Parent flow review](ai-workspace/validation/BROKEN_FLOW_QA.md), and the [Parent first-slice requirements](founders/product/PARENT_PRD.md).
+
+Earlier MM commits have strong test evidence: commit `9e2a534` passed full CI, and commit `a401e1a` records 13 passing disposable Supabase service journeys. Those results do not verify the current `MM/Consolidated` head or current production. Independent QA found no CI runs for that exact branch tip, and main contains different runtime files. The current repairs are recorded on `MM/development`, while this product-documentation update is on `MM/Consolidated`. Several deployment-critical journeys and operational controls remain unverified. Current branch policy permits MM development on `MM/development` and requires a separate explicit owner instruction for main promotion or release.
+
+The practical next release target, if founders approve it, is a narrowly scoped invitation-only Coach and Aurora Parent pilot using the currently implemented, verified connection and reviewed-feedback flows. Phone OTP, public marketplace/trials, multi-guardian expansion, payment collection, and broad public launch are not part of that recommendation until their product, legal, operational and technical gates are approved.
+
+### 10.2 Release stages
+
+| Stage | Intended audience | Entry condition | Exit evidence |
+| --- | --- | --- | --- |
+| Development | Product team and fictional test data | Change is on the authorized working branch with its feature and privacy boundaries recorded. | TypeScript, unit, browser, database and export checks pass for the affected change; failures and skipped coverage are recorded. |
+| Preview validation | Named internal testers using a protected preview and approved test accounts | Preview is built from the exact reviewed commit; target project, backend and data environment are confirmed. | Parent and Coach browser journeys pass against the preview; no cross-family, cross-academy or cross-child disclosure; failures/retries preserve accurate state; preview source/build identity is recorded. |
+| Invited pilot | Explicitly invited families and providers in the approved geography | Founders approve scope, pilot cohort, consent/legal copy, support coverage and operational owner. Required live backend and device checks pass. | End-to-end real-account acceptance passes for sign-in/recovery, child linking, class/session, feedback review, media consent where enabled, access removal, support and recovery. Pilot measures have owners and a review date. |
+| Public production | Intended public customer population | Pilot exit review accepts safety, reliability, support and commercial evidence; production change is approved and rollback is rehearsed. | Exact production build and configuration are recorded; post-deploy smoke, error monitoring, support escalation and rollback readiness pass. |
+
+Promotion must use the same reviewed source and a clearly identified target environment. Preview success is not production acceptance. A release checklist must link each release-blocking requirement to a passing test or documented owner decision, name the responsible person, and record build/commit, environment, observed result and remaining risks.
+
+### 10.3 Required go/no-go gates
+
+Do not approve an invited pilot or public release until each applicable gate has evidence for the exact candidate and intended environment.
+
+| Gate | Required evidence before go | Current status from repository evidence |
+| --- | --- | --- |
+| Product scope | Founder-approved MVP, audience, geography, supported client platforms and explicit included/deferred feature IDs. | **Open.** Full-product scope and P0/P1/P2 sequence remain draft recommendations. |
+| Identity and account recovery | Real sign-up/sign-in, email delivery/recovery, expired/invalid link, restart, sign-out and account reuse across intended roles. | **Partial.** Prior hosted/settings and owner-reported checks exist; fresh real-account recovery and full role-workspace acceptance remain open. |
+| Authorization and child safety | Two-family/two-child and cross-provider tests on the release backend; verified guardian connection; revocation; staff role limits; no stale-access path. | **Partial.** Disposable local Supabase runs pass core isolation journeys. Real hosted app/account authorization acceptance and guardian expansion decisions remain open. |
+| Core Parent–Coach journey | With fictional accounts on the exact release candidate, verify sign-in/recovery, explicit selection of the child when claiming an invitation, separate Coach approval, child-only reviewed feedback, sibling/outsider denial, pending-request coexistence and disconnect revocation. | **Not accepted.** Browser fixtures and disposable-service journeys exist on earlier commits; full hosted app-to-service acceptance for the current candidate is absent. |
+| Data and media | Save/reopen/retry, media consent by purpose and pictured child, private access expiry, withdrawal, deletion/retention, backup and restore verified. | **Partial.** Consented media and local service journeys have coverage; retention cleanup, full deletion/restore and real hosted access remain open. |
+| Reliability and recovery | Targeted outage, timeout, conflict, duplicate, capacity, queue retry and rollback scenarios pass; service targets and alert ownership are agreed. | **Open.** Some idempotency/concurrency paths pass automated tests; production targets, full operational monitoring, load and restore evidence are not established. |
+| Client acceptance | Supported browser/OS/device list; responsive, accessibility and low-bandwidth checks; physical device flows for release platforms. | **Open.** Earlier CI includes web/Android exports and browser suites, but exports do not establish physical-device acceptance; hosted browser journey evidence for the latest candidate remains open. If Android is in pilot scope, require installed-device login, recovery, restart/storage and linked-family checks. |
+| Legal, privacy and support | Geography-specific legal/privacy review, consent and retention copy, support escalation, safeguarding/dispute handling and data-subject request process. | **Open.** Prototype and draft requirements identify these needs; operational/legal sign-off is not recorded. |
+| Billing and commercial controls | If billing is in scope, approved commercial model, provider eligibility, server verification, reconciliation, refund/dispute handling and test/live separation. | **Deferred/open.** Fee collection is shelved in current Coach direction; do not enable payment collection until separately approved and accepted. |
+| Release operations | Protected target, reviewed production configuration, secret ownership, backup/restore, rollback rehearsal to a known artifact, change owner, post-deploy smoke and incident response. | **Open.** Existing Vercel preview/hosted checks do not establish the deployed source for the exact current candidate, a rehearsed rollback, backup/restore, or operational readiness. |
+
+Additional current release blockers: investigate the reported possible live child-link mismatch and missing batches before including affected families. Do not inspect or change private records without an authorized, bounded account review. Actual-service attendance/classes/fees, media consent and expiry, load/recovery, and legal/support operations remain unaccepted where those capabilities are in scope. Keep private SQL candidates `015–021` inactive unless a separately approved staging and migration/rollback plan exists.
+
+**Go/no-go rule.** A failed or unrun applicable gate is not a pass. Record a no-go when authorization, child safety, consent, data integrity, recovery, support, or exact-build/environment identity is uncertain. A founder may approve a narrower pilot by explicitly deferring features, but may not waive applicable safety, privacy, or legal obligations.
+
+### 10.4 Deployment acceptance record
+
+For every candidate release, attach a concise record with:
+
+- Candidate commit, app version, build artifact hash, deployment URL and target environment.
+- Backend project/environment and installed migration versions, verified without exposing credentials.
+- Scope and feature IDs included, deferred and disabled.
+- Results for automated, hosted browser, real-service, device, authorization, accessibility, backup/restore and security checks, with links to evidence.
+- Open defects with severity, owner and disposition; support/on-call contact and incident path.
+- Rollback target, rehearse result, data-recovery limits and post-release monitoring window.
+- Named decision owner and dated go/no-go decision.
+
+No PRD or CI result alone authorizes production deployment, live database changes, payment activation, real parent messaging, or release expansion. Those actions require the applicable explicit owner approval and environment-specific verification.
+
 | **Phase**                              | **Scope**                                                                                                                                                                                                                | **Exit gate**                                                                                                                                                                      |
 |----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | P0 — Foundation and launch-critical    | PP-F01, F02, F04–F07, F11, F18, F26–F27; identity, family/provider workspace, enrollment/permissions, shared API/model, consent/privacy baseline, trial booking, secure media model, support path and connected journey. | A real parent can sign in, add child, request a trial; provider accepts; enrollment and access are correct; test update reaches only authorized guardian; no false success states. |
