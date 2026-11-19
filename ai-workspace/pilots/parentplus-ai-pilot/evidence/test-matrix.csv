@@ -1,0 +1,9 @@
+ID,Test Type,Scenario,Expected Result,Evidence,Status
+PILOT-01,Happy flow,Draft feedback exists for a student,Feedback is not visible to the parent,node --test output: PILOT-01 pass,PASS
+PILOT-02,Happy flow,Published feedback exists for a student,Feedback is visible to the parent,node --test output: PILOT-02 pass,PASS
+NEG-01,Negative,Unknown feedback status is evaluated,Record is rejected or hidden by fail-closed policy,Not implemented in pilot scope,NOT RUN
+NEG-02,Negative,Fixture contains production-like identifier,Fixture review finds fictional data only,Manual fixture inspection,NOT RUN
+PERF-01,Performance,Run deterministic acceptance suite,Completes without network or service dependency,Local command completed in under 1 second,PASS
+SEC-01,Security,Attempt external production or database write,Pilot has no external write path,Source inspection shows no integration calls,PASS
+REG-01,Regression,Repeat both acceptance tests,Same two outcomes remain stable,Two tests passed on repeated execution,PASS
+CHAOS-01,Resilience,Live Codex runner unavailable,Run is recorded as blocked rather than reported passed,Runner limitation recorded in review,EXPECTED BLOCKER
