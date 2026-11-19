@@ -5,12 +5,13 @@
 | Area | Verified position |
 | --- | --- |
 | APVerse GitHub | `main` and `docs/reconcile-parentplus-status-2026-11-16` both point to `380adba`; all 8 pull requests are merged. Repository is not archived because feature parity and destination-only acceptance are still open. |
-| Destination GitHub | `AM/consolidated` now contains `70f7678`; continue consolidation only on AM. Other branches retain MM database routing. |
-| AM code and CI | `70f7678` integrates APVerse Parent child listing and recoverable creation. Local full gate: 525 unit/database + 94 browser scenarios, lint, TypeScript, web export and exact receipt. GitHub run `44436145141` passed all four jobs. |
-| AM Vercel preview | Deployment `dpl_GLtZiTAtaDB27RE2N4fgQgSQ7kwC` for `70f7678` is READY. Project branch variables remain empty and the app fallback is MM project `zcgcnycnanqkbdlwojln`; this preview does not use APVerse. |
+| Destination GitHub | `AM/consolidated` now contains `6114cd8`; continue consolidation only on AM. Other branches retain MM database routing. |
+| AM code and CI | `70f7678` integrates APVerse Parent child listing and recoverable creation; `6114cd8` adds the first APVerse private Parent-record schema and exact tests. Local full gate: 530 unit/database + 94 browser scenarios, lint, TypeScript, web export and exact receipt. GitHub run `44441037491` passed all four jobs. |
+| AM Vercel preview | Deployment `dpl_q3FMSwPBH9ySEKaMjpkG6e4WchW3` for `6114cd8` is READY. Project branch variables remain empty and the app fallback is MM project `zcgcnycnanqkbdlwojln`; this preview does not use APVerse. |
 | Live database sync | First additive AM parity slice installed on APVerse as `20261119014723_parent_private_family_records`: three owner-private Parent records tables, three indexes, three RLS policies and one narrow child-owner helper. Fresh catalog confirms RLS + FORCE RLS on all three tables; authenticated CRUD only; no anon/service table access. No MM rows or migration history copied. Inventory after this slice: APVerse 44 public tables / 102 routines / 98 indexes / 7 policies; MM 25 public + 6 `coach_private` tables / 55 routines. APVerse still has no Storage buckets or Edge Functions; MM has two buckets and two Edge Functions. Both have 4 application triggers, five extensions and no business enums. |
 | AM data direction | Latest owner direction permits deleting AM/source records; retain and sync the database architecture and behavior. No record data was migrated or deleted in this checkpoint. |
 | Retirement | Not ready. First DB slice is live, but app adapters/UI and hosted authenticated scenario coverage are not integrated. Product/API parity, real-provider/security acceptance, APVerse-targeted Vercel configuration, restore rehearsal and destination-only acceptance remain open. No source Git or database has been retired. |
+| Hosted evidence | GitHub [run 44441037491](https://github.com/appsworld2027/Parent-plus-/actions/runs/44441037491) passed the app quality job and both PostgreSQL jobs on `6114cd850223ea265049505fac3a3fdf58f7d813`. Vercel deployment `parent-plus-varcel-git-am-consolidated-appsworld2027.vercel.app` is READY for that same SHA. |
 
 ## APVerse private Parent records schema — 19 November 2026
 
