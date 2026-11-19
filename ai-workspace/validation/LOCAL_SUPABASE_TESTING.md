@@ -69,3 +69,10 @@ Use fictional accounts only. No hosted Supabase changes, real messages, main
 promotion, branch deletion or new feature claims are authorized by this handoff.
 Report exact source, passed/failed/blocked scenarios and remaining acceptance.
 ```
+
+
+## Executed campaign —19November2026
+
+[Sanitized committed evidence](evidence/local-supabase-20261119.json): source `d950d6e1b4bbf237ed9d2bad39eb7a7a07d91eb9`, clean tree; `npm run test:services` exit0. Fresh setup,13/13journeys and cleanup all pass,67.078seconds total (setup60.494s, journeys3.101s, cleanup3.482s).78HTTP requests went to the local API/mail endpoints; none were blocked. All14source migration hashes and exact journey hash are in the artifact. Containers/project volumes/network were removed after this run. A separate deliberate nonlocal Docker attempt exited1, replaced the preceding passing report with0passed/1failed, and made no journey requests. The five guard checks pass, including effective port bindings and orphan-volume ownership. Existing fresh TypeScript and472Vitest cases pass with0failures/errors/skips (JUnit verified).
+
+Independent source review: `/root/flow_review` inspected exact commitd950d6e, reran5guards/syntax checks and found no unresolved material source blocker. Actual service campaign execution was by the implementer; independent artifact read-back is recorded in progress when complete. Earlier full-image disk exhaustion, internal-network port suppression and inherited container proxy health403 were environment setup failures corrected before this clean run. No hosted provider or account was involved.
