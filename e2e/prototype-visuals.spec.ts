@@ -7,6 +7,9 @@ import {parentBackend} from './support/parentBackend';
 // Block its network and self-host the same licensed variable font as the app.
 async function reference(page:Page,role:'coach'|'parent') {
   const ref=await page.context().newPage();
+  // Freeze time at 10:00 AM IST (04:30 UTC) so both app and reference see "Good morning"
+  // and any time-based "late skins" are consistent.
+  await ref.clock.install({time: new Date('2026-01-15T04:30:00Z')});
   await ref.setViewportSize(page.viewportSize()??{width:412,height:915});
   await ref.route('**/*',route=>route.abort());
   await ref.emulateMedia({reducedMotion:'reduce'});
@@ -16,6 +19,15 @@ async function reference(page:Page,role:'coach'|'parent') {
   const font=readFileSync('assets/fonts/BricolageGrotesque.ttf').toString('base64');
   await ref.addStyleTag({content:`@font-face{font-family:'Bricolage Grotesque';src:url(data:font/ttf;base64,${font});font-weight:200 800;font-style:normal}`});
   await ref.evaluate(()=>document.fonts.ready);
+  // Wait for the prototype's initial render to complete.
+  // Parent prototype renders .aurora-header; coach prototype renders into #scroll.
+  if(role==='parent'){
+    await ref.waitForSelector('.aurora-header', {state: 'attached', timeout: 10000});
+  }else{
+    await ref.waitForSelector('#scroll', {state: 'attached', timeout: 10000});
+    // Wait for coach prototype's render() to populate content
+    await ref.waitForFunction(()=>document.getElementById('scroll')!.innerHTML.length>0, {timeout: 10000});
+  }
   await ref.evaluate(()=>{
     const probe=document.createElement('div');probe.id='visual-probes';
     probe.innerHTML='<div class="card">Card</div><button class="btn">Primary</button><input class="in" value="Reference"><input class="text-in" value="Reference"><div class="sheet">Sheet</div>';
@@ -23,6 +35,11 @@ async function reference(page:Page,role:'coach'|'parent') {
   });
   return ref;
 }
+
+// Freeze the main page clock at 10:00 AM IST (04:30 UTC) for deterministic time-based styling.
+test.beforeEach(async({page})=>{
+  await page.clock.install({time: new Date('2026-01-15T04:30:00Z')});
+});
 async function css(element:Locator,property:string,pseudo?:string){return element.evaluate((node,args)=>getComputedStyle(node,args.pseudo).getPropertyValue(args.property),{property,pseudo});}
 async function aurora(page:Page,ref:Page){
   const header=page.getByTestId('parent-aurora'),original=ref.locator('.aurora-header');
@@ -35,7 +52,10 @@ async function parentHome(page:Page){
   await page.evaluate(()=>{
     const state=window.__parentFixture;
     state.families.push({id:'visual-family',owner_id:'00000000-0000-0000-0000-000000000001',name:'Fictional Family',parent_name:'Fictional Parent',timezone:'Asia/Kolkata'});
-    state.children.push({id:'visual-child',family_id:'visual-family',name:'Fictional Tara',born_on:'2018-04-12',color:'sun',archived_at:null});
+    // Use 'sky' color to match the reference prototype's next activity (School at 11:30)
+    // at the frozen clock time of 10:00 AM IST. The reference's next-band uses the
+    // next scheduled activity's color, which for Rudraansh (default kid) is 'sky'.
+    state.children.push({id:'visual-child',family_id:'visual-family',name:'Fictional Tara',born_on:'2018-04-12',color:'sky',archived_at:null});
     sessionStorage.setItem('__fictional_parent',JSON.stringify(state));
   });
   await page.goto('/parent');await expect(page.getByRole('tab',{name:'Choose child Fictional Tara',exact:true})).toBeVisible();
