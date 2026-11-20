@@ -1,7 +1,32 @@
 {
   "organization": "appsworld",
-  "adapterVersion": "1",
+  "adapterVersion": "2",
   "source": "appsworld2027/parent-plus-ai-org",
+  "handbook": {
+    "repo": "appsworld2027/parent-plus-ai-org",
+    "ref": "main",
+    "entry": "AGENTS.md"
+  },
+  "product": {
+    "name": "Parent Plus",
+    "testUrl": "https://parent-plus-varcel.vercel.app",
+    "docsFolder": "docs/product"
+  },
+  "commands": {
+    "check": "npm run check",
+    "e2e": "npm run test:e2e",
+    "exportWeb": "npm run export:web",
+    "exportAndroid": "npm run export:android"
+  },
+  "database": {
+    "migrationsFolder": "supabase/migrations",
+    "devProject": "see config/public-client.json and the 'Supabase and release safety' section of AGENTS.md"
+  },
+  "governance": {
+    "ownerRulesFile": "AGENTS.md",
+    "autoMerge": false,
+    "note": "Agents open pull requests; merging needs explicit founder approval per AGENTS.md until Ankit and Manu agree otherwise."
+  },
   "entrypoints": {
     "founderCommand": "scripts/founder-command.mjs",
     "founderInterface": ".codex/FOUNDER_COMMANDS.md",
