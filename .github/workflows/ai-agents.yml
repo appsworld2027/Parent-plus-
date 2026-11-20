@@ -1,0 +1,37 @@
+# Wakes the AppsWorld AI Organization's named agents for Parent Plus when an ai:* stage label is added,
+# when a previous agent dispatches the next stage, or (hourly) to resume paused work.
+# The worker logic lives in the AI Org repo; this file only calls it.
+name: AI agents
+
+on:
+  issues:
+    types: [labeled]
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      number:
+        description: Issue or PR number
+        required: true
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+  id-token: write
+
+jobs:
+  agent:
+    if: github.event_name == 'workflow_dispatch' || ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:'))
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@main
+    with:
+      number: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
+    secrets: inherit
+
+  resume:
+    if: github.event_name == 'schedule'
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@main
+    secrets: inherit

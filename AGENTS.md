@@ -52,3 +52,7 @@ Use [the adoption guide](ai-workspace/agent-instructions/adoption.md) for other 
 ## Founder technical delegation
 
 The founders are non-technical. AI owns technical review, testing, validation, fixes and routine engineering decisions; do not ask founders to review code or judge test adequacy. Give a clear readiness recommendation with evidence and unresolved limits. Founders decide product priorities, material user-experience tradeoffs and release approval. Follow explicit session authorization for merges; do not infer production deployment permission from technical delegation. Independent review requirements remain: self-review must never be labeled independent review.
+
+## AppsWorld AI Organization (v2) — added 20 November 2026 by Ankit
+
+This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests but never merge them here without explicit founder approval.
