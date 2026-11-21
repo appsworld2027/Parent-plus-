@@ -56,3 +56,8 @@ The founders are non-technical. AI owns technical review, testing, validation, f
 ## AppsWorld AI Organization (v2) — added 20 November 2026 by Ankit
 
 This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests but never merge them here without explicit founder approval.
+
+## Quality system (AppsWorld AI Org §7A)
+- Every feature follows AI Org `AGENTS.md` §7A: founder-approved Feature Contract at `docs/product/<feature-slug>/ACCEPTANCE.md` → locked acceptance tests in `e2e/acceptance/` (PR label `ai:contract`) → build PR stacked on the contract branch → independent review → Demo Pack.
+- Build PRs never add, edit, delete, skip or focus tests in `e2e/acceptance/`; the `Contract lock` check fails them.
+- Claude Code runs `.claude/hooks/quality-gate.sh` when it tries to finish: `npm run check` must pass first (max 5 rounds, then `ai:blocked`). `QUALITY_GATE=off` is for founder-only manual sessions.
