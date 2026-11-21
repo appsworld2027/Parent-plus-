@@ -22,6 +22,15 @@
     "migrationsFolder": "supabase/migrations",
     "devProject": "see config/public-client.json and the 'Supabase and release safety' section of AGENTS.md"
   },
+  "quality": {
+    "handbookSection": "AGENTS.md §7A",
+    "contractPath": "docs/product/<feature-slug>/ACCEPTANCE.md",
+    "acceptanceTestsPath": "e2e/acceptance/",
+    "acceptanceCommand": "npx playwright test e2e/acceptance",
+    "contractLockWorkflow": ".github/workflows/contract-lock.yml",
+    "stopHook": ".claude/hooks/quality-gate.sh",
+    "stopHookCommand": "npm run check"
+  },
   "governance": {
     "ownerRulesFile": "AGENTS.md",
     "autoMerge": false,
