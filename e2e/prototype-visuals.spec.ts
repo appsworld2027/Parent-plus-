@@ -7,6 +7,9 @@ import {parentBackend} from './support/parentBackend';
 // Block its network and self-host the same licensed variable font as the app.
 async function reference(page:Page,role:'coach'|'parent') {
   const ref=await page.context().newPage();
+  // Freeze time at 14:00 IST (08:30 UTC) to avoid late-skin transitions.
+  // This matches the app's Asia/Kolkata timezone used in greeting/skin logic.
+  await ref.clock.install({time:new Date('2026-01-15T08:30:00Z').getTime()});
   await ref.setViewportSize(page.viewportSize()??{width:412,height:915});
   await ref.route('**/*',route=>route.abort());
   await ref.emulateMedia({reducedMotion:'reduce'});
@@ -46,6 +49,8 @@ test.beforeEach(async({page})=>{const errors:string[]=[];pageErrors.set(page,err
 test.afterEach(async({page},info)=>{expect(pageErrors.get(page)).toEqual([]);if(info.status!==info.expectedStatus)await page.screenshot({path:info.outputPath('visual-failure.png'),fullPage:true,animations:'disabled'});});
 
 test('VIS-01 Coach auth and controls match the final prototype palette and loaded font',async({page},info)=>{
+  // Freeze time at 14:00 IST (08:30 UTC) to avoid late-skin transitions in both app and reference.
+  await page.clock.install({time:new Date('2026-01-15T08:30:00Z').getTime()});
   await backend(page,{academy:true});await page.goto('/');
   const ref=await reference(page,'coach');
   await same(page.getByTestId('prototype-phone'),ref.locator('.phone'),['background-color']);
@@ -58,6 +63,8 @@ test('VIS-01 Coach auth and controls match the final prototype palette and loade
 });
 
 test('VIS-02 Coach heading, literal pastel stats, floating navigation and SVG match the reference',async({page},info)=>{
+  // Freeze time at 14:00 IST (08:30 UTC) to avoid late-skin transitions in both app and reference.
+  await page.clock.install({time:new Date('2026-01-15T08:30:00Z').getTime()});
   await backend(page,{academy:true,readyClass:true});await login(page);
   const heading=page.getByRole('heading',{name:/Good (morning|afternoon|evening)/});await expect(heading).toBeVisible();
   const ref=await reference(page,'coach');
@@ -79,6 +86,8 @@ test('VIS-02 Coach heading, literal pastel stats, floating navigation and SVG ma
 });
 
 test('VIS-03 Parent final Aurora surface, type, selected child and floating navigation match the reference',async({page},info)=>{
+  // Freeze time at 14:00 IST (08:30 UTC) to avoid late-skin transitions in both app and reference.
+  await page.clock.install({time:new Date('2026-01-15T08:30:00Z').getTime()});
   await parentHome(page);const ref=await reference(page,'parent');await aurora(page,ref);
   await same(page.getByTestId('prototype-phone'),ref.locator('.phone'),['background-color']);
   await same(page.getByRole('heading',{name:/Good (morning|afternoon|evening)/}),ref.locator('.head-title h1'),['color','font-size','font-weight','line-height','letter-spacing']);
@@ -103,6 +112,8 @@ test('VIS-03 Parent final Aurora surface, type, selected child and floating navi
 });
 
 test('VIS-04 desktop phone dimensions and modal containment preserve prototype geometry',async({page},info)=>{
+  // Freeze time at 14:00 IST (08:30 UTC) to avoid late-skin transitions in both app and reference.
+  await page.clock.install({time:new Date('2026-01-15T08:30:00Z').getTime()});
   await page.setViewportSize({width:1280,height:1024});await backend(page,{academy:true});await page.goto('/');
   let ref=await reference(page,'coach');
   for(const property of ['width','height','border-radius'])await same(page.getByTestId('prototype-phone'),ref.locator('.phone'),[property]);
