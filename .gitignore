@@ -52,3 +52,4 @@ __pycache__/
 # Disposable Supabase services, local keys and captured test mail
 .local-supabase/
 supabase/.temp/
+qa-results/

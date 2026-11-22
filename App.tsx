@@ -231,7 +231,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
       </View></ScrollView>
       <View accessibilityRole="tablist" style={styles.nav}>
         {tabs.map(tab => <Pressable key={tab.name} accessibilityRole="tab" accessibilityLabel={tab.name === 'Post' ? 'Feedback' : tab.name} accessibilityState={{ selected: screen === tab.name }} aria-selected={screen===tab.name} onPress={() => navigate(tab.name)} style={[styles.navItem,tab.name==='Post'&&styles.postItem]}>
-          <View style={[styles.navGlyph, tab.name === 'Post' && styles.postGlyph]}><PrototypeIcon name={tab.glyph} size={tab.name==='Post'?26:22} strokeWidth={tab.name==='Post'?2.4:1.9} color={tab.name==='Post'?c.black:screen===tab.name?c.white:'#6b6b75'}/></View>
+          <View style={[styles.navGlyph, tab.name === 'Post' && styles.postGlyph]}><PrototypeIcon name={tab.glyph} size={tab.name==='Post'?26:22} strokeWidth={tab.name==='Post'?2.4:1.9} color={tab.name==='Post'?c.black:screen===tab.name?c.white:'#8a8a96'}/></View>
           <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name === 'Post' ? 'Feedback' : tab.name}</Text>
         </Pressable>)}
       </View>
@@ -281,5 +281,5 @@ const styles = StyleSheet.create({
   emptyBody:{color:c.muted,fontSize:13,lineHeight:20},footer:{color:c.dim,fontSize:10,textAlign:'center',paddingVertical:12},
   nav:{position:'absolute',left:12,right:12,bottom:14,height:70,borderRadius:24,backgroundColor:Platform.OS==='web'?'var(--parentplus-coach-nav)':'#141417ef',borderWidth:1,borderColor:'#2c2c33',flexDirection:'row',alignItems:'center',shadowColor:c.black,shadowOpacity:.5,shadowRadius:28,shadowOffset:{width:0,height:12},elevation:8},
   navItem:{flex:1,alignItems:'center',justifyContent:'center',minHeight:52,gap:3},navGlyph:{height:26,alignItems:'center',justifyContent:'center'},postItem:{marginTop:-24},
-  postGlyph:{width:56,height:56,borderRadius:19,backgroundColor:c.white,shadowColor:c.black,shadowOpacity:.5,shadowRadius:22,shadowOffset:{width:0,height:8},elevation:4},navLabel:{color:'#6b6b75',fontSize:10.5,fontWeight:prototypeWeight(750)},navLabelActive:{color:c.white},
+  postGlyph:{width:56,height:56,borderRadius:19,backgroundColor:c.white,shadowColor:c.black,shadowOpacity:.5,shadowRadius:22,shadowOffset:{width:0,height:8},elevation:4},navLabel:{color:'#8a8a96',fontSize:10.5,fontWeight:prototypeWeight(750)},navLabelActive:{color:c.white},
 });
