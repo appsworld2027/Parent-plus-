@@ -1,6 +1,8 @@
-# Wakes the AppsWorld AI Organization's named agents for Parent Plus when an ai:* stage label is added,
-# when a previous agent dispatches the next stage, or (hourly) to resume paused work.
-# The worker logic lives in the AI Org repo; this file only calls it.
+# Wakes the AppsWorld AI Organization for Parent Plus.
+#  - an ai:* label is added           → the named agent works on that issue/PR (agent-worker)
+#  - a founder comments /approve etc. → the loop controller acts on it (ai-loop, mode=command)
+#  - hourly, or after any agent run   → the loop controller advances every item (ai-loop, mode=advance)
+# Worker and loop logic live in the AI Org repo; this file only calls them.
 name: AI agents
 
 on:
@@ -8,11 +10,18 @@ on:
     types: [labeled]
   pull_request:
     types: [labeled]
+  issue_comment:
+    types: [created]
   workflow_dispatch:
     inputs:
       number:
-        description: Issue or PR number
+        description: Issue or PR number (0 = none)
         required: true
+        default: "0"
+      mode:
+        description: "agent (default) | advance | next"
+        required: false
+        default: agent
   schedule:
     - cron: "17 * * * *"
 
@@ -21,11 +30,14 @@ permissions:
   issues: write
   pull-requests: write
   actions: write
+  statuses: write
   id-token: write
 
 jobs:
   agent:
-    if: github.event_name == 'workflow_dispatch' || ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:'))
+    if: >-
+      (github.event_name == 'workflow_dispatch' && (inputs.mode == '' || inputs.mode == 'agent') && inputs.number != '0') ||
+      ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:'))
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@main
     with:
       number: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
@@ -35,3 +47,25 @@ jobs:
     if: github.event_name == 'schedule'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@main
     secrets: inherit
+
+  loop-advance:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'advance')
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@main
+    with:
+      mode: advance
+
+  loop-next:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'next'
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@main
+    with:
+      mode: next
+
+  loop-command:
+    if: >-
+      github.event_name == 'issue_comment' &&
+      (startsWith(github.event.comment.body, '/approve') || startsWith(github.event.comment.body, '/changes') ||
+       startsWith(github.event.comment.body, '/next') || startsWith(github.event.comment.body, '/stop'))
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@main
+    with:
+      mode: command
+      comment_id: ${{ format('{0}', github.event.comment.id) }}
