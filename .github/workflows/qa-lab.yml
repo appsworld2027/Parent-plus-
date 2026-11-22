@@ -1,0 +1,49 @@
+name: QA lab (personas + journeys + probes)
+# Quinn-Explore's product-wide sweep. Report-only (ratchet): failures open/refresh an ai:fix issue
+# instead of blocking merges; each check moves into blocking CI once it is green.
+on:
+  schedule: [{ cron: '30 20 * * *' }]   # nightly, 02:00 IST
+  workflow_dispatch:
+  pull_request:
+    paths: ['src/**', 'App.tsx', 'supabase/**', 'qa/**', 'e2e/support/**']
+permissions: { contents: read, issues: write }
+concurrency: { group: qa-lab-${{ github.ref }}, cancel-in-progress: true }
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 24, cache: npm }
+      - run: npm ci
+      - run: npm install --no-save @axe-core/playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Database lab — 1,000 personas through real RPCs + RLS
+        run: npx vitest run -c qa/lab/vitest.lab.config.mts --reporter=default --reporter=json --outputFile=qa-results/lab-db.json
+        continue-on-error: true
+      - name: Browser lab — persona journeys + probes (headless)
+        run: npx playwright test -c qa/lab/playwright.lab.config.ts --workers=1
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: qa-lab-${{ github.run_id }}, path: qa-results/, retention-days: 30 }
+      - name: Summary + ai:fix issue on failure (scheduled runs only)
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}', RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', EVENT: '${{ github.event_name }}' }
+        run: |
+          node -e '
+            const fs=require("fs");const rd=f=>{try{return JSON.parse(fs.readFileSync(f,"utf8"))}catch{return null}};
+            const db=rd("qa-results/lab-db.json"),ui=rd("qa-results/lab-ui.json");const rows=[];
+            for(const r of db?.testResults?.[0]?.assertionResults??[])rows.push([r.title.split(" ")[0],"db",r.status]);
+            const walk=s=>{for(const sp of s.specs??[])rows.push([sp.title.split(" ")[0],"ui",sp.tests.at(-1).results.at(-1).status]);(s.suites??[]).forEach(walk)};(ui?.suites??[]).forEach(walk);
+            const bad=rows.filter(r=>r[2]!=="passed");
+            fs.writeFileSync("qa-results/summary.md",`### QA lab: ${rows.length-bad.length}/${rows.length} passed\n`+(bad.length?bad.map(r=>`- ❌ ${r[0]} (${r[1]})`).join("\n"):"All green")+`\n\nRun: ${process.env.RUN_URL}\n`);
+            fs.writeFileSync("qa-results/failed.txt",String(bad.length));'
+          cat qa-results/summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [ "$EVENT" = schedule ] && [ "$(cat qa-results/failed.txt)" != 0 ]; then
+            N=$(gh issue list --label ai:fix --search "QA lab nightly in:title" --state open --json number -q '.[0].number')
+            if [ -n "$N" ]; then gh issue comment "$N" --body-file qa-results/summary.md; else
+              { echo "Owner: Dev"; echo; cat qa-results/summary.md; echo; echo "Fix the failing checks. Never edit e2e/acceptance/. Quinn-Explore owns qa/lab/."; } > /tmp/body.md
+              gh issue create --title "QA lab nightly: failing checks" --label ai:fix --body-file /tmp/body.md; fi
+          fi
