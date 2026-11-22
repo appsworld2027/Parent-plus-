@@ -32,23 +32,30 @@ export async function loadNeedsYouData(academyId: string): Promise<NeedsYouData>
   }
 
   // Only select what the count needs: id, status, recorded_at with status = recorded and recorded_at >= now - 7 days
+  // Paged to avoid PostgREST 1000-row cap (same pattern as roster/service.ts)
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const observationsResult = await supabase!
-    .from('observations')
-    .select('id,status,recorded_at')
-    .eq('academy_id', academyId)
-    .eq('status', 'recorded')
-    .gte('recorded_at', sevenDaysAgo);
-  if (observationsResult.error) throw observationsResult.error;
-  const recentRecordedObservations = (observationsResult.data ?? []) as Pick<Observation, 'id' | 'status' | 'recorded_at'>[];
+  const recentRecordedObservations: Pick<Observation, 'id' | 'status' | 'recorded_at'>[] = [];
+  for (let offset = 0; ; offset += 500) {
+    const result = await supabase!
+      .from('observations')
+      .select('id,status,recorded_at')
+      .eq('academy_id', academyId)
+      .eq('status', 'recorded')
+      .gte('recorded_at', sevenDaysAgo)
+      .order('id')
+      .range(offset, offset + 499);
+    if (result.error) throw result.error;
+    recentRecordedObservations.push(...(result.data ?? []));
+    if ((result.data?.length ?? 0) < 500) break;
+  }
 
   // Recipients only for those observation ids
   const observationIds = recentRecordedObservations.map(o => o.id);
   let recipients: Recipient[] = [];
   if (observationIds.length > 0) {
-    // Fetch in chunks if many observation ids
-    for (let i = 0; i < observationIds.length; i += 500) {
-      const chunk = observationIds.slice(i, i + 500);
+    // Fetch in chunks of 100 ids to keep URL size reasonable (~3.7 KB vs ~18.5 KB for 500)
+    for (let i = 0; i < observationIds.length; i += 100) {
+      const chunk = observationIds.slice(i, i + 100);
       const result = await supabase!
         .from('observation_recipients')
         .select('observation_id,student_id')
