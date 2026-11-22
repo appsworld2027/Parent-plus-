@@ -153,12 +153,13 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
         }
       } else if (url.pathname.endsWith('/observation_recipients')) {
-        const inParam = url.searchParams.get('observation_id')?.replace(/^in\./, '');
+        const raw = url.searchParams.get('observation_id');
+        const inParam = raw?.startsWith('in.') ? raw.slice(3) : null;
         if (inParam) {
           const ids = inParam.replace(/[()]/g, '').split(',');
           data = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
         } else {
-          const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '');
+          const id = raw?.replace(/^eq\./, '');
           data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
         }
       } else if (url.pathname.endsWith('/observation_versions')) {
