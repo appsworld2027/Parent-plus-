@@ -142,14 +142,25 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         if (options.missingObservationMigration) { status = 400; data = { code: '42703', message: 'Missing note column' }; }
         else {
           const id = url.searchParams.get('id')?.replace(/^eq\./, '');
-          let rows = state.observations.filter(row => !id || row.id === id).sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
+          const statusFilter = url.searchParams.get('status')?.replace(/^eq\./, '');
+          const recordedAtGte = url.searchParams.get('recorded_at')?.replace(/^gte\./, '');
+          let rows = state.observations.filter(row => !id || row.id === id);
+          if (statusFilter) rows = rows.filter(row => row.status === statusFilter);
+          if (recordedAtGte) rows = rows.filter(row => row.recorded_at && row.recorded_at >= recordedAtGte);
+          rows = rows.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
           const cursor = url.searchParams.get('or')?.match(/created_at\.eq\.([^,]+),id\.lt\.([0-9a-f-]+)/);
           if (cursor) rows = rows.filter(row => row.created_at < cursor[1] || (row.created_at === cursor[1] && row.id < cursor[2]));
           data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
         }
       } else if (url.pathname.endsWith('/observation_recipients')) {
-        const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '');
-        data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
+        const inParam = url.searchParams.get('observation_id')?.replace(/^in\./, '');
+        if (inParam) {
+          const ids = inParam.replace(/[()]/g, '').split(',');
+          data = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
+        } else {
+          const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '');
+          data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
+        }
       } else if (url.pathname.endsWith('/observation_versions')) {
         const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '') ?? '';
         data = (state.observationVersions[id] ?? []).slice(0,5);

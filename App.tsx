@@ -28,6 +28,7 @@ import { PrototypeIcon } from './src/ui/PrototypeIcon';
 import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
+import { loadNeedsYouData } from './src/today/service';
 import { supabase } from './src/auth/client';
 import type { Student } from './src/roster/model';
 import type { Enrolment } from './src/roster/model';
@@ -81,33 +82,28 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [needsYouObservations, setNeedsYouObservations] = useState<Observation[]>([]);
   const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
   const [needsYouError, setNeedsYouError] = useState<string | null>(null);
+  const [needsYouLoading, setNeedsYouLoading] = useState(false);
 
   useEffect(() => {
-    if (screen !== 'Today' || !auth.academy || !supabase) return;
-    const client = supabase;
+    if (screen !== 'Today' || !auth.academy) return;
     let active = true;
+    setNeedsYouLoading(true);
+    setNeedsYouError(null);
     async function load() {
       try {
-        const [studentsResult, enrolmentsResult, observationsResult, recipientsResult] = await Promise.all([
-          client.from('students').select('id,name,age_years,archived_at').eq('academy_id', auth.academy!.id),
-          client.from('enrolments').select('id,student_id,batch_id,starts_on,ends_on').eq('academy_id', auth.academy!.id),
-          client.from('observations').select('id,academy_id,batch_id,session_id,note,status,audience,revision,author_id,created_at,updated_at,recorded_at').eq('academy_id', auth.academy!.id),
-          client.from('observation_recipients').select('observation_id,student_id').eq('academy_id', auth.academy!.id),
-        ]);
+        const data = await loadNeedsYouData(auth.academy!.id);
         if (!active) return;
-        if (studentsResult.error) throw studentsResult.error;
-        if (enrolmentsResult.error) throw enrolmentsResult.error;
-        if (observationsResult.error) throw observationsResult.error;
-        if (recipientsResult.error) throw recipientsResult.error;
-        setNeedsYouStudents((studentsResult.data ?? []) as Student[]);
-        setNeedsYouEnrolments((enrolmentsResult.data ?? []) as Enrolment[]);
-        setNeedsYouObservations((observationsResult.data ?? []) as Observation[]);
-        setNeedsYouRecipients((recipientsResult.data ?? []) as Recipient[]);
+        setNeedsYouStudents(data.students);
+        setNeedsYouEnrolments(data.enrolments);
+        setNeedsYouObservations(data.observations);
+        setNeedsYouRecipients(data.recipients);
       } catch (error) {
         if (active) {
           const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
           setNeedsYouError(`Needs you list could not load. Reference: ${ref}`);
         }
+      } finally {
+        if (active) setNeedsYouLoading(false);
       }
     }
     void load();
@@ -177,8 +173,9 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               observations={needsYouObservations}
               recipients={needsYouRecipients}
               onPress={() => navigate('Post')}
+              loading={needsYouLoading}
+              error={needsYouError}
             />
-            {needsYouError && <Text style={styles.needsYouError}>{needsYouError}</Text>}
           </>}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}

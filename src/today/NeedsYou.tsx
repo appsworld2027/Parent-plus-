@@ -1,7 +1,8 @@
 import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { PrototypeIcon } from '../ui/PrototypeIcon';
+import { Text } from '../ui/Typography';
 import { getStudentsNeedingFeedback, formatNeedsYouMessage } from './needsYou';
 import type { Student } from '../roster/model';
 import type { Enrolment } from '../roster/model';
@@ -16,6 +17,8 @@ type Props = {
   observations: Observation[];
   recipients: Recipient[];
   onPress: () => void;
+  loading?: boolean;
+  error?: string | null;
 };
 
 export function NeedsYou({
@@ -25,7 +28,27 @@ export function NeedsYou({
   observations,
   recipients,
   onPress,
+  loading = false,
+  error = null,
 }: Props) {
+  // Loading state: show "Checking…" muted line, no count, no "All caught up"
+  if (loading) {
+    return (
+      <View style={s.card} accessibilityLiveRegion="polite">
+        <Text style={s.loadingText}>Checking…</Text>
+      </View>
+    );
+  }
+
+  // Error state: show only the error line with the reference
+  if (error) {
+    return (
+      <View style={s.card} accessibilityLiveRegion="polite">
+        <Text style={s.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   const needsYouStudents = getStudentsNeedingFeedback(
     students,
     enrolments,
@@ -84,6 +107,17 @@ const s = StyleSheet.create({
     lineHeight: 20,
     color: c.muted,
     marginTop: 2,
+  },
+  loadingText: {
+    fontSize: 15.5,
+    fontWeight: '700',
+    letterSpacing: -0.2,
+    color: c.muted,
+  },
+  errorText: {
+    fontSize: 12.5,
+    lineHeight: 19,
+    color: c.rose,
   },
   row: {
     flexDirection: 'row',
