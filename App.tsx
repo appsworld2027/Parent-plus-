@@ -27,6 +27,13 @@ import { prototypeColors as c, prototypeWeight } from './src/ui/prototypeTheme';
 import { PrototypeIcon } from './src/ui/PrototypeIcon';
 import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
+import { NeedsYou } from './src/today/NeedsYou';
+import { loadNeedsYouData } from './src/today/service';
+import { supabase } from './src/auth/client';
+import type { Student } from './src/roster/model';
+import type { Enrolment } from './src/roster/model';
+import type { Observation } from './src/observations/model';
+import type { Recipient } from './src/observations/model';
 
 function coachGreeting(timezone:string) { const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:timezone}).format(new Date())); return hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'; }
 
@@ -68,6 +75,40 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const scrollToTop = useCallback(() => scroll.current?.scrollTo({ y: 0, animated: false }), []);
   useEffect(scrollToTop, [screen, scrollToTop]);
+
+  // Needs you data
+  const [needsYouStudents, setNeedsYouStudents] = useState<Student[]>([]);
+  const [needsYouEnrolments, setNeedsYouEnrolments] = useState<Enrolment[]>([]);
+  const [needsYouObservations, setNeedsYouObservations] = useState<Observation[]>([]);
+  const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
+  const [needsYouError, setNeedsYouError] = useState<string | null>(null);
+  const [needsYouLoading, setNeedsYouLoading] = useState(false);
+
+  useEffect(() => {
+    if (screen !== 'Today' || !auth.academy) return;
+    let active = true;
+    setNeedsYouLoading(true);
+    setNeedsYouError(null);
+    async function load() {
+      try {
+        const data = await loadNeedsYouData(auth.academy!.id);
+        if (!active) return;
+        setNeedsYouStudents(data.students);
+        setNeedsYouEnrolments(data.enrolments);
+        setNeedsYouObservations(data.observations);
+        setNeedsYouRecipients(data.recipients);
+      } catch (error) {
+        if (active) {
+          const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
+          setNeedsYouError(`Needs you list could not load. Reference: ${ref}`);
+        }
+      } finally {
+        if (active) setNeedsYouLoading(false);
+      }
+    }
+    void load();
+    return () => { active = false; };
+  }, [screen, auth.academy?.id]);
   useEffect(() => {
     const back = BackHandler.addEventListener('hardwareBackPress', () => {
       if (screen === 'Today') return false;
@@ -123,6 +164,19 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         {screen === 'Today' ? <>
           <Text accessibilityRole="header" style={styles.heading}>{coachGreeting(auth.academy?.timezone??'Asia/Kolkata')}</Text>
           <Text style={styles.subtitle}>{new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',timeZone:auth.academy?.timezone??'Asia/Kolkata'})}</Text>
+          {auth.academy && <>
+            <Text accessibilityRole="header" style={styles.needsYouHeading}>Needs you</Text>
+            <NeedsYou
+              academy={auth.academy}
+              students={needsYouStudents}
+              enrolments={needsYouEnrolments}
+              observations={needsYouObservations}
+              recipients={needsYouRecipients}
+              onPress={() => navigate('Post')}
+              loading={needsYouLoading}
+              error={needsYouError}
+            />
+          </>}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
@@ -216,7 +270,8 @@ const styles = StyleSheet.create({
   scrollContent:{paddingBottom:118},content:{paddingHorizontal:18,paddingTop:10,gap:12},releaseRow:{flexDirection:'row',justifyContent:'space-between',alignItems:'center'},
   release:{fontSize:9.5,fontWeight:prototypeWeight(750),color:c.muted},version:{fontSize:10,color:c.dim},
   eyebrow:{fontSize:10,fontWeight:'800',letterSpacing:1.5,color:c.sky,marginTop:10},heading:{fontSize:30,lineHeight:31.5,fontWeight:'700',letterSpacing:-1.2,color:c.white},
-  subtitle:{fontSize:13,lineHeight:18.2,color:c.muted},button:{backgroundColor:c.white,paddingVertical:13,paddingHorizontal:16,minHeight:44,borderRadius:14,alignItems:'center',justifyContent:'center'},
+  subtitle:{fontSize:13,lineHeight:18.2,color:c.muted},needsYouHeading:{fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.white,marginTop:10},needsYouError:{fontSize:12.5,lineHeight:19,color:c.rose,marginTop:6},
+  button:{backgroundColor:c.white,paddingVertical:13,paddingHorizontal:16,minHeight:44,borderRadius:14,alignItems:'center',justifyContent:'center'},
   buttonLabel:{color:c.black,fontSize:13.5,fontWeight:'800'},secondary:{backgroundColor:c.raised},secondaryLabel:{color:c.white},pressed:{opacity:0.75},
   sectionTitle:{fontSize:15.5,fontWeight:'700',color:c.white,letterSpacing:-.2},small:{fontSize:13,lineHeight:20,color:c.muted},
   card:{backgroundColor:c.surface,borderWidth:1,borderColor:c.border,borderRadius:18,padding:14,gap:10},statusRow:{flexDirection:'row',justifyContent:'space-between',gap:10,flexWrap:'wrap'},
