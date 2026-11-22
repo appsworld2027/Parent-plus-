@@ -23,7 +23,7 @@
     "devProject": "see config/public-client.json and the 'Supabase and release safety' section of AGENTS.md"
   },
   "quality": {
-    "handbookSection": "AGENTS.md §7A",
+    "handbookSection": "AGENTS.md \u00a77A",
     "contractPath": "docs/product/<feature-slug>/ACCEPTANCE.md",
     "acceptanceTestsPath": "e2e/acceptance/",
     "acceptanceCommand": "npx playwright test e2e/acceptance",
@@ -34,7 +34,11 @@
   "governance": {
     "ownerRulesFile": "AGENTS.md",
     "autoMerge": false,
-    "note": "Agents open pull requests; merging needs explicit founder approval per AGENTS.md until Ankit and Manu agree otherwise."
+    "note": "Agents open pull requests. The AI Org loop merges reviewed build PRs into their feature branch only; a founder /approve ships the delivery PR to main.",
+    "founders": [
+      "appsworld2027"
+    ],
+    "approvalRule": "One founder's /approve is sufficient (decided by Ankit on 2026-11-22: 'Manu is onboarded; if I approve decisions, that counts'). Agents never merge to main without a founder /approve on the exact green head commit."
   },
   "entrypoints": {
     "founderCommand": "scripts/founder-command.mjs",
@@ -44,5 +48,22 @@
     "planningWorkflow": ".github/workflows/product-planning.yml",
     "qaWorkflow": ".github/workflows/multi-agent-qa.yml"
   },
-  "protectedActions": ["production", "destructive", "paid", "credentials", "legal-privacy"]
+  "protectedActions": [
+    "production",
+    "destructive",
+    "paid",
+    "credentials",
+    "legal-privacy"
+  ],
+  "loop": {
+    "backlog": "docs/product/BACKLOG.md",
+    "maxFixRounds": 5,
+    "agentsWorkflow": "ai-agents.yml",
+    "checksWorkflow": "checks.yml",
+    "qaWorkflow": "qa-lab.yml",
+    "requiredChecks": [
+      "foundation"
+    ],
+    "lockedPaths": "e2e/acceptance/"
+  }
 }

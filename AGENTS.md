@@ -61,3 +61,9 @@ This product is run with the AppsWorld AI Organization handbook at https://githu
 - Every feature follows AI Org `AGENTS.md` §7A: founder-approved Feature Contract at `docs/product/<feature-slug>/ACCEPTANCE.md` → locked acceptance tests in `e2e/acceptance/` (PR label `ai:contract`) → build PR stacked on the contract branch → independent review → Demo Pack.
 - Build PRs never add, edit, delete, skip or focus tests in `e2e/acceptance/`; the `Contract lock` check fails them.
 - Claude Code runs `.claude/hooks/quality-gate.sh` when it tries to finish: `npm run check` must pass first (max 5 rounds, then `ai:blocked`). `QUALITY_GATE=off` is for founder-only manual sessions.
+
+## AI Org loop (added 2026-11-22 by Ankit)
+- Founders approve with a one-line reply on the item the agents link: `/approve` or `/changes <what>` (also `/next`, `/stop`). Only usernames in `.ai-org/manifest.json` `governance.founders` count; one founder's approval is sufficient (see `governance/DECISIONS.md`).
+- The AI Org loop controller may merge an approved, green **build** PR into its `ai/contract-*` feature branch. Only a founder `/approve` on the Demo Pack ships the feature PR to `main`. This is the explicit approval required above.
+- What gets built next: first unchecked line of `docs/product/BACKLOG.md`, one feature at a time.
+
