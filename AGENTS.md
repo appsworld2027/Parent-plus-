@@ -63,7 +63,8 @@ This product is run with the AppsWorld AI Organization handbook at https://githu
 - Claude Code runs `.claude/hooks/quality-gate.sh` when it tries to finish: `npm run check` must pass first (max 5 rounds, then `ai:blocked`). `QUALITY_GATE=off` is for founder-only manual sessions.
 
 ## AI Org loop (added 2026-11-22 by Ankit)
-- Founders approve with a one-line reply on the item the agents link: `/approve` or `/changes <what>` (also `/next`, `/stop`). Only usernames in `.ai-org/manifest.json` `governance.founders` count; one founder's approval is sufficient (see `governance/DECISIONS.md`).
+- Founders never act on GitHub. They decide in their AI chat; the assistant posts `/approve` or `/changes <what>` (also `/next`, `/stop`) on the item for them, as the founder's own account. Testing happens only on the Vercel link.
+- Agents never commit to `main`: it accepts changes only through pull requests (branch protection, 2026-11-23). Contract docs go on `ai/contract-<slug>`. Only usernames in `.ai-org/manifest.json` `governance.founders` count; one founder's approval is sufficient (see `governance/DECISIONS.md`).
 - The AI Org loop controller may merge an approved, green **build** PR into its `ai/contract-*` feature branch. Only a founder `/approve` on the Demo Pack ships the feature PR to `main`. This is the explicit approval required above.
 - What gets built next: first unchecked line of `docs/product/BACKLOG.md`, one feature at a time.
 
