@@ -1,32 +1,30 @@
-# Summary: Coach "Needs you" — Overdue fees
+# Coach "Needs you" shows overdue fees — Summary
 
 ## Problem
-Coaches need a single place to see everything that requires their attention today. The "Needs you" section on Today already shows children who need feedback. It should also show overdue fees so coaches can act on payment follow-ups with one tap.
+Coaches open Today to see what they must do next. "Needs you" already shows children needing feedback; it should also show overdue fees so coaches can act on both in one place.
 
 ## Who
 Coaches and tutors using the Coach Today screen.
 
 ## What we will build
-- A second item in the "Needs you" section: "N fees overdue" with the total pending amount (₹ formatted with Indian grouping).
-- Tapping it opens the Fees screen pre-filtered to "Overdue".
-- Both the feedback item and the fees item can appear together; order: feedback first, then fees.
-- Standard states: loading ("Checking…"), error (with reference), empty ("All caught up"), large data (accurate count/amount).
+A second item in "Needs you": "N fees overdue" with total pending amount (₹ formatted, wallet icon in rose). Tapping opens the Fees screen with the current month's overview — overdue students listed first with an "Overdue" badge. Both feedback and fees items can appear together. Standard states: loading, error, empty, large data.
 
 ## What we will NOT build
-- Fee follow-up actions (reminder, check-in, plan) from the fee detail — later slice.
-- Parent-facing fee reminders — later slice.
-- Partial/overpaid states in the Needs you summary — later slice.
-- Attendance metrics tiles — separate feature.
+Fee follow-up actions (reminder/check-in/plan), parent-facing reminders, partial/overpaid states in the summary, attendance metrics tiles, new filter tabs on the Fees screen.
 
-## How the founder will test it (3 steps)
-1. Sign in as a coach with an academy that has at least one student with an overdue invoice (due date before today, balance > 0).
-2. Open the Today tab — verify "Needs you" shows "X fees overdue" with the correct total amount.
-3. Tap the item — verify the Fees screen opens with the "Overdue" filter selected and the overdue student(s) listed.
+## Founder decisions (from issue #42)
+- Fees screen has no "Overdue" filter — use existing month overview with overdue students first + badge
+- Singular "1 fee overdue", plural "N fees overdue"
+- Overdue = due_on < today (Asia/Kolkata), balance > 0, not voided, not archived, enrolment active
+- TEST receipts never count as paid
+- Count is students, not invoices; partly paid counts remaining balance only
 
-## Founder decisions
-None required for this slice — behaviour is defined by the prototype and the existing fee model.
+## How the founder will test (3 steps)
+1. Sign in as coach with an academy that has a student with an overdue invoice (due before today, balance > 0, active enrolment, not archived, not voided).
+2. Open Today — verify "X fees overdue" with correct total (₹ formatted, singular/plural grammar).
+3. Tap it — verify Fees screen opens with current month's overview, overdue students listed first with "Overdue" badge.
 
-## Assumptions
-- Overdue = invoice.due_on < today (academy timezone) AND balance_paise > 0 AND student not archived AND enrolment active today.
-- The Fees screen already has the filter tabs and data; we only need to navigate to it with the right tab selected.
-- The existing "Needs you" loading/error/empty patterns apply identically to the fees item.
+## Assumptions (reply "change X" to override)
+A. Overdue definition uses Asia/Kolkata timezone for "today".
+B. Fees screen already supports current month overview and can show overdue badge on students.
+C. Loading/error/empty patterns identical to existing feedback item in "Needs you".
