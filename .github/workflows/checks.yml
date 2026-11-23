@@ -2,7 +2,7 @@ name: Parent Plus full validation
 on:
   workflow_dispatch:
   push:
-    branches: [main, codex/coach-foundation, MM/development]
+    branches: [main, MM/development]
     paths-ignore: ['**/*.md', 'docs/images/**']
   pull_request:
 permissions:
@@ -22,8 +22,8 @@ jobs:
           --health-cmd "pg_isready -U postgres -d parentplus_workspace_test"
           --health-interval 5s --health-timeout 3s --health-retries 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
       - run: npm run test:workspace:postgres
@@ -36,8 +36,8 @@ jobs:
       EXPO_NO_TELEMETRY: '1'
       EXPO_PUBLIC_APP_ENV: test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
