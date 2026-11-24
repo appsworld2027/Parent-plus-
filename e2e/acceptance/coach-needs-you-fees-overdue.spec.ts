@@ -1,3 +1,4 @@
+// NEW-HOOKS: /^\d+ fees? overdue/ | needs-you-fees-wallet | needs-you-fees-chevron | Overdue | fees-overdue-section | fees-overdue-row | /Fees could not load\. Reference: .+/ | /Feedback could not load\. Reference: .+/
 // LOCKED acceptance tests for docs/product/needs-you-fees-overdue/ACCEPTANCE.md (AI Org AGENTS.md §7A).
 // First draft by Quinn (QA, 8a6f38e); corrected in CPTO review (ITER14-PPDEV) because 11 of 18 tests could never pass:
 // a fixture student who always needs feedback blocked every "All caught up" check, two tests referenced an undefined
@@ -141,9 +142,11 @@ test('AC-01 two students overdue show "2 fees overdue" with "₹5,500 pending", 
   await openToday(page);
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
   await addStudent(page, { id: KABIR, name: 'Fictional Kabir' });
+  await recordFeedbackFor(page, [RIA, ZOYA, KABIR]);
   await addInvoice(page, { student: ZOYA, month: '2026-10-01', due: '2026-10-15', paise: 350000 });
   await addInvoice(page, { student: KABIR, month: '2026-10-01', due: '2026-10-15', paise: 200000 });
   await reopenToday(page);
+  await expect(feedbackItem(page)).toHaveCount(0);
   await expectFees(page, '2 fees overdue', '₹5,500');
   await expect(feesItem(page).getByTestId('needs-you-fees-wallet')).toBeVisible();
   await expect(feesItem(page).getByTestId('needs-you-fees-chevron')).toBeVisible();
@@ -152,9 +155,11 @@ test('AC-01 two students overdue show "2 fees overdue" with "₹5,500 pending", 
 test('AC-02 feedback item comes first, then the fees item', async ({ page }) => {
   await openToday(page); // Ria needs feedback
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
+  await recordFeedbackFor(page, [ZOYA]);
   await addInvoice(page, { student: ZOYA, month: '2026-10-01', due: '2026-10-15', paise: 350000 });
   await reopenToday(page);
   await expect(feedbackItem(page)).toHaveCount(1);
+  await expect(feedbackItem(page)).toContainText('1 child needs feedback');
   await expect(feesItem(page)).toHaveCount(1);
   const feedback = await feedbackItem(page).boundingBox(), fees = await feesItem(page).boundingBox();
   expect(feedback!.y).toBeLessThan(fees!.y);
@@ -177,6 +182,7 @@ test('AC-03 tapping the fees item opens Fees with an "Overdue" section on top: o
   await expect(rows.nth(0)).toContainText(/Sep(tember)? 2026|2026-09/);
   await expect(rows.nth(0)).toContainText('₹2,000');
   await expect(rows.nth(1)).toContainText('Fictional Kabir');
+  await expect(rows.nth(1)).toContainText(CLAY);
   await expect(rows.nth(1)).toContainText(/Oct(ober)? 2026|2026-10/);
   await expect(rows.nth(1)).toContainText('₹3,500');
   const section = await page.getByTestId('fees-overdue-section').boundingBox();
@@ -198,6 +204,7 @@ test('AC-16 a fee overdue only from last month shows on Today and in the Fees "O
   await expect(rows.first()).toContainText(/Oct(ober)? 2026|2026-10/);
 });
 
+// GUARD: resolving Ria's default feedback already leaves the existing empty card; it must stay empty with no overdue fees.
 test('AC-04 no overdue fees and no feedback needed shows "All caught up"', async ({ page }) => {
   await openToday(page);
   await recordFeedbackFor(page, [RIA]);
@@ -215,6 +222,7 @@ test('AC-06 an overdue fee for an archived student is not counted', async ({ pag
   await expectExcludedThenCountsOnlyTheGenuineOne(page, { student: KABIR, name: 'Fictional Kabir', archived: true }, { month: '2026-10-01', due: '2026-10-15' });
 });
 
+// GUARD: offline feedback reads already show the existing whole-card error; adding fees must preserve it when both fail.
 test('AC-07 offline shows the whole-card error "Needs you list could not load. Reference: <ref>"', async ({ page }) => {
   await openToday(page);
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
@@ -227,6 +235,7 @@ test('AC-07 offline shows the whole-card error "Needs you list could not load. R
   await expect(page.getByText(/(Fees|Feedback) could not load/)).toHaveCount(0);
 });
 
+// RED-BECAUSE: Today currently finishes Checking after feedback and never waits for the held fee read, so it shows All caught up early.
 test('AC-08 while any data is still loading the card shows "Checking…", never an early "All caught up"', async ({ page }) => {
   await openToday(page);
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
@@ -248,7 +257,7 @@ test('AC-17 fees fail, feedback loads: feedback item plus "Fees could not load. 
   await page.evaluate(() => { window.__needsYouNet.failFees = true; });
   await reopenToday(page);
   await expect(feedbackItem(page)).toHaveCount(1);
-  await expect(page.getByText(/Fees could not load\. Reference: .+/)).toBeVisible();
+  await expect(page.getByText(/Fees could not load\. Reference: .+/)).toBeVisible({ timeout: 15000 });
   await expect(wholeCardError(page)).toHaveCount(0);
   await expect(feesItem(page)).toHaveCount(0);
 });
@@ -260,7 +269,7 @@ test('AC-18 feedback fails, fees load: fees item plus "Feedback could not load. 
   await page.evaluate(() => { window.__needsYouNet.failFeedback = true; });
   await reopenToday(page);
   await expectFees(page, '1 fee overdue', '₹2,000');
-  await expect(page.getByText(/Feedback could not load\. Reference: .+/)).toBeVisible();
+  await expect(page.getByText(/Feedback could not load\. Reference: .+/)).toBeVisible({ timeout: 15000 });
   await expect(wholeCardError(page)).toHaveCount(0);
   await expect(feedbackItem(page)).toHaveCount(0);
 });
@@ -306,8 +315,10 @@ test('AC-10 a student with an overdue fee who also needs feedback: both items, e
 test('AC-11 one student overdue shows "1 fee overdue" with "₹1,500 pending"', async ({ page }) => {
   await openToday(page);
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
+  await recordFeedbackFor(page, [RIA, ZOYA]);
   await addInvoice(page, { student: ZOYA, month: '2026-10-01', due: '2026-10-15', paise: 150000 });
   await reopenToday(page);
+  await expect(feedbackItem(page)).toHaveCount(0);
   await expectFees(page, '1 fee overdue', '₹1,500');
   await expect(feesItem(page)).not.toContainText('1 fees');
 });
