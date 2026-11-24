@@ -23,7 +23,7 @@
     "devProject": "see config/public-client.json and the 'Supabase and release safety' section of AGENTS.md"
   },
   "quality": {
-    "handbookSection": "AGENTS.md \u00a77A",
+    "handbookSection": "AGENTS.md §7A",
     "contractPath": "docs/product/<feature-slug>/ACCEPTANCE.md",
     "acceptanceTestsPath": "e2e/acceptance/",
     "acceptanceCommand": "npx playwright test e2e/acceptance",
@@ -65,5 +65,28 @@
       "foundation"
     ],
     "lockedPaths": "e2e/acceptance/"
+  },
+  "memory": {
+    "folder": "docs/ai-memory",
+    "rule": "Agents propose in handover '## Memory proposals'; Arjun (AI CPTO) merges via reviewed PR."
+  },
+  "raci": {
+    "ai:tests": {
+      "responsible": "quinn-qa@author",
+      "reviewer": "quinn-qa@challenger",
+      "consulted": [
+        "maya-ai-pm (product intent, read-only)"
+      ],
+      "accountable": "arjun-cpto",
+      "informed": [
+        "dev-coder (via handover packet)"
+      ],
+      "models": {
+        "author": "nvidia_nim/moonshotai/kimi-k3.1-pro@medium",
+        "challenger": "nvidia_nim/nvidia/nemotron-3-ultra-550b-a55b",
+        "accountable": "nvidia_nim/moonshotai/kimi-k3.1-pro@medium"
+      },
+      "evidence": "AI Org model trial 3 (issue #66): both models PASS 18/18; author and challenger on different models"
+    }
   }
 }

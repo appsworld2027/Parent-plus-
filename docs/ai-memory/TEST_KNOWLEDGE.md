@@ -1,0 +1,10 @@
+# Test knowledge
+
+- **Fixtures** live in `e2e/support/`: `backend.ts` (coach account, roster, classes, observations) and `feesBackend.ts` (invoices + payments). Both replace `window.fetch` in the browser; no request leaves the browser.
+- **Default state trap:** `backend(page, { academy: true, readyClass: true })` (also used by `feesBackend`) seeds one active student, *Fictional Ria*, with no feedback — so Ria **needs feedback by default**. Any test expecting "All caught up" or "no feedback item" must first record recent feedback for Ria (push a recorded observation + recipient into `window.__coachFixture`). Evidence: #42, 5 tests could never pass.
+- **Browser scope:** code inside `page.evaluate` / `addInitScript` runs in the browser and cannot see test-file variables; pass them as the argument. Evidence: #42, `ReferenceError: lastMonth is not defined`.
+- **Read vs write switches:** `failStudent`, `failObservation`, `holdObservation`, `failWrite`, `hold` affect saving, not loading. To fail or stall a READ, wrap `window.fetch` in an init script added after the fixtures, or use `page.route`. `feesBackend` has `failRead` for fee reads only. Evidence: #42 AC-07/08/18.
+- **Fee reads are month-scoped and capped:** `feesBackend` answers `fee_invoice_balances` for one `billing_month` and at most 50 rows. A feature that reads all months or more than 50 rows needs the fixture extended (outside `e2e/acceptance/`, in the build PR).
+- **Client retries:** the Supabase client retries a failed GET 3 times (~7 s) before an error shows; error tests must wait ≥ 15 s.
+- **Re-open Today** (Schedule tab → Today tab) after changing fixture data so it reloads.
+- **The acceptance gate:** run `node .ai-org-handbook/scripts/grade-acceptance.mjs` on a JSON report; declare new hooks in `// NEW-HOOKS:`; long Playwright output is cut off in agent tool results, so read the gate report.
