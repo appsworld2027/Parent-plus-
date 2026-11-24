@@ -1,4 +1,4 @@
-// NEW-HOOKS: /^\d+ fees? overdue/ | needs-you-fees-wallet | needs-you-fees-chevron | Overdue | fees-overdue-section | fees-overdue-row | /Fees could not load\. Reference: .+/ | /Feedback could not load\. Reference: .+/
+// NEW-HOOKS: /^\d+ fees? overdue/ | needs-you-fees-wallet | needs-you-fees-chevron | fees-overdue-section | fees-overdue-row | /Fees could not load\. Reference: .+/ | /Feedback could not load\. Reference: .+/
 // LOCKED acceptance tests for docs/product/needs-you-fees-overdue/ACCEPTANCE.md (AI Org AGENTS.md §7A).
 // First draft by Quinn (QA, 8a6f38e); corrected in CPTO review (ITER14-PPDEV) because 11 of 18 tests could never pass:
 // a fixture student who always needs feedback blocked every "All caught up" check, two tests referenced an undefined
@@ -169,22 +169,28 @@ test('AC-03 tapping the fees item opens Fees with an "Overdue" section on top: o
   await openToday(page);
   await addStudent(page, { id: ZOYA, name: 'Fictional Zoya' });
   await addStudent(page, { id: KABIR, name: 'Fictional Kabir' });
-  await addInvoice(page, { student: KABIR, month: '2026-10-01', due: '2026-10-15', paise: 350000 });
+  // Zoya has TWO overdue invoices from different months — tests that a single student row shows both months
   await addInvoice(page, { student: ZOYA, month: '2026-09-01', due: '2026-09-15', paise: 200000 });
+  await addInvoice(page, { student: ZOYA, month: '2026-10-01', due: '2026-10-15', paise: 350000 });
+  // Kabir has one overdue invoice from October
+  await addInvoice(page, { student: KABIR, month: '2026-10-01', due: '2026-10-15', paise: 250000 });
   await reopenToday(page);
   await feesItem(page).click();
   await expect(page.getByRole('heading', { name: 'Fees overview', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Overdue', exact: true })).toBeVisible();
   const rows = page.getByTestId('fees-overdue-section').getByTestId('fees-overdue-row');
   await expect(rows).toHaveCount(2);
-  await expect(rows.nth(0)).toContainText('Fictional Zoya'); // September: oldest first
+  // Row 0: Zoya (oldest invoice is September) — must show BOTH months
+  await expect(rows.nth(0)).toContainText('Fictional Zoya');
   await expect(rows.nth(0)).toContainText(CLAY);
   await expect(rows.nth(0)).toContainText(/Sep(tember)? 2026|2026-09/);
-  await expect(rows.nth(0)).toContainText('₹2,000');
+  await expect(rows.nth(0)).toContainText(/Oct(ober)? 2026|2026-10/);
+  await expect(rows.nth(0)).toContainText('₹5,500'); // 2,000 + 3,500
+  // Row 1: Kabir (October only)
   await expect(rows.nth(1)).toContainText('Fictional Kabir');
   await expect(rows.nth(1)).toContainText(CLAY);
   await expect(rows.nth(1)).toContainText(/Oct(ober)? 2026|2026-10/);
-  await expect(rows.nth(1)).toContainText('₹3,500');
+  await expect(rows.nth(1)).toContainText('₹2,500');
   const section = await page.getByTestId('fees-overdue-section').boundingBox();
   const overview = await page.getByText('Collected for this month', { exact: true }).boundingBox();
   expect(section!.y).toBeLessThan(overview!.y); // the monthly overview stays, below the section
@@ -244,7 +250,11 @@ test('AC-08 while any data is still loading the card shows "Checking…", never 
   await page.evaluate(() => { window.__needsYouNet.holdFees = true; }); // feedback loads, fees still loading
   await reopenToday(page);
   await expect(page.getByText('Checking…', { exact: true })).toBeVisible();
-  await page.waitForTimeout(1000);
+  // Mid-hold check: a buggy impl that flashes Checking… → All caught up → Checking… would pass a two-point check
+  await page.waitForTimeout(500);
+  await expect(page.getByText('Checking…', { exact: true })).toBeVisible();
+  await expect(page.getByText('All caught up', { exact: true })).toHaveCount(0);
+  await page.waitForTimeout(500);
   await expect(page.getByText('Checking…', { exact: true })).toBeVisible();
   await expect(page.getByText('All caught up', { exact: true })).toHaveCount(0);
   await page.evaluate(() => { window.__needsYouNet.holdFees = false; });
