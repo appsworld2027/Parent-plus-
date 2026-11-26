@@ -36,15 +36,15 @@ permissions:
 jobs:
   agent:
     if: >-
-      (github.event_name == 'workflow_dispatch' && (inputs.mode == '' || inputs.mode == 'agent') && inputs.number != '0') ||
-      ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:'))
+      vars.UNATTENDED_AGENTS == 'on' && (github.event_name == 'workflow_dispatch' && (inputs.mode == '' || inputs.mode == 'agent') && inputs.number != '0') ||
+      ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:')))
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@main
     with:
       number: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
     secrets: inherit
 
   resume:
-    if: github.event_name == 'schedule'
+    if: vars.UNATTENDED_AGENTS == 'on' && github.event_name == 'schedule'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@main
     secrets: inherit
 
