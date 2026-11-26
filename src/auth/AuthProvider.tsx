@@ -23,7 +23,7 @@ type AuthState = {
   module: 'coach' | 'parent';
   session: Session | null; loading: boolean; academy: Academy | null;
   academyLoading: boolean; error: string; recovery: boolean;
-  reload: () => void; logout: (options?: { keepDrafts?: boolean }) => Promise<string | null>; dismissError: () => void;
+  reload: () => void; logout: (options?: { keepDrafts?: boolean; everywhere?: boolean }) => Promise<string | null>; dismissError: () => void;
   finishRecovery: () => void; refreshAcademy: () => void;
 };
 const Context = createContext<AuthState | null>(null);
@@ -213,13 +213,13 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     return () => { active = false; subscription.remove(); };
   }, []);
 
-  const logout = useCallback(async (options?: { keepDrafts?: boolean }) => {
+  const logout = useCallback(async (options?: { keepDrafts?: boolean; everywhere?: boolean }) => {
     if (!supabase) return null;
     dismiss();
     try {
       // End this device session. Account deletion and other-device logout are separate.
       if (options?.keepDrafts) keepDraftsSignOut.current = true; else chosenSignOut.current = true;
-      const result = await supabase.auth.signOut({ scope: 'local' });
+      const result = await supabase.auth.signOut({ scope: options?.everywhere ? 'global' : 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
       const cleanupError = await draftCleanup.current;
