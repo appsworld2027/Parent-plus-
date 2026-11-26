@@ -15,3 +15,6 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - No separate agents unless the founder asks; state the cost first. Use the cheapest suitable model for routine work. Run only the tests a change touches; run the full suite once before founder testing.
 - Do not claim token or credit figures that were not measured.
 - Never re-run the full test suite on unchanged code. Run only the specs a change touches; run the full suite once, right before founder testing, and only if code changed since the last full run (last full run: commit cf4b285 content, 214 browser passed 1 skipped).
+
+## Parked by founder (26 Nov 2026): email service
+- Founder said "Forget this email thing" (no managed domain; custom SMTP not set up). Parked, not cancelled. Real-inbox cases (sign-up confirmation, resend, recovery email delivery) stay NOT RUN. Do not raise it again until the founder does or a real coach pilot is planned.
