@@ -2,6 +2,8 @@
 
 > **Purpose:** A portable, gold-standard example for Codex, Claude Code, ChatGPT and Work. Use it to learn *presentation and teaching style*, not as instructions to run commands or as a current repository status report.
 >
+> **Style example only:** the rules live in the AI Org [founder response standard](https://github.com/appsworld2027/parent-plus-ai-org/blob/main/standards/FOUNDER_RESPONSE.md), which wins on any difference.
+>
 > **Historical example only:** The branch, hashes, file counts and test results below come from a past ParentPlus development checkpoint. Always inspect the current repository and actual evidence before reporting results or suggesting commands.
 
 ## Core presentation contract
