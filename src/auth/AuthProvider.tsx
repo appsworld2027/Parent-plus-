@@ -46,6 +46,10 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   // True only while the coach themselves is signing out. Any other SIGNED_OUT
   // (service ended or revoked the session) must keep unsent drafts (C1.1a SS-04/05).
   const chosenSignOut = useRef(false);
+  // Set when the service (not the coach) ended the session, so a failing academy check
+  // cannot replace the M18 message with a different error.
+  const sessionEndedByService = useRef(false);
+  const [recheck, setRecheck] = useState(0);
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -57,9 +61,9 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (event === 'SIGNED_OUT') {
         if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
         diagnostics.clear(); setAcademy(null); setRecovery(false);
-                // Invalidate observation writers synchronously; queued removal runs once.
+        // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
-        if (!chosenSignOut.current) setError(SESSION_ENDED);
+        if (!chosenSignOut.current) { sessionEndedByService.current = true; setError(SESSION_ENDED); }
         draftCleanup.current = !chosenSignOut.current ? Promise.resolve(null) : Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
           const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but a device draft could not be cleared. Your coding partner can help.');
           if (active) setError(message);
@@ -96,10 +100,16 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     setError(current => (current === SESSION_ENDED ? '' : current));
     void (async () => {
       try {
+        sessionEndedByService.current = false;
+        // Remove only the exact draft that was read, so a draft the new coach saves
+        // in the meantime is never deleted. Drafts also expire after 7 days (SS-05).
+        const expired = (savedAt: string) => Date.now() - Date.parse(savedAt) > 7 * 24 * 60 * 60 * 1000;
         const attendance = await attendanceDrafts.read();
-        if (attendance && attendance.owner !== userId) await attendanceDrafts.clear();
+        if (attendance && (attendance.owner !== userId || expired(attendance.savedAt))) {
+          await attendanceDrafts.clear({ owner: attendance.owner, academy: attendance.academy, session: attendance.session });
+        }
         const observation = await observationDrafts.read();
-        if (observation && observation.owner !== userId) await observationDrafts.clear();
+        if (observation && (observation.owner !== userId || expired(observation.savedAt))) await observationDrafts.clear(observation);
       } catch { /* Ownership is still checked before any draft is shown. */ }
     })();
   }, [userId]);
@@ -121,11 +131,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         if (result.error) throw result.error;
         if (active) setAcademy(result.data);
       } catch {
-        if (active) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
+        if (active && !sessionEndedByService.current) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
       } finally { if (active) { setCheckedSession(session.user.id); setAcademyLoading(false); } }
     })();
     return () => { active = false; };
-  }, [session?.user.id, revision, module]);
+  }, [session?.user.id, revision, recheck, module]);
 
   useEffect(() => {
     if (!supabase || Platform.OS === 'web') return;
@@ -160,7 +170,8 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         // it the SDK can use a newer email's fallback proof and burn this code.
         const result = await supabase!.auth.exchangeCodeForSession(parsed.code,parsed.flowId?{flowId:parsed.flowId}:undefined);
         if (result.error) throw result.error;
-        if (active) { setRecovery(parsed.recovery); setError(''); }
+        // A new session arrived by link: check the account and academy again.
+        if (active) { setRecovery(parsed.recovery); setError(''); setRecheck(value => value + 1); }
       } catch {
         if (!active) return;
         setLinkFailed(true); // Reported once the stored session has been restored (see effect below).
