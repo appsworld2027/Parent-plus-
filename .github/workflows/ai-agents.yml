@@ -46,7 +46,7 @@ jobs:
     # Founder policy: do not expose paid-model credentials to background workers.
     # The canonical router is free-only; only the NVIDIA free-engine credential is delegated.
     secrets:
-      AI_ORG_HANDBOOK_TOKEN: ${{ secrets.AI_ORG_HANDBOOK_TOKEN }}
+      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
       NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
 
   resume:
