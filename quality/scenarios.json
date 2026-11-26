@@ -141,9 +141,9 @@
     {
       "id": "SC-481FE3379BD1",
       "status": "implemented",
-      "criteria": "one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload",
+      "criteria": "one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::one login: class feedback \u2192 review/share \u2192 family and child setup \u2192 explicit connection \u2192 Parent update and reload"
+        "e2e/coach-parent-journey.spec.ts::one login: class feedback → review/share → family and child setup → explicit connection → Parent update and reload"
       ]
     },
     {
@@ -157,9 +157,9 @@
     {
       "id": "SC-CEBECCE4F5F4",
       "status": "implemented",
-      "criteria": "same-login shortcut cannot open or replace another parent\u2019s connection",
+      "criteria": "same-login shortcut cannot open or replace another parent’s connection",
       "tests": [
-        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent\u2019s connection"
+        "e2e/coach-parent-journey.spec.ts::same-login shortcut cannot open or replace another parent’s connection"
       ]
     },
     {
@@ -1821,9 +1821,9 @@
     {
       "id": "UT-D3D0128B34D2",
       "status": "implemented",
-      "criteria": "returns only the actor\u2019s own accepted contexts without staff, family or other employment details",
+      "criteria": "returns only the actor’s own accepted contexts without staff, family or other employment details",
       "tests": [
-        "tests/workspace-authorization.test.ts::returns only the actor\u2019s own accepted contexts without staff, family or other employment details"
+        "tests/workspace-authorization.test.ts::returns only the actor’s own accepted contexts without staff, family or other employment details"
       ]
     },
     {
@@ -5111,7 +5111,7 @@
       "status": "implemented",
       "criteria": "does not inherit cleanup ownership when the browser clones tab storage",
       "tests": [
-        "tests/auth.test.ts::web email-link storage > does not inherit cleanup ownership when a browser clones a tab\u2019s storage"
+        "tests/auth.test.ts::web email-link storage > does not inherit cleanup ownership when a browser clones a tab’s storage"
       ]
     },
     {
@@ -5127,7 +5127,7 @@
       "status": "implemented",
       "criteria": "isolates per-tab SDK notification channels while retaining each session and shared proof",
       "tests": [
-        "tests/auth.test.ts::web email-link storage > isolates SDK notification channels while preserving each tab\u2019s persisted session and shared email proof"
+        "tests/auth.test.ts::web email-link storage > isolates SDK notification channels while preserving each tab’s persisted session and shared email proof"
       ]
     },
     {
@@ -5199,7 +5199,7 @@
       "status": "implemented",
       "criteria": "another account recovery cannot replace a signed-in workspace in another tab",
       "tests": [
-        "e2e/auth.spec.ts::another account recovering in a second tab cannot replace this tab\u2019s signed-in workspace"
+        "e2e/auth.spec.ts::another account recovering in a second tab cannot replace this tab’s signed-in workspace"
       ]
     },
     {
@@ -5213,9 +5213,9 @@
     {
       "id": "SC-AM-AUTH-RECOVERY-06",
       "status": "implemented",
-      "criteria": "sign-out in one tab does not erase another tab\u2019s pending recovery proof",
+      "criteria": "sign-out in one tab does not erase another tab’s pending recovery proof",
       "tests": [
-        "e2e/auth.spec.ts::signing out one tab cannot erase another tab\u2019s pending recovery email proof"
+        "e2e/auth.spec.ts::signing out one tab cannot erase another tab’s pending recovery email proof"
       ]
     },
     {
@@ -5441,6 +5441,686 @@
       "criteria": "lost enrollment responses safely retry with the same request identity and create one membership",
       "tests": [
         "e2e-apverse/coach-roster.spec.ts::lost enrollment response retries once with the same identity and no duplicate membership"
+      ]
+    },
+    {
+      "id": "SC-6C694E69C77D",
+      "status": "implemented",
+      "criteria": "AC-01 Today shows a \"Needs you\" heading above \"Your teaching workspace\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-01 Today shows a \"Needs you\" heading above \"Your teaching workspace\""
+      ]
+    },
+    {
+      "id": "SC-F329ECC0448E",
+      "status": "implemented",
+      "criteria": "AC-02 one enrolled child with no feedback shows \"1 child needs feedback\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-02 one enrolled child with no feedback shows \"1 child needs feedback\""
+      ]
+    },
+    {
+      "id": "SC-5D822641ABF6",
+      "status": "implemented",
+      "criteria": "AC-03 two enrolled children without feedback show \"2 children need feedback\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-03 two enrolled children without feedback show \"2 children need feedback\""
+      ]
+    },
+    {
+      "id": "SC-A119E3823B4C",
+      "status": "implemented",
+      "criteria": "AC-04 a child with recorded feedback today is not counted",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-04 a child with recorded feedback today is not counted"
+      ]
+    },
+    {
+      "id": "SC-EBF121D5A6EE",
+      "status": "implemented",
+      "criteria": "AC-05 when every child has recent recorded feedback, Today shows \"All caught up\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-05 when every child has recent recorded feedback, Today shows \"All caught up\""
+      ]
+    },
+    {
+      "id": "SC-FF9C5F2B94A0",
+      "status": "implemented",
+      "criteria": "AC-06 a draft (not recorded) feedback does not count",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-06 a draft (not recorded) feedback does not count"
+      ]
+    },
+    {
+      "id": "SC-4784268CBAC8",
+      "status": "implemented",
+      "criteria": "AC-07 recorded feedback older than 7 days does not count",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-07 recorded feedback older than 7 days does not count"
+      ]
+    },
+    {
+      "id": "SC-AEEDD766E256",
+      "status": "implemented",
+      "criteria": "AC-08 archived students and ended enrolments are not counted",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-08 archived students and ended enrolments are not counted"
+      ]
+    },
+    {
+      "id": "SC-01984637588F",
+      "status": "implemented",
+      "criteria": "AC-09 tapping the feedback item opens \"Feedback for parents\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-09 tapping the feedback item opens \"Feedback for parents\""
+      ]
+    },
+    {
+      "id": "SC-2A45283A6E1B",
+      "status": "implemented",
+      "criteria": "AC-10 an academy with no students shows \"All caught up\"",
+      "tests": [
+        "e2e/acceptance/coach-needs-you.spec.ts::AC-10 an academy with no students shows \"All caught up\""
+      ]
+    },
+    {
+      "id": "SC-CFFC1FAC3293",
+      "status": "implemented",
+      "criteria": "VIS-01 Coach auth and controls match the final prototype palette and loaded font",
+      "tests": [
+        "e2e/prototype-visuals.spec.ts::VIS-01 Coach auth and controls match the final prototype palette and loaded font"
+      ]
+    },
+    {
+      "id": "SC-C8B129AFC362",
+      "status": "implemented",
+      "criteria": "VIS-02 Coach heading, literal pastel stats, floating navigation and SVG match the reference",
+      "tests": [
+        "e2e/prototype-visuals.spec.ts::VIS-02 Coach heading, literal pastel stats, floating navigation and SVG match the reference"
+      ]
+    },
+    {
+      "id": "SC-D8B8E9BB54EF",
+      "status": "implemented",
+      "criteria": "VIS-03 Parent final Aurora surface, type, selected child and floating navigation match the reference",
+      "tests": [
+        "e2e/prototype-visuals.spec.ts::VIS-03 Parent final Aurora surface, type, selected child and floating navigation match the reference"
+      ]
+    },
+    {
+      "id": "SC-D9627D5CEEA6",
+      "status": "implemented",
+      "criteria": "VIS-04 desktop phone dimensions and modal containment preserve prototype geometry",
+      "tests": [
+        "e2e/prototype-visuals.spec.ts::VIS-04 desktop phone dimensions and modal containment preserve prototype geometry"
+      ]
+    },
+    {
+      "id": "SC-8F823E9219D0",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-001 publishes immutable curriculum versions without rewriting earlier stage meaning",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-001 publishes immutable curriculum versions without rewriting earlier stage meaning"
+      ]
+    },
+    {
+      "id": "SC-C4CB19227462",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 3",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 3"
+      ]
+    },
+    {
+      "id": "SC-260833CF1F1D",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 4",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 4"
+      ]
+    },
+    {
+      "id": "SC-5FFC152A05C4",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 5",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 5"
+      ]
+    },
+    {
+      "id": "SC-69357EFADA18",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 6",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 6"
+      ]
+    },
+    {
+      "id": "SC-0E9F355AB50C",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 7",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 7"
+      ]
+    },
+    {
+      "id": "SC-770D7FFD43C8",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-002 denies curriculum publication without current global management 8",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-002 denies curriculum publication without current global management 8"
+      ]
+    },
+    {
+      "id": "SC-AD59D4A51AD6",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions null atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions null atomically"
+      ]
+    },
+    {
+      "id": "SC-E5BC61428F5D",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions undefined atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions undefined atomically"
+      ]
+    },
+    {
+      "id": "SC-DABEE1304CF8",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[]} atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[]} atomically"
+      ]
+    },
+    {
+      "id": "SC-FB97A501E622",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"},{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}]} atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"},{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}]} atomically"
+      ]
+    },
+    {
+      "id": "SC-59729D2AF552",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}],\"unexpected\":\"instruction\"} atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}],\"unexpected\":\"instruction\"} atomically"
+      ]
+    },
+    {
+      "id": "SC-3C00182C79C2",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}]} atomically",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-003 rejects malformed or duplicate definitions {\"id\":\"00000000-0000-0000-0000-000000000201\",\"title\":\"Foundations\",\"objectives\":[{\"id\":\"00000000-0000-0000-0000-000000000301\",\"title\":\"Wait for a turn\"}]} atomically"
+      ]
+    },
+    {
+      "id": "SC-50BF11813469",
+      "status": "implemented",
+      "criteria": "LRN-01-SC-004 replays exact requests without reverting newer versions and rejects changed or stale requests",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-01-SC-004 replays exact requests without reverting newer versions and rejects changed or stale requests"
+      ]
+    },
+    {
+      "id": "SC-2D2B39B47E83",
+      "status": "implemented",
+      "criteria": "LRN-02-SC-001 keeps two same-batch learners at different stages and curricula independently",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-02-SC-001 keeps two same-batch learners at different stages and curricula independently"
+      ]
+    },
+    {
+      "id": "SC-99CF39664E0E",
+      "status": "implemented",
+      "criteria": "LRN-02-SC-002 reports missing placement and version remapping without guessing a level",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-02-SC-002 reports missing placement and version remapping without guessing a level"
+      ]
+    },
+    {
+      "id": "SC-7314A09B17EF",
+      "status": "implemented",
+      "criteria": "LRN-02-SC-003 keeps dated placement history and does not infer attainment from a stage move",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-02-SC-003 keeps dated placement history and does not infer attainment from a stage move"
+      ]
+    },
+    {
+      "id": "SC-02041F18ED0C",
+      "status": "implemented",
+      "criteria": "LRN-03-SC-001 snapshots plans and rejects foreign/unplanned references while keeping prior versions",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-03-SC-001 snapshots plans and rejects foreign/unplanned references while keeping prior versions"
+      ]
+    },
+    {
+      "id": "SC-E51798A8C8AE",
+      "status": "implemented",
+      "criteria": "LRN-03-SC-002 lets admin-only users plan but never impersonate teaching evidence",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-03-SC-002 lets admin-only users plan but never impersonate teaching evidence"
+      ]
+    },
+    {
+      "id": "SC-E0D987B539D4",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-001 binds an assessment to exact recorded child feedback, plan and stage",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-001 binds an assessment to exact recorded child feedback, plan and stage"
+      ]
+    },
+    {
+      "id": "SC-56162FA36333",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":52}",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":52}"
+      ]
+    },
+    {
+      "id": "SC-CCB9DC3540C3",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":53}",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":53}"
+      ]
+    },
+    {
+      "id": "SC-3E81C109FE51",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":54}",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":54}"
+      ]
+    },
+    {
+      "id": "SC-F48F6DF16A8E",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":999}",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"source\":999}"
+      ]
+    },
+    {
+      "id": "SC-BF2B9D74E2CB",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"student\":22}",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {\"student\":22}"
+      ]
+    },
+    {
+      "id": "SC-17DB0B35A997",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-002 refuses an actual teacher-authored multi-child recorded source",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-002 refuses an actual teacher-authored multi-child recorded source"
+      ]
+    },
+    {
+      "id": "SC-47CCE367BD8C",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-003 rejects stale feedback/plan, wrong-stage goals and future observation claims",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-003 rejects stale feedback/plan, wrong-stage goals and future observation claims"
+      ]
+    },
+    {
+      "id": "SC-0E4421277A31",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-004 appends corrections without mutating history, and old retry never restores mastery",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-004 appends corrections without mutating history, and old retry never restores mastery"
+      ]
+    },
+    {
+      "id": "SC-257BFA91715E",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-005 cannot withdraw a colleague assessment by supplying a new note of its own",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-005 cannot withdraw a colleague assessment by supplying a new note of its own"
+      ]
+    },
+    {
+      "id": "SC-D5443E6734C9",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-005 prevents a co-instructor from adopting another teacher evidence or revising it",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-005 prevents a co-instructor from adopting another teacher evidence or revising it"
+      ]
+    },
+    {
+      "id": "SC-51DDD78AB57D",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-005 refuses a manager-authored correction as if the original teacher authored that exact revision",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-005 refuses a manager-authored correction as if the original teacher authored that exact revision"
+      ]
+    },
+    {
+      "id": "SC-59E673434411",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-006 supports actual post-class feedback and learning evidence for a completed class",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-04-SC-006 supports actual post-class feedback and learning evidence for a completed class"
+      ]
+    },
+    {
+      "id": "SC-65BC17482E1F",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 5",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 5"
+      ]
+    },
+    {
+      "id": "SC-988068D63240",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 6",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 6"
+      ]
+    },
+    {
+      "id": "SC-87162F18102B",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 7",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 7"
+      ]
+    },
+    {
+      "id": "SC-DB92B27438E9",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 8",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 8"
+      ]
+    },
+    {
+      "id": "SC-72C173AB83B7",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-002 denies an ended enrolment and an archived batch",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-002 denies an ended enrolment and an archived batch"
+      ]
+    },
+    {
+      "id": "SC-80F608031C98",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-002 denies foreign, unassigned, archived and no-longer-enrolled student contexts",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-002 denies foreign, unassigned, archived and no-longer-enrolled student contexts"
+      ]
+    },
+    {
+      "id": "SC-30B3AA1116B4",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-003 caps actual assessment output at10 and labels truncated context",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-003 caps actual assessment output at10 and labels truncated context"
+      ]
+    },
+    {
+      "id": "SC-546AABD0FDE3",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-003 excludes future learning, other students, contacts, family and raw teacher notes",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-003 excludes future learning, other students, contacts, family and raw teacher notes"
+      ]
+    },
+    {
+      "id": "SC-55CF245A39DD",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-004 rechecks assignment revocation before reading and even exact write replay",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-004 rechecks assignment revocation before reading and even exact write replay"
+      ]
+    },
+    {
+      "id": "SC-AF766CC77A3B",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-005 has explicit missing-plan context and no guessed or seeded achievements",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-005 has explicit missing-plan context and no guessed or seeded achievements"
+      ]
+    },
+    {
+      "id": "SC-76E85F9E3C28",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-006 keeps all new tables/functions private and app ledger unchanged on reapplication",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-006 keeps all new tables/functions private and app ledger unchanged on reapplication"
+      ]
+    },
+    {
+      "id": "SC-3BCFF8ED35CD",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-006 structurally rejects mismatched placement versions/stages and foreign feedback even for a trusted insert",
+      "tests": [
+        "tests/learning-context-database.test.ts::LRN-05-SC-006 structurally rejects mismatched placement versions/stages and foreign feedback even for a trusted insert"
+      ]
+    },
+    {
+      "id": "SC-A2F0A005F046",
+      "status": "implemented",
+      "criteria": "LRN-04-SC-006 prepares post-class feedback for a completed class",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-04-SC-006 prepares post-class feedback for a completed class"
+      ]
+    },
+    {
+      "id": "SC-A46B5B95D5C3",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-007 makes one advisory request with separate planned goals, observed evidence and current Coach note",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-007 makes one advisory request with separate planned goals, observed evidence and current Coach note"
+      ]
+    },
+    {
+      "id": "SC-3655B14E8100",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-008 whitelists model input, uses local aliases and keeps internal identities out of it",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-008 whitelists model input, uses local aliases and keeps internal identities out of it"
+      ]
+    },
+    {
+      "id": "SC-029988BCC061",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-009 refuses missing stage/plan, unsupported contracts and cancelled classes rather than inventing context",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-009 refuses missing stage/plan, unsupported contracts and cancelled classes rather than inventing context"
+      ]
+    },
+    {
+      "id": "SC-E246A1F40479",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-010 bounds the packet and treats source text as data with no execution authority",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-010 bounds the packet and treats source text as data with no execution authority"
+      ]
+    },
+    {
+      "id": "SC-182C715F4579",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-010 preserves uncertainty and withdrawn evidence without promoting it to achieved",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-010 preserves uncertainty and withdrawn evidence without promoting it to achieved"
+      ]
+    },
+    {
+      "id": "SC-2D198ED89B16",
+      "status": "implemented",
+      "criteria": "LRN-05-SC-010 rejects cross-stage goals, unrelated evidence, unknown assessments and duplicate source keys",
+      "tests": [
+        "tests/learning-feedback-context.test.ts::LRN-05-SC-010 rejects cross-stage goals, unrelated evidence, unknown assessments and duplicate source keys"
+      ]
+    },
+    {
+      "id": "SC-9CC6CCCD63E5",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > 8 days old > observation recorded 8 days ago does not count as recent",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > 8 days old > observation recorded 8 days ago does not count as recent"
+      ]
+    },
+    {
+      "id": "SC-D7C3E13FFC57",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > academy-timezone date boundary > 22:00 UTC is still the previous day in Asia/Kolkata",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > academy-timezone date boundary > 22:00 UTC is still the previous day in Asia/Kolkata"
+      ]
+    },
+    {
+      "id": "SC-E5FF3DFE1020",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > academy-timezone date boundary > 23:30 UTC is already the next day in Asia/Kolkata (UTC+5:30)",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > academy-timezone date boundary > 23:30 UTC is already the next day in Asia/Kolkata (UTC+5:30)"
+      ]
+    },
+    {
+      "id": "SC-E16686425417",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > academy-timezone date boundary > enrolment starting tomorrow in academy timezone is not active yet",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > academy-timezone date boundary > enrolment starting tomorrow in academy timezone is not active yet"
+      ]
+    },
+    {
+      "id": "SC-8159589B4F14",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > archived ignored > archived student is not counted",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > archived ignored > archived student is not counted"
+      ]
+    },
+    {
+      "id": "SC-375B916F5588",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > draft ignored > draft feedback does not count as recent recorded feedback",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > draft ignored > draft feedback does not count as recent recorded feedback"
+      ]
+    },
+    {
+      "id": "SC-E045A6F69563",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > ended enrolment ignored > student with ended enrolment is not counted",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > ended enrolment ignored > student with ended enrolment is not counted"
+      ]
+    },
+    {
+      "id": "SC-BB4EEEFAF84F",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > exactly-7-days boundary > observation recorded 7 days + 1 minute ago does not count",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > exactly-7-days boundary > observation recorded 7 days + 1 minute ago does not count"
+      ]
+    },
+    {
+      "id": "SC-330798FEAF24",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > exactly-7-days boundary > observation recorded exactly 7 days ago at 23:30 UTC (next day in Asia/Kolkata) counts as recent",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > exactly-7-days boundary > observation recorded exactly 7 days ago at 23:30 UTC (next day in Asia/Kolkata) counts as recent"
+      ]
+    },
+    {
+      "id": "SC-130A028D1E8B",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > future enrolment ignored > student with future enrolment start date is not counted",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > future enrolment ignored > student with future enrolment start date is not counted"
+      ]
+    },
+    {
+      "id": "SC-74EDB4A4ADDF",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasActiveEnrolment > returns false for archived student",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasActiveEnrolment > returns false for archived student"
+      ]
+    },
+    {
+      "id": "SC-1F50F8A45B1D",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasActiveEnrolment > returns false for ended enrolment",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasActiveEnrolment > returns false for ended enrolment"
+      ]
+    },
+    {
+      "id": "SC-6306DF9F024A",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasActiveEnrolment > returns false for future enrolment",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasActiveEnrolment > returns false for future enrolment"
+      ]
+    },
+    {
+      "id": "SC-C35CCCB57915",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasActiveEnrolment > returns true for active enrolment",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasActiveEnrolment > returns true for active enrolment"
+      ]
+    },
+    {
+      "id": "SC-304CBF6FA1D4",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for draft feedback",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for draft feedback"
+      ]
+    },
+    {
+      "id": "SC-5B48BE824120",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for observation older than 7 days",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for observation older than 7 days"
+      ]
+    },
+    {
+      "id": "SC-BB260B7933F9",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for observation without recorded_at",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false for observation without recorded_at"
+      ]
+    },
+    {
+      "id": "SC-7707469A7695",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false when student is not a recipient",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns false when student is not a recipient"
+      ]
+    },
+    {
+      "id": "SC-1917808EE085",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns true for recorded feedback within 7 days",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > hasRecentRecordedFeedback > returns true for recorded feedback within 7 days"
+      ]
+    },
+    {
+      "id": "SC-BCAB0AE1B1CE",
+      "status": "implemented",
+      "criteria": "getStudentsNeedingFeedback > student in two batches counted once > student enrolled in two active batches is counted only once",
+      "tests": [
+        "tests/needs-you.test.ts::getStudentsNeedingFeedback > student in two batches counted once > student enrolled in two active batches is counted only once"
       ]
     }
   ]
