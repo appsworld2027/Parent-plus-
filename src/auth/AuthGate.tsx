@@ -9,8 +9,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAuth, safeAuthFailure, SESSION_ENDED, LINK_UNUSABLE } from './AuthProvider';
+import { deviceStorage } from '../deviceStorage';
 
 // M07, exact wording from the approved Login contracts.
+// M17 and the 60-second wait between confirmation emails. The wait is kept on this device so a reload cannot skip it.
+const RESEND_SENT = 'If this email still needs confirming, a new message will arrive.';
+const RESEND_KEY = 'parentplus.resend.until.v1';
+const RESEND_WAIT_MS = 60_000;
+function authText(code: unknown) {
+  return code === 'invalid_credentials' ? 'Check your email and password, then try again.'
+    : code === 'email_not_confirmed' ? 'Open your confirmation email before signing in.'
+    : code === 'weak_password' ? PASSWORD_WEAK
+    : code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' ? 'Too many attempts. Please wait a little before trying again.'
+    : 'This request could not finish. Check your connection and try again.';
+}
 const SIGNUP_ACCEPTED = 'If this email can be registered, a confirmation message will arrive. Open it on this device. Already have an account? Sign in or reset your password.';
 import { authRedirect, supabase } from './client';
 import { AuthMode, validateAuth, PASSWORD_WEAK } from './rules';
@@ -56,11 +68,23 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const [confirm, setConfirm] = useState('');
   const [reveal, setReveal] = useState(false);
   const [sent, setSent] = useState(false);
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [until, setUntil] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { void deviceStorage.getItem(RESEND_KEY).then(value => { const t = Number(value); if (Number.isFinite(t) && t > 0) setUntil(t); }).catch(() => undefined); }, []);
+  useEffect(() => {
+    if (until <= Date.now()) return;
+    setNow(Date.now());
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [until]);
+  const wait = Math.max(0, Math.ceil((until - now) / 1000));
+  function startWait() { const t = Date.now() + RESEND_WAIT_MS; setUntil(t); setNow(Date.now()); void deviceStorage.setItem(RESEND_KEY, String(t)).catch(() => undefined); }
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useFeedbackMessage('info', 'Email request completed');
   const [failure, setFailure] = useFeedbackMessage('error', 'Action needs attention');
   const titles = { login: 'Welcome back.', signup: parent ? 'More time for the little things.' : 'A calmer teaching day starts here.', recover: 'Let’s get you back in.', updatePassword: 'Choose a new password.' };
-  function choose(next: AuthMode) { setSelected(next); setSent(false); setReveal(false); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
+  function choose(next: AuthMode) { setSelected(next); setSent(false); setNeedsConfirm(false); setReveal(false); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
   async function submit() {
     if (busy) return;
     setMessage(''); setFailure('');
@@ -80,7 +104,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       } else if (mode === 'signup') {
         const result = await supabase.auth.signUp({ email: email.trim().toLowerCase(), password, options: { emailRedirectTo: authRedirect(false,auth.module) } });
         if (result.error) throw result.error;
-        setPassword(''); setConfirm(''); setReveal(false); setSent(true);
+        setPassword(''); setConfirm(''); setReveal(false); setSent(true); startWait();
       } else if (mode === 'recover') {
         const result = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: authRedirect(true,auth.module) });
         if (result.error) throw result.error;
@@ -97,18 +121,35 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       }
     } catch (error) {
       const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
-      const text = code === 'invalid_credentials' ? 'Check your email and password, then try again.'
-        : code === 'email_not_confirmed' ? 'Open your confirmation email before signing in.'
-        : code === 'weak_password' ? PASSWORD_WEAK
-        : code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' ? 'Too many attempts. Please wait a little before trying again.'
-        : 'This request could not finish. Check your connection and try again.';
+      if (code === 'email_not_confirmed') setNeedsConfirm(true);
+      const text = authText(code);
       setFailure(safeAuthFailure('AUTH_FAILURE', text));
     } finally { setBusy(false); }
   }
+  async function resend() {
+    if (busy || wait > 0) return;
+    setMessage(''); setFailure('');
+    const invalid = validateAuth('recover', email, '', '');
+    if (invalid) { setFailure(invalid); return; }
+    if (!supabase) { setFailure('Sign-in is not available right now. Please contact support.'); return; }
+    setBusy(true); feedback.dismiss();
+    try {
+      const result = await supabase.auth.resend({ type: 'signup', email: email.trim().toLowerCase(), options: { emailRedirectTo: authRedirect(false, auth.module) } });
+      if (result.error) throw result.error;
+      setMessage(RESEND_SENT); startWait();
+    } catch (error) {
+      const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
+      setFailure(safeAuthFailure('AUTH_FAILURE', authText(code)));
+    } finally { setBusy(false); }
+  }
+  const resendButton = <Button title={wait > 0 ? `Resend confirmation email in ${wait} s` : 'Resend confirmation email'} onPress={() => { void resend(); }} soft disabled={busy || wait > 0} />;
   // After sign-up the same panel shows for a new and an existing email, so it never reveals who has an account.
   if (sent && mode === 'signup') return <Page signup>
     <Text style={[s.kicker,parent&&s.parentText]}>ALMOST THERE</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Check your email</Text>
     <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{SIGNUP_ACCEPTED}</Text>
+    {!!message && <Text role="status" style={s.notice}>{message}</Text>}
+    {!!failure && <Text style={s.error}>{failure}</Text>}
+    {resendButton}
     <Button title="Back to sign in" onPress={() => choose('login')} soft />
   </Page>;
   return <Page signup disabled={busy || forceRecovery}>
@@ -123,6 +164,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password reveal={reveal} hint="new-password" value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 15 characters. A few unrelated words work well.</Text></>}
       {mode !== 'recover' && <Button pressed={reveal} title={reveal ? 'Hide password' : 'Show password'} onPress={() => setReveal(value => !value)} soft disabled={busy} />}
       {!!failure && <Text style={s.error}>{failure}</Text>}
+      {mode === 'login' && needsConfirm && resendButton}
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />

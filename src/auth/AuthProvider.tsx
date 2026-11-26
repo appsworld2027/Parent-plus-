@@ -12,6 +12,8 @@ import { deviceStorage } from '../deviceStorage';
 
 // M18 and M13: exact wording from the approved Login contracts (docs/product/login-session-stability).
 export const SESSION_ENDED = 'Your session ended. Please sign in again.';
+// M16: a confirmation link that could not sign this device in. Never claims the email is unverified.
+export const LINK_NOT_SIGNED_IN = 'We could not sign you in from this link. Try signing in. If your email is not confirmed yet, request a new link.';
 export const LINK_UNUSABLE = 'This link could not be used. Request a new one from this device, then open the newest email here.';
 // Which account is in the middle of a password reset. Kept on this device (this tab on web) so a
 // reload or app restart cannot open the workspace before a new password is saved (RC-03).
@@ -90,15 +92,16 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     return () => { active = false; data.subscription.unsubscribe(); };
   }, [revision]);
 
-  const [linkFailed, setLinkFailed] = useState(false);
+  const [linkFailed, setLinkFailed] = useState<'' | 'recovery' | 'confirm'>('');
   const userId = session?.user.id;
   // A bad link must never replace a working signed-in screen (SS-10). Wait until the
   // stored session is known, then tell a signed-in coach with a message and keep them in.
   useEffect(() => {
     if (!linkFailed || loading) return;
-    setLinkFailed(false);
-    if (session) show({ kind: 'error', title: 'Link not used', message: LINK_UNUSABLE, source: 'auth-link' });
-    else setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', LINK_UNUSABLE));
+    const text = linkFailed === 'recovery' ? LINK_UNUSABLE : LINK_NOT_SIGNED_IN;
+    setLinkFailed('');
+    if (session) show({ kind: 'error', title: 'Link not used', message: text, source: 'auth-link' });
+    else setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', text));
   }, [linkFailed, loading, session, show]);
 
   // Restore an unfinished reset before any workspace screen can render, and keep it saved.
@@ -172,9 +175,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     let active = true;
     let lastCode = '';
     const handle = async (url: string) => {
+      let recoveryLink = false;
       try {
         const parsed = parseAuthLink(url, Platform.OS === 'web' ? globalThis.location.origin : undefined);
         if (!parsed) return;
+        recoveryLink = parsed.recovery;
         const incoming=new URL(url);
         // The public recovery address is also a useful "Forgot password"
         // entry point. An address without an email code is never a session.
@@ -197,7 +202,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         if (active) { setRecovery(parsed.recovery); setError(''); setRecheck(value => value + 1); }
       } catch {
         if (!active) return;
-        setLinkFailed(true); // Reported once the stored session has been restored (see effect below).
+        setLinkFailed(recoveryLink ? 'recovery' : 'confirm'); // Reported once the stored session has been restored (see effect below).
       }
     };
     if (Platform.OS === 'web') void handle(globalThis.location.href);
