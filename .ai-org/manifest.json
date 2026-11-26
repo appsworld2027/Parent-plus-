@@ -82,11 +82,21 @@
         "dev-coder (via handover packet)"
       ],
       "models": {
-        "author": "nvidia_nim/moonshotai/kimi-k3.1-pro@medium",
-        "challenger": "nvidia_nim/nvidia/nemotron-3-ultra-550b-a55b",
-        "accountable": "nvidia_nim/moonshotai/kimi-k3.1-pro@medium"
+        "author": "groq/openai/gpt-oss-120b",
+        "challenger": "groq/qwen/qwen3.8-27b",
+        "accountable": "groq/openai/gpt-oss-120b"
       },
-      "evidence": "AI Org model trial 3 (issue #66): both models PASS 18/18; author and challenger on different models"
+      "evidence": "Groq free-tier routes selected for pilot; verify live tool-call preflight and qualification before first unattended run."
+    }
+  },
+  "ai": {
+    "freeModels": {
+      "ai:build": "groq/openai/gpt-oss-120b",
+      "ai:qa": "groq/qwen/qwen3.8-27b",
+      "ai:review": "groq/qwen/qwen3.8-27b",
+      "ai:tests": "groq/openai/gpt-oss-120b",
+      "ai:tests-review": "groq/qwen/qwen3.8-27b",
+      "ai:tests-signoff": "groq/openai/gpt-oss-120b"
     }
   }
 }
