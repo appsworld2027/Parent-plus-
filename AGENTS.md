@@ -2,7 +2,8 @@
 
 ## MM branch rule — owner instruction, 26 November 2026
 `MM/development` is open for full AI development authority. This replaces the 18 November rule and its feature pause, and any older MM limit in this repository.
-- On `MM/development`, without asking: build new features, refactor, commit, push, create and merge task branches into it, change dependencies, tests, CI and docs, create preview deployments, and run migrations on disposable or local test databases.
+- On `MM/development`, without asking: build new features, refactor, commit, push, create and merge task branches into it, change dependencies, tests and docs, create preview deployments, and run migrations on disposable or local test databases only. "Disposable" means created for the test and thrown away; the canonical development database (ledger through 014) is not disposable and follows the Supabase rule below.
+- Never change without a human-requested PR: `.github/workflows/**`, `.ai-org/**`, `CODEOWNERS`, repository variables and secrets. Background agents are off or on only by the founder (`UNATTENDED_AGENTS`, see AI Org AGENTS.md section 2).
 - The AI Org loop (`ai/contract-*` branches, `docs/product/BACKLOG.md`) remains available. Quality gates and locked acceptance tests still apply.
 - Still needs the founder: release to `main` (founder `/approve`); any change to the live or hosted database, real family or child data, or production settings; new paid services; force-push or deleting others' work. Never expose secrets (this repository is public).
 - AM branches stay under AM's own rules. Sync `main` into `MM/development` normally, without force-push, before new work.
@@ -56,7 +57,7 @@ The founders are non-technical. AI owns technical review, testing, validation, f
 
 ## AppsWorld AI Organization (v2) — added 20 November 2026 by Ankit
 
-This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests but never merge them here without explicit founder approval.
+This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests; they may merge into `MM/development` and `ai/contract-*` branches under the MM branch rule and the loop controller, and never merge to `main` without a founder `/approve`.
 
 ## Quality system (AppsWorld AI Org §7A)
 - Every feature follows AI Org `AGENTS.md` §7A: founder-approved Feature Contract at `docs/product/<feature-slug>/ACCEPTANCE.md` → locked acceptance tests in `e2e/acceptance/` (PR label `ai:contract`) → build PR stacked on the contract branch → independent review → Demo Pack.
