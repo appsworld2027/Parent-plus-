@@ -8,10 +8,14 @@ import { diagnostics } from '../diagnostics';
 import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { useFeedback } from '../ui/ActionFeedback';
+import { deviceStorage } from '../deviceStorage';
 
 // M18 and M13: exact wording from the approved Login contracts (docs/product/login-session-stability).
 export const SESSION_ENDED = 'Your session ended. Please sign in again.';
-const LINK_UNUSABLE = 'This link could not be used. Request a new one from this device, then open the newest email here.';
+export const LINK_UNUSABLE = 'This link could not be used. Request a new one from this device, then open the newest email here.';
+// Which account is in the middle of a password reset. Kept on this device (this tab on web) so a
+// reload or app restart cannot open the workspace before a new password is saved (RC-03).
+const RECOVERY_KEY = 'parentplus.recovery.pending.v1';
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
   module: 'coach' | 'parent';
@@ -50,6 +54,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   // cannot replace the M18 message with a different error.
   const sessionEndedByService = useRef(false);
   const [recheck, setRecheck] = useState(0);
+  const [recoveryChecked, setRecoveryChecked] = useState('');
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -60,7 +65,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
         if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
-        diagnostics.clear(); setAcademy(null); setRecovery(false);
+        diagnostics.clear(); setAcademy(null); setRecovery(false); void deviceStorage.removeItem(RECOVERY_KEY).catch(() => undefined);
         // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
         if (!chosenSignOut.current) { sessionEndedByService.current = true; setError(SESSION_ENDED); }
@@ -84,6 +89,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   }, [revision]);
 
   const [linkFailed, setLinkFailed] = useState(false);
+  const userId = session?.user.id;
   // A bad link must never replace a working signed-in screen (SS-10). Wait until the
   // stored session is known, then tell a signed-in coach with a message and keep them in.
   useEffect(() => {
@@ -93,8 +99,21 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     else setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', LINK_UNUSABLE));
   }, [linkFailed, loading, session, show]);
 
+  // Restore an unfinished reset before any workspace screen can render, and keep it saved.
+  useEffect(() => {
+    if (!userId) { setRecoveryChecked(''); return; }
+    let live = true;
+    void (async () => {
+      try { if ((await deviceStorage.getItem(RECOVERY_KEY)) === userId) setRecovery(true); } catch { /* No saved reset. */ }
+      if (live) setRecoveryChecked(userId);
+    })();
+    return () => { live = false; };
+  }, [userId]);
+  useEffect(() => {
+    if (recovery && userId) void deviceStorage.setItem(RECOVERY_KEY, userId).catch(() => undefined);
+  }, [recovery, userId]);
+
   // Unsent drafts belong to one coach. A different coach signing in deletes them (SS-06).
-  const userId = session?.user.id;
   useEffect(() => {
     if (!userId) return;
     setError(current => (current === SESSION_ENDED ? '' : current));
@@ -204,9 +223,9 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   }, [show, dismiss]);
 
   return <Context.Provider value={{ module, session, loading, academy,
-    academyLoading: academyLoading || (!!session && checkedSession !== session.user.id), error, recovery,
+    academyLoading: academyLoading || (!!session && (checkedSession !== session.user.id || recoveryChecked !== session.user.id)), error, recovery,
     reload: () => { setLoading(true); setRevision(x => x + 1); }, logout,
-    finishRecovery: () => setRecovery(false), refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;
+    finishRecovery: () => { setRecovery(false); void deviceStorage.removeItem(RECOVERY_KEY).catch(() => undefined); }, refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;
 }
 
 export function useAuth() {

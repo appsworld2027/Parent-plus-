@@ -3,7 +3,7 @@ export type AuthMode = 'login' | 'signup' | 'recover' | 'updatePassword';
 export function validateAuth(mode: AuthMode, email: string, password: string, confirm: string): string | null {
   if (mode !== 'updatePassword' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'Enter a valid email address.';
   if (mode !== 'recover' && !password) return 'Enter your password.';
-  if ((mode === 'signup' || mode === 'updatePassword') && password.length < 10) return 'Choose a password with at least 10 characters.';
+  if ((mode === 'signup' || mode === 'updatePassword') && password.length < 15) return 'Choose a password with at least 15 characters. A few unrelated words work well.';
   if ((mode === 'signup' || mode === 'updatePassword') && password !== confirm) return 'The passwords do not match.';
   return null;
 }

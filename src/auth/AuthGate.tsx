@@ -8,7 +8,7 @@ import { PrototypeIcon } from '../ui/PrototypeIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { useAuth, safeAuthFailure, SESSION_ENDED } from './AuthProvider';
+import { useAuth, safeAuthFailure, SESSION_ENDED, LINK_UNUSABLE } from './AuthProvider';
 import { authRedirect, supabase } from './client';
 import { AuthMode, validateAuth } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
@@ -80,12 +80,14 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       } else if (mode === 'recover') {
         const result = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authRedirect(true,auth.module) });
         if (result.error) throw result.error;
-        setMessage(`If an account exists, a recovery email will arrive. Open the newest link ${Platform.OS==='web'?'in this browser':'on this device'}.`);
+        setMessage('If an account exists, a recovery email will arrive. Open the newest link in this browser or on this device.');
       } else {
         const result = await supabase.auth.updateUser({ password });
         if (result.error) throw result.error;
         setPassword(''); setConfirm('');
-        feedback.show({ kind: 'success', title: 'Password updated', message: 'Your new password was saved.', source: 'auth-password' });
+        // End every other session; this device stays signed in. Best effort: the service may already have done so.
+        try { await supabase.auth.signOut({ scope: 'others' }); } catch { /* This device keeps its session. */ }
+        feedback.show({ kind: 'success', title: 'Password updated', message: 'Your new password was saved. Other devices will need to sign in again.', source: 'auth-password' });
         auth.finishRecovery();
       }
     } catch (error) {
@@ -102,14 +104,16 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     <Text style={[s.body,parent&&s.parentText]}>{mode === 'login' ? parent ? 'Sign in to your private family workspace.' : 'Sign in to keep your classes and parent feedback together.' : mode === 'signup' ? parent ? 'Create your account, verify your email, then set up your family.' : 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}
     {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
+    {!!auth.error && auth.error.startsWith(LINK_UNUSABLE) && mode !== 'recover' && <Button title="Request a new link" onPress={() => choose('recover')} soft />}
     <View style={[s.card,parent&&s.parentCard]}>
       {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
-      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 10 characters.</Text></>}
+      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 15 characters. A few unrelated words work well.</Text></>}
       {!!failure && <Text style={s.error}>{failure}</Text>}
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
+      {forceRecovery && <Button title="Cancel" onPress={() => { void auth.logout(); }} soft disabled={busy} />}
       {!forceRecovery && <>
         {mode !== 'login' && <Button title="Back to sign in" onPress={() => choose('login')} soft disabled={busy} />}
         {mode === 'login' && <><Button title="Create an account" onPress={() => choose('signup')} soft disabled={busy} /><Button title="Forgot password?" onPress={() => choose('recover')} soft disabled={busy} /></>}
