@@ -1,6 +1,6 @@
 # Feature Contract: Login — sign out everywhere and change password (C1.1e)
 
-Status: DRAFT — awaiting founder approval. No tests or code exist yet. Source: Login spec C1.1 (26 Nov 2026) + independent review (26 Nov 2026). Roadmap: C1.1
+Status: APPROVED by founder in chat on 2026-11-26 ("D1 and D2 do"), including D1 (72-byte limit) and D2 (app verifies current password). Approval recorded by Claude; not yet a GitHub /approve. No tests or code exist yet. Source: Login spec C1.1 (26 Nov 2026) + independent review (26 Nov 2026). Roadmap: C1.1
 
 ## Why
 A coach who loses a phone or suspects someone else has their password must be able to lock everything down.
@@ -9,7 +9,7 @@ A coach who loses a phone or suspects someone else has their password must be ab
 - In: sign out on this device, sign out of all devices, change password while signed in.
 - Out: forgot-password recovery (C1.1b).
 
-## Decision needed (D2)
+## Decision D2 — approved
 Supabase does not check the current password by itself. Recommended: the app verifies the current password by signing in with it before saving the new one (M20 if wrong). The server-side refusal case is then marked "not applicable by design" instead of "not run".
 
 ## Acceptance criteria

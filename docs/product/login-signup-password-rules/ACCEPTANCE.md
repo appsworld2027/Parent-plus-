@@ -1,6 +1,6 @@
 # Feature Contract: Login — sign-up and password rules (C1.1c)
 
-Status: DRAFT — awaiting founder approval. No tests or code exist yet. Source: Login spec C1.1 (26 Nov 2026) + independent review (26 Nov 2026). Roadmap: C1.1
+Status: APPROVED by founder in chat on 2026-11-26 ("D1 and D2 do"), including D1 (72-byte limit) and D2 (app verifies current password). Approval recorded by Claude; not yet a GitHub /approve. No tests or code exist yet. Source: Login spec C1.1 (26 Nov 2026) + independent review (26 Nov 2026). Roadmap: C1.1
 
 ## Why
 New coaches must be able to create an account with a strong password without silent surprises, and without revealing who already has an account.
@@ -9,7 +9,7 @@ New coaches must be able to create an account with a strong password without sil
 - In: sign-up form, 15-character minimum, long and Unicode passwords, Show password, neutral sign-up message, service-side enforcement.
 - Out: sign-in (C1.1d), change password (C1.1e).
 
-## Decision needed (D1)
+## Decision D1 — approved
 Supabase stores only the first 72 bytes of a password. Recommended: accept up to 72 bytes; beyond that refuse with a clear new message M21 and never cut silently. Hindi takes 3 bytes per character, so about 24 Hindi characters fit. The spec's "at least 64 characters" is replaced by "up to 72 bytes".
 
 ## Acceptance criteria
