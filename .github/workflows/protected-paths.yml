@@ -1,0 +1,8 @@
+name: Protected paths
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  guard:
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/protected-paths.yml@main

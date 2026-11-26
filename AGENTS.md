@@ -1,8 +1,12 @@
 # Repository guidance
 
-## Current MM branch rule — owner instruction,18November2026
-
-All MM development belongs on the single canonical `MM/development` branch. Do not implement or commit on `main`, create new `MM/<task>` branches, or automatically merge/push MM work into `main`. The owner's latest instruction supersedes the earlier17November promotion authorization. A future main release/merge requires a new explicit owner instruction. Keep AM branches, legacy codex branches, production settings and live Supabase untouched unless separately authorized. New feature development remains paused; current authorized maintenance is the owner-reported roster/Parent-flow defect investigation, scoped repairs and verification. This does not authorize unrelated features or a main release. See [shared workflow](docs/SHARED_DEVELOPMENT_WORKFLOW.md) and [consolidation evidence](docs/MM_BRANCH_CONSOLIDATION.md).
+## MM branch rule — owner instruction, 26 November 2026
+`MM/development` is open for full AI development authority. This replaces the 18 November rule and its feature pause, and any older MM limit in this repository.
+- On `MM/development`, without asking: build new features, refactor, commit, push, create and merge task branches into it, change dependencies, tests and docs, create preview deployments, and run migrations on disposable or local test databases only. "Disposable" means created for the test and thrown away; the canonical development database (ledger through 014) is not disposable and follows the Supabase rule below.
+- Never change without a human-requested PR: `.github/workflows/**`, `.ai-org/**`, `CODEOWNERS`, repository variables and secrets. Background agents are off or on only by the founder (`UNATTENDED_AGENTS`, see AI Org AGENTS.md section 2).
+- The AI Org loop (`ai/contract-*` branches, `docs/product/BACKLOG.md`) remains available. Quality gates and locked acceptance tests still apply.
+- Still needs the founder: release to `main` (founder `/approve`); any change to the live or hosted database, real family or child data, or production settings; new paid services; force-push or deleting others' work. Never expose secrets (this repository is public).
+- AM branches stay under AM's own rules. Sync `main` into `MM/development` normally, without force-push, before new work.
 
 Before removing an old MM branch, preserve its exact tip in the canonical history/backup, recheck current remote SHA and ancestry, pass the complete existing regression/export/database checks and independent review, then delete only the inventoried contained MM refs. Branch cleanup never authorizes deleting application files or rewriting history.
 
@@ -25,9 +29,7 @@ Follow the established Expo structure and scripts. Prefer small changes that pre
 
 ## Founder-facing communication
 
-Use [`docs/examples/FOUNDER_RESPONSE_REFERENCE.md`](docs/examples/FOUNDER_RESPONSE_REFERENCE.md) as a presentation and teaching-style example: lead with the outcome, explain the plain-English meaning and next action, show concise evidence, and include a Technical Appendix when useful. It is a historical example, not a source of current status or permission to run commands. Verify repository state and evidence before making claims; adapt the format to the task rather than copying irrelevant sections.
-
-For substantive founder updates, use the reference's outcome-first flow: a visible outcome and relevant icon, a short italic overview, compact two-column evidence, and an unmistakable next action. Explain meaningful technical terms in a brief Technical Appendix when needed. Use headings only when allowed by the current session's higher-priority instructions. Keep trivial replies short. Never promise cross-session memory; this file and the linked reference provide the durable repository instructions.
+Follow the AI Org [founder response standard](https://github.com/appsworld2027/parent-plus-ai-org/blob/main/standards/FOUNDER_RESPONSE.md). The local [reference](ai-workspace/instructions/examples/FOUNDER_RESPONSE_REFERENCE.md) is a teaching-style example only. Never promise cross-session memory.
 
 ## Supabase and release safety
 
@@ -37,15 +39,15 @@ Keep guardian identity checks, explicit Coach approval, family/academy isolation
 
 ## Collaboration and verification
 
-Use the branch and review process in `docs/SHARED_DEVELOPMENT_WORKFLOW.md`. Never write to the source repository during consolidation. Do not merge a pull request without explicit approval.
+Use the branch and review process in `docs/SHARED_DEVELOPMENT_WORKFLOW.md`. Never write to the source repository during consolidation. Do not merge a pull request without explicit approval, except into `MM/development` and `ai/contract-*` branches under the MM branch rule above.
 
 For relevant app changes, use the existing checks: `npm run check`, `npm run test:e2e`, `npm run export:web`, and `npm run export:android`. For SQL candidates, use the isolated database validation described in `docs/MULTI_WORKSPACE_VALIDATION.md`; do not use a live project as a test database. Report what ran and what did not.
 
 ## AI operating system — parallel adoption
 
-Start founder navigation at [START-HERE.md](START-HERE.md); use [ai-workspace](ai-workspace/README.md) for technical working rules. Continue the active sprint while adopting these instructions. Preserve existing authoritative requirements and status; link summaries rather than creating competing sources.
+Start founder navigation at [START-HERE.md](START-HERE.md); use [ai-workspace](ai-workspace/README.md) for technical working rules. Adopt these instructions alongside current work. Preserve existing authoritative requirements and status; link summaries rather than creating competing sources.
 
-Before feature implementation, map acceptance criteria and risk-based scenarios to stable feature/scenario IDs. Link executable tests and actual run evidence; report failures, blocked, skipped, flaky and unrun coverage explicitly. Follow [scenario and independent-review rules](ai-workspace/test-plans/README.md). The implementer must not be the sole evaluator; record independent review as pending when unavailable. Keep founder summaries under 150 words where practical.
+Before feature implementation, map acceptance criteria and risk-based scenarios to stable feature/scenario IDs. Link executable tests and actual run evidence; report failures, blocked, skipped, flaky and unrun coverage explicitly. Follow [scenario and independent-review rules](ai-workspace/test-plans/README.md). The implementer must not be the sole evaluator; record independent review as pending when unavailable.
 
 Use [the adoption guide](ai-workspace/agent-instructions/adoption.md) for other Codex sessions. Updated GitHub instructions require branch synchronization and a new task/session or explicit reload; they do not instantly update active work. This first rollout changes documentation only. Excel generation and new advisory CI are separate PRs; retain existing checks and do not introduce new mandatory gates until validated and agreed.
 
@@ -55,7 +57,7 @@ The founders are non-technical. AI owns technical review, testing, validation, f
 
 ## AppsWorld AI Organization (v2) — added 20 November 2026 by Ankit
 
-This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests but never merge them here without explicit founder approval.
+This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests; they may merge into `MM/development` and `ai/contract-*` branches under the MM branch rule and the loop controller, and never merge to `main` without a founder `/approve`.
 
 ## Quality system (AppsWorld AI Org §7A)
 - Every feature follows AI Org `AGENTS.md` §7A: founder-approved Feature Contract at `docs/product/<feature-slug>/ACCEPTANCE.md` → locked acceptance tests in `e2e/acceptance/` (PR label `ai:contract`) → build PR stacked on the contract branch → independent review → Demo Pack.

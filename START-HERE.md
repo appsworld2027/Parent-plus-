@@ -2,7 +2,7 @@
 
 One shared product, two founders, versioned AI working rules.
 
-**MM development branch: [`MM/development`](https://github.com/appsworld2027/Parent-plus-/tree/MM/development).** The owner paused new features and authorized branch consolidation/testing/cleanup only. Future MM development stays on this branch; a main release requires a new explicit instruction. [Current branch rules](docs/SHARED_DEVELOPMENT_WORKFLOW.md).
+**MM development branch: [`MM/development`](https://github.com/appsworld2027/Parent-plus-/tree/MM/development).** Full AI development authority; releases to main need founder approval. [Current rule](AGENTS.md).
 
 - [What is Parent Plus?](founders/01-product-vision.md)
 - [What should Parent Plus do? Read the full product requirements.](PRD.md)
