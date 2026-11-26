@@ -9,9 +9,9 @@ permissions:
   contents: read
 jobs:
   contract-lock:
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/contract-lock.yml@61a3a9d17edebc280d7c74f4b4f244013139b879
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/contract-lock.yml@c1c0920d2517b55741b6090781f198c0adf56bf8
     with:
       locked-paths: e2e/acceptance/
 
     secrets:
-      AI_ORG_HANDBOOK_TOKEN: ${{ secrets.AI_ORG_HANDBOOK_TOKEN }}
+      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
