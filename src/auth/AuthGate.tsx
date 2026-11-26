@@ -16,9 +16,9 @@ import { authRedirect, supabase } from './client';
 import { AuthMode, validateAuth, PASSWORD_WEAK } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
 
-function Button({ title, onPress, disabled = false, soft = false }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
+function Button({ title, onPress, disabled = false, soft = false, pressed }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean; pressed?: boolean }) {
   const parent = useAuth().module === 'parent';
-  return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
+  return <Pressable accessibilityRole="button" accessibilityState={pressed === undefined ? { disabled } : { disabled, checked: pressed }} disabled={disabled} onPress={onPress}
     style={[s.button, soft && s.soft, parent && (soft ? s.parentSoft : s.parentButton), disabled && { opacity: 0.55 }]}>
     <Text style={[s.buttonLabel, soft && s.softLabel, parent && (soft ? s.parentText : s.parentButtonText)]}>{title}</Text>
   </Pressable>;
@@ -108,7 +108,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   // After sign-up the same panel shows for a new and an existing email, so it never reveals who has an account.
   if (sent && mode === 'signup') return <Page signup>
     <Text style={[s.kicker,parent&&s.parentText]}>ALMOST THERE</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Check your email</Text>
-    <Text style={s.notice}>{SIGNUP_ACCEPTED}</Text>
+    <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{SIGNUP_ACCEPTED}</Text>
     <Button title="Back to sign in" onPress={() => choose('login')} soft />
   </Page>;
   return <Page signup disabled={busy || forceRecovery}>
@@ -121,7 +121,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password reveal={reveal} hint={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={setPassword} />}
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password reveal={reveal} hint="new-password" value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 15 characters. A few unrelated words work well.</Text></>}
-      {mode !== 'recover' && <Button title={reveal ? 'Hide password' : 'Show password'} onPress={() => setReveal(value => !value)} soft disabled={busy} />}
+      {mode !== 'recover' && <Button pressed={reveal} title={reveal ? 'Hide password' : 'Show password'} onPress={() => setReveal(value => !value)} soft disabled={busy} />}
       {!!failure && <Text style={s.error}>{failure}</Text>}
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}

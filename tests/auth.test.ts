@@ -74,6 +74,11 @@ describe('email and recovery guardrails', () => {
     expect(validateAuth('signup', 'coach@example.test', 'a-long-passphrase-ok', 'different')).toContain('match');
     expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(14), 'a'.repeat(14))).toContain('15');
     expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(15), 'a'.repeat(15))).toBe(null);
+    // D1: 72 bytes is accepted, 73 is refused; other scripts count more than one byte per letter.
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(72), 'a'.repeat(72))).toBe(null);
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(73), 'a'.repeat(73))).toContain('72 bytes');
+    expect(validateAuth('signup', 'coach@example.test', 'क'.repeat(24), 'क'.repeat(24))).toBe(null);
+    expect(validateAuth('signup', 'coach@example.test', 'क'.repeat(25), 'क'.repeat(25))).toContain('72 bytes');
     expect(validateAuth('recover', 'coach@example.test', '', '')).toBe(null);
     expect(validateAuth('updatePassword', '', 'a-long-passphrase-ok', 'a-long-passphrase-ok')).toBe(null);
   });

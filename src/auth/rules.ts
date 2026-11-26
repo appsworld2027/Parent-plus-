@@ -8,7 +8,7 @@ export function validateAuth(mode: AuthMode, email: string, password: string, co
   if (mode !== 'recover' && !password) return 'Enter your password.';
   if ((mode === 'signup' || mode === 'updatePassword') && password.length < 15) return 'Choose a password with at least 15 characters. A few unrelated words work well.';
   // D1: the login service keeps only the first 72 bytes, so a longer password is refused, never cut (M21).
-  if ((mode === 'signup' || mode === 'updatePassword') && new TextEncoder().encode(password).length > MAX_PASSWORD_BYTES) return PASSWORD_TOO_LONG;
+  if ((mode === 'signup' || mode === 'updatePassword') && typeof TextEncoder !== 'undefined' && new TextEncoder().encode(password).length > MAX_PASSWORD_BYTES) return PASSWORD_TOO_LONG;
   if ((mode === 'signup' || mode === 'updatePassword') && password !== confirm) return 'The passwords do not match.';
   return null;
 }
