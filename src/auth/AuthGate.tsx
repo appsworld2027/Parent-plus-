@@ -71,11 +71,11 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const [needsConfirm, setNeedsConfirm] = useState(false);
   const [until, setUntil] = useState(0);
   const [now, setNow] = useState(() => Date.now());
-  useEffect(() => { void deviceStorage.getItem(RESEND_KEY).then(value => { const t = Number(value); if (Number.isFinite(t) && t > 0) setUntil(t); }).catch(() => undefined); }, []);
+  useEffect(() => { void deviceStorage.getItem(RESEND_KEY).then(value => { const t = Number(value); if (Number.isFinite(t) && t > 0) setUntil(Math.min(t, Date.now() + RESEND_WAIT_MS)); }).catch(() => undefined); }, []);
   useEffect(() => {
     if (until <= Date.now()) return;
     setNow(Date.now());
-    const timer = setInterval(() => setNow(Date.now()), 1000);
+    const timer = setInterval(() => { const current = Date.now(); setNow(current); if (current >= until) clearInterval(timer); }, 1000);
     return () => clearInterval(timer);
   }, [until]);
   const wait = Math.max(0, Math.ceil((until - now) / 1000));
@@ -139,7 +139,10 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       setMessage(RESEND_SENT); startWait();
     } catch (error) {
       const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
-      setFailure(safeAuthFailure('AUTH_FAILURE', authText(code)));
+      // A send limit is only reached by an account that needs confirming; answering M10 would reveal that,
+      // so the reply stays the same neutral M17 (SI-10).
+      if (code === 'over_email_send_rate_limit') { setMessage(RESEND_SENT); startWait(); }
+      else setFailure(safeAuthFailure('AUTH_FAILURE', authText(code)));
     } finally { setBusy(false); }
   }
   const resendButton = <Button title={wait > 0 ? `Resend confirmation email in ${wait} s` : 'Resend confirmation email'} onPress={() => { void resend(); }} soft disabled={busy || wait > 0} />;
@@ -159,7 +162,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
     {!!auth.error && auth.error.startsWith(LINK_UNUSABLE) && mode !== 'recover' && <Button title="Request a new link" onPress={() => { auth.dismissError(); choose('recover'); }} soft />}
     <View style={[s.card,parent&&s.parentCard]}>
-      {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
+      {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={value => { setEmail(value); setNeedsConfirm(false); }} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password reveal={reveal} hint={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={setPassword} />}
       {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password reveal={reveal} hint="new-password" value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 15 characters. A few unrelated words work well.</Text></>}
       {mode !== 'recover' && <Button pressed={reveal} title={reveal ? 'Hide password' : 'Show password'} onPress={() => setReveal(value => !value)} soft disabled={busy} />}
