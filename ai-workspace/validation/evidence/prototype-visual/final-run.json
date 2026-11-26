@@ -1,0 +1,45 @@
+{
+  "sourceDigest": "db2e0a56e70391433749332453ea968331278c6c6b50704ff8dcab76c56dd069",
+  "typecheck": "PASS",
+  "unit": {
+    "cases": 472,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "durationSeconds": 167.67,
+    "junitSha256": "df4f5245fa6c443602b11b2b03a9d838744903104ad94bff471866b46be42c45"
+  },
+  "exports": {
+    "web": "PASS",
+    "android": "PASS"
+  },
+  "browser": {
+    "stats": {
+      "startTime": "2026-11-19T13:18:30.601Z",
+      "duration": 585377.6290000001,
+      "expected": 106,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "errors": [],
+    "mode": "default repository-managed local server; one worker; no concurrent heavy checks",
+    "rawReportSha256": "7eda526fbb7e8f5dd47ade93e4be403c0751e5b623eb5dff3f474fad1cfe2cdf"
+  },
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "unit": "npm test -- --reporter=default --reporter=junit --outputFile.junit=/tmp/parentplus-prototype-final-unit.xml",
+    "browser": "npm run test:e2e -- --workers=1 --reporter=line,json",
+    "exports": [
+      "npm run export:web",
+      "npm run export:android"
+    ]
+  },
+  "limits": [
+    "No physical Android/iOS acceptance",
+    "No hosted Vercel deployment acceptance for this candidate",
+    "No live records/messages/provider requests",
+    "No new SQL or changed database authority",
+    "No load/restore or unfinished prototype feature acceptance"
+  ]
+}

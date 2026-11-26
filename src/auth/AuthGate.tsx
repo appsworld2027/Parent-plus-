@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { randomUUID } from 'expo-crypto';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '../ui/Typography';
+import { prototypeColors as c, prototypeFontFamily, prototypeWeight } from '../ui/prototypeTheme';
+import { PrototypeIcon } from '../ui/PrototypeIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -29,7 +31,7 @@ function Page({ children, signup = false, disabled = false }: React.PropsWithChi
   const parent = useAuth().module === 'parent';
   return <SafeAreaView style={[s.safe,parent&&s.parentSafe]}><WorkspaceSwitcher current={parent?'parent':'coach'} signup={signup} disabled={disabled} /><ActionFeedback /><KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.page}>
-      <Text style={[s.logo,parent&&s.parentText]}>✦  {parent ? 'Parent Plus' : 'Parent Plus Coach'}</Text>{children}<Text style={s.footer}>A little more connected.</Text>
+      <View style={s.logoRow}><View style={s.logoMark}><PrototypeIcon name="star" size={16} strokeWidth={2.2} color={c.black}/></View><Text style={s.logo}>{parent ? 'Parent Plus' : 'Parent Plus Coach'}</Text></View>{children}<Text style={s.footer}>A little more connected.</Text>
     </ScrollView></KeyboardAvoidingView></SafeAreaView>;
 }
 
@@ -232,7 +234,7 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
   const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
   useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
-  if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color="#1F6F6B" size="large" /><Text style={[s.body,parent&&s.parentText]}>Opening your workspace…</Text></Page>;
+  if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color={c.sky} size="large" /><Text style={[s.body,parent&&s.parentText]}>Opening your workspace…</Text></Page>;
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;
   if (!auth.session) return <AuthForm onPreview={() => setPreview(true)} />;
   if (auth.error) return <Page><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Let’s reconnect.</Text><Text style={s.error}>{auth.error}</Text>
@@ -244,21 +246,16 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
 }
 
 const s = StyleSheet.create({
-  parentSafe:{backgroundColor:'#060A0E'},parentText:{color:'#F9FBFC'},parentCard:{backgroundColor:'#151A20',borderColor:'#313A45'},parentInput:{backgroundColor:'#20262F',borderColor:'#313A45',color:'#F9FBFC'},parentButton:{backgroundColor:'#2EE6A6'},parentButtonText:{color:'#06251B'},parentSoft:{backgroundColor:'#20262F'},
-  safe: { flex: 1, backgroundColor: '#F3F5F1' }, fill: { flex: 1 },
-  page: { width: '100%', maxWidth: 520, alignSelf: 'center', padding: 25, gap: 20, flexGrow: 1, justifyContent: 'center' },
-  logo: { color: '#1F6F6B', fontSize: 20, fontWeight: '700', marginVertical: 12 },
-  kicker: { color: '#1F6F6B', fontSize: 10, letterSpacing: 1.6, fontWeight: '700' },
-  title: { color: '#22303A', fontSize: 34, lineHeight: 40, fontWeight: '700', letterSpacing: -1 },
-  body: { color: '#5C6B73', fontSize: 15, lineHeight: 24 },
-  card: { backgroundColor: '#fff', padding: 20, borderRadius: 20, borderWidth: 1, borderColor: '#E3E8E2', gap: 16 },
-  field: { gap: 8 }, label: { color: '#22303A', fontSize: 13, fontWeight: '600' },
-  input: { borderWidth: 1, borderColor: '#CED8CC', borderRadius: 12, padding: 13, minHeight: 48, fontSize: 16, color: '#22303A', backgroundColor: '#FAFBF8' },
-  button: { minHeight: 48, padding: 14, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1F6F6B' },
-  buttonLabel: { color: '#fff', fontWeight: '700', fontSize: 14 }, soft: { backgroundColor: '#EDF1EC' }, softLabel: { color: '#22303A' },
-  hint: { color: '#5C6B73', fontSize: 12, lineHeight: 20 }, preview: { gap: 10, paddingTop: 10 },
-  error: { color: '#8D2635', backgroundColor: '#FCE8EB', padding: 14, borderRadius: 12, lineHeight: 22 },
-  workspaceChoice:{padding:16,borderWidth:1,borderColor:'#CED8CC',borderRadius:14,gap:6},workspaceName:{color:'#22303A',fontSize:16,fontWeight:'700'},sectionLabel:{color:'#22303A',fontSize:16,fontWeight:'700'},
-  notice: { color: '#1F6F6B', backgroundColor: '#DCEDEA', padding: 14, borderRadius: 12, lineHeight: 22 },
-  footer: { color: '#63756F', textAlign: 'center', fontSize: 11, paddingVertical: 12 },
+  parentSafe:{backgroundColor:c.background},parentText:{},parentCard:{backgroundColor:c.surface,borderColor:c.border},parentInput:{backgroundColor:c.raised,borderColor:c.border,color:c.white},parentButton:{backgroundColor:c.white},parentButtonText:{color:c.black},parentSoft:{backgroundColor:c.raised},
+  safe:{flex:1,backgroundColor:c.background},fill:{flex:1},page:{width:'100%',alignSelf:'center',padding:18,gap:16,flexGrow:1,justifyContent:'center'},
+  logoRow:{flexDirection:'row',alignItems:'center',gap:9,marginBottom:12},logoMark:{width:30,height:30,backgroundColor:c.white,borderRadius:10,alignItems:'center',justifyContent:'center'},
+  logo:{color:c.white,fontSize:15,fontWeight:'800'},kicker:{color:c.sky,fontSize:10.5,letterSpacing:1.2,fontWeight:'800'},
+  title:{color:c.white,fontSize:30,lineHeight:31.5,fontWeight:'700',letterSpacing:-1.2},body:{color:c.muted,fontSize:13,lineHeight:18.2},
+  card:{backgroundColor:c.surface,padding:14,borderRadius:18,borderWidth:1,borderColor:c.border,gap:14},field:{gap:7},label:{color:c.muted,fontSize:12,fontWeight:prototypeWeight(750)},
+  input:{borderWidth:1,borderColor:c.border,borderRadius:12,paddingVertical:10,paddingHorizontal:11,minHeight:44,fontSize:13,color:c.white,backgroundColor:c.raised,fontFamily:prototypeFontFamily},
+  button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,alignItems:'center',justifyContent:'center',backgroundColor:c.white},
+  buttonLabel:{color:c.black,fontWeight:'800',fontSize:13.5},soft:{backgroundColor:c.raised},softLabel:{color:c.white},hint:{color:c.muted,fontSize:11.5,lineHeight:17},preview:{gap:10,paddingTop:10},
+  error:{color:c.rose,backgroundColor:c.raised,padding:12,borderRadius:14,lineHeight:19},notice:{color:c.sky,backgroundColor:c.raised,padding:12,borderRadius:14,lineHeight:19},
+  workspaceChoice:{padding:16,borderWidth:1,borderColor:c.border,borderRadius:14,gap:6},workspaceName:{color:c.text,fontSize:16,fontWeight:'700'},sectionLabel:{color:c.text,fontSize:16,fontWeight:'700'},
+  footer:{color:c.dim,textAlign:'center',fontSize:10.5,paddingVertical:12},
 });

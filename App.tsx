@@ -24,14 +24,24 @@ import { appVersion, buildRevision } from './src/version';
 import { ConfirmDialog } from './src/ui/ConfirmDialog';
 import { WorkspaceSwitcher } from './src/ui/WorkspaceSwitcher';
 import { FontLicense } from './src/ui/FontLicense';
+import { prototypeColors as c, prototypeWeight } from './src/ui/prototypeTheme';
+import { PrototypeIcon } from './src/ui/PrototypeIcon';
+import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
+import { NeedsYou } from './src/today/NeedsYou';
+import { loadNeedsYouData } from './src/today/service';
+import { supabase } from './src/auth/client';
+import type { Student } from './src/roster/model';
+import type { Enrolment } from './src/roster/model';
+import type { Observation } from './src/observations/model';
+import type { Recipient } from './src/observations/model';
 
 function coachGreeting(timezone:string) { const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:timezone}).format(new Date())); return hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'; }
 
 type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
-  { name: 'Today', glyph: '◷' }, { name: 'Schedule', glyph: '▦' },
-  { name: 'Post', glyph: '+' }, { name: 'Students', glyph: '♧' }, { name: 'Fees', glyph: '₹' },
+  { name: 'Today', glyph: 'home' }, { name: 'Schedule', glyph: 'cal' },
+  { name: 'Post', glyph: 'plus' }, { name: 'Students', glyph: 'users' }, { name: 'Fees', glyph: 'wallet' },
 ];
 const stages: Record<string, { title: string; body: string; detail: string }> = {
   Schedule: { title: 'A little structure. More room to teach.', body: 'Your batches and dated class sessions will live here.', detail: 'Scheduling follows account and academy setup. No classes have been loaded.' },
@@ -66,6 +76,41 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const scrollToTop = useCallback(() => scroll.current?.scrollTo({ y: 0, animated: false }), []);
   useEffect(scrollToTop, [screen, scrollToTop]);
+
+  // Needs you data
+  const [needsYouStudents, setNeedsYouStudents] = useState<Student[]>([]);
+  const [needsYouEnrolments, setNeedsYouEnrolments] = useState<Enrolment[]>([]);
+  const [needsYouObservations, setNeedsYouObservations] = useState<Observation[]>([]);
+  const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
+  const [needsYouError, setNeedsYouError] = useState<string | null>(null);
+  const [needsYouLoading, setNeedsYouLoading] = useState(false);
+  const [needsYouRefresh, setNeedsYouRefresh] = useState(0);
+
+  useEffect(() => {
+    if (screen !== 'Today' || !auth.academy) return;
+    let active = true;
+    setNeedsYouLoading(true);
+    setNeedsYouError(null);
+    async function load() {
+      try {
+        const data = await loadNeedsYouData(auth.academy!.id);
+        if (!active) return;
+        setNeedsYouStudents(data.students);
+        setNeedsYouEnrolments(data.enrolments);
+        setNeedsYouObservations(data.observations);
+        setNeedsYouRecipients(data.recipients);
+      } catch (error) {
+        if (active) {
+          const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
+          setNeedsYouError(`Needs you list could not load. Reference: ${ref}`);
+        }
+      } finally {
+        if (active) setNeedsYouLoading(false);
+      }
+    }
+    void load();
+    return () => { active = false; };
+  }, [screen, auth.academy?.id, needsYouRefresh]);
   useEffect(() => {
     const back = BackHandler.addEventListener('hardwareBackPress', () => {
       if (screen === 'Today') return false;
@@ -80,6 +125,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     if (next !== 'Schedule') setClassLaunch(null);
     if (next !== 'Post') setFeedbackLaunch(null);
+    if (next === 'Today') setNeedsYouRefresh(value => value + 1);
     setScreen(next); setNotice('');
   }
   function runDiagnostic() {
@@ -104,23 +150,36 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   }
 
   return <SafeAreaView style={styles.safe}>
-    <StatusBar style="dark" />
+    <StatusBar style="light" />
     <View style={styles.shell}>
+      <ActionFeedback />
+      <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={styles.brandRow}>
-          <View style={styles.brandIcon}><Text style={styles.brandStar}>✦</Text></View>
+          <View style={styles.brandIcon}><PrototypeIcon name="star" size={16} strokeWidth={2.2} color={c.black}/></View>
           <View><Text style={styles.brand}>Parent Plus Coach</Text><Text style={styles.brandSub}>{auth.academy?.name??'A little more connected.'}</Text></View>
         </View>
-        <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><Text style={styles.supportSymbol}>?</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Open support and diagnostics" onPress={() => navigate('Support')} style={styles.supportIcon}><PrototypeIcon name="menu" size={20}/></Pressable>
       </View>
-      <WorkspaceSwitcher current="coach" disabled={formDirty||formBusy} />
-      <ActionFeedback />
-      <ScrollView testID="workspace-scroll" ref={scroll} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
-        <View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>
+      <View style={styles.content}>
+        {exitPreview&&<View style={styles.releaseRow}><Text style={styles.release}>DEVELOPMENT PREVIEW</Text><Text style={styles.version}>v{appVersion} · {buildRevision}</Text></View>}
         {(screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && !!notice && <Text style={styles.notice}>{notice}</Text>}
         {screen === 'Today' ? <>
           <Text accessibilityRole="header" style={styles.heading}>{coachGreeting(auth.academy?.timezone??'Asia/Kolkata')}</Text>
           <Text style={styles.subtitle}>{new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',timeZone:auth.academy?.timezone??'Asia/Kolkata'})}</Text>
+          {auth.academy && <>
+            <Text accessibilityRole="header" style={styles.needsYouHeading}>Needs you</Text>
+            <NeedsYou
+              academy={auth.academy}
+              students={needsYouStudents}
+              enrolments={needsYouEnrolments}
+              observations={needsYouObservations}
+              recipients={needsYouRecipients}
+              onPress={() => navigate('Post')}
+              loading={needsYouLoading}
+              error={needsYouError}
+            />
+          </>}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
@@ -164,17 +223,18 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
           <View style={styles.empty}>
-            <Text style={styles.emptySymbol}>{tabs.find(tab => tab.name === screen)?.glyph}</Text>
+            <PrototypeIcon name={tabs.find(tab => tab.name === screen)?.glyph??'star'} size={38} color={c.sky}/>
             <Text style={styles.sectionTitle}>Coming in the next modules</Text>
             <Text style={styles.emptyBody}>{stages[screen].detail}</Text>
             <Action label="View setup status" secondary onPress={() => navigate('Support')} />
           </View>
         </>}
+        <WorkspaceSwitcher current="coach" disabled={formDirty||formBusy} />
         <Text style={styles.footer}>Thoughtful teaching starts with the little things.</Text>
-      </ScrollView>
+      </View></ScrollView>
       <View accessibilityRole="tablist" style={styles.nav}>
-        {tabs.map(tab => <Pressable key={tab.name} accessibilityRole="tab" accessibilityLabel={tab.name === 'Post' ? 'Feedback' : tab.name} accessibilityState={{ selected: screen === tab.name }} onPress={() => navigate(tab.name)} style={styles.navItem}>
-          <View style={[styles.navGlyph, screen === tab.name && styles.navActive, tab.name === 'Post' && styles.postGlyph]}><Text style={[styles.navSymbol, (screen === tab.name || tab.name === 'Post') && styles.navSymbolActive]}>{tab.glyph}</Text></View>
+        {tabs.map(tab => <Pressable key={tab.name} accessibilityRole="tab" accessibilityLabel={tab.name === 'Post' ? 'Feedback' : tab.name} accessibilityState={{ selected: screen === tab.name }} aria-selected={screen===tab.name} onPress={() => navigate(tab.name)} style={[styles.navItem,tab.name==='Post'&&styles.postItem]}>
+          <View style={[styles.navGlyph, tab.name === 'Post' && styles.postGlyph]}><PrototypeIcon name={tab.glyph} size={tab.name==='Post'?26:22} strokeWidth={tab.name==='Post'?2.4:1.9} color={tab.name==='Post'?c.black:screen===tab.name?c.white:'#8a8a96'}/></View>
           <Text style={[styles.navLabel, screen === tab.name && styles.navLabelActive]}>{tab.name === 'Post' ? 'Feedback' : tab.name}</Text>
         </Pressable>)}
       </View>
@@ -188,7 +248,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
 // AuthProvider owns identity/data readiness; AuthGate decides which screen is safe to show.
 // This React error boundary cannot catch every Android native crash.
 export default function App() {
-  const [fontsLoaded,fontError] = useFonts({Bricolage:require('./assets/fonts/BricolageGrotesque.ttf')});
+  const [fontsLoaded,fontError] = useFonts([{fontFamily:'Bricolage',fontDefinitions:[{path:require('./assets/fonts/BricolageGrotesque.ttf'),weight:'200 800'}]}]);
   useEffect(() => { void diagnostics.connect(deviceStorage); }, []);
   let parentRoute = process.env.EXPO_PUBLIC_APP_MODULE === 'parent';
   if (Platform.OS === 'web') {
@@ -199,32 +259,30 @@ export default function App() {
       else try { parentRoute = parentRoute || globalThis.sessionStorage.getItem('parentplus.auth.return-module') === 'parent'; } catch { /* A normal sign-in remains available. */ }
     }
   }
-  if (!fontsLoaded && !fontError) return <View style={{flex:1,backgroundColor:parentRoute?'#060A0E':'#F3F5F1',alignItems:'center',justifyContent:'center'}}><Text style={{color:parentRoute?'#F9FBFC':'#22303A'}}>Loading Parent Plus…</Text></View>;
-  if (parentRoute) return <ParentApp />;
-  return <SafeAreaProvider><ErrorBoundary><FeedbackProvider><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></FeedbackProvider></ErrorBoundary></SafeAreaProvider>;
+  if (!fontsLoaded && !fontError) return <View style={{flex:1,backgroundColor:c.background,alignItems:'center',justifyContent:'center'}}><Text style={{color:c.text}}>Loading Parent Plus…</Text></View>;
+  if (parentRoute) return <PrototypeFrame variant="parent"><ParentApp /></PrototypeFrame>;
+  return <PrototypeFrame variant="coach"><SafeAreaProvider><ErrorBoundary><FeedbackProvider><AuthProvider><AuthGate render={exitPreview => <AppContent exitPreview={exitPreview} />} /></AuthProvider></FeedbackProvider></ErrorBoundary></SafeAreaProvider></PrototypeFrame>;
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F3F5F1' },
-  shell: { flex: 1, width: '100%', maxWidth: 640, alignSelf: 'center' },
-  header: { paddingHorizontal: 24, paddingVertical: 18, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#E3E8E2' },
-  brandRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  brandIcon: { width: 38, height: 38, borderRadius: 13, backgroundColor: '#1F6F6B', alignItems: 'center', justifyContent: 'center' },
-  brandStar: { color: '#fff', fontSize: 24 }, brand: { fontSize: 16, color: '#22303A', fontWeight: '700' }, brandSub: { fontSize: 11, color: '#5C6B73', marginTop: 3 },
-  supportIcon: { width: 44, height: 44, borderRadius: 15, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#E3E8E2' }, supportSymbol: { fontSize: 20, color: '#1F6F6B', fontWeight: '600' },
-  content: { padding: 18, paddingBottom: 24, gap: 14 },
-  releaseRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, release: { fontSize: 9, fontWeight: '700', letterSpacing: 1.2, color: '#63756F', backgroundColor: '#E6ECE4', paddingVertical: 6, paddingHorizontal: 9, borderRadius: 5 }, version: { fontSize: 11, color: '#63756F' },
-  eyebrow: { fontSize: 10, fontWeight: '700', letterSpacing: 1.8, color: '#1F6F6B', marginTop: 10 },
-  heading: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: -1.5, color: '#22303A' },
-  subtitle: { fontSize: 15, lineHeight: 24, color: '#5C6B73' },
-  hero: { backgroundColor: '#1F6F6B', padding: 23, borderRadius: 23, gap: 14 }, heroKicker: { color: '#BBDAD4', fontSize: 9, fontWeight: '700', letterSpacing: 1.3 }, heroTitle: { color: '#fff', fontSize: 24, fontWeight: '600', letterSpacing: -0.5 }, heroBody: { color: '#E0EEEA', fontSize: 14, lineHeight: 23 },
-  button: { backgroundColor: '#1F6F6B', padding: 15, minHeight: 48, borderRadius: 13, alignItems: 'center' }, buttonLabel: { color: '#fff', fontSize: 14, fontWeight: '700' }, secondary: { backgroundColor: '#EDF1EC' }, secondaryLabel: { color: '#22303A' }, pressed: { opacity: 0.75 },
-  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#22303A', letterSpacing: -0.3 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 }, tile: { width: '47.8%', flexGrow: 1, padding: 17, minHeight: 138, borderRadius: 18, gap: 8 }, tileTitle: { color: '#22303A', fontWeight: '700', fontSize: 15 }, tileBody: { color: '#4E6266', fontSize: 12, lineHeight: 18 }, tileArrow: { alignSelf: 'flex-end', color: '#22303A', fontSize: 20 },
-  note: { borderTopWidth: 1, borderTopColor: '#DEE5DD', paddingTop: 18, gap: 6 }, noteTitle: { color: '#22303A', fontWeight: '600', fontSize: 13 }, small: { fontSize: 13, color: '#5C6B73', lineHeight: 21 },
-  card: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E3E8E2', borderRadius: 18, padding: 18, gap: 14 }, statusRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }, statusLabel: { color: '#5C6B73', fontSize: 13 }, statusValue: { color: '#22303A', fontSize: 13, fontWeight: '600' },
-  caption: { color: '#63756F', fontSize: 11, lineHeight: 18 }, devCard: { backgroundColor: '#F8EBC6', padding: 18, borderRadius: 18, gap: 12 }, notice: { padding: 16, color: '#1F6F6B', backgroundColor: '#DCEDEA', lineHeight: 22, borderRadius: 12 }, report: { fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', fontSize: 11, lineHeight: 18, color: '#22303A' },
-  empty: { backgroundColor: '#fff', padding: 24, borderRadius: 22, gap: 18, borderWidth: 1, borderColor: '#E3E8E2', marginTop: 12 }, emptySymbol: { color: '#1F6F6B', fontSize: 38 }, emptyBody: { color: '#5C6B73', fontSize: 14, lineHeight: 23 },
-  footer: { color: '#63756F', fontSize: 10, textAlign: 'center', paddingVertical: 12 },
-  nav: { backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#E3E8E2', flexDirection: 'row', paddingVertical: 10, paddingHorizontal: 6 }, navItem: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 52, gap: 4 }, navGlyph: { width: 40, height: 32, borderRadius: 11, alignItems: 'center', justifyContent: 'center' }, navActive: { backgroundColor: '#1F6F6B' }, postGlyph: { backgroundColor: '#1F6F6B' }, navSymbol: { color: '#63756F', fontSize: 23 }, navSymbolActive: { color: '#fff' }, navLabel: { color: '#63756F', fontSize: 10, fontWeight: '600' }, navLabelActive: { color: '#1F6F6B' },
+  safe: { flex:1, backgroundColor:c.background }, shell:{flex:1,width:'100%',alignSelf:'center'},
+  header:{paddingHorizontal:18,paddingTop:12,paddingBottom:6,flexDirection:'row',justifyContent:'space-between',alignItems:'center'},
+  brandRow:{flexDirection:'row',alignItems:'center',gap:9},brandIcon:{width:30,height:30,borderRadius:10,backgroundColor:c.white,alignItems:'center',justifyContent:'center'},
+  brand:{fontSize:15,color:c.white,fontWeight:'800'},brandSub:{fontSize:10.5,color:c.muted,fontWeight:'700',marginTop:1},
+  supportIcon:{width:40,height:40,borderRadius:14,backgroundColor:c.surface,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:c.outline},
+  scrollContent:{paddingBottom:118},content:{paddingHorizontal:18,paddingTop:10,gap:12},releaseRow:{flexDirection:'row',justifyContent:'space-between',alignItems:'center'},
+  release:{fontSize:9.5,fontWeight:prototypeWeight(750),color:c.muted},version:{fontSize:10,color:c.dim},
+  eyebrow:{fontSize:10,fontWeight:'800',letterSpacing:1.5,color:c.sky,marginTop:10},heading:{fontSize:30,lineHeight:31.5,fontWeight:'700',letterSpacing:-1.2,color:c.white},
+  subtitle:{fontSize:13,lineHeight:18.2,color:c.muted},needsYouHeading:{fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.white,marginTop:10},needsYouError:{fontSize:12.5,lineHeight:19,color:c.rose,marginTop:6},
+  button:{backgroundColor:c.white,paddingVertical:13,paddingHorizontal:16,minHeight:44,borderRadius:14,alignItems:'center',justifyContent:'center'},
+  buttonLabel:{color:c.black,fontSize:13.5,fontWeight:'800'},secondary:{backgroundColor:c.raised},secondaryLabel:{color:c.white},pressed:{opacity:0.75},
+  sectionTitle:{fontSize:15.5,fontWeight:'700',color:c.white,letterSpacing:-.2},small:{fontSize:13,lineHeight:20,color:c.muted},
+  card:{backgroundColor:c.surface,borderWidth:1,borderColor:c.border,borderRadius:18,padding:14,gap:10},statusRow:{flexDirection:'row',justifyContent:'space-between',gap:10,flexWrap:'wrap'},
+  statusLabel:{color:c.muted,fontSize:12},statusValue:{color:c.white,fontSize:12,fontWeight:'700'},caption:{color:c.muted,fontSize:11,lineHeight:17},
+  devCard:{backgroundColor:c.surface,padding:14,borderRadius:18,gap:12,borderWidth:1,borderColor:c.border},notice:{padding:12,color:c.sky,backgroundColor:c.raised,lineHeight:20,borderRadius:14},
+  report:{fontFamily:Platform.OS==='ios'?'Menlo':'monospace',fontSize:11,lineHeight:18,color:c.white},empty:{backgroundColor:c.surface,padding:18,borderRadius:18,gap:14,borderWidth:1,borderColor:c.border,marginTop:12},
+  emptyBody:{color:c.muted,fontSize:13,lineHeight:20},footer:{color:c.dim,fontSize:10,textAlign:'center',paddingVertical:12},
+  nav:{position:'absolute',left:12,right:12,bottom:14,height:70,borderRadius:24,backgroundColor:Platform.OS==='web'?'var(--parentplus-coach-nav)':'#141417ef',borderWidth:1,borderColor:'#2c2c33',flexDirection:'row',alignItems:'center',shadowColor:c.black,shadowOpacity:.5,shadowRadius:28,shadowOffset:{width:0,height:12},elevation:8},
+  navItem:{flex:1,alignItems:'center',justifyContent:'center',minHeight:52,gap:3},navGlyph:{height:26,alignItems:'center',justifyContent:'center'},postItem:{marginTop:-24},
+  postGlyph:{width:56,height:56,borderRadius:19,backgroundColor:c.white,shadowColor:c.black,shadowOpacity:.5,shadowRadius:22,shadowOffset:{width:0,height:8},elevation:4},navLabel:{color:'#8a8a96',fontSize:10.5,fontWeight:prototypeWeight(750)},navLabelActive:{color:c.white},
 });

@@ -1,0 +1,84 @@
+{
+  "kind": "independent-focused-visual-run",
+  "reviewer": "/root/flow_review",
+  "stats": {
+    "startTime": "2026-11-19T13:06:06.947Z",
+    "duration": 77759.965,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "errors": [],
+  "sourceDigest": "db2e0a56e70391433749332453ea968331278c6c6b50704ff8dcab76c56dd069",
+  "screenshots": [
+    {
+      "path": "app-coach-auth.png",
+      "sha256": "e85a770d65a6aab55deac9b535cdbfb5f542ac56085547977b4518249a037bce"
+    },
+    {
+      "path": "app-coach-batch-form.png",
+      "sha256": "db051bbe682091d0cf417d1a4501663df163a3e92b3d9f1c132e6b3f00284c5a"
+    },
+    {
+      "path": "app-coach-desktop.png",
+      "sha256": "bacaee1a31c7c8a7c99c56f76f7231f166227cbdcd3994de8413e12fe64192af"
+    },
+    {
+      "path": "app-coach-feedback.png",
+      "sha256": "f79a964222d8a9b5524e07365c0d2f71ca3dbd67591f43f0e5e32ef0d2dbe169"
+    },
+    {
+      "path": "app-coach-fees.png",
+      "sha256": "81352659df4fbddf860aa37f15f23e828804f01f82750fde5d821d8e568fea58"
+    },
+    {
+      "path": "app-coach-schedule.png",
+      "sha256": "e9d3386addabdc2190ea0e54cc952ad0c0956a987d7dd1abc5b417d4f0230e5c"
+    },
+    {
+      "path": "app-coach-students.png",
+      "sha256": "44c5d35e6d17ae0ec97616ca8138c0ec9f40d62f53597e9767e6baf2ff3f94d1"
+    },
+    {
+      "path": "app-coach-today.png",
+      "sha256": "037925b2fa70b21e396ab9eb3049b7ba0f082257a150e0b147442c78ccfbff7e"
+    },
+    {
+      "path": "app-parent-child-form.png",
+      "sha256": "7acd65a64ea551c22c5140d0d5d960f99ab86cf9c220fc6873a40a7fdec5ef6b"
+    },
+    {
+      "path": "app-parent-desktop-form.png",
+      "sha256": "7c189b9af3f45512101453faec5f6a5166cd9f14737fa73a6d8f3156d62d9faf"
+    },
+    {
+      "path": "app-parent-explore.png",
+      "sha256": "ed84d64e067f7df3fed3bc4baabd41c276bb75ec7a7daa3bca5e6d5f8480c8e6"
+    },
+    {
+      "path": "app-parent-home.png",
+      "sha256": "b107c5ae46ed30ff303d072146f00c0e644eae477e7298f4b0d77bbcaa77b208"
+    },
+    {
+      "path": "app-parent-narrow.png",
+      "sha256": "8942b415844181c291c56b2a06ccba09e9a705724b350014787b9113b0383881"
+    },
+    {
+      "path": "app-parent-together.png",
+      "sha256": "fc568950926dcfa52aa5d286df9accb099b1a62b633b55faae5850747058521a"
+    },
+    {
+      "path": "app-parent-week.png",
+      "sha256": "a0fe6eb5d2f8b6b98ac6298a1bc2648b2978b9eb16d75f5b3414b1d538d19b83"
+    },
+    {
+      "path": "reference-coach-mobile.png",
+      "sha256": "7f8ac53bd709d06041aa932c75e26956b6f726c375d153c3de4b31912aadefcb"
+    },
+    {
+      "path": "reference-parent-mobile.png",
+      "sha256": "62aa837761f6c85f3e541d2c15f03f12f2e85bd2f4daff5cc1793cfbd088f407"
+    }
+  ]
+}

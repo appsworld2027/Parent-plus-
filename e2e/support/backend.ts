@@ -195,8 +195,11 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
         }
       } else if (url.pathname.endsWith('/observation_recipients')) {
-        const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '');
-        data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
+        const filter = url.searchParams.get('observation_id');
+        const ids = filter?.startsWith('eq.') ? new Set([filter.slice(3)])
+          : filter?.startsWith('in.(') ? new Set(filter.slice(4, -1).split(',').map(value => value.replace(/^"|"$/g, '')))
+          : null;
+        data = Object.entries(state.observationRecipients).filter(([key]) => !ids || ids.has(key)).flatMap(([observation_id, students]) => students.map(student_id => ({ observation_id, student_id })));
       } else if (url.pathname.endsWith('/observation_versions')) {
         const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '') ?? '';
         data = (state.observationVersions[id] ?? []).slice(0,5);

@@ -1,0 +1,14 @@
+name: Contract lock
+# AGENTS.md §7A rule 4 (AppsWorld AI Org): build PRs may not add, edit, delete, skip or focus
+# locked acceptance tests in e2e/acceptance/. Contract PRs (label ai:contract) may change only
+# docs/product/ and those tests.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+permissions:
+  contents: read
+jobs:
+  contract-lock:
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/contract-lock.yml@main
+    with:
+      locked-paths: e2e/acceptance/

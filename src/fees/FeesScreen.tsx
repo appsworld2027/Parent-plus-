@@ -1,6 +1,7 @@
+import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '../ui/Typography';
+import { ActivityIndicator, Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import { localParts } from '../classes/model';
 import { deviceStorage } from '../deviceStorage';
@@ -180,7 +181,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
     <Text style={s.kicker}>FEES, WITH A CLEAR RECORD</Text>
     <Text accessibilityRole="header" style={s.heading}>{view === 'create' ? 'Create an invoice' : view === 'detail' ? 'Fee details' : view === 'collect' ? 'Record fee received' : selectedBatch ? selectedBatch.name : 'Fees overview'}</Text>
     <Text style={s.body}>Your monthly fees at a glance. Open a batch to see each student’s fee and record payments received.</Text>
-    {loading && <ActivityIndicator accessibilityLabel="Loading fees" color="#1F6F6B" />}
+    {loading && <ActivityIndicator accessibilityLabel="Loading fees" color={c.sky} />}
     {storageBlocked && <Button label="Retry reading pending fee save" disabled={busy} soft onPress={() => { void readPending(); }} />}
     {pending && <View style={s.pending}>
       <Text style={s.title}>Resolve pending fee save</Text><Text style={s.body}>{operationSummary(pending.operation)}</Text>
@@ -329,15 +330,11 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
   </View>;
 }
 const s = StyleSheet.create({
-  summaryHero: { backgroundColor: '#1F6F6B', padding: 24, borderRadius: 22, gap: 12 }, heroLabel: { color: '#D6EBE5', fontSize: 12, lineHeight: 19 }, heroAmount: { color: '#fff', fontSize: 38, fontWeight: '700' }, metricRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }, metricValue: { color: '#fff', fontSize: 23, fontWeight: '700' }, moneyValue: { color: '#22303A', fontSize: 22, fontWeight: '700' }, monthRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, alignItems: 'center' }, batchHeading: { gap: 6 },
-  root: { gap: 16 }, kicker: { color: '#1F6F6B', fontSize: 10, fontWeight: '700', letterSpacing: 1.5 },
-  heading: { color: '#22303A', fontSize: 30, fontWeight: '700' }, title: { color: '#22303A', fontSize: 17, fontWeight: '700' },
-  body: { color: '#5C6B73', fontSize: 14, lineHeight: 22 }, caption: { color: '#63756F', fontSize: 11, lineHeight: 18 },
-  card: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E3E8E2', padding: 18, borderRadius: 18, gap: 14 },
-  pending: { backgroundColor: '#F8EBC6', padding: 18, borderRadius: 18, gap: 12 }, warning: { color: '#88411D', fontSize: 14, lineHeight: 22 },
-  badge: { color: '#1F6F6B', fontWeight: '700', fontSize: 15 }, field: { gap: 7 }, label: { color: '#22303A', fontSize: 13, fontWeight: '600' },
-  input: { minHeight: 48, borderWidth: 1, borderColor: '#C8D3CB', borderRadius: 11, padding: 12, color: '#22303A', backgroundColor: '#fff', fontSize: 16 },
-  button: { minHeight: 48, padding: 14, borderRadius: 12, backgroundColor: '#1F6F6B', alignItems: 'center', justifyContent: 'center' },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '700' }, soft: { backgroundColor: '#EDF1EC' }, softText: { color: '#22303A' },
-  ledger: { gap: 10, borderTopWidth: 1, borderColor: '#E3E8E2', paddingTop: 14 },
+  summaryHero:{backgroundColor:c.surface,borderWidth:1,borderColor:c.border,padding:14,borderRadius:18,gap:12},heroLabel:{color:c.muted,fontSize:12,lineHeight:18},heroAmount:{color:c.text,fontSize:24,letterSpacing:-0.8,fontWeight:'700'},metricRow:{flexDirection:'row',justifyContent:'space-between',gap:12,flexWrap:'wrap'},metricValue:{color:c.text,fontSize:19,letterSpacing:-0.6,fontWeight:'700'},moneyValue:{color:c.text,fontSize:19,fontWeight:'700'},monthRow:{flexDirection:'row',flexWrap:'wrap',gap:8,alignItems:'center'},batchHeading:{gap:6},
+  root:{gap:16},kicker:{color:c.sky,fontSize:10,fontWeight:'800',letterSpacing:1.5},heading:{color:c.text,fontSize:30,lineHeight:31.5,letterSpacing:-1.2,fontWeight:'700'},title:{color:c.text,fontSize:15.5,fontWeight:'700',letterSpacing:-0.2},
+  body:{color:c.muted,fontSize:13,lineHeight:20},caption:{color:c.muted,fontSize:11.5,lineHeight:17},card:{backgroundColor:c.surface,borderWidth:1,borderColor:c.border,padding:14,borderRadius:18,gap:14},
+  pending:{backgroundColor:c.raised,padding:14,borderRadius:18,gap:12,borderWidth:1,borderColor:c.sun},warning:{color:c.sun,fontSize:13,lineHeight:20},badge:{color:c.sky,fontWeight:'800',fontSize:13},field:{gap:7},label:{color:c.muted,fontSize:12,fontWeight:prototypeWeight(750)},
+  input:{minHeight:44,borderWidth:1,borderColor:c.border,borderRadius:12,paddingVertical:10,paddingHorizontal:11,color:c.text,backgroundColor:c.raised,fontSize:13},
+  button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,backgroundColor:c.white,alignItems:'center',justifyContent:'center'},buttonText:{color:c.black,fontSize:13.5,fontWeight:'800'},soft:{backgroundColor:c.raised},softText:{color:c.text},
+  ledger:{gap:10,borderTopWidth:1,borderColor:c.border,paddingTop:14},
 });

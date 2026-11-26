@@ -1,0 +1,1023 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="472" failures="0" errors="0" time="151.246436826">
+    <testsuite name="tests/auth.test.ts" timestamp="2026-11-19T13:18:00.501Z" hostname="7f8817ff2c1e" tests="17" failures="0" errors="0" skipped="0" time="0.035787491">
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; round-trips long Unicode sessions using small ASCII chunks" time="0.005935635">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; keeps the old session if a refresh write fails" time="0.005130621">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; serializes concurrent writes and removes previous session chunks" time="0.001851444">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; can explicitly discard a corrupt index and save a fresh session" time="0.000963413">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; fails explicitly on incomplete storage instead of returning a partial token" time="0.000676666">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="secure session adapter &gt; rejects malformed manifests and oversized sessions" time="0.001942382">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="email and recovery guardrails &gt; validates email and new passwords without rejecting valid existing shorter passwords" time="0.000752609">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="email and recovery guardrails &gt; accepts only owned callback routes and one-time code exchanges" time="0.002616912">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; shares only short-lived email verifiers between tabs and keeps sessions in their own tab" time="0.001802906">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; expires verifier copies in both storage locations" time="0.000764473">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; never shares other projects or arbitrary keys with a verifier-looking suffix" time="0.000368143">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; keeps same-tab email recovery available when shared browser storage is unavailable" time="0.001638656">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; can read an existing same-tab verifier from before the storage upgrade" time="0.000182183">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; preserves and validates the email flow identifier before clearing URL history" time="0.001944766">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; isolates SDK notification channels while preserving each tab’s persisted session and shared email proof" time="0.000902157">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; keeps cleanup ownership and legacy fallback local to the requesting tab" time="0.0006567">
+        </testcase>
+        <testcase classname="tests/auth.test.ts" name="web email-link storage &gt; does not inherit cleanup ownership when a browser clones a tab’s storage" time="0.000941315">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/class-media.test.ts" timestamp="2026-11-19T13:18:00.517Z" hostname="7f8817ff2c1e" tests="2" failures="0" errors="0" skipped="0" time="0.010053169">
+        <testcase classname="tests/class-media.test.ts" name="requires permission from every pictured student and separates video/capture/sharing purposes" time="0.005847064">
+        </testcase>
+        <testcase classname="tests/class-media.test.ts" name="recognises supported video headers without accepting disguised HEIC images or arbitrary files" time="0.002549575">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/classes-database.test.ts" timestamp="2026-11-19T13:18:00.519Z" hostname="7f8817ff2c1e" tests="9" failures="0" errors="0" skipped="0" time="4.727120394">
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; retries the same class UUID without duplicate sessions and edits room/status" time="0.117828115">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; rejects foreign-academy/session/batch IDs and direct client table writes" time="0.096762249">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; advances revision atomically and rejects stale competing saves" time="0.135076089">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; rolls back every mark and revision on invalid entries or incomplete roster" time="0.126348914">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; protects timing after attendance; cancellation retains marks and blocks further saves" time="0.056037165">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; uses the academy date when a class crosses the UTC date boundary" time="0.063277899">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; denies anonymous execution of trusted class and attendance operations" time="0.067929055">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; rejects a moved class even when its attendance revision has not changed" time="0.068042128">
+        </testcase>
+        <testcase classname="tests/classes-database.test.ts" name="trusted classes and attendance revisions &gt; rejects reversed times and duplicate batch/start occurrences" time="0.059377783">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/classes.test.ts" timestamp="2026-11-19T13:18:00.529Z" hostname="7f8817ff2c1e" tests="12" failures="0" errors="0" skipped="0" time="0.087161049">
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; uses the academy timezone even when UTC dates differ" time="0.033782229">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; accepts overnight classes and rejects reversed/equal end times" time="0.012804948">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; rejects normalized invalid dates and invalid time input" time="0.001165605">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; rejects DST gaps and repeated ambiguous times rather than guessing" time="0.005396086">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; queries a local day using timezone-aware next-day boundaries" time="0.006285685">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; marks only students enrolled on the local class date, excluding archives" time="0.000770857">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="academy dates and class validation &gt; recognizes an already-saved desired state but not an empty or differing draft" time="0.000504368">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="private attendance device drafts &gt; survives reopening and clears only the matching owner/academy/session" time="0.001458901">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="private attendance device drafts &gt; strips arbitrary data and rejects invalid or oversized marks" time="0.00935983">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="private attendance device drafts &gt; serializes a pending write and sign-out clear so a draft cannot reappear" time="0.004355697">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="private attendance device drafts &gt; reports storage failure without mutating the in-memory input" time="0.002947797">
+        </testcase>
+        <testcase classname="tests/classes.test.ts" name="a matching saved subset is not complete when the roster gained a student" time="0.000893344">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/coach-summary.test.ts" timestamp="2026-11-19T13:18:00.536Z" hostname="7f8817ff2c1e" tests="6" failures="0" errors="0" skipped="0" time="0.052024892">
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; counts distinct students separately from batch memberships and includes unbilled expected fees" time="0.039321934">
+        </testcase>
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; uses trusted paid/partial/reversed balances, excludes test receipts and preserves excess collected for review" time="0.003812096">
+        </testcase>
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; keeps invoice amount/name snapshots after batch fee and student name changes" time="0.000564901">
+        </testcase>
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; retains archived historical charges but does not invent new charges for archived students or ended enrolments" time="0.001495541">
+        </testcase>
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; excludes voided charges from money totals and does not silently recreate cancelled debt" time="0.001415513">
+        </testcase>
+        <testcase classname="tests/coach-summary.test.ts" name="student-first monthly fee summary &gt; does not let an earlier month invoice replace the selected months unbilled fee or current snapshot" time="0.000461895">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/coach-workflows-database.test.ts" timestamp="2026-11-19T13:18:00.540Z" hostname="7f8817ff2c1e" tests="18" failures="0" errors="0" skipped="0" time="6.624399657">
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; round-trips age and all supported proficiency levels on new and existing profiles" time="0.186472464">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; rejects invalid proficiency or age atomically without changing profile, guardian or memberships" time="0.131290051">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; preserves original membership dates and secondary guardians while adding batches from a retried profile save" time="0.115034924">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; denies foreign/anonymous profile writes and direct proficiency edits" time="0.091482424">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; replays update007 without resetting a saved proficiency, guardian or historical membership" time="0.220881155">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; adds existing students atomically and retries without overwriting original membership dates" time="0.085914541">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; rejects foreign/archived students and rolls back every new membership if any selection is invalid" time="0.153627708">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; does not reactivate or rewrite a previously ended membership" time="0.320280285">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; creates the monthly charge and receipt in one transaction; exact retry survives later roster changes" time="0.146468807">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; rolls back auto-created charges when the receipt is invalid, oversized or based on a changed fee" time="0.10643651">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; rejects stale concurrent-state expectations and permits the reviewed remainder against an existing charge" time="0.086036975">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; denies foreign and anonymous workflow execution" time="0.122385211">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; keeps the photo bucket private with bounded supported types after repeat installation" time="0.061146979">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; isolates object reads/inserts/deletes by academy and rejects malformed or spoofed entity paths" time="0.199963829">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; allows optimistic metadata replacement and exact retry while denying direct metadata writes" time="0.150198007">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; rejects missing/unsupported uploads and blocks cross-entity photo attachment" time="0.101226891">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; keeps objects immutable and protects referenced objects, but permits orphan cleanup after replacement/removal" time="0.124388429">
+        </testcase>
+        <testcase classname="tests/coach-workflows-database.test.ts" name="batch membership, student-first collection and private photos &gt; locks recorded observation photos and archived student photos while retaining their private reads and exact retries" time="0.099058454">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/config.test.ts" timestamp="2026-11-19T13:18:00.547Z" hostname="7f8817ff2c1e" tests="9" failures="0" errors="0" skipped="0" time="0.029436938">
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; hides developer controls for unset or unrecognized environments" time="0.009241454">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; starts with actionable missing settings instead of throwing" time="0.00463593">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects unsuitable endpoint http://project.supabase.co" time="0.001561293">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects unsuitable endpoint https://user:password@project.supabase.co" time="0.000502525">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects unsuitable endpoint broken" time="0.001855662">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects unsuitable endpoint https://project.supabase.co/rest/v1/" time="0.000391007">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects unsuitable endpoint https://project.supabase.co?key=secret" time="0.000605556">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; rejects server secrets as client configuration" time="0.001050862">
+        </testcase>
+        <testcase classname="tests/config.test.ts" name="safe startup configuration &gt; recognizes public configuration without claiming connectivity" time="0.001494282">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/crypto.test.ts" timestamp="2026-11-19T13:18:00.551Z" hostname="7f8817ff2c1e" tests="2" failures="0" errors="0" skipped="0" time="0.039042797">
+        <testcase classname="tests/crypto.test.ts" name="native authentication cryptography adapter &gt; delegates random bytes and SHA-256 to the platform driver" time="0.027999025">
+        </testcase>
+        <testcase classname="tests/crypto.test.ts" name="native authentication cryptography adapter &gt; preserves an existing complete WebCrypto implementation" time="0.000828676">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/database.test.ts" timestamp="2026-11-19T13:18:00.553Z" hostname="7f8817ff2c1e" tests="15" failures="0" errors="0" skipped="0" time="11.544965532">
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; applies cleanly and enables RLS on every application table" time="0.193388522">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; stops before changing a project with an unrelated existing table" time="3.83687928">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; returns only the signed-in academy and students" time="0.081128381">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; blocks anonymous table reads and authenticated API operations" time="0.083455469">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rejects a forged academy ID and hides other-academy updates" time="0.107515655">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rejects cross-academy enrolments even when a caller bypasses RLS" time="0.085677795">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; creates academy/profile atomically and makes onboarding retries idempotent" time="0.15773251">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rejects invalid timezones and duplicate enrolment" time="0.300856825">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; saves and updates attendance without duplicates" time="0.126073895">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rolls back the whole attendance save if any student is invalid" time="0.078248793">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rejects invalid statuses, repeated students, and cancelled-session writes" time="0.122376857">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; rejects another academy attendance RPC and direct table writes" time="0.06795215">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; keeps archived-student history while rejecting new attendance changes" time="0.089305409">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; prevents cross-academy invoices and duplicate invoice months" time="0.094367805">
+        </testcase>
+        <testcase classname="tests/database.test.ts" name="PostgreSQL academy isolation and atomic writes &gt; prevents clients from manufacturing verified payments or changing invoice totals" time="0.103527748">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/diagnostics.test.ts" timestamp="2026-11-19T13:18:00.557Z" hostname="7f8817ff2c1e" tests="11" failures="0" errors="0" skipped="0" time="0.077361259">
+        <testcase classname="tests/diagnostics.test.ts" name="privacy-safe error reports &gt; keeps a bounded buffer with distinct references" time="0.009653369">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="privacy-safe error reports &gt; bounds a capacity-one buffer" time="0.001252912">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="privacy-safe error reports &gt; does not accept arbitrary messages or private fields" time="0.018694876">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="privacy-safe error reports &gt; clears reports and protects internal records from caller mutation" time="0.002890388">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="privacy-safe error reports &gt; captures UTC timestamps and rejects invalid capacity" time="0.001165825">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; restores safe errors across restarts and keeps the bounded limit" time="0.007010826">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; strips extra fields and discards expired, future or unsupported records" time="0.008429614">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; merges startup errors recorded before restoration finishes" time="0.010506439">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; clear during restoration cannot resurrect signed-out reports" time="0.005106591">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; unavailable storage never throws from record or prevents report export" time="0.000963244">
+        </testcase>
+        <testcase classname="tests/diagnostics.test.ts" name="device-persisted diagnostics &gt; corrupt JSON is discarded instead of being exported" time="0.007588403">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/feedback-journey.test.ts" timestamp="2026-11-19T13:18:00.560Z" hostname="7f8817ff2c1e" tests="3" failures="0" errors="0" skipped="0" time="0.008680956">
+        <testcase classname="tests/feedback-journey.test.ts" name="restores a pending child connection only for the same signed-in account" time="0.005464849">
+        </testcase>
+        <testcase classname="tests/feedback-journey.test.ts" name="expires invitations and rejects malformed intents rather than inferring a child" time="0.000776646">
+        </testcase>
+        <testcase classname="tests/feedback-journey.test.ts" name="supports an existing connection and explicitly clears its navigation intent" time="0.000552793">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/fees-database.test.ts" timestamp="2026-11-19T13:18:00.561Z" hostname="7f8817ff2c1e" tests="10" failures="0" errors="0" skipped="0" time="6.94600023">
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; snapshots trusted fee and names; fee changes and exact retries never rewrite an invoice" time="0.174124071">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; accepts overlapping enrolment months and year rollover; rejects missing overlap and duplicate active months" time="0.108328915">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; rejects invalid fee/date boundaries and UUID request reuse with changed data atomically" time="0.151919649">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; calculates unpaid, partial and paid from ledger; duplicate/lost-response retry preserves a single entry" time="0.126633195">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; rejects invalid or changed payment requests without changing totals" time="0.115352007">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; retains reversed manual entry and attribution, restores balance and permits an auditable replacement" time="0.098316013">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; requires correcting payments before void, preserves voided history and allows replacement invoice" time="0.165452716">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; excludes gateway test money from real balance and flags excess live money for review" time="0.066464815">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; blocks foreign/anonymous RPCs and direct writes; invoker view/detail cannot leak another academy" time="0.095954159">
+        </testcase>
+        <testcase classname="tests/fees-database.test.ts" name="trusted monthly billing and manual ledger &gt; returns one consistent detail with original receipt and its reversal" time="0.091429555">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/fees.test.ts" timestamp="2026-11-19T13:18:00.565Z" hostname="7f8817ff2c1e" tests="6" failures="0" errors="0" skipped="0" time="0.013681285">
+        <testcase classname="tests/fees.test.ts" name="billing calendar and integer money &gt; validates dates, leap years, month/year rollover and partial enrolment overlap" time="0.00581958">
+        </testcase>
+        <testcase classname="tests/fees.test.ts" name="billing calendar and integer money &gt; distinguishes unpaid, partial, paid, overdue and void, including the due-date boundary" time="0.000602259">
+        </testcase>
+        <testcase classname="tests/fees.test.ts" name="billing calendar and integer money &gt; parses paise without rounding and rejects zero, overpayment and fractional paise" time="0.000698625">
+        </testcase>
+        <testcase classname="tests/fees.test.ts" name="durable exact-request fee recovery &gt; restores only whitelisted fields in the same account/academy" time="0.002416228">
+        </testcase>
+        <testcase classname="tests/fees.test.ts" name="durable exact-request fee recovery &gt; survives a new adapter instance, rejects replacement and clears only the exact request" time="0.001695167">
+        </testcase>
+        <testcase classname="tests/fees.test.ts" name="durable exact-request fee recovery &gt; propagates unavailable storage instead of claiming a safely recoverable request" time="0.00056603">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/learning-context-database.test.ts" timestamp="2026-11-19T13:18:00.567Z" hostname="7f8817ff2c1e" tests="44" failures="0" errors="0" skipped="0" time="5.983630658">
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-001 publishes immutable curriculum versions without rewriting earlier stage meaning" time="0.049231039">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 3" time="0.008813166">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 4" time="0.006511229">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 5" time="0.005110634">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 6" time="0.005270449">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 7" time="0.006325831">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-002 denies curriculum publication without current global management 8" time="0.003660036">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions null atomically" time="0.005387216">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions undefined atomically" time="0.007089394">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions {&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000201&quot;,&quot;title&quot;:&quot;Foundations&quot;,&quot;objectives&quot;:[]} atomically" time="0.008996082">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions {&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000201&quot;,&quot;title&quot;:&quot;Foundations&quot;,&quot;objectives&quot;:[{&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000301&quot;,&quot;title&quot;:&quot;Wait for a turn&quot;}]} atomically" time="0.006579671">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions {&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000201&quot;,&quot;title&quot;:&quot;Foundations&quot;,&quot;objectives&quot;:[{&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000301&quot;,&quot;title&quot;:&quot;Wait for a turn&quot;},{&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000301&quot;,&quot;title&quot;:&quot;Wait for a turn&quot;}]} atomically" time="0.005951953">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-003 rejects malformed or duplicate definitions {&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000201&quot;,&quot;title&quot;:&quot;Foundations&quot;,&quot;objectives&quot;:[{&quot;id&quot;:&quot;00000000-0000-0000-0000-000000000301&quot;,&quot;title&quot;:&quot;Wait for a turn&quot;}],&quot;unexpected&quot;:&quot;instruction&quot;} atomically" time="0.004001539">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-01-SC-004 replays exact requests without reverting newer versions and rejects changed or stale requests" time="0.022387764">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-02-SC-001 keeps two same-batch learners at different stages and curricula independently" time="0.141692912">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-02-SC-002 reports missing placement and version remapping without guessing a level" time="0.036375352">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-02-SC-003 keeps dated placement history and does not infer attainment from a stage move" time="0.05403495">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-03-SC-001 snapshots plans and rejects foreign/unplanned references while keeping prior versions" time="0.033408413">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-03-SC-002 lets admin-only users plan but never impersonate teaching evidence" time="0.014484095">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-001 binds an assessment to exact recorded child feedback, plan and stage" time="0.092724902">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {&quot;source&quot;:53}" time="0.022240677">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {&quot;source&quot;:54}" time="0.026252954">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {&quot;source&quot;:52}" time="0.088104056">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {&quot;source&quot;:999}" time="0.016086622">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 denies drafts, group notes, other classes and wrong-child evidence {&quot;student&quot;:22}" time="0.016703819">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-003 rejects stale feedback/plan, wrong-stage goals and future observation claims" time="0.033326662">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-004 appends corrections without mutating history, and old retry never restores mastery" time="0.043181224">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-005 prevents a co-instructor from adopting another teacher evidence or revising it" time="0.029368294">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-005 refuses a manager-authored correction as if the original teacher authored that exact revision" time="0.02888266">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-002 refuses an actual teacher-authored multi-child recorded source" time="0.027227326">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-005 cannot withdraw a colleague assessment by supplying a new note of its own" time="0.028967985">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-04-SC-006 supports actual post-class feedback and learning evidence for a completed class" time="0.032607546">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 5" time="0.101068507">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 6" time="0.025558457">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 7" time="0.017568273">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-001 denies learner context to finance, unverified, unrelated and banned users 8" time="0.011345798">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-002 denies foreign, unassigned, archived and no-longer-enrolled student contexts" time="0.02164759">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-002 denies an ended enrolment and an archived batch" time="0.020651611">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-003 caps actual assessment output at10 and labels truncated context" time="0.060675176">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-003 excludes future learning, other students, contacts, family and raw teacher notes" time="0.037271649">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-004 rechecks assignment revocation before reading and even exact write replay" time="0.027042558">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-005 has explicit missing-plan context and no guessed or seeded achievements" time="0.00386761">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-006 keeps all new tables/functions private and app ledger unchanged on reapplication" time="0.006059073">
+        </testcase>
+        <testcase classname="tests/learning-context-database.test.ts" name="LRN-05-SC-006 structurally rejects mismatched placement versions/stages and foreign feedback even for a trusted insert" time="0.036380357">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/learning-feedback-context.test.ts" timestamp="2026-11-19T13:18:00.579Z" hostname="7f8817ff2c1e" tests="7" failures="0" errors="0" skipped="0" time="0.018830396">
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-007 makes one advisory request with separate planned goals, observed evidence and current Coach note" time="0.008178445">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-008 whitelists model input, uses local aliases and keeps internal identities out of it" time="0.001062592">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-009 refuses missing stage/plan, unsupported contracts and cancelled classes rather than inventing context" time="0.002802239">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-010 bounds the packet and treats source text as data with no execution authority" time="0.002179779">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-010 rejects cross-stage goals, unrelated evidence, unknown assessments and duplicate source keys" time="0.001117809">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-05-SC-010 preserves uncertainty and withdrawn evidence without promoting it to achieved" time="0.000576153">
+        </testcase>
+        <testcase classname="tests/learning-feedback-context.test.ts" name="LRN-04-SC-006 prepares post-class feedback for a completed class" time="0.000847459">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/migration-bundle.test.ts" timestamp="2026-11-19T13:18:00.581Z" hostname="7f8817ff2c1e" tests="2" failures="0" errors="0" skipped="0" time="0.271030322">
+        <testcase classname="tests/migration-bundle.test.ts" name="the owner dashboard bundle matches generated immutable migrations and excludes 001" time="0.091698573">
+        </testcase>
+        <testcase classname="tests/migration-bundle.test.ts" name="the single-file dashboard scanner matches the tested handler and entry point" time="0.177447282">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/native-accessibility.test.ts" timestamp="2026-11-19T13:18:00.581Z" hostname="7f8817ff2c1e" tests="1" failures="0" errors="0" skipped="0" time="0.375847896">
+        <testcase classname="tests/native-accessibility.test.ts" name="all literal accessibilityRole props are accepted by the installed Android native setter" time="0.373967028">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/observations-database.test.ts" timestamp="2026-11-19T13:18:00.582Z" hostname="7f8817ff2c1e" tests="8" failures="0" errors="0" skipped="0" time="5.272636959">
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; saves and records atomically; lost-response retries preserve revision/history/timestamp" time="0.140950084">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; rejects foreign accounts, foreign batches/recipients and anonymous execution" time="0.109559328">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; rejects invalid/repeated recipients and empty publication without partial rows" time="0.096936339">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; locks a recorded individual audience and rejects draft downgrade or scope changes" time="0.078674522">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; preserves recorded audience through roster changes and allows attributable text correction" time="0.136986202">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; rejects stale changed text instead of overwriting the newer saved version" time="0.094181794">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; uses linked-class academy date and rejects cancelled or mismatched classes" time="0.07430066">
+        </testcase>
+        <testcase classname="tests/observations-database.test.ts" name="private observation publication and immutable recipients &gt; blocks direct client mutation of observations, recipients and version history" time="0.190061113">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/observations.test.ts" timestamp="2026-11-19T13:18:00.584Z" hostname="7f8817ff2c1e" tests="7" failures="0" errors="0" skipped="0" time="0.018904615">
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; restores the complete scoped draft without extra fields" time="0.005824067">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; rejects corrupt/oversized or widened individual drafts" time="0.002397482">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; coalesces queued edits and keeps the most recent text" time="0.000731435">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; sign-out invalidates scheduled writers so private text cannot reappear" time="0.002015553">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; an older request cleanup cannot delete newer edits" time="0.000853809">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; keeps storage failure explicit instead of falsely confirming a draft" time="0.000690327">
+        </testcase>
+        <testcase classname="tests/observations.test.ts" name="private observation device drafts &gt; allows incomplete server drafts but requires text and recipients to record" time="0.001307661">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/parent-database.test.ts" timestamp="2026-11-19T13:18:00.586Z" hostname="7f8817ff2c1e" tests="13" failures="0" errors="0" skipped="0" time="8.625840267">
+        <testcase classname="tests/parent-database.test.ts" name="isolates family records from other parents and from an academy coach" time="0.207817149">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="requires an explicit expiring one-time invitation and never stores its raw code" time="0.123857073">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="exposes only coach-approved per-child snapshots after linking, with fresh reviews appearing in the feed" time="0.163278778">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="disconnecting revokes feed access and does not transfer old approvals to a replacement family" time="0.113339546">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="parent media access needs approved media and current permission; a coach cannot overrule a parent refusal" time="0.139430261">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="invalid or revoked invites and foreign-child claims cannot change a family connection" time="0.0913195">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="archive revokes outstanding invites, rejects first claims and preserves existing approved text history" time="0.091679762">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="archive does not erase connected family history or break exact claim retry" time="0.097124023">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="keeps siblings separate while a child attends multiple batches" time="0.125352803">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="links one family child to independent coaches without exposing private family records" time="0.112336319">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="rejects anonymous family access, untrusted link creation and a second active household" time="0.074948574">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="requires disconnect before family-child archive, preserving a clear consent lifecycle" time="0.084706925">
+        </testcase>
+        <testcase classname="tests/parent-database.test.ts" name="one verified login can own both profiles and see only explicitly reviewed feedback after connecting its child" time="0.413938432">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/parent-identity-database.test.ts" timestamp="2026-11-19T13:18:00.590Z" hostname="7f8817ff2c1e" tests="14" failures="0" errors="0" skipped="0" time="6.963703732">
+        <testcase classname="tests/parent-identity-database.test.ts" name="blocks forwarded invitations and previews for another verified email without consuming the invitation" time="0.382596568">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="uses the server verified email, normalises only case/whitespace and rejects unverified accounts" time="0.140466024">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="claim only creates an immutable pending request; no feedback, link or consent access exists until coach approval" time="0.176606276">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="wrong child can be rejected; rejection does not release feedback or let a stale approval revive it" time="0.136373194">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="changed child details or guardian email require a fresh match review" time="0.107418433">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="another coach/family cannot see or approve a request or attach a foreign child" time="0.120743899">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="pending claims can be cancelled but cannot hide through child archive; student archive cancels requests" time="0.100161308">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="same-login testing still requires the separate coach approval; no self-approval bypass is inferred from login" time="0.133122296">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="old unbound RPC and anonymous clients cannot create invitations or requests" time="0.091642466">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="reapplying the exact owner update preserves newly approved links and their feedback" time="0.14242774">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="NULL is not an approval decision and releases no access" time="0.134037732">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="both verified families can read approved group media; either withdrawal revokes it for both" time="0.197804514">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="upgrade revokes old unbound links/invitations and stale shared copies without deleting teaching notes" time="0.124327443">
+        </testcase>
+        <testcase classname="tests/parent-identity-database.test.ts" name="disconnect cannot be reversed by replaying an old approval or claimed invitation" time="0.190599738">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/parent-model.test.ts" timestamp="2026-11-19T13:18:00.594Z" hostname="7f8817ff2c1e" tests="1" failures="0" errors="0" skipped="0" time="0.008137484">
+        <testcase classname="tests/parent-model.test.ts" name="counts only the selected child and current week from saved records, including an empty week" time="0.006298928">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/photos.test.ts" timestamp="2026-11-19T13:18:00.594Z" hostname="7f8817ff2c1e" tests="1" failures="0" errors="0" skipped="0" time="0.005736658">
+        <testcase classname="tests/photos.test.ts" name="accepts only supported photo byte signatures and enforces the byte limit" time="0.004243623">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/reviewed-feedback-database.test.ts" timestamp="2026-11-19T13:18:00.595Z" hostname="7f8817ff2c1e" tests="7" failures="0" errors="0" skipped="0" time="8.204715304">
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="denies capture without permission, foreign students and direct consent/media writes" time="0.139964368">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="allows consented uploads once and refuses changed retry identity or forged metadata" time="0.211013309">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="keeps capture consent separate from permission to share media with parents" time="0.129947139">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="creates immutable per-child snapshots and replays the exact request without duplicates" time="0.430660476">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="blocks sharing group media unless every pictured child permits it and every recipient appears" time="0.429679051">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="withdrawal retains consent audit, blocks reads and cancels all pending group-media handoffs" time="0.561869182">
+        </testcase>
+        <testcase classname="tests/reviewed-feedback-database.test.ts" name="isolates private consent, media and handoffs from other accounts and anonymous calls" time="0.171729411">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/roster-scan-database.test.ts" timestamp="2026-11-19T13:18:00.596Z" hostname="7f8817ff2c1e" tests="9" failures="0" errors="0" skipped="0" time="8.190983466">
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; imports reviewed names, ages, guardian and proficiency atomically with optional batch membership" time="0.463084883">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; exact lost-response retry returns original IDs after roster changes and rejects changed-payload reuse" time="0.160502552">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; links an existing profile without overwriting any reviewed personal fields or its historical memberships" time="0.161396494">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; rejects normalized duplicate names, including surrounding tabs/newlines, without partially importing earlier rows" time="0.0913169">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; rolls back students, guardians, memberships and receipt-of-import audit when any reviewed row is invalid" time="0.077468814">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; rejects empty/oversized payloads, duplicate IDs, null request IDs and ID collisions" time="0.077563849">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; denies foreign/anonymous imports, foreign batch or existing-profile references and private audit access" time="0.073301162">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; reserves scan quota only for the service role and enforces cooldown and ten daily attempts" time="0.082274382">
+        </testcase>
+        <testcase classname="tests/roster-scan-database.test.ts" name="reviewed roster imports and server-only scan budgets &gt; keeps quota independent per academy and UTC day and refuses a nonexistent academy" time="0.059849941">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/roster-scan-handler.test.ts" timestamp="2026-11-19T13:18:00.601Z" hostname="7f8817ff2c1e" tests="10" failures="0" errors="0" skipped="0" time="1.338969942">
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; answers preflight/method rejection and rejects missing/invalid bearer auth before any provider call" time="0.187156927">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; verifies owner before quota/provider use and keeps service/provider credentials at their intended boundaries" time="0.049526827">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; rejects non-owned academies and unavailable setup without spending scan quota" time="0.034192764">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; rejects missing or old recognizer markers before reserving quota or contacting Google" time="0.023196023">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; rejects unsupported/corrupt images, invalid academy IDs and images over5MB before quota/provider calls" time="0.206062757">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; bounds actual streamed body bytes even when Content-Length lies and cancels the oversized stream" time="0.014345815">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; maps daily/monthly budget exhaustion and setup failures without calling Google afterward" time="0.076137926">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; rejects provider errors and malformed/multiple OCR responses without returning raw provider diagnostics" time="0.699802624">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; reports empty OCR but keeps unknown layouts as raw text for explicit names-only review without invented profile fields" time="0.021611928">
+        </testcase>
+        <testcase classname="tests/roster-scan-handler.test.ts" name="authenticated Cloud Vision roster scanning with mocked requests only &gt; redacts thrown backend/provider diagnostics from all client responses" time="0.009753684">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/roster-scan-model.test.ts" timestamp="2026-11-19T13:18:00.604Z" hostname="7f8817ff2c1e" tests="6" failures="0" errors="0" skipped="0" time="0.022120311">
+        <testcase classname="tests/roster-scan-model.test.ts" name="keeps multilingual names and blanks unsupported ages/levels without inventing data" time="0.007786136">
+        </testcase>
+        <testcase classname="tests/roster-scan-model.test.ts" name="requires a valid reviewed selection and resolves existing names explicitly" time="0.002054704">
+        </testcase>
+        <testcase classname="tests/roster-scan-model.test.ts" name="sends only reviewed selected fields; linking cannot overwrite a profile" time="0.002180016">
+        </testcase>
+        <testcase classname="tests/roster-scan-model.test.ts" name="keeps bounded recognised text available for review without storing it in imports" time="0.001949155">
+        </testcase>
+        <testcase classname="tests/roster-scan-model.test.ts" name="names-only mode strips numbering, leaves details blank and rejects contact/age lines" time="0.003003112">
+        </testcase>
+        <testcase classname="tests/roster-scan-model.test.ts" name="requires name selection when unassigned contact or age columns are present" time="0.002674865">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/roster.test.ts" timestamp="2026-11-19T13:18:00.609Z" hostname="7f8817ff2c1e" tests="13" failures="0" errors="0" skipped="0" time="6.036523462">
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; creates student, primary contact, and enrolment in one retry-safe operation" time="0.14192655">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; rejects foreign batches without leaving partial student/contact records" time="0.067436369">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; rejects cross-academy writes and anonymous execution" time="0.070226047">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; allows same names for distinct student IDs and duplicate batch selections safely" time="0.063930389">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; allows multiple batches while preserving existing enrolment dates" time="0.069766021">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; archives without deleting contacts/enrolments and rejects edits of archived students" time="0.06489911">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; denies direct client writes that would bypass the transaction" time="0.066664691">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; rejects invalid age or guardian data before creating the student" time="0.063323786">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; clears only the primary guardian on an explicit blank-contact edit" time="0.081945999">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="atomic roster functions and permissions &gt; keeps batch amounts validated and inaccessible to another academy" time="0.061773251">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="roster input rules &gt; UX-BAT-02 prevents normalized duplicate batch names but permits editing the same batch" time="0.00267954">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="roster input rules &gt; converts rupees to paise without floating-point rounding" time="0.001201747">
+        </testcase>
+        <testcase classname="tests/roster.test.ts" name="roster input rules &gt; requires a guardian name only when contact details are supplied" time="0.00085463">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/vision-mapping.test.ts" timestamp="2026-11-19T13:18:00.614Z" hostname="7f8817ff2c1e" tests="12" failures="0" errors="0" skipped="0" time="0.067879411">
+        <testcase classname="tests/vision-mapping.test.ts" name="maps register columns by position even if provider text reading order differs" time="0.024651826">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="reads explicit labelled admission fields, including multiple fields on one line" time="0.00142582">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="keeps Hindi names and converts explicitly written Devanagari digits without inferring ages" time="0.003069365">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="returns raw text for unclear layouts, single labelled names and portraits without text" time="0.001515068">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="leaves uncertain ages, contacts and learning levels blank and exposes review warnings" time="0.002939477">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="skips repeated headers and totals while preserving independent rows" time="0.001337096">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="never uses a student mobile column as a guardian phone field" time="0.000617342">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="does not guess row associations from missing or rotated word geometry" time="0.000573181">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="limits imported rows and rejects malformed provider envelopes and oversized text" time="0.02711646">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="does not turn an unknown qualified name or its following contact into another student" time="0.001080362">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="keeps far-apart Guardian and Phone headers as separate columns" time="0.000691114">
+        </testcase>
+        <testcase classname="tests/vision-mapping.test.ts" name="falls back instead of assigning people with stale columns after a changed section header" time="0.000518589">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/vision-quota-database.test.ts" timestamp="2026-11-19T13:18:00.617Z" hostname="7f8817ff2c1e" tests="8" failures="0" errors="0" skipped="0" time="4.95988777">
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; reserves one shared monthly attempt and one academy/day attempt together" time="0.036186661">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; daily-limit rejection never consumes the monthly allowance" time="0.010171677">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; rejects attempt901 globally before touching another academy daily allowance" time="0.009414947">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; concurrent queued transactions at899 admit only one final reservation across academies" time="0.016201738">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; concurrent queued calls for one academy cannot bypass its cooldown" time="0.011383712">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; keeps prior-month use separate and uses UTC month even with another session timezone" time="0.00847882">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; rolls back every reservation when the academy does not exist" time="0.010007842">
+        </testcase>
+        <testcase classname="tests/vision-quota-database.test.ts" name="global Vision allowance plus atomic academy/day reservations &gt; denies authenticated/anonymous execution and access to monthly counters" time="0.015227667">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/whatsapp.test.ts" timestamp="2026-11-19T13:18:00.625Z" hostname="7f8817ff2c1e" tests="3" failures="0" errors="0" skipped="0" time="0.02720696">
+        <testcase classname="tests/whatsapp.test.ts" name="requires an explicit international recipient and rejects link injection or ambiguous local numbers" time="0.016126798">
+        </testcase>
+        <testcase classname="tests/whatsapp.test.ts" name="encodes feedback as a single message and refuses blank or oversized text" time="0.004591091">
+        </testcase>
+        <testcase classname="tests/whatsapp.test.ts" name="allows a teaching batch without fee setup while financial input remains strict" time="0.001650037">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-account-eligibility.test.ts" timestamp="2026-11-19T13:18:00.627Z" hostname="7f8817ff2c1e" tests="11" failures="0" errors="0" skipped="0" time="5.086472793">
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="accepts a verified existing account" time="0.032234006">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="rejects unverified accounts" time="0.015865874">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="rejects an account with a current ban" time="0.023579867">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="allows an expired ban" time="0.012045021">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="rejects a soft-deleted account even with a verified email" time="0.00504731">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="rejects a removed account with a stale identity claim" time="0.020050143">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="rejects a missing identity claim" time="0.005456683">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="does not downgrade the canonical kernel when the older candidate is reapplied" time="0.009584728">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="does not expose the candidate helper to anon" time="0.011096585">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="does not expose the candidate helper to authenticated" time="0.006834459">
+        </testcase>
+        <testcase classname="tests/workspace-account-eligibility.test.ts" name="does not expose the candidate helper to service_role" time="0.004655776">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-attendance.test.ts" timestamp="2026-11-19T13:18:00.636Z" hostname="7f8817ff2c1e" tests="24" failures="0" errors="0" skipped="0" time="11.805976444">
+        <testcase classname="tests/workspace-attendance.test.ts" name="lets an assigned instructor mark the complete class roster without impersonating its owner" time="0.235379537">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 1" time="0.075338962">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 2" time="0.160242859">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 5" time="0.061622898">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 6" time="0.025730953">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 7" time="0.035872526">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies attendance writes without eligible current teaching authority 8" time="0.031540029">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="allows admin-only roster inspection without creating a teaching identity or permitting marks" time="0.023756952">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects a foreign or unassigned branch class and does not leak its roster" time="0.024772144">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="returns the original receipt for reordered exact retries without undoing later attendance edits" time="0.053644216">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects changed request payloads, stale revisions and stale class context atomically" time="0.049458815">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks null" time="0.016064671">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {}" time="0.029161819">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks undefined" time="0.021881257">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {&quot;student_id&quot;:&quot;00000000-0000-0000-0000-000000000021&quot;,&quot;status&quot;:&quot;present&quot;}" time="0.016411184">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {&quot;student_id&quot;:&quot;00000000-0000-0000-0000-000000000021&quot;,&quot;status&quot;:&quot;present&quot;}" time="0.016700874">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {&quot;student_id&quot;:&quot;00000000-0000-0000-0000-000000000021&quot;,&quot;status&quot;:&quot;present&quot;}" time="0.038745647">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {&quot;student_id&quot;:&quot;00000000-0000-0000-0000-000000000021&quot;,&quot;status&quot;:&quot;present&quot;}" time="0.027624144">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="rejects invalid, duplicate, incomplete or foreign marks {&quot;student_id&quot;:&quot;00000000-0000-0000-0000-000000000021&quot;,&quot;status&quot;:&quot;present&quot;,&quot;name&quot;:&quot;ignored? &quot;}" time="0.020051647">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="uses the academy-local class date and ended enrolments when checking every student" time="0.116988261">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="detects a roster addition/removal after review and preserves previous revisions on failure" time="0.017395944">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="denies revoked assignments, expired write windows, cancelled classes and archived batches even for retries" time="0.055983286">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="retains old snapshot attribution after another instructor updates attendance" time="0.019937206">
+        </testcase>
+        <testcase classname="tests/workspace-attendance.test.ts" name="keeps submissions and operations private without inventing legacy attribution or changing the live ledger" time="0.023022126">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-authorization.test.ts" timestamp="2026-11-19T13:18:00.647Z" hostname="7f8817ff2c1e" tests="43" failures="0" errors="0" skipped="0" time="5.921509013">
+        <testcase classname="tests/workspace-authorization.test.ts" name="allows an explicitly assigned instructor, but ownership alone only permits class management" time="0.055669686">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently unverified account despite the unchanged identity claim" time="0.022366306">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently future verification account despite the unchanged identity claim" time="0.009825158">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently banned account despite the unchanged identity claim" time="0.006520606">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently deleted account despite the unchanged identity claim" time="0.007708929">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently anonymous account despite the unchanged identity claim" time="0.006269562">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects a currently missing email account despite the unchanged identity claim" time="0.005750419">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="allows an expired ban and denies an absent account" time="0.005801479">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not accept pending membership or a stale token" time="0.008076908">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not accept suspended membership or a stale token" time="0.015037424">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not accept left membership or a stale token" time="0.003265516">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not accept revoked membership or a stale token" time="0.003798079">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not accept expired membership or a stale token" time="0.005755269">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks current membership time: effective_from=now()+interval &apos;1 hour&apos;" time="0.003559039">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks current membership time: valid_until=now()-interval &apos;1 second&apos;" time="0.00607736">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks current membership time: accepted_at=now()+interval &apos;1 hour&apos;" time="0.003515583">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="requires current role and Coach identity as well as an assignment" time="0.010519408">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks role dates: valid_from=now()+interval &apos;1 hour&apos;" time="0.003431795">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks role dates: valid_from=now()-interval &apos;1 day&apos;,valid_until=now()-interval &apos;1 second&apos;" time="0.003063293">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="keeps branch roles in their exact branch and never turns a missing branch into a wildcard" time="0.006842506">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not combine foreign branches, workspace IDs, or client role claims" time="0.005214307">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="honours assignment teaching/access/write windows without inheriting prior classes" time="0.014473431">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="a substitute gets only the assigned class, no previous drafts/history or finance" time="0.013355675">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects teaching writes for a cancelled resource" time="0.002104018">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects teaching writes for a archived batch resource" time="0.001463919">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="rejects teaching writes for a archived branch resource" time="0.001367866">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="permits own current membership feedback edits while preserving other/legacy author boundaries" time="0.006419524">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="ends own working-note access when the assignment access window closes; history needs a separate grant" time="0.028268547">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not give a rehire authority over records from their previous membership period" time="0.013945664">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="requires explicit capability plus dated feedback history grants, never drafts or media-only grants" time="0.039024574">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="requires history grants for every child mentioned by a group note" time="0.039998789">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="checks history date boundaries, grant revocation and archived branch" time="0.012454893">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="limits correction capabilities by branch and expiry; does not turn them into an editing API" time="0.009028266">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="separates finance from teaching and respects finance branch scope" time="0.01186897">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="returns only the actor’s own accepted contexts without staff, family or other employment details" time="0.006532387">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="keeps new decisions private and does not widen the old runtime or expose raw authority tables" time="0.017420358">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="fails closed for unknown actions, absent resources and null operation values" time="0.006722185">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="denies unsupported repeatable read transaction snapshots" time="0.004100727">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="denies unsupported serializable transaction snapshots" time="0.0064914">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="revokes current membership once, audits the real actor, and cannot restore it by rerunning candidates" time="0.042495578">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="blocks self-elevation, foreign-target revocation and removal of the last owner" time="0.037985026">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="revokes an assignment once while retaining membership and historical authorship" time="0.050265706">
+        </testcase>
+        <testcase classname="tests/workspace-authorization.test.ts" name="does not adopt untracked kernel objects" time="0.01305307">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-feedback.test.ts" timestamp="2026-11-19T13:18:00.673Z" hostname="7f8817ff2c1e" tests="23" failures="0" errors="0" skipped="0" time="5.610071661">
+        <testcase classname="tests/workspace-feedback.test.ts" name="creates a teacher-authored class draft, records it and preserves membership attribution" time="0.112319823">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 1" time="0.009111903">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 2" time="0.006183194">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 5" time="0.006959857">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 6" time="0.007372117">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 7" time="0.005399788">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="never creates teaching authorship using owner-only/finance/unverified/unrelated actor 8" time="0.009133079">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="does not let a co-instructor or manager edit another teacher draft or inherit its authorship" time="0.037032355">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="preserves stable receipts and does not undo a newer note when an older response is retried" time="0.035212139">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="rejects foreign, duplicate or empty recorded recipients {&quot;recipients&quot;:[23]}" time="0.016551992">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="rejects foreign, duplicate or empty recorded recipients {&quot;recipients&quot;:[21,21]}" time="0.008239761">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="rejects foreign, duplicate or empty recorded recipients {&quot;recipients&quot;:[]}" time="0.004541648">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="denies wrong branch/foreign class and locks recorded context, audience, recipients and status" time="0.028716387">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="moves an authorized draft across batches atomically and hides old branch versions from a current branch manager" time="0.022762848">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="denies old receipt/edit after assignment revocation and never treats rehire as the original membership" time="0.016967313">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="corrects recorded feedback with a reason and actual editor while keeping original teaching identity" time="0.019123273">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="preserves the original shared teacher name after a rename and later correction" time="0.021672021">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="leaves an already-approved Parent snapshot unchanged when the source note is corrected" time="0.035117027">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="requires explicit correction authority, recorded status and a nonblank reason" time="0.051566971">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="enforces a nonnull correction reason in the audit table as well as the operation" time="0.016303893">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="keeps legacy authorship unknown at membership level when an owner corrects an older recorded note" time="0.004899357">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="denies unrelated draft reads and returns only whitelisted feedback fields with five latest versions" time="0.046145083">
+        </testcase>
+        <testcase classname="tests/workspace-feedback.test.ts" name="keeps private feedback operations and submissions inaccessible to app/service roles" time="0.004132501">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-foundation.test.ts" timestamp="2026-11-19T13:18:00.682Z" hostname="7f8817ff2c1e" tests="20" failures="0" errors="0" skipped="0" time="25.023191504">
+        <testcase classname="tests/workspace-foundation.test.ts" name="backfills stable academy/resource IDs once without fabricating coaches, assignments or historical teachers" time="0.022550103">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="keeps the current014 guardian link, reviewed feed and original academy isolation intact" time="0.031022324">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="creates no production015 marker or public API and keeps all candidate tables RLS-enabled and inaccessible to clients" time="0.628480848">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="does not silently widen existing runtime access when a second academy membership is staged" time="0.011589416">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="can represent a separate independent practice and several accepted affiliations without a fake academy" time="0.043808437">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="rejects duplicate current memberships while allowing a new period after revocation" time="0.009148255">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="enforces acceptance state and time intervals" time="0.017346575">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="prevents cross-workspace role, branch and resource association even for trusted inserts" time="0.030513177">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="keeps ownership global to its workspace, branch managers scoped and roles typed" time="0.054370024">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="represents co-teaching/substitution with distinct access and teaching windows; rejects mixed or foreign targets" time="0.019891175">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="requires explicit bounded history grants for a same-workspace student" time="0.008559968">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="binds accepted invitation membership/account and proposed branch to the invitation workspace" time="0.02659845">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="preserves append-only audit with actor-to-membership consistency and no fabricated migration actor" time="0.018108124">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="reruns without reactivating revoked staged legacy authority or duplicating audit" time="0.126006991">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="stops on ownership drift rather than silently granting a different legacy user" time="0.032954567">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="rejects audit subjects from another workspace and mismatched event/subject types" time="0.023609083">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="stops before adopting untracked candidate table objects" time="4.755823051">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="stops before adopting untracked candidate empty_marker objects" time="3.53573054">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="stops before adopting untracked candidate function objects" time="3.522517369">
+        </testcase>
+        <testcase classname="tests/workspace-foundation.test.ts" name="stops before adopting untracked candidate index objects" time="3.586035004">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-roster-transactions.test.ts" timestamp="2026-11-19T13:18:00.691Z" hostname="7f8817ff2c1e" tests="31" failures="0" errors="0" skipped="0" time="6.488636875">
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="saves a batch, student/contact/enrolment and class under explicit workspace authority" time="0.163539771">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="permits delegated global admin management without fabricating a Coach or ownership" time="0.028481444">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="denies roster management to instructor/substitute/finance/unverified actor 3" time="0.012051576">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="denies roster management to instructor/substitute/finance/unverified actor 4" time="0.012610713">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="denies roster management to instructor/substitute/finance/unverified actor 5" time="0.010678741">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="denies roster management to instructor/substitute/finance/unverified actor 6" time="0.009342447">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="restricts branch managers to their branch and denies global student-profile changes" time="0.022944517">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rejects foreign workspace IDs, foreign resource IDs and foreign branches" time="0.014663452">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="keeps mutations in the selected workspace even when the same account has authority in both" time="0.013262486">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="denies new edits to archived students/batches and classes in archived batches" time="0.019595552">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="retries exactly once and returns the original receipt after later edits without overwriting them" time="0.013614428">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rejects changed requests, stale revisions and resource-type substitution" time="0.01364368">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="binds request receipts to membership periods, not a global account request ID" time="0.010961314">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rechecks revocation and expiry before allowing a receipt replay" time="0.014996922">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rolls the whole student operation back for an invalid batch or ended enrolment" time="0.012404176">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="adds batch memberships without dropping earlier relationships or duplicating the primary contact" time="0.015458426">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="does not silently replace the verified email on an existing approved Parent connection" time="0.029965231">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="allows ordinary profile edits when approved Parent email differs from unchanged contact " time="0.017188438">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="allows ordinary profile edits when approved Parent email differs from unchanged contact different@example.test" time="0.018663525">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="canonicalizes class retry payloads across server session timezones" time="0.012620822">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rolls student, resource map and receipt back when a contact write fails after validation" time="0.006848632">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="preserves existing fees and prohibits an unauthorized branch move even with a new request" time="0.005631442">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="protects class history and session-specific teaching assignments when editing context" time="0.019952239">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="allows status/room edits without changing recorded context or inventing teacher attribution" time="0.010895258">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="returns a minimum teaching roster with no contacts, billing, private family or unassigned students" time="0.024671053">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="opens a complete student profile only for workspace owner/admin with contact and enrolment fields whitelisted" time="0.016260063">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="reruns the candidate without resetting resource versions or erasing prior receipts" time="0.021564911">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="keeps every new function private, fixed-search-path, and every new table protected by RLS" time="0.004402446">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="uses the class date and academy timezone for enrolments, excluding archived students" time="0.010134015">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="keeps operations and receipt/version tables inaccessible to app roles and leaves live migration history unchanged" time="0.017210236">
+        </testcase>
+        <testcase classname="tests/workspace-roster-transactions.test.ts" name="rejects invalid revisions, identifiers, names and class intervals without partial state" time="0.01122163">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/workspace-staff-lifecycle.test.ts" timestamp="2026-11-19T13:18:00.701Z" hostname="7f8817ff2c1e" tests="34" failures="0" errors="0" skipped="0" time="4.722277274">
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="binds a neutral owner-issued offer to one verified recipient, with no access before acceptance" time="0.101779904">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="stores only token digests and returns the same offer for exact issue retries" time="0.042530952">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 2" time="0.005914415">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 3" time="0.008571709">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 4" time="0.006320852">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 5" time="0.005748132">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 6" time="0.002739753">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="cannot issue staff offers using unrelated, instructor, finance or unverified authority 7" time="0.002815929">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects wrong recipients, missing/changed verification, disabled recipients and unknown tokens uniformly" time="0.020507415">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rechecks issuer ownership and eligibility before acceptance" time="0.015462501">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="makes accept retries harmless after later role removal without restoring grants" time="0.022663779">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="revokes pending invitations without granting membership and blocks expired offers" time="0.042008533">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not let old acceptance or pre-offboarding offers revive a removed membership" time="0.053475284">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="never bypasses a suspended membership or silently upgrades another active membership" time="0.015544393">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="caps new membership and grants at the issuer authority ceiling" time="0.012125387">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects malformed or escalated staff proposals {&quot;roles&quot;:[{&quot;role&quot;:&quot;owner&quot;}]}" time="0.003860481">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects malformed or escalated staff proposals {&quot;roles&quot;:[{&quot;role&quot;:&quot;branch_manager&quot;}]}" time="0.00267929">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects malformed or escalated staff proposals {&quot;roles&quot;:[{&quot;role&quot;:&quot;admin&quot;,&quot;branch&quot;:&quot;00000000-0000-0000-0000-000000000061&quot;}]}" time="0.00279263">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects malformed or escalated staff proposals {&quot;roles&quot;:[{&quot;role&quot;:&quot;instructor&quot;,&quot;branch&quot;:&quot;00000000-0000-0000-0000-000000000063&quot;}]}" time="0.002300478">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects malformed or escalated staff proposals {&quot;roles&quot;:[{&quot;role&quot;:&quot;superadmin&quot;}]}" time="0.005714355">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="creates admin-only membership without inventing a Coach identity" time="0.008721443">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="requires explicit teaching profile acceptance for a new instructor" time="0.011812618">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="transfers ownership only after a different verified recipient accepts, and preserves a current owner" time="0.012064295">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="rejects self-transfer and bounded owner transfers" time="0.008420956">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="replaces only an earlier pending ownership offer and never revives it by retry" time="0.031477141">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not revive a pending invitation when its issuer regains ownership later" time="0.029677105">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not hand permanent ownership to an existing temporary owner grant" time="0.007232107">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="creates explicit bounded assignments only for the accepted instructor and correct branch" time="0.017698568">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not grant retrospective classes or arbitrary history through a new assignment" time="0.013689718">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not treat a bounded membership as an instructor grant after teaching authority is removed" time="0.015456897">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="does not let temporary owners delegate assignment access beyond their own authority" time="0.014690806">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="accepts ownership for an existing indefinite staff member without rewriting their teaching identity" time="0.035355052">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="returns workspace-local staff profiles without other employment, auth IDs or family data" time="0.015049902">
+        </testcase>
+        <testcase classname="tests/workspace-staff-lifecycle.test.ts" name="keeps every offer/profile/event function and table private, with no production ledger change" time="0.004429868">
+        </testcase>
+    </testsuite>
+</testsuites>

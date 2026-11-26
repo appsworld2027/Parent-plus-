@@ -1,6 +1,7 @@
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '../ui/Typography';
+import { AppState, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '../ui/Typography';
 import * as Crypto from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
 import type { ClassSession } from '../classes/model';
@@ -287,10 +288,7 @@ export function ObservationsScreen({ academy, owner, initialClass, onLaunchHandl
   </View>;
 }
 const s = StyleSheet.create({
-  stack: { gap: 16 }, heading: { fontSize: 32, fontWeight: '700', color: '#22303A' }, title: { fontSize: 17, fontWeight: '700', color: '#22303A' },
-  body: { color: '#5C6B73', fontSize: 14, lineHeight: 22 }, card: { backgroundColor: '#fff', borderRadius: 20, padding: 20, gap: 14, borderWidth: 1, borderColor: '#E3E8E2' },
-  button: { minHeight: 48, padding: 15, borderRadius: 13, backgroundColor: '#1F6F6B', alignItems: 'center', justifyContent: 'center' },
-  soft: { backgroundColor: '#EDF1EC' }, buttonText: { fontSize: 14, color: '#fff', fontWeight: '600' }, ink: { color: '#22303A' }, disabled: { opacity: 0.5 },
-  input: { minHeight: 160, borderWidth: 1, borderColor: '#CCD4CF', borderRadius: 12, padding: 14, color: '#22303A', backgroundColor: '#FAFAF8', textAlignVertical: 'top', fontSize: 16 },
-  version: { borderTopWidth: 1, borderTopColor: '#E3E8E2', paddingTop: 12, gap: 6 },
+  stack:{gap:16},heading:{fontSize:30,lineHeight:31.5,letterSpacing:-1.2,fontWeight:'700',color:c.text},title:{fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.text},body:{color:c.muted,fontSize:13,lineHeight:20},
+  card:{backgroundColor:c.surface,borderRadius:18,padding:14,gap:14,borderWidth:1,borderColor:c.border},button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,borderRadius:14,backgroundColor:c.white,alignItems:'center',justifyContent:'center'},soft:{backgroundColor:c.raised},buttonText:{fontSize:13.5,color:c.black,fontWeight:'800'},ink:{color:c.text},disabled:{opacity:0.5},
+  input:{minHeight:160,borderWidth:1,borderColor:c.border,borderRadius:14,padding:11,color:c.text,backgroundColor:c.raised,textAlignVertical:'top',fontSize:13.5},version:{borderTopWidth:1,borderTopColor:c.border,paddingTop:12,gap:6},
 });

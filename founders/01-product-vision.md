@@ -4,4 +4,4 @@ Parent Plus connects Coach academy operations with private Aurora Parent family 
 
 Founders set priorities and approve releases. AI implements and records evidence against agreed behavior.
 
-The existing requirements remain authoritative: [Coach PRD](../PRD.md), [Parent PRD](product/PARENT_PRD.md), and [product decisions](product/PRODUCT_DECISIONS.md). This rollout adds shared working rules; it does not expand product scope.
+The [full product PRD](../PRD.md) describes the intended Parent and Coach experience and shared platform. The [revised prototypes](prototypes/README.md) illustrate that direction. See [current progress](../PROGRESS.md) for implementation status and [founder decisions](04-decisions-needed.md) for product choices that still need review.

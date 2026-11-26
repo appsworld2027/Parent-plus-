@@ -1,0 +1,12 @@
+name: AppsWorld AI Organization adapter
+on: [pull_request, workflow_dispatch]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate adapter contract
+        run: |
+          test -f .ai-org/manifest.json
+          node -e "const m=require('./.ai-org/manifest.json'); if(m.organization!=='appsworld'||!m.adapterVersion||m.protectedActions.length<5) process.exit(1)"
+          test -f ai-workspace/pilots/parentplus-ai-pilot/feedback.test.mjs || true

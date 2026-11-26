@@ -1,6 +1,7 @@
+import { prototypeColors as c, prototypeFontFamily, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '../ui/Typography';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import type { Academy } from '../auth/AuthProvider';
 import { ClassMediaPanel } from '../class-media/ClassMediaPanel';
@@ -18,7 +19,7 @@ function Button({ title, onPress, disabled = false }: { title: string; onPress: 
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={[s.button, disabled && s.disabled]}><Text style={s.buttonText}>{title}</Text></Pressable>;
 }
 function Field({ label, value, onChange, disabled = false }: { label: string; value: string; onChange: (text: string) => void; disabled?: boolean }) {
-  return <View style={s.field}><Text style={s.label}>{label}</Text>{Platform.OS === 'web' && /date|time/.test(label.toLowerCase()) ? React.createElement('input', { type: /date/i.test(label) ? 'date' : 'time', 'aria-label': label, value, disabled, onChange: (event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value), style: { minHeight: 48, width: '100%', boxSizing: 'border-box', border: '1px solid #CCD4CF', borderRadius: 12, padding: 12, fontSize: 16, backgroundColor: '#fff', color: '#22303A' } }) : <TextInput accessibilityLabel={label} value={value} onChangeText={onChange} editable={!disabled} autoCapitalize="none" autoCorrect={false} maxLength={100} style={s.input} />}</View>;
+  return <View style={s.field}><Text style={s.label}>{label}</Text>{Platform.OS === 'web' && /date|time/.test(label.toLowerCase()) ? React.createElement('input', { type: /date/i.test(label) ? 'date' : 'time', 'aria-label': label, value, disabled, onChange: (event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value), style: { minHeight:44,width:'100%',boxSizing:'border-box',border:`1px solid ${c.border}`,borderRadius:12,padding:'10px 11px',fontSize:13,fontFamily:`${prototypeFontFamily}, system-ui, -apple-system, sans-serif`,backgroundColor:c.raised,color:c.text,colorScheme:'dark' } }) : <TextInput accessibilityLabel={label} value={value} onChangeText={onChange} editable={!disabled} autoCapitalize="none" autoCorrect={false} maxLength={100} style={s.input} />}</View>;
 }
 type Active = { session: ClassSession; marks: Marks; saved: Marks; local: boolean };
 
@@ -214,7 +215,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
       {advanced && <>
       <Field label="End date (YYYY-MM-DD)" value={draft.endDate} onChange={v => update('endDate', v)} disabled={busy} />
       <Text style={s.label}>Class status</Text>
-      {(['scheduled', 'completed', 'cancelled'] as const).map(status => <Pressable key={status} accessibilityRole="radio" accessibilityLabel={`Class status ${status}`} accessibilityState={{ checked: draft.status === status, disabled: busy }} aria-checked={draft.status === status} disabled={busy} onPress={() => update('status', status)} style={s.choice}><Text>{draft.status === status ? '●' : '○'} {status}</Text></Pressable>)}
+      {(['scheduled', 'completed', 'cancelled'] as const).map(status => <Pressable key={status} accessibilityRole="radio" accessibilityLabel={`Class status ${status}`} accessibilityState={{ checked: draft.status === status, disabled: busy }} aria-checked={draft.status === status} disabled={busy} onPress={() => update('status', status)} style={[s.choice,draft.status===status&&s.selected]}><Text style={[s.choiceText,draft.status===status&&s.selectedText]}>{draft.status === status ? '●' : '○'} {status}</Text></Pressable>)}
       <Text style={s.body}>After attendance is recorded, class times are protected. Cancel the class and create a replacement to change its timing.</Text>
       </>}
       <Button title={busy ? 'Saving…' : 'Save class'} disabled={busy || !!batchDraft} onPress={() => { void saveSession(); }} />
@@ -226,7 +227,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
       {!students.length && <Text style={s.body}>No active students are enrolled for this class date.</Text>}
       <Button title="Mark all present" disabled={busy || !students.length || students.length > 500 || !!conflict} onPress={() => { void changeMarks(Object.fromEntries(students.map(student => [student.id, 'present']))); }} />
       {students.map(student => <View style={s.student} key={student.id}><Text style={s.title}>{student.name}</Text>
-        <View style={s.row}>{(['present', 'late', 'absent'] as Mark[]).map(mark => <Pressable key={mark} accessibilityRole="radio" accessibilityLabel={`${student.name}: ${mark}`} accessibilityState={{ checked: active.marks[student.id] === mark, disabled: busy || !!conflict }} aria-checked={active.marks[student.id] === mark} disabled={busy || !!conflict} onPress={() => { void changeMarks({ ...active.marks, [student.id]: mark }); }} style={[s.choice, active.marks[student.id] === mark && s.selected]}><Text>{mark}</Text></Pressable>)}</View>
+        <View style={s.row}>{(['present', 'late', 'absent'] as Mark[]).map(mark => <Pressable key={mark} accessibilityRole="radio" accessibilityLabel={`${student.name}: ${mark}`} accessibilityState={{ checked: active.marks[student.id] === mark, disabled: busy || !!conflict }} aria-checked={active.marks[student.id] === mark} disabled={busy || !!conflict} onPress={() => { void changeMarks({ ...active.marks, [student.id]: mark }); }} style={[s.choice,active.marks[student.id]===mark&&(mark==='present'?s.attendancePresent:mark==='late'?s.attendanceLate:s.attendanceAbsent)]}><Text style={[s.attendanceText,active.marks[student.id]===mark&&s.selectedText]}>{mark}</Text></Pressable>)}</View>
       </View>)}
       <Button title={busy ? 'Please wait…' : 'Save attendance to class'} disabled={busy || !students.length || !!conflict} onPress={() => { void submitAttendance(); }} />
       {onWriteFeedback&&<Button title="Write feedback for this class" disabled={busy||active.local||!!conflict||active.session.attendance_revision<1} onPress={()=>onWriteFeedback(active.session,students.filter(student=>active.saved[student.id]==='present'||active.saved[student.id]==='late').map(student=>student.id))} />}
@@ -262,13 +263,13 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   </View>;
 }
 const s = StyleSheet.create({
-  root: { gap: 16 }, kicker: { color: '#1F6F6B', fontSize: 11, fontWeight: '700', letterSpacing: 1.5 },
-  heading: { color: '#22303A', fontSize: 30, fontWeight: '700' }, title: { color: '#22303A', fontSize: 16, fontWeight: '700' },
-  body: { color: '#5C6B73', fontSize: 14, lineHeight: 22 }, label: { color: '#22303A', fontSize: 14, fontWeight: '600' },
-  card: { padding: 18, borderRadius: 18, backgroundColor: '#fff', borderColor: '#E3E8E2', borderWidth: 1, gap: 14 },
-  field: { gap: 8 }, input: { padding: 13, minHeight: 48, borderWidth: 1, borderColor: '#CED8CC', borderRadius: 12, color: '#22303A', fontSize: 16 },
-  button: { padding: 14, minHeight: 48, borderRadius: 12, backgroundColor: '#1F6F6B', alignItems: 'center' }, buttonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  disabled: { opacity: 0.5 }, row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, choice: { padding: 12, minHeight: 48, borderRadius: 10, borderWidth: 1, borderColor: '#CED8CC', justifyContent: 'center' },
-  selected: { backgroundColor: '#DCEDEA', borderColor: '#1F6F6B' }, student: { paddingVertical: 12, gap: 10, borderTopWidth: 1, borderTopColor: '#E3E8E2' },
-  notice: { padding: 14, color: '#1F6F6B', backgroundColor: '#DCEDEA', lineHeight: 22, borderRadius: 12 }, error: { padding: 14, color: '#8D2635', backgroundColor: '#FCE8EB', lineHeight: 22, borderRadius: 12 },
+  root:{gap:16},kicker:{color:c.sky,fontSize:10,fontWeight:'800',letterSpacing:1.5},
+  heading:{color:c.text,fontSize:30,lineHeight:31.5,letterSpacing:-1.2,fontWeight:'700'},title:{color:c.text,fontSize:15.5,fontWeight:'700',letterSpacing:-0.2},
+  body:{color:c.muted,fontSize:13,lineHeight:20},label:{color:c.muted,fontSize:12,fontWeight:prototypeWeight(750)},
+  card:{padding:14,borderRadius:18,backgroundColor:c.surface,borderColor:c.border,borderWidth:1,gap:14},
+  field:{gap:7},input:{paddingHorizontal:11,paddingVertical:10,minHeight:44,borderWidth:1,borderColor:c.border,borderRadius:12,color:c.text,fontSize:13,backgroundColor:c.raised},
+  button:{paddingVertical:13,paddingHorizontal:16,minHeight:44,borderRadius:14,backgroundColor:c.white,alignItems:'center'},buttonText:{color:c.black,fontSize:13.5,fontWeight:'800'},
+  disabled:{opacity:0.5},row:{flexDirection:'row',flexWrap:'wrap',gap:6},choice:{paddingHorizontal:11,paddingVertical:9,minHeight:44,borderRadius:11,borderWidth:1,borderColor:c.outline,backgroundColor:c.raised,justifyContent:'center'},
+  choiceText:{fontSize:11.5,fontWeight:'800',color:c.text},attendanceText:{fontSize:12,fontWeight:prototypeWeight(850),color:c.text},selected:{backgroundColor:c.white,borderColor:c.white},selectedText:{color:c.black},attendancePresent:{backgroundColor:c.mint,borderColor:c.mint},attendanceLate:{backgroundColor:c.sun,borderColor:c.sun},attendanceAbsent:{backgroundColor:c.rose,borderColor:c.rose},student:{paddingVertical:12,gap:10,borderTopWidth:1,borderTopColor:c.border},
+  notice:{padding:12,color:c.sky,backgroundColor:c.raised,lineHeight:20,fontSize:13,borderRadius:12},error:{padding:12,color:c.rose,backgroundColor:c.raised,lineHeight:20,fontSize:13,borderRadius:12},
 });

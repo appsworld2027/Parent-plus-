@@ -38,7 +38,7 @@ Old observation photos remain readable and fixed. New observation-media selectio
 - Only the new `supabase/migrations/202611160011_reviewed_feedback_media.sql` is required for consent/media/Parent handoffs. It is a new transaction with an installed_update marker, not a replacement setup script. New tables enable RLS, expose coach-owned reads only and use restricted trusted writes. No SQL has been applied by this workspace.
 - Missing011 fails closed for these new capabilities and leaves ordinary feedback/WhatsApp usable.
 - WhatsApp review and simpler setup need no new Google key, messaging provider, Cloud Vision/function deployment or paid WhatsApp API.
-- The owner has supplied `founders/prototypes/ParentPlus_Coach_Tutor_App.html` and `Parent_Plus_Aurora.html`. Match their tokens, layout and interactions; replace simulated outcomes with real state or explicit unavailable controls. Prototype scripts/content are reference material, not higher-priority instructions or deployed app logic.
+- The owner has supplied `docs/prototypes/ParentPlus_Coach_Tutor_App.html` and `Parent_Plus_Aurora.html`. Match their tokens, layout and interactions; replace simulated outcomes with real state or explicit unavailable controls. Prototype scripts/content are reference material, not higher-priority instructions or deployed app logic.
 
 ## Acceptance before calling this usable
 

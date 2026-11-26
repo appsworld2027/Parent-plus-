@@ -1,6 +1,7 @@
+import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '../ui/Typography';
+import { ActivityIndicator, Image, Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } from './model';
 import { formatFee, validateBatch, validateStudent, batchStudents, proficiencyLabels } from './model';
@@ -178,7 +179,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
       <Field label="Student name" value={studentDraft.name} onChange={value => updateStudent('name', value)} disabled={working} />
       <Field label="Age (optional)" kind="number" max={3} value={studentDraft.age} onChange={value => updateStudent('age', value)} disabled={working} />
       <Text style={s.label}>Proficiency level</Text>
-      <View style={s.levelChoices}>{(Object.keys(proficiencyLabels) as Proficiency[]).map(level=><Pressable key={level} accessibilityRole="radio" accessibilityLabel={`Proficiency ${proficiencyLabels[level]}`} accessibilityState={{selected:(studentDraft.proficiency??'unassessed')===level,disabled:working}} disabled={working} onPress={()=>updateStudent('proficiency',level)} style={[s.levelChoice,(studentDraft.proficiency??'unassessed')===level&&s.selected]}><Text style={s.label}>{proficiencyLabels[level]}</Text></Pressable>)}</View>
+      <View style={s.levelChoices}>{(Object.keys(proficiencyLabels) as Proficiency[]).map(level=><Pressable key={level} accessibilityRole="radio" accessibilityLabel={`Proficiency ${proficiencyLabels[level]}`} accessibilityState={{selected:(studentDraft.proficiency??'unassessed')===level,disabled:working}} disabled={working} onPress={()=>updateStudent('proficiency',level)} style={[s.levelChoice,(studentDraft.proficiency??'unassessed')===level&&s.selected]}><Text style={[s.label,(studentDraft.proficiency??'unassessed')===level&&s.selectedText]}>{proficiencyLabels[level]}</Text></Pressable>)}</View>
       <Text style={s.formSectionTitle}>Guardian contact</Text><Text style={s.body}>Optional contact details. This does not create a parent account or send an invitation.</Text>
       <Field label="Guardian name" value={studentDraft.guardian} onChange={value => updateStudent('guardian', value)} disabled={working} />
       <Field label="Guardian email" kind="email" max={320} value={studentDraft.email} onChange={value => updateStudent('email', value)} disabled={working} />
@@ -191,7 +192,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
         const selected = studentDraft.batches.includes(batch.id);
         return <Pressable key={batch.id} accessibilityRole="checkbox" accessibilityLabel={batch.name} aria-checked={selected} accessibilityState={{ checked: selected, disabled: busy || enrolled }} disabled={busy || enrolled}
           onPress={() => updateStudent('batches', selected ? studentDraft.batches.filter(id => id !== batch.id) : [...studentDraft.batches, batch.id])} style={[s.check, selected && s.selected]}>
-          <Text style={s.label}>{selected ? '[✓]' : '[ ]'} {batch.name}</Text>{enrolled && <Text style={s.caption}>Already enrolled</Text>}
+          <Text style={[s.label,selected&&s.selectedText]}>{selected ? '[✓]' : '[ ]'} {batch.name}</Text>{enrolled && <Text style={[s.caption,selected&&s.selectedText]}>Already enrolled</Text>}
         </Pressable>;
       })}
       <PhotoControl key={studentDraft.id} academy={academy} kind="student" id={studentDraft.id} exists={!!data?.students.some(student=>student.id===studentDraft.id)} disabled={busy} beforeUpload={saveBeforePhoto} onWorking={setPhotoBusy} />
@@ -237,13 +238,13 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
     </> : <>
       <View style={s.tabs}><Button label="Students" soft={tab !== 'students'} disabled={working} onPress={() => { setTab('students'); setError(''); }} />
         <Button label="Batches" soft={tab !== 'batches'} disabled={working} onPress={() => { setTab('batches'); setError(''); }} /></View>
-      {loading && <ActivityIndicator accessibilityLabel="Loading roster" color="#1F6F6B" />}
+      {loading && <ActivityIndicator accessibilityLabel="Loading roster" color={c.sky} />}
       <Button label="Refresh roster" soft disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Roster refreshed.', { title: 'Refresh complete' }); }); }} />
       {tab === 'students' ? <>
         <Button label="Scan student list" soft disabled={!data||loading||working} onPress={()=>{setScanOpen(true);onViewChange();}}/>
         <Button label="Add a student" disabled={!data || loading || working} onPress={() => editStudent()} />
         {data && <><Field label="Search students" value={search} disabled={working} onChange={setSearch} />
-          <View style={s.chips}>{[{ id: 'all', name: 'All batches' }, ...batches].map(b => <Pressable key={b.id} accessibilityRole="button" onPress={() => setBatchFilter(b.id)} style={[s.chip, batchFilter === b.id && s.selected]}><Text style={s.label}>{b.name}</Text></Pressable>)}</View>
+          <View style={s.chips}>{[{ id: 'all', name: 'All batches' }, ...batches].map(b => <Pressable key={b.id} accessibilityRole="button" onPress={() => setBatchFilter(b.id)} style={[s.chip, batchFilter === b.id && s.selected]}><Text style={[s.label,batchFilter===b.id&&s.selectedText]}>{b.name}</Text></Pressable>)}</View>
           <Button label={showArchived ? 'Show active students' : 'Show archived students'} soft onPress={() => setShowArchived(x => !x)} />
           {!list.length && <Text style={s.body}>{search || batchFilter !== 'all' ? 'No students match these filters.' : showArchived ? 'No archived students.' : 'No students yet. Add your first student.'}</Text>}
           {list.map(student => <View key={student.id} style={s.card}>
@@ -269,7 +270,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
               accessibilityRole="checkbox" accessibilityLabel={`Add ${student.name} to batch`} aria-checked={selectedMembers.includes(student.id)}
               accessibilityState={{ checked: selectedMembers.includes(student.id), disabled: busy }} disabled={working}
               onPress={() => { setSelectedMembers(ids => ids.includes(student.id) ? ids.filter(id => id !== student.id) : [...ids, student.id]); setDirty(true); }} style={[s.check, selectedMembers.includes(student.id) && s.selected]}>
-              <Text style={s.label}>{selectedMembers.includes(student.id) ? '✓ ' : '+ '}{student.name}</Text>
+              <Text style={[s.label,selectedMembers.includes(student.id)&&s.selectedText]}>{selectedMembers.includes(student.id) ? '✓ ' : '+ '}{student.name}</Text>
             </Pressable>)}
           <Text style={s.caption}>Students already in this batch are retained. The same student can belong to other batches too.</Text>
           <Button label={`Add selected students (${selectedMembers.length})`} disabled={busy || !selectedMembers.length} onPress={() => { void saveMembers(); }} />
@@ -310,21 +311,23 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
 }
 
 const s = StyleSheet.create({
-  formSectionTitle: {fontSize:18,fontWeight:'700',color:'#22303A',paddingTop:16,borderTopWidth:1,borderTopColor:'#E3E8E2'},levelChoices:{flexDirection:'row',flexWrap:'wrap',gap:8},levelChoice:{minHeight:44,paddingHorizontal:13,paddingVertical:12,borderWidth:1,borderColor:'#CED8CC',borderRadius:12,justifyContent:'center'},profileHero:{backgroundColor:'#1F6F6B',borderRadius:22,padding:24,gap:16,alignItems:'center'},profileAvatar:{width:96,height:96,borderRadius:48},profileInitial:{fontSize:36,fontWeight:'700',color:'#1F6F6B'},profileName:{fontSize:26,fontWeight:'700',color:'#fff'},profileTags:{flexDirection:'row',flexWrap:'wrap',gap:8,justifyContent:'center'},profileTag:{color:'#1F6F6B',backgroundColor:'#DCEDEA',borderRadius:14,paddingHorizontal:12,paddingVertical:8,fontSize:13,fontWeight:'600'},
-  studentHeading: { flexDirection: 'row', gap: 12, alignItems: 'center' }, smallAvatar: {width:48,height:48,borderRadius:24}, initialAvatar: {width:48,height:48,borderRadius:24,backgroundColor:'#DCEDEA',alignItems:'center',justifyContent:'center'}, initial:{fontSize:22,fontWeight:'700',color:'#1F6F6B'},
-  batchHero: { backgroundColor: '#1F6F6B', borderRadius: 20, padding: 22, gap: 14 }, heroTitle: { color: '#fff', fontSize: 30, fontWeight: '700' }, heroBody: { color: '#E0EEEA', lineHeight: 22 },
-  root: { gap: 16 }, kicker: { color: '#1F6F6B', fontSize: 10, letterSpacing: 1.5, fontWeight: '700' },
-  heading: { fontSize: 32, lineHeight: 39, fontWeight: '700', letterSpacing: -1, color: '#22303A' },
-  title: { fontSize: 17, fontWeight: '700', color: '#22303A' }, body: { fontSize: 13, lineHeight: 21, color: '#5C6B73' },
-  card: { padding: 20, gap: 20, borderRadius: 18, borderWidth: 1, borderColor: '#E3E8E2', backgroundColor: '#fff' },
-  tabs: { flexDirection: 'row', gap: 12, flexWrap: 'wrap' }, chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { padding: 12, borderRadius: 22, backgroundColor: '#fff', borderColor: '#CED8CC', borderWidth: 1 },
-  field: { gap: 8 }, label: { color: '#22303A', fontWeight: '600', fontSize: 13 },
-  input: { padding: 13, minHeight: 52, borderWidth: 1, borderColor: '#CED8CC', borderRadius: 12, fontSize: 16, color: '#22303A', backgroundColor: '#FAFBF8' },
-  button: { padding: 14, minHeight: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 12, backgroundColor: '#1F6F6B' },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '700' }, soft: { backgroundColor: '#EDF1EC' }, softText: { color: '#22303A' },
-  error: { padding: 14, borderRadius: 12, color: '#8D2635', backgroundColor: '#FCE8EB', lineHeight: 22 },
-  notice: { padding: 14, borderRadius: 12, color: '#1F6F6B', backgroundColor: '#DCEDEA', lineHeight: 22 },
-  check: { padding: 14, minHeight: 48, borderWidth: 1, borderColor: '#CED8CC', borderRadius: 12, gap: 5 },
-  selected: { backgroundColor: '#DCEDEA', borderColor: '#1F6F6B' }, caption: { color: '#5C6B73', fontSize: 11 },
+  formSectionTitle: {fontSize:15.5,fontWeight:'700',color:c.text,paddingTop:16,borderTopWidth:1,borderTopColor:c.border},
+  levelChoices:{flexDirection:'row',flexWrap:'wrap',gap:6},levelChoice:{minHeight:44,paddingHorizontal:11,paddingVertical:9,borderWidth:1,borderColor:c.outline,borderRadius:11,justifyContent:'center',backgroundColor:c.raised},
+  profileHero:{backgroundColor:c.surface,borderWidth:1,borderColor:c.border,borderRadius:18,padding:14,gap:12,alignItems:'center'},profileAvatar:{width:64,height:64,borderRadius:32},profileInitial:{fontSize:26,fontWeight:'800',color:c.black},profileName:{fontSize:24,fontWeight:'700',letterSpacing:-0.8,color:c.text},profileTags:{flexDirection:'row',flexWrap:'wrap',gap:6,justifyContent:'center'},profileTag:{color:c.text,backgroundColor:c.raised,borderRadius:999,paddingHorizontal:9,paddingVertical:4,fontSize:10.5,fontWeight:'800'},
+  studentHeading: { flexDirection: 'row', gap: 11, alignItems: 'center' }, smallAvatar: {width:34,height:34,borderRadius:17}, initialAvatar: {width:34,height:34,borderRadius:17,backgroundColor:c.sky,alignItems:'center',justifyContent:'center'}, initial:{fontSize:12,fontWeight:'800',color:c.black},
+  batchHero: { backgroundColor:c.surface,borderWidth:1,borderColor:c.border,borderRadius:18,padding:14,gap:12 }, heroTitle: { color:c.text,fontSize:24,fontWeight:'700',letterSpacing:-0.8 }, heroBody: { color:c.muted,fontSize:12.5,lineHeight:19 },
+  root: { gap:16 }, kicker: { color:c.sky,fontSize:10,letterSpacing:1.5,fontWeight:'800' },
+  heading: { fontSize:30,lineHeight:31.5,fontWeight:'700',letterSpacing:-1.2,color:c.text },
+  title: { fontSize:15.5,fontWeight:'700',letterSpacing:-0.2,color:c.text }, body: { color:c.muted,fontSize:13,lineHeight:20 },
+  card: { padding:14,gap:14,borderRadius:18,borderWidth:1,borderColor:c.border,backgroundColor:c.surface },
+  tabs: { flexDirection:'row',gap:7,flexWrap:'wrap' }, chips: { flexDirection:'row',flexWrap:'wrap',gap:7 },
+  chip: { paddingHorizontal:12,paddingVertical:8,borderRadius:999,backgroundColor:c.surface,borderColor:c.surface,borderWidth:1,minHeight:44,justifyContent:'center' },
+  field: { gap:7 }, label: { color:c.muted,fontWeight:prototypeWeight(750),fontSize:12 },
+  input: { paddingHorizontal:11,paddingVertical:10,minHeight:44,borderWidth:1,borderColor:c.border,borderRadius:12,fontSize:13,color:c.text,backgroundColor:c.raised },
+  button: { paddingVertical:13,paddingHorizontal:16,minHeight:44,alignItems:'center',justifyContent:'center',borderRadius:14,backgroundColor:c.white },
+  buttonText: { color:c.black,fontSize:13.5,fontWeight:'800' }, soft: { backgroundColor:c.raised }, softText: { color:c.text },
+  error: { padding:12,borderRadius:12,color:c.rose,backgroundColor:c.raised,lineHeight:20,fontSize:13 },
+  notice: { padding:12,borderRadius:12,color:c.sky,backgroundColor:c.raised,lineHeight:20,fontSize:13 },
+  check: { padding:12,minHeight:44,borderWidth:1,borderColor:c.outline,borderRadius:12,gap:5,backgroundColor:c.raised },
+  selected: { backgroundColor:c.white,borderColor:c.white },selectedText:{color:c.black},caption: { color:c.muted,fontSize:11.5,lineHeight:17 },
 });

@@ -1,43 +1,19 @@
-# ParentPlus — start here
+# Parent Plus — start here
 
-One shared product, one guided path for founders and AI agents.
+One shared product, two founders, versioned AI working rules.
 
-## Choose your path
+**MM development branch: [`MM/development`](https://github.com/appsworld2027/Parent-plus-/tree/MM/development).** Full AI development authority; releases to main need founder approval. [Current rule](AGENTS.md).
 
-### Founder path
+- [What is Parent Plus?](founders/01-product-vision.md)
+- [What should Parent Plus do? Read the full product requirements.](PRD.md)
+- [How will Parent and Coach use it? Open the prototypes.](founders/prototypes/README.md)
+- [What features exist?](founders/02-feature-map.md)
+- [What is working now?](founders/03-current-status.md)
+- [What needs our decision?](founders/04-decisions-needed.md)
+- [Can we trust the latest build?](founders/05-quality-report.md)
+- [Feature-by-feature testing coverage and remaining gaps](ai-workspace/validation/FEATURE_COVERAGE.md)
+- [Recreate the test environment in another account/workspace](ai-workspace/validation/LOCAL_SUPABASE_TESTING.md)
 
-Use this path to understand the product and make decisions:
+## Documentation workflow
 
-1. [Product vision](founders/01-product-vision.md)
-2. [Feature map](founders/02-feature-map.md)
-3. [Current status](founders/03-current-status.md)
-4. [Decisions needed](founders/04-decisions-needed.md)
-5. [Quality report](founders/05-quality-report.md)
-6. [Founder workspace index](founders/README.md)
-
-### AI path
-
-Use this path to do engineering work safely:
-
-1. [Repository rules](AGENTS.md)
-2. [Documentation operating system](docs/DOCUMENTATION_OPERATING_SYSTEM.md)
-3. [Product roadmap](founders/product/CONSOLIDATED_PRODUCT_ROADMAP.md)
-4. [Developer guide](ai-workspace/development/DEVELOPER_GUIDE.md)
-5. [Implementation plans](ai-workspace/plans/README.md)
-6. [Validation rules](ai-workspace/validation/README.md)
-7. [Task closeout template](ai-workspace/instructions/TASK_CLOSEOUT_TEMPLATE.md)
-8. [AI workspace index](ai-workspace/README.md)
-
-## The task path
-
-```text
-Discover → Read → Plan → Build → Validate → Close → Move ahead
-```
-
-Every meaningful task should leave behind a plan, validation evidence, and a
-short closeout record. Existing documents remain in their current founder and
-AI folders while the navigation is improved in controlled batches.
-
-## Isolated service validation
-
-See [feature coverage](ai-workspace/validation/FEATURE_COVERAGE.md) and [local Supabase service tests](ai-workspace/validation/LOCAL_SUPABASE_TESTING.md) for the optional, disposable service test harness.
+Read [the documentation operating system](docs/DOCUMENTATION_OPERATING_SYSTEM.md) and follow Discover → Read → Plan → Build → Validate → Close.

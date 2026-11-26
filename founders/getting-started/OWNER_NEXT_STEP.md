@@ -2,7 +2,7 @@
 
 ## Current development work: robust foundation
 
-Next slice implemented: private workspace-authorized student/batch/class saves and profile/roster reads, with atomic contacts/enrolments, stale-edit checks and safe retries. [What this changes](../../ai-workspace/validation/WORKSPACE_ROSTER_QA.md). These are tested backend candidates; there is no new website flow or Supabase paste step from017. Existing accounts and installed001–014 remain.
+Next slice implemented: private workspace-authorized student/batch/class saves and profile/roster reads, with atomic contacts/enrolments, stale-edit checks and safe retries. [What this changes](../../docs/WORKSPACE_ROSTER_QA.md). These are tested backend candidates; there is no new website flow or Supabase paste step from017. Existing accounts and installed001–014 remain.
 
 Latest execution: the private server permission kernel and owner-only revocations are implemented and tested in disposable databases. See [what was tested](../../ai-workspace/validation/WORKSPACE_AUTHORIZATION_QA.md). This does not change the website yet. No SQL to copy/run: the remaining API/storage conversion and real Supabase staging must precede activation.
 

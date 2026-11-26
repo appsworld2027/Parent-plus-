@@ -1,3 +1,4 @@
+import { prototypeColors as c } from '../ui/prototypeTheme';
 import React,{useEffect,useState} from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
@@ -10,4 +11,4 @@ export function CoachSetupCard({academy,apVerse=false,onStart}:{academy:string;a
  {counts&&<View style={s.figures}><Text style={s.figure}>{counts.students} students</Text><Text style={s.figure}>{counts.batches} batches</Text></View>}
  <Pressable accessibilityRole="button" onPress={onStart} style={s.button}><Text style={s.buttonText}>Create batch and scan students</Text></Pressable><Text style={s.hint}>Have students already? Add another batch or import more students here.</Text></View>;
 }
-const s=StyleSheet.create({card:{backgroundColor:'#E5F0EC',borderRadius:22,padding:22,gap:14,borderWidth:1,borderColor:'#C7DFD6'},kicker:{fontSize:10,fontWeight:'700',letterSpacing:1.2,color:'#1F6F6B'},title:{fontSize:24,lineHeight:30,fontWeight:'700',color:'#22303A'},body:{fontSize:14,lineHeight:22,color:'#50655C'},figures:{flexDirection:'row',gap:22},figure:{fontSize:18,fontWeight:'700',color:'#1F6F6B'},button:{minHeight:50,padding:15,backgroundColor:'#1F6F6B',borderRadius:14,alignItems:'center'},buttonText:{color:'#fff',fontWeight:'700',fontSize:15},hint:{fontSize:12,lineHeight:19,color:'#50655C'}});
+const s = StyleSheet.create({card:{backgroundColor:c.surface,borderRadius:18,padding:14,gap:12,borderWidth:1,borderColor:c.border},kicker:{fontSize:10,fontWeight:'800',letterSpacing:1.2,color:c.sky},title:{fontSize:19,lineHeight:24,fontWeight:'700',letterSpacing:-0.4,color:c.text},body:{fontSize:13,lineHeight:20,color:c.muted},figures:{flexDirection:'row',gap:16},figure:{fontSize:19,fontWeight:'700',letterSpacing:-0.6,color:c.sky},button:{minHeight:44,paddingVertical:13,paddingHorizontal:16,backgroundColor:c.white,borderRadius:14,alignItems:'center'},buttonText:{color:c.black,fontWeight:'800',fontSize:13.5},hint:{fontSize:11.5,lineHeight:17,color:c.muted}});

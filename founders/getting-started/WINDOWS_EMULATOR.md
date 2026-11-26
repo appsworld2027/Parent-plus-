@@ -1,10 +1,5 @@
 # Use Parent Plus Coach on a Windows Intel laptop
 
-# Historical setup — retired 17 November 2026
-
-This guide describes the previous APK/emulator path. The owner has moved deployment and acceptance to Vercel; do not download or install APKs for current ParentPlus work. Retain the steps below only as historical context.
-
-
 Owner hardware: Windows, Intel Core Ultra 7. This is an x86-64 host. The earlier 0.3.1 APK is ARM64-only; do not assume it works on a standard x86_64 emulator. Latest verified **0.4.0** packages both `arm64-v8a` and `x86_64`; [run 43225589808](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808) passed native compilation, signature verification and ELF/header checks for 17 libraries per architecture. [Download the compatible APK](https://github.com/appsworld2027/Parent-plus-/actions/runs/43225589808/artifacts/13948107259). Actual startup/UI acceptance on this laptop is still pending.
 
 ## Setup on the laptop

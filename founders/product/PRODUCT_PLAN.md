@@ -1,13 +1,6 @@
 # Parent Plus Coach — two-day pilot product plan
 
-# Current delivery direction — 17 November 2026
-
-Vercel web deployment and hosted browser acceptance are the active release path. APK builds and APK-based tests are retired by owner direction; older Android pilot steps below are historical and are not release gates.
-
-
-**Historical-plan notice, 17 November 2026:** newer owner direction in `PRD.md`, `PARENT_PRD.md` and `founders/product/CONSOLIDATED_PRODUCT_ROADMAP.md` governs current development. Parent is now an implemented separate workspace; payment collection remains shelved. The original two-day sequencing below is not a delivery promise or an instruction to defer Parent again. Current release evidence and open gates belong in `PROGRESS.md`.
-
-**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in founders/prototypes/. Read [PARENT_PRD.md](PARENT_PRD.md) and [../../ai-workspace/features/PARENT_MODULE.md](../../ai-workspace/features/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
+**Later owner authorisation,16November2026:** build the separate Aurora Parent workspace on the same Supabase/Auth project. Both original prototypes are now in docs/prototypes/. Read [docs/PARENT_PRD.md](PARENT_PRD.md) and [docs/PARENT_MODULE.md](../../ai-workspace/features/PARENT_MODULE.md). This supersedes older parent-app deferral language; it does not activate device push, real payments or public release.
 
 
 **Current owner priority (16November2026):** feedback-first, easy batch/class setup, coach-reviewed WhatsApp, held Parent snapshots and consented class media. Fee collection/gateway work is shelved. This supersedes older payment-first sequencing and no-parent-sharing exclusions below. See [current reset](COACH_FEEDBACK_RESET.md) and PRD1.6. Exact prototype styling is blocked by the missing original Coach reference.

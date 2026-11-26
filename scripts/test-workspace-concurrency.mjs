@@ -91,6 +91,7 @@ try{
  await sql(readFileSync('supabase/candidates/202611170018_workspace_staff.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170019_workspace_attendance.sql','utf8'));
  await sql(readFileSync('supabase/candidates/202611170020_workspace_feedback.sql','utf8'));
+ await sql(readFileSync('supabase/candidates/202611180021_learning_context.sql','utf8'));
  await sql(`insert into auth.users(id,email,email_confirmed_at) values('${uid(101)}','new@example.test',clock_timestamp()),('${uid(102)}','second@example.test',clock_timestamp()),('${uid(103)}','third@example.test',clock_timestamp());`);
  await sql(`create table coach_private.workspace_test_writes(actor uuid,session_id uuid);
  create function coach_private.workspace_test_protected_write(workspace uuid,session uuid) returns void language plpgsql security definer set search_path='' as $$
@@ -281,6 +282,50 @@ try{
   await blocked(author,editor);await editor.send('commit;');await conflict;
   assert.equal(await sql(`select author_id='${uid(3)}' and updated_by='${uid(1)}' and note='Corrected note' from public.observations where id='${uid(1604)}';`),'t');
  });
+ // LRN-05-SC-011: actual statements wait on the same authority anchor. These
+ // tests use separate psql sessions and verify the durable result after commit.
+ async function learningSetup(n){
+  const curriculum=uid(2100+n),stageA=uid(2200+n*2),stageB=uid(2201+n*2),goalA=uid(2300+n*2),goalB=uid(2301+n*2);
+  const definitions=JSON.stringify([{id:stageA,title:'Foundations',objectives:[{id:goalA,title:'Wait for a turn'}]},
+   {id:stageB,title:'Independent',objectives:[{id:goalB,title:'Invite a peer'}]}]);
+  const current=Number(await sql(`select coalesce(max(revision),0) from coach_private.learning_class_plans where workspace_id=${workspace} and session_id=${session};`));
+  await sql(`${as(8)}select coach_private.workspace_publish_curriculum(${workspace},'${curriculum}',0,'${uid(2500+n)}','Social confidence','${definitions}'::jsonb);
+   ${as(3)}select coach_private.workspace_save_learning_plan(${workspace},${session},${current},'${uid(2600+n)}','${curriculum}',1,'Shared activity',array['${goalA}','${goalB}']::uuid[]);
+   select coach_private.workspace_place_learner(${workspace},${session},'${uid(21)}','${curriculum}',1,'${stageA}',0,'${uid(2700+n)}','Starting point');
+   ${saveFeedback(4600+n,0,4700+n,'Observed waiting for a turn.','recorded')}`);
+  return {curriculum,stageA,stageB,goalA,goalB,revision:current+1,feedback:uid(4600+n)};
+ }
+ const learningContext=`select coach_private.workspace_learning_context(${workspace},${session},'${uid(21)}');`;
+ await test('learning placement commits before a waiting context read: no mixed learner stage and objectives',async()=>{
+  const p=await learningSetup(1),writer=await connection('learning_stage_writer',3);
+  await writer.send(`select coach_private.workspace_place_learner(${workspace},${session},'${uid(21)}','${p.curriculum}',1,'${p.stageB}',1,'${uid(2801)}','Advanced after assessment');`);
+  const reader=await connection('learning_stage_reader',4),attempt=reader.send(learningContext);
+  await blocked(reader,writer);await writer.send('commit;');const result=JSON.parse(await attempt);
+  assert.equal(result.placement.stage_id,p.stageB);assert.deepEqual(result.objectives.map(g=>g.id),[p.goalB]);
+ });
+ await test('learning plan commits before a waiting context read: one complete plan revision',async()=>{
+  const p=await learningSetup(2),writer=await connection('learning_plan_writer',3);
+  await writer.send(`select coach_private.workspace_save_learning_plan(${workspace},${session},${p.revision},'${uid(2802)}','${p.curriculum}',1,'Revised activity',array['${p.goalA}']::uuid[]);`);
+  const reader=await connection('learning_plan_reader',4),attempt=reader.send(learningContext);
+  await blocked(reader,writer);await writer.send('commit;');const result=JSON.parse(await attempt);
+  assert.equal(result.plan.revision,p.revision+1);assert.equal(result.plan.content,'Revised activity');assert.deepEqual(result.objectives.map(g=>g.id),[p.goalA]);
+ });
+ await test('learning evidence waiting behind assignment revocation is denied without assessment or receipt',async()=>{
+  const p=await learningSetup(3),revoker=await connection('learning_revoker',1);await revoker.send(revokeAssignment);
+  const teacher=await connection('learning_revoked_writer',3);
+  const attempt=teacher.send(`select coach_private.workspace_assess_learning(${workspace},${session},'${uid(21)}','${p.feedback}',1,'${p.goalA}',${p.revision},0,'${uid(2803)}','observed','Waited with a prompt');`),denial=mustDeny(attempt);
+  await blocked(teacher,revoker);await revoker.send('commit;');await denial;
+  assert.equal(await sql(`select count(*) from coach_private.learning_assessments where curriculum_id='${p.curriculum}';`),'0');
+  assert.equal(await sql(`select count(*) from coach_private.learning_receipts where request_id='${uid(2803)}';`),'0');
+ });
+ await test('identical concurrent learning evidence creates one immutable assessment and receipt',async()=>{
+  const p=await learningSetup(4),statement=`select coach_private.workspace_assess_learning(${workspace},${session},'${uid(21)}','${p.feedback}',1,'${p.goalA}',${p.revision},0,'${uid(2804)}','practising','Waited with a prompt');`;
+  const first=await connection('learning_first_receipt',3),original=await first.send(statement);
+  const second=await connection('learning_second_receipt',3),attempt=second.send(statement);
+  await blocked(second,first);await first.send('commit;');assert.deepEqual(JSON.parse(await attempt),JSON.parse(original));await second.send('commit;');
+  assert.equal(await sql(`select count(*) from coach_private.learning_assessments where curriculum_id='${p.curriculum}';`),'1');
+  assert.equal(await sql(`select count(*) from coach_private.learning_receipts where request_id='${uid(2804)}';`),'1');
+ });
  await test('ownership handoff commits before an old owner write: waiting old owner denied',async()=>{
   await sql(`${as(1)}${issueStaff(4,'second@example.test',true)}`);
   const successor=await connection('new_owner_accepting',102);await successor.send(acceptStaff(4));
@@ -289,7 +334,7 @@ try{
   assert.equal(await sql(`select count(*) from public.batches where id='${uid(1304)}';`),'0');
   assert.equal(await sql(`${as(102)}select coach_private.workspace_has_role(${workspace},'owner',null);`),'t');
  });
- console.log(`${passed}/25 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
+ console.log(`${passed}/29 real PostgreSQL transaction cases passed. Fictional local data only; no Supabase provider acceptance implied.`);
 }finally{
  await Promise.all([...clients].map(c=>c.close()));
  if(failures.length)process.exitCode=1;
