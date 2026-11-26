@@ -58,7 +58,7 @@ export function AccountSettings({ onBack }: { onBack: () => void }) {
       setCurrent(''); setNext(''); setAgain('');
       let othersEnded = false;
       try { othersEnded = !(await supabase.auth.signOut({ scope: 'others' })).error; } catch { /* This device stays signed in. */ }
-      setDone(othersEnded ? PASSWORD_SAVED : 'Your new password was saved.');
+      setDone(othersEnded ? PASSWORD_SAVED : 'Your new password was saved, but other devices could not be signed out. Use "Sign out of all devices" below.');
     } catch (error) {
       const code = typeof error === 'object' && error !== null && 'code' in error ? (error as { code?: string }).code : '';
       setFailure(safeAuthFailure('AUTH_FAILURE', code === 'weak_password' ? PASSWORD_WEAK
@@ -75,12 +75,12 @@ export function AccountSettings({ onBack }: { onBack: () => void }) {
       <Row label="New password" value={next} onChange={setNext} />
       <Row label="Confirm password" value={again} onChange={setAgain} />
       <Text style={s.hint}>Use at least 15 characters. A few unrelated words work well.</Text>
-      {!!failure && <Text style={s.error}>{failure}</Text>}
+      {!!failure && <Text role="alert" style={s.error}>{failure}</Text>}
       {!!done && <Text role="status" style={s.notice}>{done}</Text>}
       <Pressable accessibilityRole="button" disabled={busy} onPress={() => { void save(); }} style={[s.button, busy && { opacity: 0.5 }]}><Text style={s.buttonLabel}>{busy ? 'Please wait…' : 'Save password'}</Text></Pressable>
     </View>
     <View style={s.card}>
-      <Text style={s.title}>Sign out of all devices</Text>
+      <Text accessibilityRole="header" style={s.title}>Sign out of all devices</Text>
       <Text style={s.hint}>Use this if a phone is lost or someone else may know your password.</Text>
       {!!signOutError && <Text style={s.error}>{signOutError}</Text>}
       <Pressable accessibilityRole="button" disabled={signingOut} onPress={() => setConfirmAll(true)} style={[s.button, s.soft, signingOut && { opacity: 0.5 }]}><Text style={s.softLabel}>Sign out of all devices</Text></Pressable>
