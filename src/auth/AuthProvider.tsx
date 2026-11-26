@@ -9,6 +9,9 @@ import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { useFeedback } from '../ui/ActionFeedback';
 
+// M18 and M13: exact wording from the approved Login contracts (docs/product/login-session-stability).
+export const SESSION_ENDED = 'Your session ended. Please sign in again.';
+const LINK_UNUSABLE = 'This link could not be used. Request a new one from this device, then open the newest email here.';
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
   module: 'coach' | 'parent';
@@ -40,6 +43,9 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   const [recovery, setRecovery] = useState(false);
   const [revision, setRevision] = useState(0);
   const draftCleanup = useRef<Promise<string | null>>(Promise.resolve(null));
+  // True only while the coach themselves is signing out. Any other SIGNED_OUT
+  // (service ended or revoked the session) must keep unsent drafts (C1.1a SS-04/05).
+  const chosenSignOut = useRef(false);
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -51,9 +57,10 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (event === 'SIGNED_OUT') {
         if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
         diagnostics.clear(); setAcademy(null); setRecovery(false);
-        // Invalidate observation writers synchronously; queued removal runs once.
+                // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
-        draftCleanup.current = Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
+        if (!chosenSignOut.current) setError(SESSION_ENDED);
+        draftCleanup.current = !chosenSignOut.current ? Promise.resolve(null) : Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
           const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but a device draft could not be cleared. Your coding partner can help.');
           if (active) setError(message);
           return message;
@@ -71,6 +78,31 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     });
     return () => { active = false; data.subscription.unsubscribe(); };
   }, [revision]);
+
+  const [linkFailed, setLinkFailed] = useState(false);
+  // A bad link must never replace a working signed-in screen (SS-10). Wait until the
+  // stored session is known, then tell a signed-in coach with a message and keep them in.
+  useEffect(() => {
+    if (!linkFailed || loading) return;
+    setLinkFailed(false);
+    if (session) show({ kind: 'error', title: 'Link not used', message: LINK_UNUSABLE, source: 'auth-link' });
+    else setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', LINK_UNUSABLE));
+  }, [linkFailed, loading, session, show]);
+
+  // Unsent drafts belong to one coach. A different coach signing in deletes them (SS-06).
+  const userId = session?.user.id;
+  useEffect(() => {
+    if (!userId) return;
+    setError(current => (current === SESSION_ENDED ? '' : current));
+    void (async () => {
+      try {
+        const attendance = await attendanceDrafts.read();
+        if (attendance && attendance.owner !== userId) await attendanceDrafts.clear();
+        const observation = await observationDrafts.read();
+        if (observation && observation.owner !== userId) await observationDrafts.clear();
+      } catch { /* Ownership is still checked before any draft is shown. */ }
+    })();
+  }, [userId]);
 
   useEffect(() => {
     if (!supabase || !session) { setAcademy(null); setAcademyLoading(false); setCheckedSession(''); return; }
@@ -90,10 +122,10 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         if (active) setAcademy(result.data);
       } catch {
         if (active) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
-      } finally { if (active) { setCheckedSession(session.access_token); setAcademyLoading(false); } }
+      } finally { if (active) { setCheckedSession(session.user.id); setAcademyLoading(false); } }
     })();
     return () => { active = false; };
-  }, [session?.access_token, revision, module]);
+  }, [session?.user.id, revision, module]);
 
   useEffect(() => {
     if (!supabase || Platform.OS === 'web') return;
@@ -130,7 +162,8 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         if (result.error) throw result.error;
         if (active) { setRecovery(parsed.recovery); setError(''); }
       } catch {
-        if (active) setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', 'This email link could not be opened. Request a new link on this device.'));
+        if (!active) return;
+        setLinkFailed(true); // Reported once the stored session has been restored (see effect below).
       }
     };
     if (Platform.OS === 'web') void handle(globalThis.location.href);
@@ -146,6 +179,7 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     dismiss();
     try {
       // End this device session. Account deletion and other-device logout are separate.
+      chosenSignOut.current = true;
       const result = await supabase.auth.signOut({ scope: 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
@@ -155,10 +189,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       show({ kind: 'success', title: 'Signed out', message: 'Your session and device-only drafts have been cleared.', source: 'auth-sign-out' });
       return null;
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
+    finally { chosenSignOut.current = false; }
   }, [show, dismiss]);
 
   return <Context.Provider value={{ module, session, loading, academy,
-    academyLoading: academyLoading || (!!session && checkedSession !== session.access_token), error, recovery,
+    academyLoading: academyLoading || (!!session && checkedSession !== session.user.id), error, recovery,
     reload: () => { setLoading(true); setRevision(x => x + 1); }, logout,
     finishRecovery: () => setRecovery(false), refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;
 }

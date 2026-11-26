@@ -8,7 +8,7 @@ import { PrototypeIcon } from '../ui/PrototypeIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { useAuth, safeAuthFailure } from './AuthProvider';
+import { useAuth, safeAuthFailure, SESSION_ENDED } from './AuthProvider';
 import { authRedirect, supabase } from './client';
 import { AuthMode, validateAuth } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
@@ -158,7 +158,8 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
   const parent = auth.module === 'parent';
   const [preview, setPreview] = useState(false);
   const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
-  useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
+  // M18 already shows inline on the sign-in screen; a second toast would repeat it.
+  useEffect(() => { showAuthError(auth.error === SESSION_ENDED ? '' : auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
   if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color={c.sky} size="large" /><Text style={[s.body,parent&&s.parentText]}>Opening your workspace…</Text></Page>;
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;

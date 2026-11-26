@@ -8,4 +8,4 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 6. Traps: never edit e2e/acceptance after lock; Supabase hosted settings unknown; Vercel project name is parent-plus-varcel; no paid services without founder.
 7. Open: agent switch UNATTENDED_AGENTS unconfirmed (founder); Supabase Pro and email provider unpriced.
 8. Resources: model Sonnet 5.5; token use not measured.
-9. Next: write failing locked tests for C1.1a (SS-01..SS-12) in e2e/acceptance/login-session-stability.spec.ts, then build.
+9. Next: C1.1b recovery — locked tests by a separate QA agent, then build. C1.1a DONE locally: 12/12 locked tests pass, npm run check 492/492, full e2e 128/128. Independent code review of C1.1a still pending. Deviation: the 7-day draft limit (SS-05) and "locked to that user" use existing owner check only; 7-day expiry not implemented.
