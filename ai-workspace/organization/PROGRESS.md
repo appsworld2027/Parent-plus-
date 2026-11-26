@@ -34,15 +34,12 @@ Branch: MM/ai-organization-setup, based on current main (74de4bbb105641fb0ea3872
 
 ## AM/consolidated integration checkpoint — 26 November 2026
 
-Objective: integrate the current `main` tree into `AM/consolidated`, preserve the APVerse runtime selection, validate the merged app, and publish only the AM branch. This is a separate maintenance task; it does not complete the AI organization pilot above.
+Objective: integrate current `main` into `AM/consolidated`, retain APVerse runtime routing, validate the merge, and publish only the AM branch. This maintenance task is separate from the AI organization pilot above.
 
-- Local checkout: `/workspace/parentplus`, branch `AM/consolidated`; merge is in progress from `origin/main` (baseline main `46b625eb1a4a933a365828441cb046bee4430430`, AM `a6d749978df5ef7e83ba5edf0ee269059f066725`).
-- Resolved conflicts with AM authentication/runtime logic retained and Main interface/features integrated. Public client config is set to APVerse project `fmavpazczahxeusqbxuh`. The learning-context SQL remains under `supabase/candidates/`; no migrations or database writes were run. Android preview/APK workflow files were excluded per the retired workflow boundary.
-- `npm run check`: PASS, 56 files / 639 tests; `npm run export:web`: PASS. Full browser regression PASS: 126/126. Targeted checks also passed: Needs You acceptance 10/10, Parent attendance 3/3, prototype visuals 4/4.
-- Acceptance-test fixture fix: the local PostgREST transport now implements `in.(...)` recipient filters, which allowed the Needs You card to receive recorded-feedback recipients. The card is also refreshed whenever the Today tab is selected.
-- Final local review: `git diff --cached --check` PASS; no unresolved paths; the learning-context SQL is only in `supabase/candidates/`; no Android preview/APK workflow is included. Remote refs were re-fetched and still match the baseline SHAs above.
-- Existing draft PR #50 (`main` → `AM/consolidated`) remains open and conflicting before this push. It is the existing integration PR; do not create a duplicate or merge it automatically.
-- Vercel environment/preview verification is unavailable: API access returned 403 and the Vercel CLI is not installed. Do not claim a hosted preview check or production deployment.
-- No commit or remote push has occurred at this checkpoint. Next action: create the merge commit and push only `AM/consolidated`; then read back the remote SHA and inspect PR #50/CI state.
-- Vercel environment/preview verification is unavailable: API access returned 403 and the Vercel CLI is not installed. Do not claim a hosted preview check or production deployment.
-- No commit or remote push has occurred. Next action: finish the full E2E run, then continue the remaining review and branch checks.
+- Merge commit: `f99a7027853bf2b4d6ed425fedde0bd193ab44c1`; parents are AM baseline `a6d749978df5ef7e83ba5edf0ee269059f066725` and main baseline `46b625eb1a4a933a365828441cb046bee4430430`.
+- Push and read-back confirmed: `origin/AM/consolidated` points to `f99a7027853bf2b4d6ed425fedde0bd193ab44c1`; working tree is clean. Main remains at its original baseline. GitHub now records existing PR #50 as merged at this same commit; no duplicate PR was created.
+- APVerse public client config remains on project `fmavpazczahxeusqbxuh`. Learning-context SQL is under `supabase/candidates/`; no migration was applied and no database writes were run. Retired Android preview/APK workflow files are not included.
+- `npm run check`: PASS, 56 files / 639 tests. `npm run test:e2e`: PASS, 126/126. `npm run export:web`: PASS. Targeted browser checks: Needs You acceptance 10/10, Parent attendance 3/3, prototype visuals 4/4.
+- The local PostgREST test fixture now supports `in.(...)` filters when loading feedback recipients; Today refreshes the Needs You count on tab selection.
+- GitHub PR checks PASS: Vercel preview, foundation, and workspace-concurrency. The Vercel project settings API returned 403 and no Vercel CLI is installed, so environment-variable details were not independently inspected. No production deployment or promotion was run.
+- Final diff check passed; no unresolved merge paths remain. Next step: founder/reviewer can inspect the updated existing PR and Vercel preview; no further action is pending from this merge task.
