@@ -86,8 +86,9 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
         if (result.error) throw result.error;
         setPassword(''); setConfirm('');
         // End every other session; this device stays signed in. Best effort: the service may already have done so.
-        try { await supabase.auth.signOut({ scope: 'others' }); } catch { /* This device keeps its session. */ }
-        feedback.show({ kind: 'success', title: 'Password updated', message: 'Your new password was saved. Other devices will need to sign in again.', source: 'auth-password' });
+        let othersEnded = false;
+        try { othersEnded = !(await supabase.auth.signOut({ scope: 'others' })).error; } catch { /* This device keeps its session. */ }
+        feedback.show({ kind: 'success', title: 'Password updated', message: othersEnded ? 'Your new password was saved. Other devices will need to sign in again.' : 'Your new password was saved.', source: 'auth-password' });
         auth.finishRecovery();
       }
     } catch (error) {
@@ -104,7 +105,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
     <Text style={[s.body,parent&&s.parentText]}>{mode === 'login' ? parent ? 'Sign in to your private family workspace.' : 'Sign in to keep your classes and parent feedback together.' : mode === 'signup' ? parent ? 'Create your account, verify your email, then set up your family.' : 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}
     {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
-    {!!auth.error && auth.error.startsWith(LINK_UNUSABLE) && mode !== 'recover' && <Button title="Request a new link" onPress={() => choose('recover')} soft />}
+    {!!auth.error && auth.error.startsWith(LINK_UNUSABLE) && mode !== 'recover' && <Button title="Request a new link" onPress={() => { auth.dismissError(); choose('recover'); }} soft />}
     <View style={[s.card,parent&&s.parentCard]}>
       {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
       {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
@@ -113,7 +114,7 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
-      {forceRecovery && <Button title="Cancel" onPress={() => { void auth.logout(); }} soft disabled={busy} />}
+      {forceRecovery && <Button title="Cancel" onPress={() => { void (async () => { const failed = await auth.logout({ keepDrafts: true }); if (failed) setFailure(failed); })(); }} soft disabled={busy} />}
       {!forceRecovery && <>
         {mode !== 'login' && <Button title="Back to sign in" onPress={() => choose('login')} soft disabled={busy} />}
         {mode === 'login' && <><Button title="Create an account" onPress={() => choose('signup')} soft disabled={busy} /><Button title="Forgot password?" onPress={() => choose('recover')} soft disabled={busy} /></>}

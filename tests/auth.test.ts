@@ -72,6 +72,8 @@ describe('email and recovery guardrails', () => {
     expect(validateAuth('login', 'coach@example.test', 'older', '')).toBe(null);
     expect(validateAuth('signup', 'coach@example.test', 'short', 'short')).toContain('15');
     expect(validateAuth('signup', 'coach@example.test', 'a-long-passphrase-ok', 'different')).toContain('match');
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(14), 'a'.repeat(14))).toContain('15');
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(15), 'a'.repeat(15))).toBe(null);
     expect(validateAuth('recover', 'coach@example.test', '', '')).toBe(null);
     expect(validateAuth('updatePassword', '', 'a-long-passphrase-ok', 'a-long-passphrase-ok')).toBe(null);
   });
