@@ -144,7 +144,8 @@ async function requestRecovery(page: Page, email = 'coach@example.test') {
   }
   await page.getByLabel('Email address', { exact: true }).fill(email);
   await page.getByRole('button', { name: 'Send recovery email', exact: true }).click();
-  await expect(page.getByText(M12, { exact: true }).first()).toBeVisible();
+  // Setup step only: RC-01 owns the exact M12 wording, so other criteria are measured independently.
+  await expect(page.getByText(/^If an account exists, a recovery email will arrive\./).first()).toBeVisible();
   const after = await flowIds(page);
   const flow = after.find(id => !before.includes(id));
   expect(flow, 'fixture: the request must create a new email flow proof').toBeTruthy();
@@ -324,7 +325,9 @@ test('RC-06 after a password change another device cannot renew its old session'
     await setup(page, server, 'A');
     await onNewPasswordScreen(page, server);
     await fillNewPassword(page, NEW_PASSWORD);
-    await expect(page.getByText(M14, { exact: true }).first()).toBeVisible();
+    // Given "a password change succeeded": RC-05 owns the M14 wording; here only the saved change matters.
+    await expect.poll(() => server.passwordSaves).toBe(1);
+    await expect(page.getByRole('tab', { name: 'Students', exact: true })).toBeVisible();
     const lifetime = (await storedExpiry(other)) - Math.floor(Date.now() / 1000);
     test.info().annotations.push({ type: 'evidence',
       description: `RC-06: the other device's current access token had ${lifetime}s left when the password changed (fictional fixture token; the real lifetime must be measured on a disposable test project).` });
