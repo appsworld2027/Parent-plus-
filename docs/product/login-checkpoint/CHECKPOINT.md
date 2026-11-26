@@ -9,3 +9,8 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 7. Open: agent switch UNATTENDED_AGENTS unconfirmed (founder); Supabase Pro and email provider unpriced.
 8. Resources: model Sonnet 5.5; token use not measured.
 9. Next: founder test on preview; independent review of the C1.1f tests; decision on verified-email database rule. ALL SIX Login contracts have locked tests and builds locally: a 12/12, b 18/18, c 20/21 (SU-12 NOT RUN), d 25/25, e 15/15, f browser 8/8 + database 27 pass, 2 KNOWN GAPS (AI-06 unverified create, AI-09 unverified read: installed DB has no verified-email rule; needs new SQL + founder authorization), 1 skipped (true concurrent race). Unit 519 pass 2 expected-fail 1 skipped. Full e2e 214 passed 1 skipped. Reviews done a-e; f tests unreviewed. NOT RUN: real inbox, devices, real token lifetime, hosted settings, real service policy.
+
+## Founder standing instruction — credit control (26 Nov 2026)
+- Credits are tight. When a session is running long (many tool calls, large history) or the next task is credit-sensitive, STOP and give the founder one ready-to-paste prompt to start a fresh session, pointing at this checkpoint. Do not keep working in a bloated session.
+- No separate agents unless the founder asks; state the cost first. Use the cheapest suitable model for routine work. Run only the tests a change touches; run the full suite once before founder testing.
+- Do not claim token or credit figures that were not measured.
