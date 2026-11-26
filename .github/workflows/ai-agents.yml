@@ -25,13 +25,13 @@ on:
   schedule:
     - cron: "17 * * * *"
 
+# Least privilege for the reusable AI Org workflows. No OIDC token is required.
 permissions:
   contents: write
   issues: write
   pull-requests: write
   actions: write
   statuses: write
-  id-token: write
 
 jobs:
   agent:
@@ -43,12 +43,16 @@ jobs:
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@main
     with:
       number: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
-    secrets: inherit
+    # Founder policy: do not expose paid-model credentials to background workers.
+    # The canonical router is free-only; only the NVIDIA free-engine credential is delegated.
+    secrets:
+      NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
 
   resume:
     if: vars.UNATTENDED_AGENTS == 'on' && github.event_name == 'schedule'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@main
-    secrets: inherit
+    secrets:
+      NVIDIA_NIM_API_KEY: ${{ secrets.NVIDIA_NIM_API_KEY }}
 
   loop-advance:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'advance')
