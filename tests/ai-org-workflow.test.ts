@@ -6,7 +6,7 @@ const aiAgents = read("../.github/workflows/ai-agents.yml");
 const connectivity = read("../.github/workflows/ai-org-connectivity.yml");
 const contractLock = read("../.github/workflows/contract-lock.yml");
 const protectedPaths = read("../.github/workflows/protected-paths.yml");
-const handbookRef = "2e684d3d770ad84e0c2e97102761a946bc1763cc";
+const handbookRef = "de790c94a13de3937da3841fd23691ee9fc861c6";
 
 describe("Parent Plus AI Org integration security", () => {
   it("requires a private repository and explicit unattended opt-in for autonomous agents", () => {
