@@ -46,13 +46,11 @@ jobs:
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
     # Founder policy: do not expose paid-model credentials to background workers.
     # The canonical router is Groq free-tier only; no paid model credentials are delegated.
-    secrets:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
   resume:
     if: vars.UNATTENDED_AGENTS != 'off' && github.event_name == 'schedule'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@fix/public-handbook-checkout-20261127
-    secrets:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
   loop-advance:
@@ -61,16 +59,12 @@ jobs:
     with:
       mode: advance
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
-    secrets:
-
   loop-next:
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'next'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@fix/public-handbook-checkout-20261127
     with:
       mode: next
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
-    secrets:
-
   loop-command:
     if: >-
       github.event_name == 'issue_comment' &&
@@ -81,4 +75,3 @@ jobs:
       mode: command
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
       comment_id: ${{ format('{0}', github.event.comment.id) }}
-    secrets:
