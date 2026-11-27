@@ -25,8 +25,8 @@ function ReviewQueue() {
     if (busy) return;
     if (decision === 'reject' && !reason.trim()) { setReasonError('Give a reason for the rejection.'); return; }
     setBusy(true); setReasonError('');
-    try { await decide(item.user_id, decision, decision === 'reject' ? reason.trim() : null); setRejecting(null); setReason(''); await refresh(); }
-    catch { setError('The decision was not saved. Refresh and try again.'); } finally { setBusy(false); }
+    try { await decide(item.user_id, decision, decision === 'reject' ? reason.trim() : null, item.submitted_at); setRejecting(null); setReason(''); await refresh(); }
+    catch (e) { setError((e as { code?: string })?.code === '40001' ? 'This profile was resubmitted. The queue has been refreshed; review it again.' : 'The decision was not saved. Refresh and try again.'); await refresh(); } finally { setBusy(false); }
   }
   async function open(path: string) { try { await Linking.openURL(await signedDocumentUrl(path)); } catch { setError('The document link could not be created. Try again.'); } }
   return <View style={s.card}>

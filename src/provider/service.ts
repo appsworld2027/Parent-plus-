@@ -15,7 +15,7 @@ export const loadProfile = () => rpc<ProviderView>('get_my_provider_profile');
 export const saveProfile = (v: ProviderValues) => rpc<ProviderView>('save_provider_profile', { p_name: v.name.trim(), p_phone: v.phone.trim(), p_bio: v.bio.trim(), p_sports: splitSports(v.sports), p_experience: Number(v.experience) });
 export const submitProfile = () => rpc<ProviderView>('submit_provider_profile');
 export const loadReviewQueue = () => rpc<ReviewItem[]>('list_provider_review_queue');
-export const decide = (user: string, decision: 'approve' | 'reject', reason: string | null) => rpc<null>('decide_provider_profile', { p_user: user, p_decision: decision, p_reason: reason });
+export const decide = (user: string, decision: 'approve' | 'reject', reason: string | null, submittedAt: string | null) => rpc<null>('decide_provider_profile', { p_user: user, p_decision: decision, p_reason: reason, p_submitted_at: submittedAt });
 
 export async function pickDocument(): Promise<PickedFile | null> {
   if (Platform.OS === 'web') return new Promise(resolve => {
