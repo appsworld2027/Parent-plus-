@@ -70,10 +70,17 @@ describe('email and recovery guardrails', () => {
   it('validates email and new passwords without rejecting valid existing shorter passwords', () => {
     expect(validateAuth('login', 'wrong', 'password', '')).toContain('email');
     expect(validateAuth('login', 'coach@example.test', 'older', '')).toBe(null);
-    expect(validateAuth('signup', 'coach@example.test', 'short', 'short')).toContain('10');
-    expect(validateAuth('signup', 'coach@example.test', 'longpassword', 'different')).toContain('match');
+    expect(validateAuth('signup', 'coach@example.test', 'short', 'short')).toContain('15');
+    expect(validateAuth('signup', 'coach@example.test', 'a-long-passphrase-ok', 'different')).toContain('match');
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(14), 'a'.repeat(14))).toContain('15');
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(15), 'a'.repeat(15))).toBe(null);
+    // D1: 72 bytes is accepted, 73 is refused; other scripts count more than one byte per letter.
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(72), 'a'.repeat(72))).toBe(null);
+    expect(validateAuth('signup', 'coach@example.test', 'a'.repeat(73), 'a'.repeat(73))).toContain('72 bytes');
+    expect(validateAuth('signup', 'coach@example.test', 'क'.repeat(24), 'क'.repeat(24))).toBe(null);
+    expect(validateAuth('signup', 'coach@example.test', 'क'.repeat(25), 'क'.repeat(25))).toContain('72 bytes');
     expect(validateAuth('recover', 'coach@example.test', '', '')).toBe(null);
-    expect(validateAuth('updatePassword', '', 'longpassword', 'longpassword')).toBe(null);
+    expect(validateAuth('updatePassword', '', 'a-long-passphrase-ok', 'a-long-passphrase-ok')).toBe(null);
   });
   it('accepts only owned callback routes and one-time code exchanges', () => {
     expect(parseAuthLink('parentplus-coach://auth/recovery?code=one-time')).toEqual({ code: 'one-time', recovery: true, error: false });

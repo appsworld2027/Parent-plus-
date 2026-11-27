@@ -17,6 +17,7 @@ import { ParentConnectionApprovals } from './src/parent/ParentConnectionApproval
 import ParentApp from './src/parent/ParentApp';
 import { FeesScreen } from './src/fees/FeesScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
+import { AccountSettings } from './src/auth/AccountSettings';
 import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
@@ -60,6 +61,7 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
 function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [launchRosterSetup,setLaunchRosterSetup]=useState(false);
   const [launchBatch,setLaunchBatch]=useState(false);
   const [classLaunch,setClassLaunch]=useState<{batch?:string;session?:string}|null>(null);
@@ -119,6 +121,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
+    setSettingsOpen(false); // Any navigation, including the support icon, leaves Settings.
     if (formBusy) { setNotice('Please wait for the save to finish.'); return; }
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     if (next !== 'Schedule') setClassLaunch(null);
@@ -187,7 +190,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {auth.academy&&<CoachSetupCard academy={auth.academy.id} onStart={()=>{setLaunchRosterSetup(true);navigate('Students');}}/>}
           {!auth.academy&&<View style={styles.card}><Text style={styles.sectionTitle}>Your classes and students belong here</Text><Text style={styles.small}>Sign in to load your workspace. No sample students, attendance or parent engagement figures are shown.</Text></View>}
-        </> : screen === 'Support' ? <>
+        </> : screen === 'Support' && settingsOpen ? <AccountSettings onBack={() => setSettingsOpen(false)} /> : screen === 'Support' ? <>
           <Text style={styles.eyebrow}>HERE TO HELP</Text>
           <Text accessibilityRole="header" style={styles.heading}>Setup & support</Text>
           <Text style={styles.subtitle}>A clear view of what is ready and what comes next.</Text>
@@ -197,6 +200,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>{auth.academy ? 'Workspace loaded' : 'Not verified'}</Text></View>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Payment collection</Text><Text style={styles.statusValue}>Not enabled</Text></View>
             <Text style={styles.small}>{auth.academy ? `Academy: ${auth.academy.name}` : appConfig.configured ? 'Project settings are present. Sign in to verify your workspace connection.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
+            {!exitPreview && <Action label="Settings" secondary onPress={() => setSettingsOpen(true)} />}
             {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <SignOutButton />}
           </View>
           <View style={styles.card}>

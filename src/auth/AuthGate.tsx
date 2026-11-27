@@ -8,23 +8,38 @@ import { PrototypeIcon } from '../ui/PrototypeIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appConfig } from '../config';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { useAuth, safeAuthFailure } from './AuthProvider';
+import { useAuth, safeAuthFailure, SESSION_ENDED, LINK_UNUSABLE } from './AuthProvider';
+import { deviceStorage } from '../deviceStorage';
+
+// M07, exact wording from the approved Login contracts.
+// M17 and the 60-second wait between confirmation emails. The wait is kept on this device so a reload cannot skip it.
+const RESEND_SENT = 'If this email still needs confirming, a new message will arrive.';
+const RESEND_KEY = 'parentplus.resend.until.v1';
+const RESEND_WAIT_MS = 60_000;
+function authText(code: unknown) {
+  return code === 'invalid_credentials' ? 'Check your email and password, then try again.'
+    : code === 'email_not_confirmed' ? 'Open your confirmation email before signing in.'
+    : code === 'weak_password' ? PASSWORD_WEAK
+    : code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' ? 'Too many attempts. Please wait a little before trying again.'
+    : 'This request could not finish. Check your connection and try again.';
+}
+const SIGNUP_ACCEPTED = 'If this email can be registered, a confirmation message will arrive. Open it on this device. Already have an account? Sign in or reset your password.';
 import { authRedirect, supabase } from './client';
-import { AuthMode, validateAuth } from './rules';
+import { AuthMode, validateAuth, PASSWORD_WEAK } from './rules';
 import { ActionFeedback, useFeedback, useFeedbackMessage } from '../ui/ActionFeedback';
 
-function Button({ title, onPress, disabled = false, soft = false }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
+function Button({ title, onPress, disabled = false, soft = false, pressed }: { title: string; onPress: () => void; disabled?: boolean; soft?: boolean; pressed?: boolean }) {
   const parent = useAuth().module === 'parent';
-  return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
+  return <Pressable accessibilityRole="button" accessibilityState={pressed === undefined ? { disabled } : { disabled, checked: pressed }} disabled={disabled} onPress={onPress}
     style={[s.button, soft && s.soft, parent && (soft ? s.parentSoft : s.parentButton), disabled && { opacity: 0.55 }]}>
     <Text style={[s.buttonLabel, soft && s.softLabel, parent && (soft ? s.parentText : s.parentButtonText)]}>{title}</Text>
   </Pressable>;
 }
-function Field({ label, value, onChange, password = false, email = false }: { label: string; value: string; onChange: (value: string) => void; password?: boolean; email?: boolean }) {
+function Field({ label, value, onChange, password = false, email = false, reveal = false, hint }: { label: string; value: string; onChange: (value: string) => void; password?: boolean; email?: boolean; reveal?: boolean; hint?: 'current-password' | 'new-password' }) {
   const parent = useAuth().module === 'parent';
   return <View style={s.field}><Text style={[s.label,parent&&s.parentText]}>{label}</Text><TextInput accessibilityLabel={label} value={value} onChangeText={onChange}
-    secureTextEntry={password} autoCapitalize={password || email ? 'none' : 'words'} autoCorrect={false}
-    keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput]} maxLength={password ? 200 : email ? 320 : 100} /></View>;
+    secureTextEntry={password && !reveal} autoComplete={password ? hint : email ? 'email' : undefined} autoCapitalize={password || email ? 'none' : 'words'} autoCorrect={false}
+    keyboardType={email ? 'email-address' : 'default'} style={[s.input,parent&&s.parentInput]} maxLength={password ? 1024 : email ? 320 : 100} /></View>;
 }
 function Page({ children, signup = false, disabled = false }: React.PropsWithChildren<{ signup?: boolean; disabled?: boolean }>) {
   const parent = useAuth().module === 'parent';
@@ -51,11 +66,25 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [reveal, setReveal] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [until, setUntil] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { void deviceStorage.getItem(RESEND_KEY).then(value => { const t = Number(value); if (Number.isFinite(t) && t > 0) setUntil(Math.min(t, Date.now() + RESEND_WAIT_MS)); }).catch(() => undefined); }, []);
+  useEffect(() => {
+    if (until <= Date.now()) return;
+    setNow(Date.now());
+    const timer = setInterval(() => { const current = Date.now(); setNow(current); if (current >= until) clearInterval(timer); }, 1000);
+    return () => clearInterval(timer);
+  }, [until]);
+  const wait = Math.max(0, Math.ceil((until - now) / 1000));
+  function startWait() { const t = Date.now() + RESEND_WAIT_MS; setUntil(t); setNow(Date.now()); void deviceStorage.setItem(RESEND_KEY, String(t)).catch(() => undefined); }
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useFeedbackMessage('info', 'Email request completed');
   const [failure, setFailure] = useFeedbackMessage('error', 'Action needs attention');
   const titles = { login: 'Welcome back.', signup: parent ? 'More time for the little things.' : 'A calmer teaching day starts here.', recover: 'Let’s get you back in.', updatePassword: 'Choose a new password.' };
-  function choose(next: AuthMode) { setSelected(next); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
+  function choose(next: AuthMode) { setSelected(next); setSent(false); setNeedsConfirm(false); setReveal(false); setPassword(''); setConfirm(''); setMessage(''); setFailure(''); }
   async function submit() {
     if (busy) return;
     setMessage(''); setFailure('');
@@ -69,47 +98,80 @@ function AuthForm({ onPreview, forceRecovery = false }: { onPreview: () => void;
         throw new Error('Secure email-link support unavailable');
       }
       if (mode === 'login') {
-        const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        const result = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
         if (result.error) throw result.error;
         feedback.show({ kind: 'success', title: 'Signed in', message: 'Your account is connected. Opening your workspace…', source: 'auth-sign-in' });
       } else if (mode === 'signup') {
-        const result = await supabase.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: authRedirect(false,auth.module) } });
+        const result = await supabase.auth.signUp({ email: email.trim().toLowerCase(), password, options: { emailRedirectTo: authRedirect(false,auth.module) } });
         if (result.error) throw result.error;
-        setMessage('If registration is available for this email, a confirmation message will arrive. Open it on this device, then sign in.');
-        setPassword(''); setConfirm('');
+        setPassword(''); setConfirm(''); setReveal(false); setSent(true); startWait();
       } else if (mode === 'recover') {
-        const result = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: authRedirect(true,auth.module) });
+        const result = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: authRedirect(true,auth.module) });
         if (result.error) throw result.error;
-        setMessage(`If an account exists, a recovery email will arrive. Open the newest link ${Platform.OS==='web'?'in this browser':'on this device'}.`);
+        setMessage('If an account exists, a recovery email will arrive. Open the newest link in this browser or on this device.');
       } else {
         const result = await supabase.auth.updateUser({ password });
         if (result.error) throw result.error;
         setPassword(''); setConfirm('');
-        feedback.show({ kind: 'success', title: 'Password updated', message: 'Your new password was saved.', source: 'auth-password' });
+        // End every other session; this device stays signed in. Best effort: the service may already have done so.
+        let othersEnded = false;
+        try { othersEnded = !(await supabase.auth.signOut({ scope: 'others' })).error; } catch { /* This device keeps its session. */ }
+        feedback.show({ kind: 'success', title: 'Password updated', message: othersEnded ? 'Your new password was saved. Other devices will need to sign in again.' : 'Your new password was saved.', source: 'auth-password' });
         auth.finishRecovery();
       }
     } catch (error) {
       const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
-      const text = code === 'invalid_credentials' ? 'Check your email and password, then try again.'
-        : code === 'email_not_confirmed' ? 'Open your confirmation email before signing in.'
-        : code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit' ? 'Too many attempts. Please wait a little before trying again.'
-        : 'This request could not finish. Check your connection and try again.';
+      if (code === 'email_not_confirmed') setNeedsConfirm(true);
+      const text = authText(code);
       setFailure(safeAuthFailure('AUTH_FAILURE', text));
     } finally { setBusy(false); }
   }
+  async function resend() {
+    if (busy || wait > 0) return;
+    setMessage(''); setFailure('');
+    const invalid = validateAuth('recover', email, '', '');
+    if (invalid) { setFailure(invalid); return; }
+    if (!supabase) { setFailure('Sign-in is not available right now. Please contact support.'); return; }
+    setBusy(true); feedback.dismiss();
+    try {
+      const result = await supabase.auth.resend({ type: 'signup', email: email.trim().toLowerCase(), options: { emailRedirectTo: authRedirect(false, auth.module) } });
+      if (result.error) throw result.error;
+      setMessage(RESEND_SENT); startWait();
+    } catch (error) {
+      const code = typeof error === 'object' && error !== null && 'code' in error ? error.code : '';
+      // A send limit is only reached by an account that needs confirming; answering M10 would reveal that,
+      // so the reply stays the same neutral M17 (SI-10).
+      if (code === 'over_email_send_rate_limit') { setMessage(RESEND_SENT); startWait(); }
+      else setFailure(safeAuthFailure('AUTH_FAILURE', authText(code)));
+    } finally { setBusy(false); }
+  }
+  const resendButton = <Button title={wait > 0 ? `Resend confirmation email in ${wait} s` : 'Resend confirmation email'} onPress={() => { void resend(); }} soft disabled={busy || wait > 0} />;
+  // After sign-up the same panel shows for a new and an existing email, so it never reveals who has an account.
+  if (sent && mode === 'signup') return <Page signup>
+    <Text style={[s.kicker,parent&&s.parentText]}>ALMOST THERE</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>Check your email</Text>
+    <Text role="status" accessibilityLiveRegion="polite" style={s.notice}>{SIGNUP_ACCEPTED}</Text>
+    {!!message && <Text role="status" style={s.notice}>{message}</Text>}
+    {!!failure && <Text style={s.error}>{failure}</Text>}
+    {resendButton}
+    <Button title="Back to sign in" onPress={() => choose('login')} soft />
+  </Page>;
   return <Page signup disabled={busy || forceRecovery}>
     <Text style={[s.kicker,parent&&s.parentText]}>{parent?'YOUR FAMILY WORKSPACE':'YOUR COACH WORKSPACE'}</Text><Text accessibilityRole="header" style={[s.title,parent&&s.parentText]}>{titles[mode]}</Text>
     <Text style={[s.body,parent&&s.parentText]}>{mode === 'login' ? parent ? 'Sign in to your private family workspace.' : 'Sign in to keep your classes and parent feedback together.' : mode === 'signup' ? parent ? 'Create your account, verify your email, then set up your family.' : 'Create your owner account. Verify your email before setting up your academy.' : 'Your password stays private. Never share it with your coding partner.'}</Text>
     {!appConfig.configured && <Text style={s.notice}>Public project settings are missing. The interface is available, but sign-in is not connected.</Text>}
     {!!auth.error && <Text style={s.error}>{auth.error}</Text>}
+    {!!auth.error && auth.error.startsWith(LINK_UNUSABLE) && mode !== 'recover' && <Button title="Request a new link" onPress={() => { auth.dismissError(); choose('recover'); }} soft />}
     <View style={[s.card,parent&&s.parentCard]}>
-      {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={setEmail} />}
-      {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password value={password} onChange={setPassword} />}
-      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 10 characters.</Text></>}
+      {mode !== 'updatePassword' && <Field label="Email address" email value={email} onChange={value => { setEmail(value); setNeedsConfirm(false); }} />}
+      {mode !== 'recover' && <Field label={mode === 'updatePassword' ? 'New password' : 'Password'} password reveal={reveal} hint={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={setPassword} />}
+      {(mode === 'signup' || mode === 'updatePassword') && <><Field label="Confirm password" password reveal={reveal} hint="new-password" value={confirm} onChange={setConfirm} /><Text style={[s.hint,parent&&s.parentText]}>Use at least 15 characters. A few unrelated words work well.</Text></>}
+      {mode !== 'recover' && <Button pressed={reveal} title={reveal ? 'Hide password' : 'Show password'} onPress={() => setReveal(value => !value)} soft disabled={busy} />}
       {!!failure && <Text style={s.error}>{failure}</Text>}
+      {mode === 'login' && needsConfirm && resendButton}
       {/* The fixed feedback area announces this result; retain inline context after dismissal. */}
       {!!message && <Text style={s.notice}>{message}</Text>}
       <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'signup' ? 'Create account' : mode === 'recover' ? 'Send recovery email' : 'Save new password'} onPress={() => { void submit(); }} disabled={busy} />
+      {forceRecovery && <Button title="Cancel" onPress={() => { void (async () => { const failed = await auth.logout({ keepDrafts: true }); if (failed) setFailure(failed); })(); }} soft disabled={busy} />}
       {!forceRecovery && <>
         {mode !== 'login' && <Button title="Back to sign in" onPress={() => choose('login')} soft disabled={busy} />}
         {mode === 'login' && <><Button title="Create an account" onPress={() => choose('signup')} soft disabled={busy} /><Button title="Forgot password?" onPress={() => choose('recover')} soft disabled={busy} /></>}
@@ -158,7 +220,8 @@ export function AuthGate({ render }: { render: (exitPreview?: () => void) => Rea
   const parent = auth.module === 'parent';
   const [preview, setPreview] = useState(false);
   const [, showAuthError] = useFeedbackMessage('error', 'Account needs attention');
-  useEffect(() => { showAuthError(auth.error); }, [auth.error, showAuthError]);
+  // M18 already shows inline on the sign-in screen; a second toast would repeat it.
+  useEffect(() => { showAuthError(auth.error === SESSION_ENDED ? '' : auth.error); }, [auth.error, showAuthError]);
   if (preview && appConfig.environment !== 'production') return <ErrorBoundary>{render(() => setPreview(false))}</ErrorBoundary>;
   if (auth.loading || auth.academyLoading) return <Page><ActivityIndicator accessibilityLabel="Loading workspace" color={c.sky} size="large" /><Text style={[s.body,parent&&s.parentText]}>Opening your workspace…</Text></Page>;
   if (auth.recovery && auth.session) return <AuthForm forceRecovery onPreview={() => {}} />;
