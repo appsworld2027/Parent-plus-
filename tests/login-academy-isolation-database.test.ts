@@ -218,7 +218,7 @@ describe('AI-05 repeat and concurrent saves leave exactly one academy', () => {
     await refused("insert into public.academies(owner_id,name) values($1,'Fictional Second Academy')", [coachA], ['23505']);
   });
 
-  it.skip('AI-05 two devices racing on separate connections at the same instant (not run: PGlite has one connection)', () => {});
+  // AI-05 true simultaneous race on separate connections: NOT RUN here (PGlite has one connection). The unique-index refusal above is the covered part.
 });
 
 describe('AI-06 signed-out or unverified callers cannot create an academy', () => {
