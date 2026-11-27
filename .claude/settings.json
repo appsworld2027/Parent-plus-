@@ -3,9 +3,34 @@
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/quality-gate.sh\"", "timeout": 900 }
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/quality-gate.sh\"",
+            "timeout": 900
+          }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm ci)",
+      "Bash(npm test*)",
+      "Bash(npx vitest *)",
+      "Bash(npx playwright test *)",
+      "Bash(PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=* npx playwright test *)",
+      "Bash(npx tsc *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git fetch *)",
+      "Bash(git rebase *)",
+      "Bash(git push -u origin *)",
+      "Bash(git push)",
+      "Bash(git -c push.negotiate=true push*)"
     ]
   }
 }
