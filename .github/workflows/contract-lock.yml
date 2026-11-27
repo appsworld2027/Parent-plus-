@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   contract-lock:
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/contract-lock.yml@2a68daf8da47d0dcc1e393ce6f3dac498b22574e
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/contract-lock.yml@fix/public-handbook-checkout-20261127
     with:
       locked-paths: e2e/acceptance/
 
