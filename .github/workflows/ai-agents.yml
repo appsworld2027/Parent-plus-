@@ -47,7 +47,6 @@ jobs:
     # Founder policy: do not expose paid-model credentials to background workers.
     # The canonical router is Groq free-tier only; no paid model credentials are delegated.
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
   resume:
@@ -63,7 +62,6 @@ jobs:
       mode: advance
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
 
   loop-next:
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'next'
@@ -72,7 +70,6 @@ jobs:
       mode: next
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
 
   loop-command:
     if: >-
@@ -85,4 +82,3 @@ jobs:
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
       comment_id: ${{ format('{0}', github.event.comment.id) }}
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
