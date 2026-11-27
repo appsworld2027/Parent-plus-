@@ -23,3 +23,12 @@ export async function withdrawSignal(row: Pick<TodaySignal, 'session_id' | 'stud
 }
 // Pure view rules so they can be unit-tested: which signal rows belong on a child's card.
 export function signalsForChild(rows: TodaySignal[], childId: string) { return rows.filter(r => r.child_id === childId); }
+
+export type Announcement = { id: string; child_id: string; batch_name: string; body: string; created_at: string };
+export async function loadAnnouncements(): Promise<Announcement[]> {
+  if (!supabase) throw new Error('Unavailable');
+  const result = await supabase.rpc('get_parent_announcements');
+  if (result.error) throw result.error;
+  return (result.data ?? []) as Announcement[];
+}
+export const announcementsForChild = (rows: Announcement[], childId: string) => rows.filter(r => r.child_id === childId).sort((a, b) => b.created_at.localeCompare(a.created_at));

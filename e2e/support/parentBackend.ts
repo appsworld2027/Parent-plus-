@@ -50,6 +50,7 @@ export async function parentBackend(page:Page){
         state.permissions.push({link_id:link.id,allow_photos:false,allow_videos:false,allow_parent_sharing:false,source:'parent_account',recorded_at:new Date().toISOString()});
         for(const held of window.__mediaFixture.handoffs)if(held.student_id===request.student_id&&held.state==='awaiting_parent_link')held.state='available_to_parent';sessionStorage.setItem('__fictional_media',JSON.stringify(window.__mediaFixture));persist();return reply(link.id);
       }
+      if(endpoint==='get_parent_announcements'){const child=state.children[0];return reply(child?((window as any).__announcements??[]).map((a:any)=>({...a,child_id:child.id})):[]);}
       if(['get_parent_today_signals','send_parent_signal','withdraw_parent_signal'].includes(endpoint)){
         const sig=(window as any).__signalFixture??((window as any).__signalFixture={classToday:false,kind:null,changed_at:null,sends:[],fails:0});
         if(endpoint==='get_parent_today_signals'){const child=state.children[0];return reply(sig.classToday&&child?[{session_id:'s1',student_id:'st1',child_id:child.id,batch_name:'Fictional Pottery Batch',starts_at:new Date().toISOString(),kind:sig.kind,changed_at:sig.changed_at}]:[]);}
