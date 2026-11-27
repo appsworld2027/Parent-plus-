@@ -32,6 +32,7 @@ import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
 import { loadNeedsYouData } from './src/today/service';
+import { CoachSignals } from './src/today/CoachSignals';
 import { supabase } from './src/auth/client';
 import type { Student } from './src/roster/model';
 import type { Enrolment } from './src/roster/model';
@@ -182,6 +183,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               error={needsYouError}
             />
           </>}
+          {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
