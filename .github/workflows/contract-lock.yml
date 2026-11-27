@@ -14,4 +14,3 @@ jobs:
       locked-paths: e2e/acceptance/
 
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
