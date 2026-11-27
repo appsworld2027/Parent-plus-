@@ -7,3 +7,4 @@ Founder-gated, not done: apply candidate SQL to hosted DB; release to main; real
 To run browser specs here: PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/opt/pw-browsers/chromium npx playwright test <spec> --trace off
 Next: class-announcements (M2-50) from docs/product/BACKLOG.md: contract, then build. Then one full browser suite before founder testing.
 Rules: touched tests only; no agents; cheapest model; ask only for hosted DB, paid services, release to main.
+Update: class-announcements (M2-50) built, pushed. Checkpoint: docs/product/class-announcements/CHECKPOINT.md. Candidate SQL 202611270026 not applied to hosted DB (founder-gated).
