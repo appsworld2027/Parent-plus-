@@ -98,5 +98,29 @@
       "ai:tests-review": "groq/qwen/qwen3.8-27b",
       "ai:tests-signoff": "groq/openai/gpt-oss-120b"
     }
+  },
+  "executionPolicy": {
+    "enabled": true,
+    "allowedEngines": [
+      "free"
+    ],
+    "allowPaidFallback": false,
+    "requireFeatureContract": true,
+    "requireLockedAcceptanceTests": true,
+    "requireIndependentReview": true,
+    "autonomousActions": [
+      "discovery",
+      "planning",
+      "build",
+      "tests",
+      "repair",
+      "pull_request",
+      "preview_deployment"
+    ],
+    "founderApprovalFor": [
+      "strategy_change",
+      "material_product_risk",
+      "release_to_general_users"
+    ]
   }
 }
