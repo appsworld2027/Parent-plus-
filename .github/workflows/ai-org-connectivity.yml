@@ -10,4 +10,3 @@ jobs:
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/handbook-connectivity.yml@fix/public-handbook-checkout-20261127
     with:
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
-    secrets:
