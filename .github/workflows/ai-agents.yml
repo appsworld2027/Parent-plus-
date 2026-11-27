@@ -40,38 +40,38 @@ jobs:
         (github.event_name == 'workflow_dispatch' && (inputs.mode == '' || inputs.mode == 'agent') && inputs.number != '0') ||
         ((github.event_name == 'issues' || github.event_name == 'pull_request') && startsWith(github.event.label.name, 'ai:'))
       )
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@fix/public-handbook-checkout-20261127
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-worker.yml@139db9390b3c4188708090f44cdf62dda7a86698
     with:
       number: ${{ github.event.issue.number || github.event.pull_request.number || inputs.number }}
-      handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
+      handbook_ref: 139db9390b3c4188708090f44cdf62dda7a86698
     # Founder policy: do not expose paid-model credentials to background workers.
     # The canonical router is Groq free-tier only; no paid model credentials are delegated.
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
   resume:
     if: vars.UNATTENDED_AGENTS != 'off' && github.event_name == 'schedule'
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@fix/public-handbook-checkout-20261127
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@139db9390b3c4188708090f44cdf62dda7a86698
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
 
   loop-advance:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'advance')
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@fix/public-handbook-checkout-20261127
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@139db9390b3c4188708090f44cdf62dda7a86698
     with:
       mode: advance
-      handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
+      handbook_ref: 139db9390b3c4188708090f44cdf62dda7a86698
   loop-next:
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'next'
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@fix/public-handbook-checkout-20261127
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@139db9390b3c4188708090f44cdf62dda7a86698
     with:
       mode: next
-      handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
+      handbook_ref: 139db9390b3c4188708090f44cdf62dda7a86698
   loop-command:
     if: >-
       github.event_name == 'issue_comment' &&
       (startsWith(github.event.comment.body, '/approve') || startsWith(github.event.comment.body, '/changes') ||
        startsWith(github.event.comment.body, '/next') || startsWith(github.event.comment.body, '/stop'))
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@fix/public-handbook-checkout-20261127
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@139db9390b3c4188708090f44cdf62dda7a86698
     with:
       mode: command
-      handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
+      handbook_ref: 139db9390b3c4188708090f44cdf62dda7a86698
       comment_id: ${{ format('{0}', github.event.comment.id) }}
