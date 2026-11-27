@@ -1,6 +1,6 @@
 # Feature Contract: Provider listing and publish (C1.3)
 
-Status: APPROVED by founder in chat on 2026-11-27 ("Approved"), both contracts as drafted, including the C1.3 reading of D-03 (private publish). Recorded by Claude; not a GitHub /approve. First admin still to be named. No tests or code exist. Founder decision D-03: public listing is OUT of scope. So "listing" here is a private listing record and "publish" means "ready and approved to be offered", visible only to the owner and admins, not the public. This reading is an assumption to confirm. Depends on C1.2. Roadmap: C1.3
+Status: APPROVED by founder in chat on 2026-11-27 ("Approved"), both contracts as drafted, including the C1.3 reading of D-03 (private publish). Recorded by Claude; not a GitHub /approve. First admin: the founder (assumed by Claude 2026-11-27 on founder instruction to stop asking; changeable). No tests or code exist. Founder decision D-03: public listing is OUT of scope. So "listing" here is a private listing record and "publish" means "ready and approved to be offered", visible only to the owner and admins, not the public. This reading is an assumption to confirm. Depends on C1.2. Roadmap: C1.3
 
 ## Why
 Once verified, a coach describes what they offer so the product can later show it to parents, without anything becoming public yet.
