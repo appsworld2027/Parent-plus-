@@ -55,7 +55,7 @@ jobs:
 
   resume:
     # Resume eligible free-model tasks on the hourly schedule.
-    if: github.event_name == 'schedule'
+    if: vars.UNATTENDED_AGENTS == 'on' && github.event.repository.private == true && github.event_name == 'schedule'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/agent-resume.yml@2e684d3d770ad84e0c2e97102761a946bc1763cc
     secrets:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -66,12 +66,16 @@ jobs:
     with:
       mode: advance
       handbook_ref: 2e684d3d770ad84e0c2e97102761a946bc1763cc
+    secrets:
+      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
   loop-next:
     if: github.event.repository.private == true && github.event_name == 'workflow_dispatch' && inputs.mode == 'next'
     uses: appsworld2027/parent-plus-ai-org/.github/workflows/ai-loop.yml@2e684d3d770ad84e0c2e97102761a946bc1763cc
     with:
       mode: next
       handbook_ref: 2e684d3d770ad84e0c2e97102761a946bc1763cc
+    secrets:
+      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
   loop-command:
     if: >-
       github.event.repository.private == true &&
@@ -83,3 +87,5 @@ jobs:
       mode: command
       handbook_ref: 2e684d3d770ad84e0c2e97102761a946bc1763cc
       comment_id: ${{ format('{0}', github.event.comment.id) }}
+    secrets:
+      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
