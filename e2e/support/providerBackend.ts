@@ -71,6 +71,10 @@ export function serve(store: Store, who: string, op: string, p: any): { status: 
     return { status: 200, body: Object.entries(store.profiles).filter(([, v]) => v.status === 'pending').map(([id, v]) => ({ user_id: id, name: v.name, phone: v.phone, bio: v.bio,
       sports: v.sports, experience: v.experience, submitted_at: v.submitted_at, documents: v.docs })) };
   }
+  if (op === 'vlist') {
+    if (!admin) return refuse('42501', 'Admins only', 403);
+    return { status: 200, body: Object.entries(store.profiles).filter(([id, v]) => v.status === 'verified' && id !== who).map(([id, v]) => ({ user_id: id, name: v.name, decided_at: v.decided_at, submitted_at: v.submitted_at })) };
+  }
   if (op === 'decide') {
     const target = store.profiles[p.p_user];
     if (!admin) return refuse('42501', 'Admins only', 403);
@@ -98,7 +102,7 @@ export async function providerBackend(page: Page, store: Store, role: Role, opti
       const raw = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
       const url = new URL(raw, location.origin), path = url.pathname;
       if (!url.hostname.endsWith('.supabase.co')) return original(input, init);
-      const rpc = path.match(/\/rest\/v1\/rpc\/(get_my_provider_profile|save_provider_profile|register_provider_document|submit_provider_profile|list_provider_review_queue|decide_provider_profile|get_my_provider_listing|save_provider_listing|publish_provider_listing|unpublish_provider_listing|list_provider_listings)$/);
+      const rpc = path.match(/\/rest\/v1\/rpc\/(get_my_provider_profile|save_provider_profile|register_provider_document|submit_provider_profile|list_provider_review_queue|decide_provider_profile|get_my_provider_listing|save_provider_listing|publish_provider_listing|unpublish_provider_listing|list_provider_listings|list_verified_providers)$/);
       const sign = path.match(/\/storage\/v1\/object\/sign\/provider-documents\/(.+)$/), put = path.match(/\/storage\/v1\/object\/provider-documents\/(.+)$/);
       if (path.includes('/object/public/') && path.includes('provider-documents')) await (window as any).__pv('public', {});
       if (!rpc && !sign && !put) return original(input, init);
@@ -106,7 +110,7 @@ export async function providerBackend(page: Page, store: Store, role: Role, opti
       let body: any = {}; try { body = init?.body && typeof init.body === 'string' ? JSON.parse(init.body) : {}; } catch { /* not JSON */ }
       const names: Record<string, string> = { get_my_provider_profile: 'get', save_provider_profile: 'save', register_provider_document: 'register', submit_provider_profile: 'submit',
         list_provider_review_queue: 'queue', decide_provider_profile: 'decide',
-        get_my_provider_listing: 'lget', save_provider_listing: 'lsave', publish_provider_listing: 'lpublish', unpublish_provider_listing: 'lunpublish', list_provider_listings: 'ladmin' };
+        get_my_provider_listing: 'lget', save_provider_listing: 'lsave', publish_provider_listing: 'lpublish', unpublish_provider_listing: 'lunpublish', list_provider_listings: 'ladmin', list_verified_providers: 'vlist' };
       const result = rpc ? await (window as any).__pv(names[rpc[1]], body) : sign ? await (window as any).__pv('sign', { path: decodeURIComponent(sign[1]), expiresIn: body.expiresIn })
         : method === 'POST' || method === 'PUT' ? await (window as any).__pv('upload', { path: decodeURIComponent(put![1]) }) : { status: 404, body: { message: 'Not found' } };
       return new Response(result.status === 204 || result.body === null ? null : JSON.stringify(result.body), { status: result.body === null && result.status === 200 ? 204 : result.status,

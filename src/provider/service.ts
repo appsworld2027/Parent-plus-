@@ -41,3 +41,5 @@ export async function signedDocumentUrl(path: string) {
   if (signed.error) throw signed.error;
   return signed.data.signedUrl;
 }
+export type VerifiedProvider = { user_id: string; name: string; decided_at: string | null; submitted_at: string | null };
+export const loadVerifiedProviders = () => rpc<VerifiedProvider[]>('list_verified_providers');
