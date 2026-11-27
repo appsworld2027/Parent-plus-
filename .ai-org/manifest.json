@@ -4,7 +4,7 @@
   "source": "appsworld2027/parent-plus-ai-org",
   "handbook": {
     "repo": "appsworld2027/parent-plus-ai-org",
-    "ref": "main",
+    "ref": "c6b024ac0cf317ce90d18d477deffb6b3c52f927",
     "entry": "AGENTS.md"
   },
   "product": {
@@ -91,12 +91,21 @@
   },
   "ai": {
     "freeModels": {
-      "ai:build": "groq/openai/gpt-oss-120b",
-      "ai:qa": "groq/qwen/qwen3.8-27b",
-      "ai:review": "groq/qwen/qwen3.8-27b",
+      "ai:discovery": "groq/openai/gpt-oss-120b",
+      "ai:plan": "groq/openai/gpt-oss-120b",
+      "ai:lane-a": "groq/openai/gpt-oss-120b",
+      "ai:lane-b": "groq/openai/gpt-oss-120b",
+      "ai:design": "groq/openai/gpt-oss-120b",
       "ai:tests": "groq/openai/gpt-oss-120b",
       "ai:tests-review": "groq/qwen/qwen3.8-27b",
-      "ai:tests-signoff": "groq/openai/gpt-oss-120b"
+      "ai:tests-signoff": "groq/openai/gpt-oss-120b",
+      "ai:build": "groq/openai/gpt-oss-120b",
+      "ai:database": "groq/openai/gpt-oss-120b",
+      "ai:integration": "groq/openai/gpt-oss-120b",
+      "ai:qa": "groq/qwen/qwen3.8-27b",
+      "ai:review": "groq/qwen/qwen3.8-27b",
+      "ai:release-ops": "groq/qwen/qwen3.8-27b",
+      "ai:fix": "groq/openai/gpt-oss-120b"
     }
   },
   "executionPolicy": {
@@ -121,6 +130,7 @@
       "strategy_change",
       "material_product_risk",
       "release_to_general_users"
-    ]
+    ],
+    "requirePrivateRepositoriesForConfidentialCode": true
   }
 }
