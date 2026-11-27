@@ -90,13 +90,15 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
   const [needsYouInvoices, setNeedsYouInvoices] = useState<Invoice[]>([]);
   const [needsYouError, setNeedsYouError] = useState<string | null>(null);
+  const [needsYouFeedbackError, setNeedsYouFeedbackError] = useState<string | null>(null);
+  const [needsYouFeesError, setNeedsYouFeesError] = useState<string | null>(null);
   const [needsYouLoading, setNeedsYouLoading] = useState(false);
 
   useEffect(() => {
     if (screen !== 'Today' || !auth.academy) return;
     let active = true;
     setNeedsYouLoading(true);
-    setNeedsYouError(null);
+    setNeedsYouError(null); setNeedsYouFeedbackError(null); setNeedsYouFeesError(null);
     async function load() {
       try {
         const data = await loadNeedsYouData(auth.academy!.id, new Intl.DateTimeFormat('en-CA', { timeZone: auth.academy!.timezone ?? 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
@@ -106,6 +108,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         setNeedsYouObservations(data.observations);
         setNeedsYouRecipients(data.recipients);
         setNeedsYouInvoices(data.invoices);
+        if (data.feedbackFailed) setNeedsYouFeedbackError(`Feedback could not load. Reference: ${diagnostics.record('OBSERVATION_FAILURE').reference}`);
+        if (data.feesFailed) setNeedsYouFeesError(`Fees could not load. Reference: ${diagnostics.record('FEE_FAILURE').reference}`);
       } catch (error) {
         if (active) {
           const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
@@ -187,6 +191,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               onPress={() => navigate('Post')}
               loading={needsYouLoading}
               error={needsYouError}
+              feedbackError={needsYouFeedbackError}
+              feesError={needsYouFeesError}
             />
           </>}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}

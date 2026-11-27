@@ -9,10 +9,11 @@ import { formatFee } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { billingOptions, invoiceStatus, operationSummary, paymentAmount, validDay, validMonth } from './model';
-import type { FeeContext, FeeDetail, FeeOperation, PendingFee } from './model';
+import type { FeeContext, FeeDetail, FeeOperation, Invoice, PendingFee } from './model';
 import { createPendingFees } from './pending';
 import { feeOverview, type StudentFee } from './summary';
-import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext } from './service';
+import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext, loadOverdueInvoices } from './service';
+import { monthLabel, overdueRows } from '../today/overdueFees';
 
 const pendingFees = createPendingFees(deviceStorage);
 function Button({ label, onPress, disabled = false, soft = false }: { label: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
@@ -32,6 +33,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [month, setMonth] = useState(today.slice(0, 7));
   const [filterMonth, setFilterMonth] = useState(month);
   const [context, setContext] = useState<FeeContext | null>(null);
+  const [overdueInvoices, setOverdueInvoices] = useState<Invoice[]>([]);
   const [list, setList] = useState<Awaited<ReturnType<typeof listInvoices>> | null>(null);
   const [detail, setDetail] = useState<FeeDetail | null>(null);
   const [view, setView] = useState<'list' | 'create' | 'detail' | 'collect'>('list');
@@ -58,17 +60,18 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const selected = choices.find(item => item.id === enrolment);
   const overview = context && list ? feeOverview(context,list.invoices,filterMonth,today) : null;
   const selectedBatch = overview?.batches.find(batch => batch.id === batchView);
+  const overdue = context ? overdueRows(overdueInvoices, context.students, context.enrolments, today) : [];
 
   const reload = useCallback(async (targetMonth: string) => {
     const generation = ++version.current;
     setLoading(true); setList(null);
     try {
-      const [data, invoices] = await Promise.all([loadFeeContext(academy.id), allMonthInvoices(academy.id, targetMonth)]);
-      if (alive.current && generation === version.current) { setContext(data); setList({ invoices, more: false }); return true; }
+      const [data, invoices, overdue] = await Promise.all([loadFeeContext(academy.id), allMonthInvoices(academy.id, targetMonth), loadOverdueInvoices(academy.id, today)]);
+      if (alive.current && generation === version.current) { setContext(data); setList({ invoices, more: false }); setOverdueInvoices(overdue); return true; }
     } catch (failure) { if (alive.current && generation === version.current) error(feeFailure(failure, 'Fees could not be loaded. Check your connection and retry.')); }
     finally { if (alive.current && generation === version.current) setLoading(false); }
     return false;
-  }, [academy.id, error]);
+  }, [academy.id, error, today]);
   async function readPending() {
     setStorageBlocked(true);
     try {
@@ -206,6 +209,14 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           setFilterMonth(month); setBatchView(null); void reload(month);
         }} />
       </View>
+      {overview && !selectedBatch && overdue.length > 0 && <View testID="fees-overdue-section" style={s.card}>
+        <Text accessibilityRole="header" style={s.title}>Overdue</Text>
+        {overdue.map(row => <View key={row.studentId} testID="fees-overdue-row" style={{ gap: 2 }}>
+          <Text style={s.title}>{row.name}</Text>
+          <Text style={s.body}>{row.batches.join(', ')} · {row.months.map(monthLabel).join(', ')}</Text>
+          <Text style={s.badge}>{formatFee(row.paise)} due</Text>
+        </View>)}
+      </View>}
       {overview && <>
         <View style={s.summaryHero}>
           <Text style={s.heroLabel}>{filterMonth} · {selectedBatch ? selectedBatch.name : 'ALL BATCHES'}</Text>

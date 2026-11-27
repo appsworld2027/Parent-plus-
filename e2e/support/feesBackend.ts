@@ -32,7 +32,14 @@ export async function feesBackend(page: Page, options: { missing?: boolean } = {
       if (path.endsWith('/fee_invoice_balances') || path.endsWith('/get_fee_invoice')) {
         if (state.failRead) return response({ message: 'Private read failure' },500);
         if (path.endsWith('/get_fee_invoice')) return response(invoice ? { invoice: totals(invoice), payments: state.payments.filter(p => p.invoice_id === invoice.id) } satisfies FeeDetail : null);
-        const month = url.searchParams.get('billing_month')?.slice(3);
+        const billing = url.searchParams.get('billing_month');
+        if (!billing) { // overdue read: any month, filtered like the app's query, paged by offset/limit
+          const due = url.searchParams.get('due_on')?.replace('lt.', '') ?? '9999-12-31';
+          const all = state.invoices.map(totals).filter(i => i.due_on < due && i.balance_paise > 0 && !i.voided_at).sort((a, b) => a.id.localeCompare(b.id));
+          const offset = Number(url.searchParams.get('offset') ?? 0), limit = Number(url.searchParams.get('limit') ?? 1000);
+          return response(all.slice(offset, offset + limit));
+        }
+        const month = billing.slice(3);
         let rows = state.invoices.filter(i => i.billing_month === month).sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
         const cursor = url.searchParams.get('or')?.match(/created_at\.eq\.([^,]+),id\.lt\.([0-9a-f-]+)/);
         if (cursor) rows=rows.filter(row => row.created_at<cursor[1] || (row.created_at===cursor[1] && row.id<cursor[2]));
