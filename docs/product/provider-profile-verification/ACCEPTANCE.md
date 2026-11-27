@@ -1,6 +1,6 @@
 # Feature Contract: Provider profile and verification (C1.2)
 
-Status: DRAFT — awaiting founder approval. No tests or code exist. Founder decision D-02: an admin approves by hand, needing one photo ID and one qualification. Source note: the founder's context file "C1 Onboarding and verification" (features 1.2-F1, 1.2-F2) was not in the repository; criteria are derived from the checkpoint and D-02. Roadmap: C1.2
+Status: APPROVED by founder in chat on 2026-11-27 ("Approved"), both contracts as drafted, including the C1.3 reading of D-03 (private publish). Recorded by Claude; not a GitHub /approve. First admin still to be named. No tests or code exist. Founder decision D-02: an admin approves by hand, needing one photo ID and one qualification. Source note: the founder's context file "C1 Onboarding and verification" (features 1.2-F1, 1.2-F2) was not in the repository; criteria are derived from the checkpoint and D-02. Roadmap: C1.2
 
 ## Why
 Parents will trust a coach only if a real person has checked who they are. The coach fills in a profile, submits two documents, and an admin approves or rejects by hand.
