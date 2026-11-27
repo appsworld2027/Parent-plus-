@@ -11,4 +11,3 @@ jobs:
     with:
       handbook_ref: 56be8518807c66817c223d8fcc8da758b9b1722c
     secrets:
-      AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
