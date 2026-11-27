@@ -4,14 +4,7 @@ import { Text, TextInput } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { supabase } from '../auth/client';
 
-export const announcementLimit = 500;
-// Pure rule (CA-03/04) so it is unit-testable: returns an error note, or null when the text can be posted.
-export function announcementProblem(text: string): string | null {
-  const t = text.trim();
-  if (!t) return 'Write a message first.';
-  if (t.length > announcementLimit) return `Keep it under ${announcementLimit} characters.`;
-  return null;
-}
+import { announcementLimit, announcementProblem } from './announcementRules';
 type Batch = { id: string; name: string };
 
 // One announcement to one batch's linked families (CA-01..05).

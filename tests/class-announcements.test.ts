@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { announcementProblem } from '../src/today/CoachAnnounce';
+import { announcementProblem } from '../src/today/announcementRules';
 import { announcementsForChild } from '../src/parent/signals';
 describe('class announcements rules', () => {
   it('CA-03/04 blank and over-long text are refused', () => {
