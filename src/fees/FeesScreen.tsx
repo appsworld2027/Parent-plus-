@@ -56,7 +56,7 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const disabled = busy || loading || storageBlocked || !!pending;
   const choices = context ? billingOptions(context, month) : [];
   const selected = choices.find(item => item.id === enrolment);
-  const overview = context && list ? feeOverview(context,list.invoices,filterMonth) : null;
+  const overview = context && list ? feeOverview(context,list.invoices,filterMonth,today) : null;
   const selectedBatch = overview?.batches.find(batch => batch.id === batchView);
 
   const reload = useCallback(async (targetMonth: string) => {
