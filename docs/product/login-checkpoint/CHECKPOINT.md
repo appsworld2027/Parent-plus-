@@ -38,3 +38,10 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - NOT RUN / founder-gated: applying candidates 023 and 024 to the hosted project, creating the hosted storage bucket, real signed-link expiry, a real admin row (needs the founder's user id), real-device file picker (native), independent review of both builds (self-built; pending, not independent), separate-academy case (listings belong to a user, not an academy).
 - Assumption to confirm: "Published" is private (D-03). Admin cannot yet revoke from the UI (the SQL supports reject on a Verified profile; no screen button).
 - Next: founder preview test of Profile and Listing tabs; independent review; decision on applying 023/024 and naming the first admin.
+
+## Hosted apply — 27 Nov 2026 (founder said "do all of these things yourself")
+- Full browser suite on the C1.2/C1.3 build: 240 passed, 1 skipped, 0 failed (before merging the other session's docs/SQL).
+- Independent review (separate reviewer agent, read-only): no blockers. Fixed before applying: row lock on save/register, document path must match kind, admin cannot decide own profile, submit checks files still exist, decision history no longer blocks admin deletion, email check on file delete. Left as follow-ups: stale-approval binding, deleting superseded ID files and account-removal retention, admin read limited to submitted profiles, upload quota, edit-resets-published decision, content sniffing.
+- APPLIED to hosted dev project parentplus-dev: migrations provider_verification_c1_2 and provider_listing_c1_3 (private bucket provider-documents included). NOT applied: the academies-wide verified-email policy from candidate 0022 (only its helper function), because it would change access for existing accounts.
+- No admin row yet: the founder's login email is not among the 6 accounts (checked ids only, no data changed). Needed: which email the founder signs in with.
+- Candidate files 0023_parent_quick_signals and 0023_provider_verification share a number; rename one when promoting.

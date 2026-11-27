@@ -100,6 +100,14 @@ describe('provider verification candidate (disposable database)', () => {
     await as(admin); expect(await commit('select public.decide_provider_profile($1,$2,$3)', [coach, 'reject', 'Qualification expired.'])).toBe('');
     await db.exec('reset role'); expect((await db.query('select * from public.provider_decisions')).rows).toHaveLength(3);
   });
+  it('review fixes: kind must match the path folder, an admin cannot decide their own profile, a registered file must still exist at submit', async () => {
+    await db.exec('reset role'); await db.query(`insert into storage.objects(bucket_id,name) values ('provider-documents',$1)`, [`${other}/photo_id/x`]); await as(other);
+    expect(await commit('select public.save_provider_profile($1,$2,$3,$4,$5)', [...profile])).toBe('');
+    expect(await commit('select public.register_provider_document($1,$2,$3,$4,$5)', ['qualification', `${other}/photo_id/x`, 'x.png', 'image/png', 10])).toBe('22023');
+    expect(await commit('select public.register_provider_document($1,$2,$3,$4,$5)', ['photo_id', `${other}/photo_id/../x`, 'x.png', 'image/png', 10])).toBe('22023');
+    await db.exec('reset role'); await db.query(`insert into public.provider_profiles(user_id,name,status) values ($1,'Admin','pending') on conflict (user_id) do update set status='pending'`, [admin]);
+    await as(admin); expect(await commit('select public.decide_provider_profile($1,$2,$3)', [admin, 'approve', null])).toBe('22023');
+  });
   it('an unverified-email account cannot save a profile', async () => {
     await as(unverified); expect(await commit('select public.save_provider_profile($1,$2,$3,$4,$5)', [...profile])).toBe('42501');
   });
