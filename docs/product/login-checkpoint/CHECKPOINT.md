@@ -18,3 +18,8 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 
 ## Parked by founder (26 Nov 2026): email service
 - Founder said "Forget this email thing" (no managed domain; custom SMTP not set up). Parked, not cancelled. Real-inbox cases (sign-up confirmation, resend, recovery email delivery) stay NOT RUN. Do not raise it again until the founder does or a real coach pilot is planned.
+
+## Login build status — 27 Nov 2026
+- All six contracts built (C1.1a-f). Remaining database gap closed as a CANDIDATE only: supabase/candidates/202611270022_verified_email_gate.sql, validated on a disposable in-memory database (tests/login-verified-email-candidate.test.ts, 3 pass). NOT applied to the hosted project; applying needs founder authorization.
+- Founder-gated, not done: hosted Auth settings (Confirm email, min password 15, redirect list, rate limits), email service (parked), applying the candidate SQL, real-inbox/device tests, a founder test login (dashboard Add user, auto-confirm).
+- Founder declined: Supabase access token via secure form; hosted database write for a test user.
