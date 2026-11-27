@@ -4,15 +4,17 @@ import type { Student } from '../roster/model';
 import type { Enrolment } from '../roster/model';
 import type { Observation } from '../observations/model';
 import type { Recipient } from '../observations/model';
+import type { Invoice } from '../fees/model';
 
 export type NeedsYouData = {
   students: Student[];
   enrolments: Enrolment[];
   observations: Observation[];
   recipients: Recipient[];
+  invoices: Invoice[];
 };
 
-export async function loadNeedsYouData(academyId: string): Promise<NeedsYouData> {
+export async function loadNeedsYouData(academyId: string, today: string): Promise<NeedsYouData> {
   if (!supabase) throw new Error('Client unavailable');
 
   // Paged loading for students and enrolments (like roster/service.ts)
@@ -72,5 +74,15 @@ export async function loadNeedsYouData(academyId: string): Promise<NeedsYouData>
     rows('enrolments', 'id,student_id,batch_id,starts_on,ends_on'),
   ]);
 
-  return { students: students as Student[], enrolments: enrolments as Enrolment[], observations: recentRecordedObservations as Observation[], recipients };
+  // Only invoices that could be overdue; paged to avoid the 1000-row cap.
+  const invoices: Invoice[] = [];
+  for (let offset = 0; ; offset += 500) {
+    const result = await supabase!.from('fee_invoice_balances').select('*').eq('academy_id', academyId)
+      .lt('due_on', today).gt('balance_paise', 0).is('voided_at', null).order('id').range(offset, offset + 499);
+    if (result.error) throw result.error;
+    invoices.push(...((result.data ?? []) as Invoice[]));
+    if ((result.data?.length ?? 0) < 500) break;
+  }
+
+  return { invoices, students: students as Student[], enrolments: enrolments as Enrolment[], observations: recentRecordedObservations as Observation[], recipients };
 }

@@ -1,4 +1,5 @@
 import { supabase } from '../auth/client';
+export { announcementsForChild } from './announcements';
 
 export type SignalKind = 'running_late' | 'missing_today' | 'dropped_off';
 export const signalLabels: Record<SignalKind, string> = { running_late: 'Running late', missing_today: 'Missing today', dropped_off: 'Dropped off' };
@@ -23,3 +24,12 @@ export async function withdrawSignal(row: Pick<TodaySignal, 'session_id' | 'stud
 }
 // Pure view rules so they can be unit-tested: which signal rows belong on a child's card.
 export function signalsForChild(rows: TodaySignal[], childId: string) { return rows.filter(r => r.child_id === childId); }
+
+import type { Announcement } from './announcements';
+export type { Announcement } from './announcements';
+export async function loadAnnouncements(): Promise<Announcement[]> {
+  if (!supabase) throw new Error('Unavailable');
+  const result = await supabase.rpc('get_parent_announcements');
+  if (result.error) throw result.error;
+  return (result.data ?? []) as Announcement[];
+}

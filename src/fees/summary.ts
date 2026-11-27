@@ -11,7 +11,7 @@ export function feeTotals(rows: StudentFee[]): FeeTotals {
 // keeps unbilled students visible instead of pretending their pending amount is0.
 // Issued charges retain their historical snapshot; cancelled charges are not
 // silently re-created as debt. Distinct students are counted once across batches.
-export function feeOverview(context: FeeContext, invoices: Invoice[], month: string) {
+export function feeOverview(context: FeeContext, invoices: Invoice[], month: string, today?: string) {
   const eligible = new Set(billingOptions(context,month).map(row => row.id));
   const rows: StudentFee[] = [];
   for (const enrolment of context.enrolments) {
@@ -26,7 +26,8 @@ export function feeOverview(context: FeeContext, invoices: Invoice[], month: str
       batchId: enrolment.batch_id, batch: invoice?.batch_name ?? batch?.name ?? 'Former batch', expected,
       collected: invoice?.paid_paise ?? 0, pending: invoice?.balance_paise ?? expected, invoice, voided, archived: !!student?.archived_at });
   }
-  rows.sort((a,b) => a.student.localeCompare(b.student) || a.enrolment.localeCompare(b.enrolment));
+  const late = (row: StudentFee) => !!today && !!row.invoice && !row.invoice.voided_at && row.invoice.balance_paise > 0 && row.invoice.due_on < today;
+  rows.sort((a,b) => Number(late(b)) - Number(late(a)) || a.student.localeCompare(b.student) || a.enrolment.localeCompare(b.enrolment));
   const batchIds = [...new Set(rows.map(row => row.batchId))];
   const batches = batchIds.map(id => { const students=rows.filter(row => row.batchId===id);return { id,name: students[0].batch, rows: students,...feeTotals(students) }; });
   return { rows, batches, ...feeTotals(rows) };

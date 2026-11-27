@@ -32,7 +32,9 @@ import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
 import { loadNeedsYouData } from './src/today/service';
+import type { Invoice } from './src/fees/model';
 import { CoachSignals } from './src/today/CoachSignals';
+import { CoachAnnounce } from './src/today/CoachAnnounce';
 import { supabase } from './src/auth/client';
 import type { Student } from './src/roster/model';
 import type { Enrolment } from './src/roster/model';
@@ -86,6 +88,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [needsYouEnrolments, setNeedsYouEnrolments] = useState<Enrolment[]>([]);
   const [needsYouObservations, setNeedsYouObservations] = useState<Observation[]>([]);
   const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
+  const [needsYouInvoices, setNeedsYouInvoices] = useState<Invoice[]>([]);
   const [needsYouError, setNeedsYouError] = useState<string | null>(null);
   const [needsYouLoading, setNeedsYouLoading] = useState(false);
 
@@ -96,12 +99,13 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
     setNeedsYouError(null);
     async function load() {
       try {
-        const data = await loadNeedsYouData(auth.academy!.id);
+        const data = await loadNeedsYouData(auth.academy!.id, new Intl.DateTimeFormat('en-CA', { timeZone: auth.academy!.timezone ?? 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
         if (!active) return;
         setNeedsYouStudents(data.students);
         setNeedsYouEnrolments(data.enrolments);
         setNeedsYouObservations(data.observations);
         setNeedsYouRecipients(data.recipients);
+        setNeedsYouInvoices(data.invoices);
       } catch (error) {
         if (active) {
           const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
@@ -178,12 +182,15 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               enrolments={needsYouEnrolments}
               observations={needsYouObservations}
               recipients={needsYouRecipients}
+              invoices={needsYouInvoices}
+              onPressFees={() => navigate('Fees')}
               onPress={() => navigate('Post')}
               loading={needsYouLoading}
               error={needsYouError}
             />
           </>}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
+          {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>

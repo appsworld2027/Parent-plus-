@@ -1,6 +1,6 @@
 # Feature Contract: Coach "Needs you" shows overdue fees
 
-Status: draft
+Status: draft (built 2026-11-27 on founder instruction; tests: tests/overdue-fees.test.ts, e2e/needs-you-fees.spec.ts. NOT covered: AC-07,08 states reuse existing, AC-14 TEST receipts depends on the DB view, offline run, full suite)
 Prototype reference: `founders/prototypes/ParentPlus_Coach_Tutor_App.html`, Coach Today screen, section "Needs you" (line ~322)
 Roadmap: M2-41 Coach "Today" and "Needs you" list
 
