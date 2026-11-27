@@ -50,6 +50,13 @@ export async function parentBackend(page:Page){
         state.permissions.push({link_id:link.id,allow_photos:false,allow_videos:false,allow_parent_sharing:false,source:'parent_account',recorded_at:new Date().toISOString()});
         for(const held of window.__mediaFixture.handoffs)if(held.student_id===request.student_id&&held.state==='awaiting_parent_link')held.state='available_to_parent';sessionStorage.setItem('__fictional_media',JSON.stringify(window.__mediaFixture));persist();return reply(link.id);
       }
+      if(endpoint==='get_parent_announcements'){const child=state.children[0];return reply(child?((window as any).__announcements??[]).map((a:any)=>({...a,child_id:child.id})):[]);}
+      if(['get_parent_today_signals','send_parent_signal','withdraw_parent_signal'].includes(endpoint)){
+        const sig=(window as any).__signalFixture??((window as any).__signalFixture={classToday:false,kind:null,changed_at:null,sends:[],fails:0});
+        if(endpoint==='get_parent_today_signals'){const child=state.children[0];return reply(sig.classToday&&child?[{session_id:'s1',student_id:'st1',child_id:child.id,batch_name:'Fictional Pottery Batch',starts_at:new Date().toISOString(),kind:sig.kind,changed_at:sig.changed_at}]:[]);}
+        if(endpoint==='send_parent_signal'){if(sig.fails>0){sig.fails--;return reply({code:'XX000',message:'Fictional failure'},500);}const p=JSON.parse(String(init?.body));sig.kind=p.signal;sig.changed_at=new Date().toISOString();sig.sends.push(p.signal);sessionStorage.setItem('__sig',JSON.stringify(sig));return new Response(null,{status:204});}
+        sig.kind=null;sig.changed_at=null;sessionStorage.setItem('__sig',JSON.stringify(sig));return new Response(null,{status:204});
+      }
       if(endpoint==='get_parent_coach_connections')return reply(state.links.filter(value=>value.active));
       if(endpoint==='get_parent_media_permissions')return reply(state.permissions);
       if(endpoint==='parent_coach_links'){state.connectionReads=(state.connectionReads??0)+1;while(state.holdConnections)await new Promise(resolve=>setTimeout(resolve,20));return reply(state.links.filter(link=>link.active&&(!url.searchParams.has('student_id')||link.student_id===url.searchParams.get('student_id')?.slice(3))&&(!url.searchParams.has('academy_id')||link.academy_id===url.searchParams.get('academy_id')?.slice(3))));}

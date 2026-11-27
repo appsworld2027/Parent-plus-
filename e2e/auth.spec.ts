@@ -24,11 +24,14 @@ test('sign-up and recovery use neutral messages and return to sign-in', async ({
   await page.goto('/');
   await page.getByRole('button', { name: 'Create an account', exact: true }).click();
   await page.getByRole('textbox', { name: 'Email address' }).fill('coach@example.test');
-  await page.getByLabel('Password', { exact: true }).fill('fictional-password');
-  await page.getByLabel('Confirm password', { exact: true }).fill('fictional-password');
+  await page.getByLabel('Password', { exact: true }).fill('fictional-password-ok');
+  await page.getByLabel('Confirm password', { exact: true }).fill('fictional-password-ok');
   await page.getByRole('button', { name: 'Create account', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('If registration is available');
-  await expect(page.getByLabel('Password', { exact: true })).toHaveValue('');
+  // Updated for contract C1.1c (SU-01): a "Check your email" panel with the approved M07 wording
+  // replaces the form, so no password field remains on screen.
+  await expect(page.getByRole('heading', { name: 'Check your email', exact: true })).toBeVisible();
+  await expect(page.getByText('If this email can be registered, a confirmation message will arrive.')).toBeVisible();
+  await expect(page.getByLabel('Password', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Back to sign in' }).click();
   await page.getByRole('button', { name: 'Forgot password?' }).click();
   await page.getByRole('button', { name: 'Send recovery email' }).click();

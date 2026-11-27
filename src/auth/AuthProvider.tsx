@@ -8,13 +8,22 @@ import { diagnostics } from '../diagnostics';
 import { observationDrafts } from '../observations/localDrafts';
 import { attendanceDrafts } from '../classes/localDrafts';
 import { useFeedback } from '../ui/ActionFeedback';
+import { deviceStorage } from '../deviceStorage';
 
+// M18 and M13: exact wording from the approved Login contracts (docs/product/login-session-stability).
+export const SESSION_ENDED = 'Your session ended. Please sign in again.';
+// M16: a confirmation link that could not sign this device in. Never claims the email is unverified.
+export const LINK_NOT_SIGNED_IN = 'We could not sign you in from this link. Try signing in. If your email is not confirmed yet, request a new link.';
+export const LINK_UNUSABLE = 'This link could not be used. Request a new one from this device, then open the newest email here.';
+// Which account is in the middle of a password reset. Kept on this device (this tab on web) so a
+// reload or app restart cannot open the workspace before a new password is saved (RC-03).
+const RECOVERY_KEY = 'parentplus.recovery.pending.v1';
 export type Academy = { id: string; name: string; timezone: string; currency: string };
 type AuthState = {
   module: 'coach' | 'parent';
   session: Session | null; loading: boolean; academy: Academy | null;
   academyLoading: boolean; error: string; recovery: boolean;
-  reload: () => void; logout: () => Promise<string | null>;
+  reload: () => void; logout: (options?: { keepDrafts?: boolean; everywhere?: boolean }) => Promise<string | null>; dismissError: () => void;
   finishRecovery: () => void; refreshAcademy: () => void;
 };
 const Context = createContext<AuthState | null>(null);
@@ -40,6 +49,16 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
   const [recovery, setRecovery] = useState(false);
   const [revision, setRevision] = useState(0);
   const draftCleanup = useRef<Promise<string | null>>(Promise.resolve(null));
+  // True only while the coach themselves is signing out. Any other SIGNED_OUT
+  // (service ended or revoked the session) must keep unsent drafts (C1.1a SS-04/05).
+  const chosenSignOut = useRef(false);
+  // Cancel during a password reset ends the session but is not a request to delete drafts.
+  const keepDraftsSignOut = useRef(false);
+  // Set when the service (not the coach) ended the session, so a failing academy check
+  // cannot replace the M18 message with a different error.
+  const sessionEndedByService = useRef(false);
+  const [recheck, setRecheck] = useState(0);
+  const [recoveryChecked, setRecoveryChecked] = useState('');
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -50,10 +69,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
       if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       if (event === 'SIGNED_OUT') {
         if (Platform.OS === 'web') { try { clearFeedbackJourney(globalThis.sessionStorage); globalThis.sessionStorage.removeItem('parentplus.family-child.v1'); } catch { /* Account ownership is still checked before use. */ } }
-        diagnostics.clear(); setAcademy(null); setRecovery(false);
+        diagnostics.clear(); setAcademy(null); setRecovery(false); void deviceStorage.removeItem(RECOVERY_KEY).catch(() => undefined);
         // Invalidate observation writers synchronously; queued removal runs once.
         // Explicit logout awaits this same job instead of racing a second clear.
-        draftCleanup.current = Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
+        if (!chosenSignOut.current && !keepDraftsSignOut.current) { sessionEndedByService.current = true; setError(SESSION_ENDED); }
+        draftCleanup.current = !chosenSignOut.current ? Promise.resolve(null) : Promise.all([attendanceDrafts.clear(), observationDrafts.clear()]).then(() => null).catch(() => {
           const message = safeAuthFailure('SESSION_FAILURE', 'You are signed out, but a device draft could not be cleared. Your coding partner can help.');
           if (active) setError(message);
           return message;
@@ -72,6 +92,52 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     return () => { active = false; data.subscription.unsubscribe(); };
   }, [revision]);
 
+  const [linkFailed, setLinkFailed] = useState<'' | 'recovery' | 'confirm'>('');
+  const userId = session?.user.id;
+  // A bad link must never replace a working signed-in screen (SS-10). Wait until the
+  // stored session is known, then tell a signed-in coach with a message and keep them in.
+  useEffect(() => {
+    if (!linkFailed || loading) return;
+    const text = linkFailed === 'recovery' ? LINK_UNUSABLE : LINK_NOT_SIGNED_IN;
+    setLinkFailed('');
+    if (session) show({ kind: 'error', title: 'Link not used', message: text, source: 'auth-link' });
+    else setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', text));
+  }, [linkFailed, loading, session, show]);
+
+  // Restore an unfinished reset before any workspace screen can render, and keep it saved.
+  useEffect(() => {
+    if (!userId) { setRecoveryChecked(''); return; }
+    let live = true;
+    void (async () => {
+      try { const saved = await deviceStorage.getItem(RECOVERY_KEY); if (saved === userId || saved === 'pending') setRecovery(true); } catch { /* No saved reset. */ }
+      if (live) setRecoveryChecked(userId);
+    })();
+    return () => { live = false; };
+  }, [userId]);
+  useEffect(() => {
+    if (recovery && userId) void deviceStorage.setItem(RECOVERY_KEY, userId).catch(() => undefined);
+  }, [recovery, userId]);
+
+  // Unsent drafts belong to one coach. A different coach signing in deletes them (SS-06).
+  useEffect(() => {
+    if (!userId) return;
+    setError(current => (current === SESSION_ENDED ? '' : current));
+    void (async () => {
+      try {
+        sessionEndedByService.current = false;
+        // Remove only the exact draft that was read, so a draft the new coach saves
+        // in the meantime is never deleted. Drafts also expire after 7 days (SS-05).
+        const expired = (savedAt: string) => Date.now() - Date.parse(savedAt) > 7 * 24 * 60 * 60 * 1000;
+        const attendance = await attendanceDrafts.read();
+        if (attendance && (attendance.owner !== userId || expired(attendance.savedAt))) {
+          await attendanceDrafts.clear({ owner: attendance.owner, academy: attendance.academy, session: attendance.session });
+        }
+        const observation = await observationDrafts.read();
+        if (observation && (observation.owner !== userId || expired(observation.savedAt))) await observationDrafts.clear(observation);
+      } catch { /* Ownership is still checked before any draft is shown. */ }
+    })();
+  }, [userId]);
+
   useEffect(() => {
     if (!supabase || !session) { setAcademy(null); setAcademyLoading(false); setCheckedSession(''); return; }
     let active = true;
@@ -89,11 +155,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         if (result.error) throw result.error;
         if (active) setAcademy(result.data);
       } catch {
-        if (active) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
-      } finally { if (active) { setCheckedSession(session.access_token); setAcademyLoading(false); } }
+        if (active && !sessionEndedByService.current) setError(safeAuthFailure('ACADEMY_FAILURE', 'Your workspace could not be loaded. Check your connection and retry.'));
+      } finally { if (active) { setCheckedSession(session.user.id); setAcademyLoading(false); } }
     })();
     return () => { active = false; };
-  }, [session?.access_token, revision, module]);
+  }, [session?.user.id, revision, recheck, module]);
 
   useEffect(() => {
     if (!supabase || Platform.OS === 'web') return;
@@ -109,9 +175,11 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     let active = true;
     let lastCode = '';
     const handle = async (url: string) => {
+      let recoveryLink = false;
       try {
         const parsed = parseAuthLink(url, Platform.OS === 'web' ? globalThis.location.origin : undefined);
         if (!parsed) return;
+        recoveryLink = parsed.recovery;
         const incoming=new URL(url);
         // The public recovery address is also a useful "Forgot password"
         // entry point. An address without an email code is never a session.
@@ -126,11 +194,15 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
         // Sensitive callback parameters have been removed before any exchange.
         // Capture the exact PKCE flow before removing URL parameters. Without
         // it the SDK can use a newer email's fallback proof and burn this code.
+        // Mark the reset as pending before the session exists, so a kill or restart cannot reach the workspace.
+        if (parsed.recovery) await deviceStorage.setItem(RECOVERY_KEY, 'pending').catch(() => undefined);
         const result = await supabase!.auth.exchangeCodeForSession(parsed.code,parsed.flowId?{flowId:parsed.flowId}:undefined);
-        if (result.error) throw result.error;
-        if (active) { setRecovery(parsed.recovery); setError(''); }
+        if (result.error) { await deviceStorage.removeItem(RECOVERY_KEY).catch(() => undefined); throw result.error; }
+        // A new session arrived by link: check the account and academy again.
+        if (active) { setRecovery(parsed.recovery); setError(''); setRecheck(value => value + 1); }
       } catch {
-        if (active) setError(safeAuthFailure('AUTH_CALLBACK_FAILURE', 'This email link could not be opened. Request a new link on this device.'));
+        if (!active) return;
+        setLinkFailed(recoveryLink ? 'recovery' : 'confirm'); // Reported once the stored session has been restored (see effect below).
       }
     };
     if (Platform.OS === 'web') void handle(globalThis.location.href);
@@ -141,26 +213,28 @@ export function AuthProvider({ children, module = 'coach' }: React.PropsWithChil
     return () => { active = false; subscription.remove(); };
   }, []);
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (options?: { keepDrafts?: boolean; everywhere?: boolean }) => {
     if (!supabase) return null;
     dismiss();
     try {
       // End this device session. Account deletion and other-device logout are separate.
-      const result = await supabase.auth.signOut({ scope: 'local' });
+      if (options?.keepDrafts) keepDraftsSignOut.current = true; else chosenSignOut.current = true;
+      const result = await supabase.auth.signOut({ scope: options?.everywhere ? 'global' : 'local' });
       if (result.error) throw result.error;
       setSession(null); setAcademy(null); setError(''); setRecovery(false); diagnostics.clear();
       const cleanupError = await draftCleanup.current;
       if (cleanupError) { setError(cleanupError); return cleanupError; }
       await diagnostics.flush();
-      show({ kind: 'success', title: 'Signed out', message: 'Your session and device-only drafts have been cleared.', source: 'auth-sign-out' });
+      show({ kind: 'success', title: 'Signed out', message: options?.keepDrafts ? 'Your session ended. Unsent drafts stay on this device.' : 'Your session and device-only drafts have been cleared.', source: 'auth-sign-out' });
       return null;
     } catch { return safeAuthFailure('AUTH_FAILURE', 'Sign-out could not complete. Please retry.'); }
+    finally { chosenSignOut.current = false; keepDraftsSignOut.current = false; }
   }, [show, dismiss]);
 
   return <Context.Provider value={{ module, session, loading, academy,
-    academyLoading: academyLoading || (!!session && checkedSession !== session.access_token), error, recovery,
+    academyLoading: academyLoading || (!!session && (checkedSession !== session.user.id || recoveryChecked !== session.user.id)), error, recovery,
     reload: () => { setLoading(true); setRevision(x => x + 1); }, logout,
-    finishRecovery: () => setRecovery(false), refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;
+    dismissError: () => setError(''), finishRecovery: () => { setRecovery(false); void deviceStorage.removeItem(RECOVERY_KEY).catch(() => undefined); }, refreshAcademy: () => setRevision(x => x + 1) }}>{children}</Context.Provider>;
 }
 
 export function useAuth() {

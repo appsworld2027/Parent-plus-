@@ -16,7 +16,10 @@ import { ObservationsScreen } from './src/observations/ObservationsScreen';
 import { ParentConnectionApprovals } from './src/parent/ParentConnectionApprovals';
 import ParentApp from './src/parent/ParentApp';
 import { FeesScreen } from './src/fees/FeesScreen';
+import { ListingScreen } from './src/provider/ListingScreen';
+import { ProviderProfileScreen } from './src/provider/ProviderProfileScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
+import { AccountSettings } from './src/auth/AccountSettings';
 import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
 import { TodayClasses } from './src/classes/TodayClasses';
 import { appVersion, buildRevision } from './src/version';
@@ -29,6 +32,9 @@ import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
 import { loadNeedsYouData } from './src/today/service';
+import type { Invoice } from './src/fees/model';
+import { CoachSignals } from './src/today/CoachSignals';
+import { CoachAnnounce } from './src/today/CoachAnnounce';
 import { supabase } from './src/auth/client';
 import type { Student } from './src/roster/model';
 import type { Enrolment } from './src/roster/model';
@@ -37,10 +43,10 @@ import type { Recipient } from './src/observations/model';
 
 function coachGreeting(timezone:string) { const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:timezone}).format(new Date())); return hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'; }
 
-type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
+type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Profile' | 'Listing' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
   { name: 'Today', glyph: 'home' }, { name: 'Schedule', glyph: 'cal' },
-  { name: 'Post', glyph: 'plus' }, { name: 'Students', glyph: 'users' }, { name: 'Fees', glyph: 'wallet' },
+  { name: 'Post', glyph: 'plus' }, { name: 'Students', glyph: 'users' }, { name: 'Fees', glyph: 'wallet' }, { name: 'Profile', glyph: 'users' }, { name: 'Listing', glyph: 'star' },
 ];
 const stages: Record<string, { title: string; body: string; detail: string }> = {
   Schedule: { title: 'A little structure. More room to teach.', body: 'Your batches and dated class sessions will live here.', detail: 'Scheduling follows account and academy setup. No classes have been loaded.' },
@@ -60,6 +66,7 @@ function Action({ label, onPress, secondary = false }: { label: string; onPress:
 function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const auth = useAuth();
   const [screen, setScreen] = useState<Screen>('Today');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [launchRosterSetup,setLaunchRosterSetup]=useState(false);
   const [launchBatch,setLaunchBatch]=useState(false);
   const [classLaunch,setClassLaunch]=useState<{batch?:string;session?:string}|null>(null);
@@ -81,6 +88,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [needsYouEnrolments, setNeedsYouEnrolments] = useState<Enrolment[]>([]);
   const [needsYouObservations, setNeedsYouObservations] = useState<Observation[]>([]);
   const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
+  const [needsYouInvoices, setNeedsYouInvoices] = useState<Invoice[]>([]);
   const [needsYouError, setNeedsYouError] = useState<string | null>(null);
   const [needsYouLoading, setNeedsYouLoading] = useState(false);
 
@@ -91,12 +99,13 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
     setNeedsYouError(null);
     async function load() {
       try {
-        const data = await loadNeedsYouData(auth.academy!.id);
+        const data = await loadNeedsYouData(auth.academy!.id, new Intl.DateTimeFormat('en-CA', { timeZone: auth.academy!.timezone ?? 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
         if (!active) return;
         setNeedsYouStudents(data.students);
         setNeedsYouEnrolments(data.enrolments);
         setNeedsYouObservations(data.observations);
         setNeedsYouRecipients(data.recipients);
+        setNeedsYouInvoices(data.invoices);
       } catch (error) {
         if (active) {
           const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
@@ -119,6 +128,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   if (crash) throw new Error('Controlled development render failure');
 
   function navigate(next: Screen) {
+    setSettingsOpen(false); // Any navigation, including the support icon, leaves Settings.
     if (formBusy) { setNotice('Please wait for the save to finish.'); return; }
     if ((screen === 'Students' || screen === 'Schedule' || screen === 'Post' || screen === 'Fees') && next !== screen && formDirty) { Keyboard.dismiss(); setPendingNavigation(next); return; }
     if (next !== 'Schedule') setClassLaunch(null);
@@ -172,11 +182,15 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               enrolments={needsYouEnrolments}
               observations={needsYouObservations}
               recipients={needsYouRecipients}
+              invoices={needsYouInvoices}
+              onPressFees={() => navigate('Fees')}
               onPress={() => navigate('Post')}
               loading={needsYouLoading}
               error={needsYouError}
             />
           </>}
+          {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
+          {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}
           <Text style={styles.sectionTitle}>Your teaching workspace</Text>
@@ -187,7 +201,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           </View>}
           {auth.academy&&<CoachSetupCard academy={auth.academy.id} onStart={()=>{setLaunchRosterSetup(true);navigate('Students');}}/>}
           {!auth.academy&&<View style={styles.card}><Text style={styles.sectionTitle}>Your classes and students belong here</Text><Text style={styles.small}>Sign in to load your workspace. No sample students, attendance or parent engagement figures are shown.</Text></View>}
-        </> : screen === 'Support' ? <>
+        </> : screen === 'Support' && settingsOpen ? <AccountSettings onBack={() => setSettingsOpen(false)} /> : screen === 'Support' ? <>
           <Text style={styles.eyebrow}>HERE TO HELP</Text>
           <Text accessibilityRole="header" style={styles.heading}>Setup & support</Text>
           <Text style={styles.subtitle}>A clear view of what is ready and what comes next.</Text>
@@ -197,6 +211,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Supabase connection</Text><Text style={styles.statusValue}>{auth.academy ? 'Workspace loaded' : 'Not verified'}</Text></View>
             <View style={styles.statusRow}><Text style={styles.statusLabel}>Payment collection</Text><Text style={styles.statusValue}>Not enabled</Text></View>
             <Text style={styles.small}>{auth.academy ? `Academy: ${auth.academy.name}` : appConfig.configured ? 'Project settings are present. Sign in to verify your workspace connection.' : 'The app starts safely without project settings. Your coding partner will configure the connection.'}</Text>
+            {!exitPreview && <Action label="Settings" secondary onPress={() => setSettingsOpen(true)} />}
             {exitPreview ? <Action label="Return to sign in" secondary onPress={exitPreview} /> : <SignOutButton />}
           </View>
           <View style={styles.card}>
@@ -215,7 +230,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           <FontLicense />
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Profile' && auth.session ? <ProviderProfileScreen key={auth.session.user.id} /> : screen === 'Listing' && auth.session ? <ListingScreen key={auth.session.user.id} onOpenProfile={() => navigate('Profile')} /> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

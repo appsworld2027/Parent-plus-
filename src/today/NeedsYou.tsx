@@ -9,6 +9,8 @@ import type { Enrolment } from '../roster/model';
 import type { Observation } from '../observations/model';
 import type { Recipient } from '../observations/model';
 import type { Academy } from '../auth/AuthProvider';
+import type { Invoice } from '../fees/model';
+import { overdueFees, formatOverdueMessage, formatPending } from './overdueFees';
 
 type Props = {
   academy: Academy;
@@ -16,6 +18,8 @@ type Props = {
   enrolments: Enrolment[];
   observations: Observation[];
   recipients: Recipient[];
+  invoices?: Invoice[];
+  onPressFees?: () => void;
   onPress: () => void;
   loading?: boolean;
   error?: string | null;
@@ -27,6 +31,8 @@ export function NeedsYou({
   enrolments,
   observations,
   recipients,
+  invoices = [],
+  onPressFees = () => {},
   onPress,
   loading = false,
   error = null,
@@ -57,8 +63,10 @@ export function NeedsYou({
     academy.timezone
   );
   const count = needsYouStudents.length;
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: academy.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+  const fees = overdueFees(invoices, students, enrolments, today);
 
-  if (count === 0) {
+  if (count === 0 && fees.students === 0) {
     return (
       <View style={s.card} accessibilityLiveRegion="polite">
         <Text style={s.caughtUpTitle}>All caught up</Text>
@@ -68,23 +76,28 @@ export function NeedsYou({
   }
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={formatNeedsYouMessage(count)}
-      onPress={onPress}
-      style={s.card}
-    >
-      <View style={s.row}>
-        <View style={s.iconWrapper}>
-          <PrototypeIcon name="star" size={20} strokeWidth={2.2} color={c.sun} />
+    <View style={{ gap: 10 }}>
+      {count > 0 && <Pressable accessibilityRole="button" accessibilityLabel={formatNeedsYouMessage(count)} onPress={onPress} style={s.card}>
+        <View style={s.row}>
+          <View style={s.iconWrapper}><PrototypeIcon name="star" size={20} strokeWidth={2.2} color={c.sun} /></View>
+          <View style={s.textColumn}>
+            <Text style={s.countText}>{formatNeedsYouMessage(count)}</Text>
+            <Text style={s.subText}>No update for over a week</Text>
+          </View>
+          <PrototypeIcon name="chev" size={20} strokeWidth={2.2} color={c.muted} />
         </View>
-        <View style={s.textColumn}>
-          <Text style={s.countText}>{formatNeedsYouMessage(count)}</Text>
-          <Text style={s.subText}>No update for over a week</Text>
+      </Pressable>}
+      {fees.students > 0 && <Pressable accessibilityRole="button" accessibilityLabel={formatOverdueMessage(fees.students)} onPress={onPressFees} style={s.card}>
+        <View style={s.row}>
+          <View style={s.iconWrapper}><PrototypeIcon name="wallet" size={20} strokeWidth={2.2} color={c.rose} /></View>
+          <View style={s.textColumn}>
+            <Text style={s.countText}>{formatOverdueMessage(fees.students)}</Text>
+            <Text style={s.subText}>{formatPending(fees.pendingPaise)}</Text>
+          </View>
+          <PrototypeIcon name="chev" size={20} strokeWidth={2.2} color={c.muted} />
         </View>
-        <PrototypeIcon name="chev" size={20} strokeWidth={2.2} color={c.muted} />
-      </View>
-    </Pressable>
+      </Pressable>}
+    </View>
   );
 }
 
