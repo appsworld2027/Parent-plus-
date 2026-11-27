@@ -23,6 +23,7 @@ import { appVersion } from '../version';
 import { activities, parentVersion, parentColors, parentToday, parentWeek, weekStart, type Child, type CoachLink, type Family, type ParentData, type ParentFeedback } from './model';
 import { readFeedbackJourney, clearFeedbackJourney, type FeedbackJourney } from './feedbackJourney';
 import { identityFailure } from './identity';
+import { loadAnnouncements, announcementsForChild, type Announcement } from './signals';
 import { loadTodaySignals, sendSignal, withdrawSignal, signalsForChild, signalLabels, type SignalKind, type TodaySignal } from './signals';
 import { createFamily, loadFamily, loadParentData, parentFailure, saveFamilyRecord } from './service';
 
@@ -71,6 +72,9 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
   const [signals,setSignals]=useState<TodaySignal[]>([]);
   const loadSignals=useCallback(async()=>{try{setSignals(await loadTodaySignals());}catch{setSignals([]);}},[]);
   useEffect(()=>{if(family)void loadSignals();},[family?.id,data,loadSignals]);
+  const [announcements,setAnnouncements]=useState<Announcement[]>([]);
+  useEffect(()=>{if(family)void loadAnnouncements().then(setAnnouncements).catch(()=>setAnnouncements([]));},[family?.id,data]);
+  const childAnnouncements=child?announcementsForChild(announcements,child.id):[];
   const childSignals=child?signalsForChild(signals,child.id):[];
   async function signal(row:TodaySignal,kind:SignalKind){await sendSignal(row,kind);await loadSignals();setNotice(`${signalLabels[kind]} sent to your coach.`);}
   async function unsignal(row:TodaySignal){await withdrawSignal(row);await loadSignals();setNotice('Signal withdrawn.');}
@@ -229,6 +233,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
             <View style={s.weekStrip}>{Array.from({length:7},(_,index)=>{const d=new Date(`${weekStart(today)}T12:00Z`);d.setUTCDate(d.getUTCDate()+index);const day=d.toISOString().slice(0,10);return <View key={day} style={[s.day,day===today&&s.dayActive]}><Text style={[s.dayLabel,day===today&&s.dayLabelActive]}>{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][index]}</Text><Text style={[s.dayNumber,day===today&&s.dayNumberActive]}>{d.getUTCDate()}</Text><View style={s.dayDots}>{events.some(event=>localParts(event.starts_at,family.timezone).date===day)&&<View style={s.dayDot} />}</View></View>;})}</View>
             {section('Coming up',()=>open('event'))}{events.filter(value=>value.ends_at>=new Date().toISOString()).slice(0,3).map(value=><View key={value.id} style={s.row}><View style={s.stripe}/><View style={s.grow}><Text style={s.cardTitle}>{value.title}</Text><Text style={s.muted}>{localParts(value.starts_at,family.timezone).date} · {localParts(value.starts_at,family.timezone).time} {value.location?`· ${value.location}`:''}</Text></View></View>)}{!events.some(value=>value.ends_at>=new Date().toISOString())&&<Text style={s.muted}>Nothing planned yet. Add a class, school event or family plan.</Text>}
             {section('Family to-dos',()=>open('todo'))}{!todos.length&&<Text style={s.muted}>A small list for the things you want to remember.</Text>}{todos.map(todo=><Check key={todo.id} title={todo.title} checked={todo.done} strike disabled={busy} action={()=>{void run(async()=>{await saveFamilyRecord('family_todos',{...todo,done:!todo.done});await refreshedAfterSave('Reminder updated.');});}} />)}
+            {childAnnouncements.length>0&&<>{section('From your coach')}{childAnnouncements.map(row=><View key={row.id} style={s.card}><Text style={s.cardTitle}>{row.batch_name}</Text><Text style={s.muted}>{row.body}</Text><Text style={s.muted}>{localParts(row.created_at,family?.timezone??'Asia/Kolkata').date}</Text></View>)}</>}
             {childSignals.length>0?<>{section('Today’s class')}{childSignals.map(row=><View key={row.session_id} style={s.card}><Text style={s.cardTitle}>{row.batch_name}</Text><Text style={s.muted}>{row.kind?`${signalLabels[row.kind]} · sent to coach${row.changed_at?` at ${localParts(row.changed_at,family?.timezone??'Asia/Kolkata').time.slice(0,5)}`:''}`:'Tell your coach in one tap.'}</Text>{(Object.keys(signalLabels) as SignalKind[]).map(kind=><Button key={kind} title={signalLabels[kind]} soft={row.kind!==kind} disabled={busy} action={()=>{void run(()=>signal(row,kind));}} />)}{row.kind&&<Button title="Undo" soft disabled={busy} action={()=>{void run(()=>unsignal(row));}} />}</View>)}</>:child?<Text style={s.muted}>No class today</Text>:null}
             {section('From coaches',()=>{void refresh();},'Refresh')}{feedbackCards()}
             {section('One easy thing tonight')}<Pressable accessibilityRole="button" onPress={()=>{setIdea(activities[0]);open('activity');setName(activities[0].title);setMinutes(String(activities[0].minutes));}} style={s.card}><Text style={[s.overline,{color:parentColors.sun}]}>{activities[0].minutes} MIN · TOGETHER</Text><Text style={s.cardTitle}>{activities[0].title}</Text><Text style={s.muted}>{activities[0].need} →</Text></Pressable>

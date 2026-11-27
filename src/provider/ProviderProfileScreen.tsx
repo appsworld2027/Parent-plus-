@@ -4,7 +4,7 @@ import { Text } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { approvalDate, missingForSubmit, statusLabel, toValues, validateDocument, validateProfile, type DocumentKind, type ProviderErrors, type ProviderValues, type ProviderView } from './model';
-import { decide, loadProfile, loadReviewQueue, pickDocument, saveProfile, signedDocumentUrl, submitProfile, uploadDocument, type ReviewItem } from './service';
+import { decide, loadProfile, loadReviewQueue, loadVerifiedProviders, type VerifiedProvider, pickDocument, saveProfile, signedDocumentUrl, submitProfile, uploadDocument, type ReviewItem } from './service';
 
 // Contract C1.2. Fields lock while Pending or Verified; every status change happens in the database, never here.
 const empty: ProviderValues = { name: '', phone: '', bio: '', sports: '', experience: '' };
@@ -45,6 +45,26 @@ function ReviewQueue() {
           <Button label="Confirm rejection" disabled={busy} onPress={() => { void act(item, 'reject'); }} /></>
         : <Button label="Reject" secondary disabled={busy} onPress={() => { setRejecting(item.user_id); setReason(''); setReasonError(''); }} />}
     </View>)}
+  </View>;
+}
+
+function VerifiedList() {
+  const [rows, setRows] = useState<VerifiedProvider[] | null>(null), [error, setError] = useState(''), [open, setOpen] = useState<string | null>(null);
+  const [reason, setReason] = useState(''), [reasonError, setReasonError] = useState(''), [busy, setBusy] = useState(false);
+  const refresh = useCallback(async () => { try { setRows(await loadVerifiedProviders()); setError(''); } catch { setError('The verified list could not load. Try again.'); } }, []);
+  useEffect(() => { void refresh(); }, [refresh]);
+  async function revoke(row: VerifiedProvider) {
+    if (busy) return; if (!reason.trim()) { setReasonError('Give a reason for revoking.'); return; }
+    setBusy(true); setReasonError('');
+    try { await decide(row.user_id, 'reject', reason.trim(), null); setOpen(null); setReason(''); await refresh(); } catch { setError('Verification was not revoked. Refresh and try again.'); } finally { setBusy(false); }
+  }
+  return <View style={s.card}><Text accessibilityRole="header" style={s.title}>Verified coaches</Text>
+    {!!error && <Text style={s.error}>{error}</Text>}{rows?.length === 0 && <Text style={s.hint}>No other coaches are verified yet.</Text>}
+    {rows?.map(row => <View key={row.user_id} testID="verified-item" style={s.item}><Text style={s.strong}>{row.name}</Text>
+      {open === row.user_id ? <><Text style={s.hint}>Revoking returns them to Rejected and unpublishes their listing.</Text>
+        <TextInput accessibilityLabel="Reason for revoking" value={reason} onChangeText={setReason} maxLength={500} multiline style={s.input} />
+        {!!reasonError && <Text style={s.error}>{reasonError}</Text>}<Button label="Confirm revoke" disabled={busy} onPress={() => { void revoke(row); }} /></>
+        : <Button label="Revoke verification" secondary onPress={() => { setOpen(row.user_id); setReason(''); setReasonError(''); }} />}</View>)}
   </View>;
 }
 
@@ -97,6 +117,7 @@ export function ProviderProfileScreen() {
       {!!missing && <Text testID="submit-missing" style={s.error}>{missing}</Text>}
     </View>
     {view.is_admin && <ReviewQueue />}
+    {view.is_admin && <VerifiedList />}
   </View>;
 }
 const s = StyleSheet.create({

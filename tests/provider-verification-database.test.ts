@@ -26,6 +26,7 @@ beforeAll(async () => {
   await db.exec(readFileSync('supabase/candidates/202611270022_verified_email_gate.sql', 'utf8'));
   await db.exec(readFileSync('supabase/candidates/202611270023_provider_verification.sql', 'utf8'));
   await db.exec(readFileSync('supabase/candidates/202611270025_provider_review_hardening.sql', 'utf8'));
+  await db.exec(readFileSync('supabase/candidates/202611270026_provider_verified_list.sql', 'utf8'));
   await db.exec('reset role');
   for (const [u, e, v] of [[coach, 'c', 1], [stranger, 's', 1], [admin, 'a', 1], [unverified, 'u', 0], [other, 'o', 1]] as const)
     await db.query(`insert into auth.users(id,email,email_confirmed_at) values ($1,$2,${v ? 'now()' : 'null'})`, [u, `${e}@example.test`]);
@@ -117,6 +118,12 @@ describe('provider verification candidate (disposable database)', () => {
     await as(admin);
     expect(await commit('select public.decide_provider_profile($1,$2,$3,$4)', [stranger, 'approve', null, '2026-01-01T00:00:00Z'])).toBe('40001');
     expect(await commit('select public.decide_provider_profile($1,$2,$3,$4)', [stranger, 'approve', null, '2026-01-02T00:00:00Z'])).toBe('');
+  });
+  it('revoke: only an admin can list verified providers; the list excludes themselves', async () => {
+    await db.exec('reset role'); await db.query(`update public.provider_profiles set status='verified', decided_at=now() where user_id=$1`, [stranger]);
+    await as(admin); expect((await run('select public.list_verified_providers() as l')).rows[0].l.map((r: any) => r.user_id)).toContain(stranger);
+    await as(stranger); expect((await run('select public.list_verified_providers()')).error).toBe('42501');
+    await as(admin); expect(await commit('select public.decide_provider_profile($1,$2,$3)', [stranger, 'reject', 'Revoked in test.'])).toBe('');
   });
   it('an unverified-email account cannot save a profile', async () => {
     await as(unverified); expect(await commit('select public.save_provider_profile($1,$2,$3,$4,$5)', [...profile])).toBe('42501');

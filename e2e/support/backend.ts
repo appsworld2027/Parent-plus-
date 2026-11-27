@@ -90,6 +90,9 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         const student = state.roster.students.find(s => s.id === payload.target_student);
         if (student) student.archived_at = new Date().toISOString();
         persistRoster(); data = true;
+      } else if (url.pathname.endsWith('/rpc/post_batch_announcement')) {
+        const f = ((window as unknown as { __announceFixture?: { posts: string[]; fails: number } }).__announceFixture ??= { posts: [], fails: 0 });
+        if (f.fails > 0) { f.fails--; status = 500; data = { message: 'Fictional failure' }; } else { f.posts.push(payload.message); data = 'a1'; }
       } else if (url.pathname.endsWith('/rpc/get_coach_parent_requests')) { data = []; } else if (url.pathname.endsWith('/rpc/save_class_session')) {
         const index = state.classes.findIndex(c => c.id === payload.target_session);
         if (state.failClass) { status = 500; data = { message: 'Private class backend failure' }; }
