@@ -28,3 +28,13 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - Source: founder's context file, "C1 Onboarding and verification" (features 1.2-F1, 1.2-F2, 1.3-F1, 1.3-F2). Not yet turned into contracts.
 - Founder decisions still open and blocking: D-02 who verifies providers and what evidence; D-03 whether public listing is in scope.
 - Process: contracts of about 12 criteria each, founder approval, locked tests by a separate step, then build. Follow the credit-control rules above.
+
+## C1.2 and C1.3 build status — 27 Nov 2026 (saved locally; pushed to claude/wizardly-ritchie-43u2va when the push line below says so)
+- Decisions (Claude, routine): admin = a row in coach_private.provider_admins (founder is the first admin, assumed); coach and admin tools live in two new tabs, Profile and Listing (7 tabs now, founder may want a layout pass); documents use a private bucket `provider-documents` with 5-minute signed links; revoking a Verified profile (admin reject) unpublishes the listing in the same transaction.
+- C1.2: locked tests e2e/acceptance/provider-profile-verification.spec.ts PV-01..12 pass 12/12 (browser, fictional service in e2e/support/providerBackend.ts). Disposable database tests/provider-verification-database.test.ts pass 10/10 against supabase/candidates/202611270023_provider_verification.sql.
+- C1.3: locked tests e2e/acceptance/provider-listing-publish.spec.ts LP-01..12 pass 14/14 (LP-01 runs for 3 states). Disposable database tests/provider-listing-database.test.ts pass 10/10 against supabase/candidates/202611270024_provider_listing.sql.
+- Code: src/provider/{model,service,ProviderProfileScreen,listing,ListingScreen}.ts(x), tabs in App.tsx, dependency expo-document-picker added.
+- npm run check: typecheck clean, 542 passed, 2 expected-fail, 1 skipped. Full browser suite: see result line below.
+- NOT RUN / founder-gated: applying candidates 023 and 024 to the hosted project, creating the hosted storage bucket, real signed-link expiry, a real admin row (needs the founder's user id), real-device file picker (native), independent review of both builds (self-built; pending, not independent), separate-academy case (listings belong to a user, not an academy).
+- Assumption to confirm: "Published" is private (D-03). Admin cannot yet revoke from the UI (the SQL supports reject on a Verified profile; no screen button).
+- Next: founder preview test of Profile and Listing tabs; independent review; decision on applying 023/024 and naming the first admin.

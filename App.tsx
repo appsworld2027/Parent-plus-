@@ -16,6 +16,8 @@ import { ObservationsScreen } from './src/observations/ObservationsScreen';
 import { ParentConnectionApprovals } from './src/parent/ParentConnectionApprovals';
 import ParentApp from './src/parent/ParentApp';
 import { FeesScreen } from './src/fees/FeesScreen';
+import { ListingScreen } from './src/provider/ListingScreen';
+import { ProviderProfileScreen } from './src/provider/ProviderProfileScreen';
 import { SignOutButton } from './src/auth/SignOutButton';
 import { AccountSettings } from './src/auth/AccountSettings';
 import { CoachSetupCard } from './src/onboarding/CoachSetupCard';
@@ -38,10 +40,10 @@ import type { Recipient } from './src/observations/model';
 
 function coachGreeting(timezone:string) { const hour=Number(new Intl.DateTimeFormat('en-GB',{hour:'numeric',hourCycle:'h23',timeZone:timezone}).format(new Date())); return hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'; }
 
-type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Support';
+type Screen = 'Today' | 'Schedule' | 'Post' | 'Students' | 'Fees' | 'Profile' | 'Listing' | 'Support';
 const tabs: { name: Screen; glyph: string }[] = [
   { name: 'Today', glyph: 'home' }, { name: 'Schedule', glyph: 'cal' },
-  { name: 'Post', glyph: 'plus' }, { name: 'Students', glyph: 'users' }, { name: 'Fees', glyph: 'wallet' },
+  { name: 'Post', glyph: 'plus' }, { name: 'Students', glyph: 'users' }, { name: 'Fees', glyph: 'wallet' }, { name: 'Profile', glyph: 'users' }, { name: 'Listing', glyph: 'star' },
 ];
 const stages: Record<string, { title: string; body: string; detail: string }> = {
   Schedule: { title: 'A little structure. More room to teach.', body: 'Your batches and dated class sessions will live here.', detail: 'Scheduling follows account and academy setup. No classes have been loaded.' },
@@ -219,7 +221,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           <FontLicense />
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Profile' && auth.session ? <ProviderProfileScreen key={auth.session.user.id} /> : screen === 'Listing' && auth.session ? <ListingScreen key={auth.session.user.id} onOpenProfile={() => navigate('Profile')} /> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>
