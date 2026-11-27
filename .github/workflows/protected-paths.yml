@@ -5,4 +5,4 @@ permissions:
   contents: read
 jobs:
   guard:
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/protected-paths.yml@de790c94a13de3937da3841fd23691ee9fc861c6
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/protected-paths.yml@04b25b15d00f182fb65c6c76a0b1fe3e07080ba0
