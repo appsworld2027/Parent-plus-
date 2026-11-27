@@ -25,6 +25,7 @@ beforeAll(async () => {
   db = await supabaseDatabase();
   await db.exec(readFileSync('supabase/candidates/202611270022_verified_email_gate.sql', 'utf8'));
   await db.exec(readFileSync('supabase/candidates/202611270023_provider_verification.sql', 'utf8'));
+  await db.exec(readFileSync('supabase/candidates/202611270025_provider_review_hardening.sql', 'utf8'));
   await db.exec('reset role');
   for (const [u, e, v] of [[coach, 'c', 1], [stranger, 's', 1], [admin, 'a', 1], [unverified, 'u', 0], [other, 'o', 1]] as const)
     await db.query(`insert into auth.users(id,email,email_confirmed_at) values ($1,$2,${v ? 'now()' : 'null'})`, [u, `${e}@example.test`]);
@@ -107,6 +108,15 @@ describe('provider verification candidate (disposable database)', () => {
     expect(await commit('select public.register_provider_document($1,$2,$3,$4,$5)', ['photo_id', `${other}/photo_id/../x`, 'x.png', 'image/png', 10])).toBe('22023');
     await db.exec('reset role'); await db.query(`insert into public.provider_profiles(user_id,name,status) values ($1,'Admin','pending') on conflict (user_id) do update set status='pending'`, [admin]);
     await as(admin); expect(await commit('select public.decide_provider_profile($1,$2,$3)', [admin, 'approve', null])).toBe('22023');
+  });
+  it('hardening: an admin cannot read an unsubmitted draft or its files, and a stale approval is refused', async () => {
+    await db.exec('reset role'); await db.query(`insert into public.provider_profiles(user_id,name,status) values ($1,'Draft Person','draft') on conflict (user_id) do nothing`, [unverified === other ? stranger : stranger]);
+    await db.query(`update public.provider_profiles set status='draft' where user_id=$1`, [stranger]);
+    await as(admin); expect((await run('select * from public.provider_profiles where user_id=$1', [stranger])).rows).toHaveLength(0);
+    await db.exec('reset role'); await db.query(`update public.provider_profiles set status='pending', submitted_at='2026-01-02T00:00:00Z' where user_id=$1`, [stranger]);
+    await as(admin);
+    expect(await commit('select public.decide_provider_profile($1,$2,$3,$4)', [stranger, 'approve', null, '2026-01-01T00:00:00Z'])).toBe('40001');
+    expect(await commit('select public.decide_provider_profile($1,$2,$3,$4)', [stranger, 'approve', null, '2026-01-02T00:00:00Z'])).toBe('');
   });
   it('an unverified-email account cannot save a profile', async () => {
     await as(unverified); expect(await commit('select public.save_provider_profile($1,$2,$3,$4,$5)', [...profile])).toBe('42501');
