@@ -23,3 +23,8 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - All six contracts built (C1.1a-f). Remaining database gap closed as a CANDIDATE only: supabase/candidates/202611270022_verified_email_gate.sql, validated on a disposable in-memory database (tests/login-verified-email-candidate.test.ts, 3 pass). NOT applied to the hosted project; applying needs founder authorization.
 - Founder-gated, not done: hosted Auth settings (Confirm email, min password 15, redirect list, rate limits), email service (parked), applying the candidate SQL, real-inbox/device tests, a founder test login (dashboard Add user, auto-confirm).
 - Founder declined: Supabase access token via secure form; hosted database write for a test user.
+
+## Next module (decided 27 Nov 2026): C1.2 Provider profile and verification, then C1.3 Listing and publish
+- Source: founder's context file, "C1 Onboarding and verification" (features 1.2-F1, 1.2-F2, 1.3-F1, 1.3-F2). Not yet turned into contracts.
+- Founder decisions still open and blocking: D-02 who verifies providers and what evidence; D-03 whether public listing is in scope.
+- Process: contracts of about 12 criteria each, founder approval, locked tests by a separate step, then build. Follow the credit-control rules above.
