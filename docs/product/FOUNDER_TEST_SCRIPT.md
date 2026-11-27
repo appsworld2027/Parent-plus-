@@ -1,17 +1,30 @@
-# Founder test script — Coach core journey (Vercel preview only)
-Open the Vercel preview link on a phone. Sign in as a coach with a verified email. Tick each line; write what you saw if it differs. About 10 minutes.
+# Founder test script — Vercel preview only
+Rules: use the Vercel preview link, a coach account with a verified email, and ONLY the fictional sample data below. Never real families or children. Tick each row; if it differs, write one line: "row 5: Overdue section missing". Each feature has an Excel with all scenarios in `testing/workbooks/`.
 
-| # | Do this | You should see | Feature |
+## Sample data to create first (Students and Fees screens)
+- Batches: **Fictional Clay Class** (₹2,500/month), **Fictional Art Class** (₹3,000/month).
+- Students: **Fictional Aarav**, **Fictional Bela**, **Fictional Chirag**, **Fictional Dev** in Clay; **Fictional Esha** in Art. Add one more, **Fictional Old**, then archive it.
+- A class today for each batch on Schedule.
+- Invoices: Aarav ₹2,000 due last month, unpaid; Bela ₹3,500 due last month, half paid (₹1,750 recorded); Chirag ₹2,500 due today (not overdue).
+
+| # | Do this | Expect | Feature |
 |---|---|---|---|
 | 1 | Open Today | Heading "Needs you" above the classes | M2-41 |
-| 2 | With a student who has no feedback this week | "1 child needs feedback" / "No update for over a week"; tap it, "Feedback for parents" opens | coach-needs-you |
-| 3 | Record feedback for that student, return to Today | "All caught up" if nothing else is open | coach-needs-you |
-| 4 | Add an invoice due last month, unpaid; open Today | "1 fee overdue" with the amount, rose wallet icon | needs-you-fees-overdue |
-| 5 | Tap that item | Fees opens with an "Overdue" section on top: student, batch, month, amount due | needs-you-fees-overdue |
-| 6 | Record the full payment; reopen Today | The fees item is gone | needs-you-fees-overdue |
-| 7 | Turn on airplane mode, open Today | One error line with a "Reference:" code, no crash | M2-41 |
-| 8 | In Parent view, tap "running late" for a child | Coach Today shows it under "From parents today" | parent-quick-signals |
-| 9 | Post an announcement to one batch | Parents in that batch see it; other batches do not | class-announcements |
+<!-- feature:coach-needs-you -->
+| 2 | With no feedback written for Aarav | "N children need feedback" with "No update for over a week"; tap it, "Feedback for parents" opens | coach-needs-you |
+| 3 | Record feedback for every child, reopen Today | "All caught up" (if no fees overdue) | coach-needs-you |
+<!-- feature:needs-you-fees-overdue -->
+| 4 | Open Today with the invoices above | "2 fees overdue" with "₹3,750 pending" (Aarav ₹2,000 + Bela ₹1,750); Chirag not counted | needs-you-fees-overdue |
+| 5 | Tap it | Fees opens with an "Overdue" section on top: Aarav then Bela, batch and month, amount due | needs-you-fees-overdue |
+| 6 | Record Aarav's full ₹2,000; reopen Today | "1 fee overdue", "₹1,750 pending" | needs-you-fees-overdue |
+| 7 | Airplane mode, open Today | An error line with "Reference:", no crash (failure case) | needs-you-fees-overdue |
+<!-- feature:coach-spotlight -->
+| 8 | Record a note for Bela only; open Today | "Spotlight today" lists up to 3 others first (Aarav, Chirag, Dev, "No note yet"); Bela later with "Last note today"; Esha not listed if her class is cancelled; Old never listed | coach-spotlight |
+| 9 | Record notes for every child in today's classes | "Everyone in today's classes has a note today" (empty case) | coach-spotlight |
+| 10 | Tap a Spotlight row | "Feedback for parents" opens | coach-spotlight |
+<!-- feature:parent-quick-signals -->
+| 11 | In Parent view tap "running late" for Aarav | Coach Today shows "From parents today: Aarav · Running late" | parent-quick-signals |
+<!-- feature:class-announcements -->
+| 12 | Post an announcement to Clay only | Clay families see it; Art families do not | class-announcements |
 
 Not tested by AI and needing you: real phone behaviour, real email delivery (parked), anything on the live database.
-Report back in chat in one line per failed row: "row 5: Overdue section missing".

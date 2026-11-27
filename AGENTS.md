@@ -57,6 +57,13 @@ Every new feature or enhancement ships with browserless tests, in addition to th
 ## Scenario workbook for every feature
 Each feature keeps `docs/product/<slug>/SCENARIOS.csv` in the `testing/test-matrix.xlsx` columns and the categories in `ai-workspace/test-plans/README.md` (happy, negative, boundary, permissions/privacy, integration, regression, performance, reliability, accessibility, failure/recovery, data integrity, concurrency, device). Generate the Excel with `python3 scripts/scenario-workbook.py <slug>` into `testing/workbooks/<slug>.xlsx` and give the founder its link. Only executed scenarios with evidence are PASS; everything else is NOT RUN with the reason. Superpowers is used for every workstream (brainstorm, plan, test-first, verify). Cezar is not installed in this environment (see `ai-workspace/organization/PROGRESS.md`); do not claim it ran.
 
+## Definition of done for every feature — founder test scenarios with sample data (global, all tools and agents)
+Whoever works here, with any tool (Claude Code, Codex, background agents, humans), must NOT call a feature complete, tick it in `docs/product/BACKLOG.md`, mark a PR ready, or report it "done" until all of these exist and are current for that feature:
+1. `docs/product/<slug>/SCENARIOS.csv` and the generated `testing/workbooks/<slug>.xlsx` (`python3 scripts/scenario-workbook.py <slug>`), updated for any change to the feature, with honest PASS / NOT RUN statuses.
+2. A row for the feature in `docs/product/FOUNDER_TEST_SCRIPT.md` the founder can follow on the Vercel preview, **with the sample test data to use** (fictional names, amounts, dates) and the exact result to expect, including at least one failure or empty case.
+3. The Excel link (GitHub raw URL on `MM/development`) given to the founder in the completion report.
+Fix or enhance an existing feature: update the same three. Run `npm run check:features` to see what is missing; it is advisory until the founder agrees to make it blocking. Founders test only on the Vercel link, never with real family or child data.
+
 ## Founder technical delegation
 
 The founders are non-technical. AI owns technical review, testing, validation, fixes and routine engineering decisions; do not ask founders to review code or judge test adequacy. Give a clear readiness recommendation with evidence and unresolved limits. Founders decide product priorities, material user-experience tradeoffs and release approval. Follow explicit session authorization for merges; do not infer production deployment permission from technical delegation. Independent review requirements remain: self-review must never be labeled independent review.

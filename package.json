@@ -55,7 +55,8 @@
     "qa:lab:ui": "playwright test -c qa/lab/playwright.lab.config.ts --workers=1",
     "qa:lab": "npm run qa:lab:db; npm run qa:lab:ui",
     "test:component": "vitest run -c vitest.component.config.mts",
-    "test:report": "node scripts/test-report.mjs"
+    "test:report": "node scripts/test-report.mjs",
+    "check:features": "node scripts/check-feature-docs.mjs"
   },
   "private": true,
   "overrides": {
