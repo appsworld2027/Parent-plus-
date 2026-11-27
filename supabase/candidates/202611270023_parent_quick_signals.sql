@@ -43,3 +43,20 @@ returns void language sql security definer set search_path = '' as $$
 $$;
 revoke all on function public.send_parent_signal(uuid,uuid,text), public.withdraw_parent_signal(uuid,uuid) from public, anon;
 grant execute on function public.send_parent_signal(uuid,uuid,text), public.withdraw_parent_signal(uuid,uuid) to authenticated;
+
+-- Parent-readable view of today's classes for their linked children, with any signal already sent (QS-01/02/04).
+create or replace function public.get_parent_today_signals()
+returns table(session_id uuid, student_id uuid, child_id uuid, batch_name text, starts_at timestamptz, kind text, changed_at timestamptz)
+language sql stable security definer set search_path = '' as $$
+  select cs.id, l.student_id, l.child_id, b.name, cs.starts_at, ps.kind, ps.changed_at
+    from public.parent_coach_links l
+    join public.enrolments e on e.academy_id = l.academy_id and e.student_id = l.student_id
+    join public.class_sessions cs on cs.batch_id = e.batch_id and cs.academy_id = e.academy_id
+    join public.batches b on b.id = cs.batch_id and b.academy_id = cs.academy_id
+    left join public.parent_signals ps on ps.session_id = cs.id and ps.student_id = l.student_id
+   where l.active and l.parent_user_id = auth.uid() and cs.status = 'scheduled'
+     and (cs.starts_at at time zone 'Asia/Kolkata')::date = (now() at time zone 'Asia/Kolkata')::date
+   order by cs.starts_at
+$$;
+revoke all on function public.get_parent_today_signals() from public, anon;
+grant execute on function public.get_parent_today_signals() to authenticated;
