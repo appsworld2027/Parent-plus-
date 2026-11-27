@@ -7,8 +7,8 @@ permissions:
 
 jobs:
   verify:
-    uses: appsworld2027/parent-plus-ai-org/.github/workflows/handbook-connectivity.yml@2e684d3d770ad84e0c2e97102761a946bc1763cc
+    uses: appsworld2027/parent-plus-ai-org/.github/workflows/handbook-connectivity.yml@de790c94a13de3937da3841fd23691ee9fc861c6
     with:
-      handbook_ref: 2e684d3d770ad84e0c2e97102761a946bc1763cc
+      handbook_ref: de790c94a13de3937da3841fd23691ee9fc861c6
     secrets:
       AI_ORG_HANDBOOK_SSH_KEY: ${{ secrets.AI_ORG_HANDBOOK_SSH_KEY }}
