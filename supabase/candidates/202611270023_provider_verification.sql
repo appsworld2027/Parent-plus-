@@ -14,14 +14,14 @@ create table public.provider_profiles (
   name text not null default '', phone text not null default '', bio text not null default '', sports text[] not null default '{}',
   experience_years integer check (experience_years between 0 and 60),
   status text not null default 'draft' check (status in ('draft', 'pending', 'verified', 'rejected')),
-  reason text, submitted_at timestamptz, decided_at timestamptz, decided_by uuid references auth.users(id), updated_at timestamptz not null default now());
+  reason text, submitted_at timestamptz, decided_at timestamptz, decided_by uuid references auth.users(id) on delete set null, updated_at timestamptz not null default now());
 create table public.provider_documents (
   user_id uuid not null references public.provider_profiles(user_id) on delete cascade, kind text not null check (kind in ('photo_id', 'qualification')),
   path text not null, file_name text not null, mime_type text not null check (mime_type in ('image/jpeg', 'image/png', 'application/pdf')),
   size_bytes integer not null check (size_bytes between 1 and 5242880), created_at timestamptz not null default now(), primary key (user_id, kind));
 create table public.provider_decisions (
   id bigint generated always as identity primary key, user_id uuid not null references public.provider_profiles(user_id) on delete cascade,
-  decision text not null check (decision in ('approve', 'reject')), reason text, decided_by uuid not null references auth.users(id), decided_at timestamptz not null default now());
+  decision text not null check (decision in ('approve', 'reject')), reason text, decided_by uuid references auth.users(id) on delete set null, decided_at timestamptz not null default now());
 alter table public.provider_profiles enable row level security; alter table public.provider_documents enable row level security; alter table public.provider_decisions enable row level security;
 revoke all on public.provider_profiles, public.provider_documents, public.provider_decisions from public, anon, authenticated;
 grant select on public.provider_profiles, public.provider_documents, public.provider_decisions to authenticated;
@@ -34,7 +34,7 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 create policy provider_docs_read on storage.objects for select to authenticated using (bucket_id = 'provider-documents' and coach_private.caller_email_verified() and (split_part(name, '/', 1) = auth.uid()::text or coach_private.is_provider_admin()));
 create policy provider_docs_write on storage.objects for insert to authenticated with check (bucket_id = 'provider-documents' and coach_private.caller_email_verified() and split_part(name, '/', 1) = auth.uid()::text
   and not exists (select 1 from public.provider_profiles p where p.user_id = auth.uid() and p.status in ('pending', 'verified')));
-create policy provider_docs_delete on storage.objects for delete to authenticated using (bucket_id = 'provider-documents' and split_part(name, '/', 1) = auth.uid()::text
+create policy provider_docs_delete on storage.objects for delete to authenticated using (bucket_id = 'provider-documents' and coach_private.caller_email_verified() and split_part(name, '/', 1) = auth.uid()::text
   and not exists (select 1 from public.provider_profiles p where p.user_id = auth.uid() and p.status in ('pending', 'verified')));
 
 create function public.get_my_provider_profile() returns jsonb language plpgsql stable security definer set search_path = '' as $$
@@ -48,6 +48,7 @@ end $$;
 create function public.save_provider_profile(p_name text, p_phone text, p_bio text, p_sports text[], p_experience integer) returns jsonb language plpgsql security definer set search_path = '' as $$
 declare s text[]; begin
   if not coach_private.caller_email_verified() then raise exception 'Verify your email first' using errcode = '42501'; end if;
+  perform 1 from public.provider_profiles where user_id = auth.uid() for update; -- serialise with submit
   if exists (select 1 from public.provider_profiles where user_id = auth.uid() and status in ('pending', 'verified')) then raise exception 'Profile is locked' using errcode = '42501'; end if;
   select coalesce(array_agg(btrim(x)) filter (where btrim(x) <> ''), '{}') into s from unnest(coalesce(p_sports, '{}')) x;
   if btrim(coalesce(p_name, '')) = '' or coalesce(p_phone, '') !~ '^[0-9]{10}$' or char_length(btrim(coalesce(p_bio, ''))) < 20 or cardinality(s) = 0 or p_experience is null or p_experience not between 0 and 60
@@ -59,8 +60,9 @@ end $$;
 create function public.register_provider_document(p_kind text, p_path text, p_file_name text, p_mime text, p_size integer) returns jsonb language plpgsql security definer set search_path = '' as $$
 begin
   if not coach_private.caller_email_verified() then raise exception 'Verify your email first' using errcode = '42501'; end if;
+  perform 1 from public.provider_profiles where user_id = auth.uid() for update; -- serialise with submit
   if not exists (select 1 from public.provider_profiles where user_id = auth.uid() and status in ('draft', 'rejected')) then raise exception 'Save your profile first, or it is locked' using errcode = '42501'; end if;
-  if split_part(p_path, '/', 1) <> auth.uid()::text or not exists (select 1 from storage.objects where bucket_id = 'provider-documents' and name = p_path) then raise exception 'Unknown document' using errcode = '22023'; end if;
+  if p_kind not in ('photo_id', 'qualification') or p_path not like auth.uid()::text || '/' || p_kind || '/%' or p_path like '%..%' or not exists (select 1 from storage.objects where bucket_id = 'provider-documents' and name = p_path) then raise exception 'Unknown document' using errcode = '22023'; end if;
   insert into public.provider_documents (user_id, kind, path, file_name, mime_type, size_bytes) values (auth.uid(), p_kind, p_path, left(p_file_name, 200), p_mime, p_size)
   on conflict (user_id, kind) do update set path = excluded.path, file_name = excluded.file_name, mime_type = excluded.mime_type, size_bytes = excluded.size_bytes, created_at = now();
   return public.get_my_provider_profile();
@@ -70,7 +72,7 @@ declare p public.provider_profiles; begin
   if not coach_private.caller_email_verified() then raise exception 'Verify your email first' using errcode = '42501'; end if;
   select * into p from public.provider_profiles where user_id = auth.uid() for update;
   if not found or p.status not in ('draft', 'rejected') then raise exception 'Cannot submit' using errcode = '42501'; end if;
-  if p.name = '' or p.phone = '' or p.bio = '' or cardinality(p.sports) = 0 or p.experience_years is null or (select count(*) from public.provider_documents where user_id = auth.uid()) <> 2
+  if p.name = '' or p.phone = '' or p.bio = '' or cardinality(p.sports) = 0 or p.experience_years is null or (select count(*) from public.provider_documents d where d.user_id = auth.uid() and exists (select 1 from storage.objects o where o.bucket_id = 'provider-documents' and o.name = d.path)) <> 2
     then raise exception 'Profile incomplete' using errcode = '22023'; end if;
   update public.provider_profiles set status = 'pending', reason = null, submitted_at = now(), decided_at = null, decided_by = null where user_id = auth.uid();
   return public.get_my_provider_profile();
@@ -87,7 +89,7 @@ create function public.decide_provider_profile(p_user uuid, p_decision text, p_r
 declare p public.provider_profiles; begin
   if not coach_private.is_provider_admin() then raise exception 'Admins only' using errcode = '42501'; end if;
   select * into p from public.provider_profiles where user_id = p_user for update;
-  if not found or p_decision not in ('approve', 'reject') or (p_decision = 'approve' and p.status <> 'pending') or (p_decision = 'reject' and p.status not in ('pending', 'verified'))
+  if not found or p_user = auth.uid() or p_decision not in ('approve', 'reject') or (p_decision = 'approve' and p.status <> 'pending') or (p_decision = 'reject' and p.status not in ('pending', 'verified'))
     or (p_decision = 'reject' and btrim(coalesce(p_reason, '')) = '') then raise exception 'Cannot decide' using errcode = '22023'; end if;
   update public.provider_profiles set status = case when p_decision = 'approve' then 'verified' else 'rejected' end, reason = case when p_decision = 'reject' then btrim(p_reason) end,
     decided_at = now(), decided_by = auth.uid() where user_id = p_user;
