@@ -30,7 +30,23 @@
       "Bash(git rebase *)",
       "Bash(git push -u origin *)",
       "Bash(git push)",
-      "Bash(git -c push.negotiate=true push*)"
+      "Bash(git -c push.negotiate=true push*)",
+      "Bash(npm ci *)",
+      "Bash(npm test)",
+      "Bash(vitest *)",
+      "Bash(playwright test *)",
+      "Bash(PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=* playwright test *)",
+      "Bash(tsc *)",
+      "Bash(git push origin *)",
+      "Bash(git -C * -c push.negotiate=true push *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)",
+      "Bash(git push * --force-with-lease*)",
+      "Bash(git push *+*)"
     ]
   }
 }
