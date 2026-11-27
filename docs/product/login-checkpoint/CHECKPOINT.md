@@ -46,12 +46,8 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - No admin row yet: the founder's login email is not among the 6 accounts (checked ids only, no data changed). Needed: which email the founder signs in with.
 - Candidate files 0023_parent_quick_signals and 0023_provider_verification share a number; rename one when promoting.
 
-## Branch hygiene and handover — 27 Nov 2026 (founder: autonomous build, stop only for product decisions)
-- Merged into claude/wizardly-ritchie-43u2va (pushed 9e8af44+): main (incl. PR #54), ai/contract-needs-you-fees-overdue. No conflicts. npm run check: 47 files, 568 pass, 2 expected-fail, 1 skipped.
-- NOT merged on purpose: AM/consolidated, p0/security-workflow-hardening, p0/private-ai-org-connectivity, fix/parent-plus-ai-org-secure-connector-20261127 (treated as P0-related, founder said do not touch), build-status (CI status branch, bot writes to it), main.
-- Fully contained in wizardly, safe to delete (this environment's proxy refuses branch deletion; founder or a permitted session must do it): ai/memory-needs-you-fees-overdue-signoff, claude/amazing-einstein-a2tsdw. Open PRs: #45 (ai/contract-needs-you-fees-overdue → main), #52 (p0), #15 (AM). Keep ai/contract-needs-you-fees-overdue until #45 is closed.
-- MM/development NOT advanced yet: wizardly carries the locked fees-overdue acceptance tests which fail 16/18 until the feature is built. Advance MM/development to wizardly once green.
-- NEXT BUILD (first unchecked BACKLOG line): needs-you-fees-overdue (M2-41). Locked tests e2e/acceptance/coach-needs-you-fees-overdue.spec.ts need: Today "Needs you" fees item (name starts "N fee(s) overdue", "₹X pending", testIDs needs-you-fees-wallet / needs-you-fees-chevron, partial-failure lines), Fees screen "Overdue" heading + fees-overdue-section / fees-overdue-row (oldest first, above the monthly overview), and e2e/support/feesBackend.ts must answer fee_invoice_balances reads not limited to one billing month and return >50 rows. Data layer exists: src/today/overdueFees.ts, service.ts. Do not edit the locked spec.
-- After that: class-announcements and parent-quick-signals were built by other sessions (see their checkpoints); remaining provider follow-ups: delete superseded ID files, upload quota, content sniffing.
-- Hosted dev DB (parentplus-dev) has provider migrations (0023-0026 equivalents) and an assumed admin row (manumehrotra007). Production untouched.
-- Session health: this session is long (many tool calls, large history). Decision: SWITCH to a fresh session for the fees-overdue build.
+## Branch hygiene — 27 Nov 2026 (current)
+- wizardly and MM/development are the same commit line; fees-overdue (M2-41) built, locked spec 18/18. BACKLOG has no unchecked lines.
+- NOT merged on purpose: AM/consolidated, p0/*, fix/parent-plus-ai-org-secure-connector-20261127 (P0-related, founder said do not touch), build-status (bot).
+- Safe to delete but the proxy refuses branch deletion here: ai/memory-needs-you-fees-overdue-signoff, claude/amazing-einstein-a2tsdw. Keep ai/contract-needs-you-fees-overdue until PR #45 closes.
+- Remaining provider follow-ups: delete superseded ID files, upload quota, content sniffing.
