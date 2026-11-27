@@ -6,7 +6,7 @@ const aiAgents = read("../.github/workflows/ai-agents.yml");
 const connectivity = read("../.github/workflows/ai-org-connectivity.yml");
 const contractLock = read("../.github/workflows/contract-lock.yml");
 const protectedPaths = read("../.github/workflows/protected-paths.yml");
-const handbookRef = "04b25b15d00f182fb65c6c76a0b1fe3e07080ba0";
+const handbookRef = JSON.parse(read("../.ai-org/manifest.json")).handbook.ref;
 
 describe("Parent Plus AI Org integration security", () => {
   it("requires a private repository and explicit unattended opt-in for autonomous agents", () => {
@@ -20,10 +20,13 @@ describe("Parent Plus AI Org integration security", () => {
   });
 
   it("pins every reusable AI Org workflow to the same verified immutable revision", () => {
+    expect(handbookRef).toMatch(/^[a-f0-9]{40}$/);
     for (const workflow of [aiAgents, connectivity, contractLock, protectedPaths]) {
-      const pins = [...workflow.matchAll(/parent-plus-ai-org\/.github\/workflows\/[\w-]+\.yml@([a-f0-9]{40})/g)].map(m => m[1]);
+      const pins = [...workflow.matchAll(/parent-plus-ai-org\/.github\/workflows\/[\w-]+\.yml@([^\s]+)/g)].map(m => m[1]);
       expect(pins.length).toBeGreaterThan(0);
       expect(pins.every(pin => pin === handbookRef)).toBe(true);
+      const checkoutPins = [...workflow.matchAll(/handbook_ref:\s*([^\s]+)/g)].map(m => m[1]);
+      expect(checkoutPins.every(pin => pin === handbookRef)).toBe(true);
     }
   });
 
