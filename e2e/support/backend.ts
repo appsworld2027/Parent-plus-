@@ -162,6 +162,8 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           const id = raw?.replace(/^eq\./, '');
           data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
         }
+      } else if (url.pathname.endsWith('/parent_signals')) {
+        data = (window as unknown as { __coachSignals?: unknown[] }).__coachSignals ?? [];
       } else if (url.pathname.endsWith('/observation_versions')) {
         const id = url.searchParams.get('observation_id')?.replace(/^eq\./, '') ?? '';
         data = (state.observationVersions[id] ?? []).slice(0,5);

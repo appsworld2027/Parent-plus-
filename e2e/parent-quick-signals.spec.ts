@@ -46,3 +46,23 @@ test('QS-09 a failed send shows a retry message, is not marked sent, and retry c
   await expect(page.getByText(/Dropped off · sent to coach/)).toBeVisible();
   expect(await server.sends()).toEqual(['dropped_off']);
 });
+
+// Coach side (QS-07/08): signals sent by parents today list newest first under "From parents today"; none means no area.
+import { backend, login } from './support/backend';
+const RIA = '00000000-0000-0000-0000-000000000021';
+test('QS-07 coach sees today\'s parent signals newest first', async ({ page }) => {
+  const now = Date.now();
+  await page.addInitScript(([ria, a, b]) => { (window as any).__coachSignals = [
+    { id: 'g2', student_id: ria, kind: 'dropped_off', changed_at: b },
+    { id: 'g1', student_id: ria, kind: 'running_late', changed_at: a }]; }, [RIA, new Date(now - 120000).toISOString(), new Date(now - 60000).toISOString()]);
+  await backend(page, { academy: true, readyClass: true }); await login(page);
+  await expect(page.getByText('From parents today', { exact: true })).toBeVisible();
+  await expect(page.getByText(/Dropped off · \d\d:\d\d/)).toBeVisible();
+  await expect(page.getByText(/Running late · \d\d:\d\d/)).toBeVisible();
+});
+test('QS-08 coach with no signals sees no signals area', async ({ page }) => {
+  await backend(page, { academy: true, readyClass: true }); await login(page);
+  await expect(page.getByRole('heading', { name: 'Needs you', exact: true })).toBeVisible();
+  await page.waitForTimeout(1500);
+  await expect(page.getByText('From parents today', { exact: true })).toHaveCount(0);
+});
