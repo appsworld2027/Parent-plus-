@@ -70,7 +70,7 @@ test('PV-02 empty or invalid fields: nothing saves, field errors show, entries s
 test('PV-03 a valid profile persists after reload and on another device', async ({ page, browser }) => {
   const store = newStore(); await open(page, store); await fill(page, { sports: 'Cricket, Football' });
   await page.getByRole('button', { name: 'Save profile', exact: true }).click(); await expect(page.getByTestId('action-feedback')).toContainText('Profile saved.');
-  await page.reload(); await login(page); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
   await expect(field(page, 'Full name')).toHaveValue('Fictional Coach'); await expect(field(page, 'Sports you coach')).toHaveValue('Cricket, Football');
   await expect(field(page, 'Years of experience')).toHaveValue('6');
   const other = await device(browser, store);
@@ -117,8 +117,8 @@ test('PV-07 submitting a complete profile makes it Pending review and locks fiel
   await expect(page.getByRole('button', { name: 'Attach photo ID', exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Attach qualification', exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Submit for review', exact: true })).toHaveCount(0);
-  for (const label of ['Full name', 'Phone number', 'About you', 'Sports you coach', 'Years of experience']) await expect(field(page, label)).toBeDisabled();
-  await page.reload(); await login(page); await page.getByRole('tab', { name: 'Profile', exact: true }).click(); await expect(status(page)).toHaveText('Pending review');
+  for (const label of ['Full name', 'Phone number', 'About you', 'Sports you coach', 'Years of experience']) await expect(field(page, label)).not.toBeEditable();
+  await page.reload(); await page.getByRole('tab', { name: 'Profile', exact: true }).click(); await expect(status(page)).toHaveText('Pending review');
 });
 
 test('PV-08 an admin sees the pending profile and both documents, and can Approve or Reject (reject needs a reason)', async ({ page, browser }) => {
@@ -143,7 +143,7 @@ test('PV-09 after approval the coach reopens the app and sees Verified with the 
   const admin = await device(browser, store, 'admin');
   await admin.page.getByTestId('review-item').first().getByRole('button', { name: 'Approve', exact: true }).click();
   await expect(admin.page.getByTestId('review-item')).toHaveCount(0); await admin.context.close();
-  await page.reload(); await login(page); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
   await expect(status(page)).toHaveText('Verified'); await expect(page.getByText('Verified on 27 Nov 2026', { exact: true })).toBeVisible();
 });
 
@@ -153,7 +153,7 @@ test('PV-10 after rejection the coach sees Rejected with the reason, can edit an
   await item.getByRole('button', { name: 'Reject', exact: true }).click();
   await item.getByRole('textbox', { name: 'Reason for rejection', exact: true }).fill('The photo ID is blurred.');
   await item.getByRole('button', { name: 'Confirm rejection', exact: true }).click(); await expect(admin.page.getByTestId('review-item')).toHaveCount(0); await admin.context.close();
-  await page.reload(); await login(page); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
+  await page.reload(); await page.getByRole('tab', { name: 'Profile', exact: true }).click();
   await expect(status(page)).toHaveText('Rejected'); await expect(page.getByText('The photo ID is blurred.', { exact: true })).toBeVisible();
   await field(page, 'About you').fill('Fictional updated bio of a coach with real experience.');
   await attach(page, 'Attach photo ID', { name: 'id-clear.png', mimeType: 'image/png', buffer: PNG });

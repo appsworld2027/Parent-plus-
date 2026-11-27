@@ -5,7 +5,7 @@ import type { BrowserContext, Page } from '@playwright/test';
 import { backend } from './backend';
 
 export type Role = 'coach' | 'other' | 'admin';
-export const ids: Record<Role, string> = { coach: 'u-coach', other: 'u-other', admin: 'u-admin' };
+export const ids: Record<Role, string> = { coach: '00000000-0000-0000-0000-000000000001', other: '00000000-0000-0000-0000-000000000002', admin: '00000000-0000-0000-0000-000000000003' };
 type Doc = { kind: 'photo_id' | 'qualification'; path: string; file_name: string };
 export type Profile = { name: string; phone: string; bio: string; sports: string[]; experience: number | null; status: 'draft' | 'pending' | 'verified' | 'rejected';
   reason: string | null; submitted_at: string | null; decided_at: string | null; docs: Doc[] };
