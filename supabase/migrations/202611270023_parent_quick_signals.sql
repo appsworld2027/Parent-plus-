@@ -1,4 +1,4 @@
--- CANDIDATE ONLY (M2-06 parent quick signals). Validated on a disposable in-memory database; NOT applied to any hosted project.
+-- APPLIED to parentplus-dev on 2026-11-27 (migration name parent_quick_signals), verified: RLS on, anon cannot execute, authenticated cannot insert directly.
 create table if not exists public.parent_signals (
   id uuid primary key default gen_random_uuid(),
   academy_id uuid not null references public.academies(id),

@@ -7,3 +7,8 @@ Founder-gated, not done: apply candidate SQL to hosted DB; release to main; real
 To run browser specs here: PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/opt/pw-browsers/chromium npx playwright test <spec> --trace off
 Next: class-announcements (M2-50) from docs/product/BACKLOG.md: contract, then build. Then one full browser suite before founder testing.
 Rules: touched tests only; no agents; cheapest model; ask only for hosted DB, paid services, release to main.
+
+## Founder standing permission (27 Nov 2026, in chat)
+"Do automatically going forward. All permission granted by default." Applies to routine work including applying additive migrations to the dev project parentplus-dev, without asking each time. Still never: destructive changes to existing data, secrets exposure, paid services, release to main without founder /approve. Report every hosted change.
+## Hosted DB log
+- 2026-11-27 parent_quick_signals applied to parentplus-dev (parent_signals table, send/withdraw/get functions). Verified RLS on, anon blocked. Provider migrations (C1.2/C1.3) were applied earlier today by the other session.

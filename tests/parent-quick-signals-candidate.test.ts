@@ -1,4 +1,4 @@
-// Validates supabase/candidates/202611270023_parent_quick_signals.sql on a DISPOSABLE in-memory database only (QS-03..06, 09-12 data rules).
+// Validates supabase/migrations/202611270023_parent_quick_signals.sql on a DISPOSABLE in-memory database only (QS-03..06, 09-12 data rules).
 import { readFileSync } from 'node:fs';
 import type { PGlite } from '@electric-sql/pglite';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -14,7 +14,7 @@ async function count(sql: string) { return (await db.query(sql)).rows.length; }
 
 beforeAll(async () => {
   db = await supabaseDatabase();
-  await db.exec(readFileSync('supabase/candidates/202611270023_parent_quick_signals.sql', 'utf8'));
+  await db.exec(readFileSync('supabase/migrations/202611270023_parent_quick_signals.sql', 'utf8'));
   await db.exec('reset role');
   for (const [u, e] of [[coach, 'c'], [parent, 'p'], [stranger, 's'], [otherCoach, 'o']]) await db.query(`insert into auth.users(id,email,email_confirmed_at) values ($1,$2,now())`, [u, `${e}@example.test`]);
   await db.query(`insert into public.academies(id,owner_id,name) values ($1,$2,'Fictional A'),($3,$4,'Fictional B')`, [academy, coach, otherAcademy, otherCoach]);
