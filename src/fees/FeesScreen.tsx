@@ -1,6 +1,6 @@
 import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Pressable, Share, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '../ui/Typography';
 import { randomUUID } from 'expo-crypto';
 import { localParts } from '../classes/model';
@@ -8,6 +8,7 @@ import { deviceStorage } from '../deviceStorage';
 import { formatFee } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
+import { canReceipt, receiptNumber, receiptText } from './receipt';
 import { billingOptions, invoiceStatus, operationSummary, paymentAmount, validDay, validMonth } from './model';
 import type { FeeContext, FeeDetail, FeeOperation, PendingFee } from './model';
 import { createPendingFees } from './pending';
@@ -25,7 +26,7 @@ function Field({ label, value, onChange, disabled, money = false, max = 10 }: { 
 }
 
 export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onViewChange }: {
-  academy: { id: string; timezone: string }; owner: string; onDirtyChange: (dirty: boolean) => void;
+  academy: { id: string; timezone: string; name?: string }; owner: string; onDirtyChange: (dirty: boolean) => void;
   onBusyChange: (busy: boolean) => void; onViewChange: () => void;
 }) {
   const today = localParts(new Date().toISOString(), academy.timezone).date;
@@ -46,6 +47,8 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [form, setForm] = useState<'payment' | 'void' | 'reverse' | null>(null);
   const [amount, setAmount] = useState(''), [date, setDate] = useState(today);
   const [method, setMethod] = useState<'cash' | 'bank' | 'upi' | 'other'>('cash');
+  const [receiptOpen, setReceiptOpen] = useState(''), [receiptNote, setReceiptNote] = useState('');
+  const shareReceipt = async (message: string) => { try { await Share.share({ message }); setReceiptNote(''); } catch { setReceiptNote('Sharing is not available here. Copy the receipt text above or take a screenshot.'); } };
   const [reference, setReference] = useState(''), [reason, setReason] = useState(''), [payment, setPayment] = useState('');
   const [confirmation, setConfirmation] = useState<FeeOperation | null>(null);
   const [pending, setPending] = useState<PendingFee | null>(null), [storageBlocked, setStorageBlocked] = useState(true);
@@ -322,6 +325,12 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           <Text style={s.body}>{entry.paid_on ?? entry.recorded_at.slice(0, 10)} · {entry.method?.toUpperCase() ?? entry.mode}</Text>
           {!!entry.reference && <Text style={s.body}>Reference: {entry.reference}</Text>}
           <Text style={s.caption}>Recorded {entry.recorded_at} · {entry.recorded_by === owner ? 'by you' : entry.source === 'gateway' ? 'by payment service' : 'legacy record'}</Text>
+          {canReceipt(entry) && invoice && <Button label={receiptOpen === entry.id ? 'Hide receipt' : 'View receipt'} soft onPress={() => { setReceiptOpen(receiptOpen === entry.id ? '' : entry.id); setReceiptNote(''); }} />}
+          {receiptOpen === entry.id && canReceipt(entry) && invoice && <View style={s.ledger}>
+            <Text selectable style={s.body}>{receiptText(academy.name ?? 'Your academy', invoice, entry)}</Text>
+            <Button label={`Share receipt ${receiptNumber(entry)}`} soft onPress={() => { void shareReceipt(receiptText(academy.name ?? 'Your academy', invoice, entry)); }} />
+            {!!receiptNote && <Text style={s.caption}>{receiptNote}</Text>}
+          </View>}
           {entry.reversal ? <Text style={s.warning}>Reversed {entry.reversal.reversed_at}. Reason: {entry.reversal.reason}</Text>
             : entry.source === 'manual' && !invoice?.voided_at && <Button label={`Correct manual record ${formatFee(entry.amount_paise)}`} soft disabled={disabled} onPress={() => beginForm('reverse', entry.id)} />}
         </View>)}

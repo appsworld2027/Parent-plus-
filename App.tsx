@@ -31,6 +31,7 @@ import { PrototypeIcon } from './src/ui/PrototypeIcon';
 import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
+import { CoachAttendanceAlerts } from './src/today/CoachAttendanceAlerts';
 import { loadNeedsYouData } from './src/today/service';
 import type { Invoice } from './src/fees/model';
 import { CoachSignals } from './src/today/CoachSignals';
@@ -189,6 +190,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               error={needsYouError}
             />
           </>}
+          {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}

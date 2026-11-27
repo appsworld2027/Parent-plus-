@@ -183,8 +183,9 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : rows;
         }
       } else if (url.pathname.endsWith('/attendance')) {
-        const id = url.searchParams.get('session_id')?.replace(/^eq\./, '') ?? '';
-        data = Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ student_id, status }));
+        const raw = url.searchParams.get('session_id') ?? '';
+        const ids = raw.startsWith('in.(') ? raw.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : [raw.replace(/^eq\./, '')];
+        data = ids.flatMap(id => Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ session_id: id, student_id, status })));
       } else if (url.pathname.endsWith('/students')) data = state.roster.students.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;
