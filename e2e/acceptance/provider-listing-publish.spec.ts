@@ -122,7 +122,7 @@ test('LP-11 when verification is revoked the listing becomes Draft and cannot be
   const store = newStore(); verified(store); await open(page, store); await fill(page); await save(page); await expect(page.getByTestId('action-feedback')).toContainText('Draft saved.');
   await page.getByRole('button', { name: 'Publish', exact: true }).click(); await expect(status(page)).toHaveText('Published');
   const admin = await device(browser, store, 'admin');
-  expect(await post(admin.page, 'decide_provider_profile', { p_user: ids.coach, p_decision: 'reject', p_reason: 'Qualification expired.' })).toBe(200); await admin.context.close();
+  expect(await post(admin.page, 'decide_provider_profile', { p_user: ids.coach, p_decision: 'reject', p_reason: 'Qualification expired.' })).toBe(204); await admin.context.close();
   expect(store.listings[ids.coach].status).toBe('draft');
   await page.reload(); await page.getByRole('tab', { name: 'Listing', exact: true }).click();
   await expect(page.getByText('Get verified first', { exact: true })).toBeVisible(); await expect(page.getByRole('button', { name: 'Publish', exact: true })).toHaveCount(0);

@@ -29,7 +29,7 @@ export function serve(store: Store, who: string, op: string, p: any): { status: 
     profile: { name: mine.name, phone: mine.phone, bio: mine.bio, sports: mine.sports, experience: mine.experience },
     documents: mine.docs.map(d => ({ kind: d.kind, file_name: d.file_name })) });
   if (op === 'public') { store.publicRequests++; return { status: 404, body: null }; }
-  const L = store.listings, listingView = () => ({ eligible: mine.status === 'verified', status: L[who]?.status ?? 'draft', published_at: L[who]?.published_at ?? null,
+  const L = store.listings, listingView = () => ({ is_admin: admin, eligible: mine.status === 'verified', status: L[who]?.status ?? 'draft', published_at: L[who]?.published_at ?? null,
     listing: L[who] ? { title: L[who].title, description: L[who].description, sport: L[who].sport, age_group: L[who].age_group, location: L[who].location, price_note: L[who].price_note }
       : { title: '', description: '', sport: '', age_group: '', location: '', price_note: '' } });
   if (op === 'lget') return { status: 200, body: listingView() };
