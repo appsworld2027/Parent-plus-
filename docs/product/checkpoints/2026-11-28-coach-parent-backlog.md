@@ -133,3 +133,7 @@ Needs: merge origin/MM/development (5 conflicts: App.tsx, BACKLOG.md, SESSION_ST
 ## Update 10 — workbooks done, release to main approved (28 Nov)
 - Workbooks built from executed tests: coach-needs-you (13 PASS/1 NOT RUN), parent-quick-signals (13/2), class-announcements (12/1). Evidence run this session: 47 unit/database tests and 19 browser tests passed. NOT RUN: founder preview checks, midnight roll-over (QS-12 display).
 - Founder approved release to main in chat. `npm run check:features`: 0 gaps.
+
+## Update 11 — RELEASED to main (28 Nov)
+- PR 58 merged to main as b5e1bba on founder approval in chat; all CI checks were green including contract-lock. MM/development fast-forwarded to main. Contains M2-43, M2-24, workbooks for all features (check:features 0 gaps).
+- Still NOT RUN: real-device web push, hosted real-login checks, midnight roll-over for quick signals; no independent re-review of the review fixes.
