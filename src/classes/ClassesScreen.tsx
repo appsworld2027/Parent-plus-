@@ -11,6 +11,7 @@ import type { BatchDraft } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { changeNotice, holidayNotices, noticeSummary, NOTE_LIMIT, type Notice } from './scheduleNotice';
 import { supabase } from '../auth/client';
+import { canRemindClass, classReminder } from './classReminder';
 import { canRestore, holidayMessage, holidayTargets, withStatus } from './holiday';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
@@ -66,6 +67,12 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
       catch { failed.push(n); }
     }
     setUnsent(failed); return failed;
+  }
+  async function remind(s: ClassSession) {
+    if (saving.current) return; saving.current = true; setBusy(true); setError(''); setNotice('');
+    const failed = await sendNotices([{ batchId: s.batch_id, message: classReminder(batchNames()[s.batch_id] ?? 'Class', s, academy.timezone, new Date()) }]);
+    if (failed.length) setError('The reminder could not be sent. Use "Send notice to families" to retry.'); else setNotice('Families notified.', { kind: 'success', title: 'Reminder sent' });
+    saving.current = false; setBusy(false);
   }
   const batchNames = () => Object.fromEntries((context?.batches ?? []).map(b => [b.id, b.name]));
   async function setStatus(sessions: ClassSession[], status: ClassSession['status'], done: string, holiday = false) {
@@ -287,6 +294,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
         <Text style={s.title}>{batchName(session.batch_id)}</Text><Text style={s.body}>{caption(session)} · {session.status}</Text><Text style={s.body}>{session.room || 'Location not set'}</Text>
         <Button title={`Attendance for ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading || session.status === 'cancelled'} onPress={() => { void openAttendance(session); }} />
         <Button title={`Edit class ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => edit(session)} />
+        {canRemindClass(session, new Date()) && <Button title={`Remind families about ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => { void remind(session); }} />}
         {canRestore(session) && <Button title={`Restore class ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => { void setStatus([session], 'scheduled', 'Class restored.'); }} />}
       </View>)}
     </>}

@@ -10,9 +10,10 @@ import { deviceStorage } from '../deviceStorage';
 import { formatFee } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
+import { reminder } from './reminder';
 import { canReceipt, receiptNumber, receiptText } from './receipt';
 import { billingOptions, invoiceStatus, operationSummary, paymentAmount, validDay, validMonth } from './model';
-import type { FeeContext, FeeDetail, FeeOperation, PendingFee } from './model';
+import type { FeeContext, FeeDetail, FeeOperation, Invoice, PendingFee } from './model';
 import { createPendingFees } from './pending';
 import { feeOverview, type StudentFee } from './summary';
 import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext } from './service';
@@ -51,6 +52,19 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [method, setMethod] = useState<'cash' | 'bank' | 'upi' | 'other'>('cash');
   const [receiptOpen, setReceiptOpen] = useState(''), [receiptNote, setReceiptNote] = useState(''), [receiptPhone, setReceiptPhone] = useState<string | null>(null);
   // Parent's WhatsApp number for the receipt (FR-10): first valid number on file; none means the button is not offered.
+  async function phoneFor(enrolmentId: string): Promise<string | null> {
+    try {
+      const studentId = context?.enrolments.find(e => e.id === enrolmentId)?.student_id; if (!studentId || !supabase) return null;
+      const r = await supabase.from('student_contacts').select('student_id,phone').eq('academy_id', academy.id).eq('student_id', studentId);
+      if (r.error) return null;
+      return ((r.data ?? []) as { phone: string | null }[]).find(c => c.phone && whatsappNumber(c.phone))?.phone ?? null;
+    } catch { return null; }
+  }
+  async function remindParent(inv: Invoice) {
+    const draft = reminder(academy.name ?? 'Your academy', inv, today); if (!draft) return;
+    const phone = await phoneFor(inv.enrolment_id); const link = phone ? whatsappLink(phone, draft.text) : null;
+    if (link) { setReceiptNote(''); void Linking.openURL(link); } else setReceiptNote('No parent phone number on file. Add one in Students to send a reminder.');
+  }
   async function loadReceiptPhone(enrolmentId: string) {
     setReceiptPhone(null);
     try {
@@ -302,6 +316,8 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
         <Text style={s.badge}>{invoiceStatus(invoice, today)}</Text>
         <Text style={s.body}>Monthly fee: {formatFee(invoice.amount_paise)} · Due {invoice.due_on}</Text>
         <Text style={s.title}>{invoice.voided_at ? 'Voided invoice' : `Outstanding: ${formatFee(invoice.balance_paise)}`}</Text>
+        {reminder('', invoice, today) && <Button label="Remind parent on WhatsApp" soft onPress={() => { void remindParent(invoice); }} />}
+        {!!receiptNote && !receiptOpen && <Text style={s.caption}>{receiptNote}</Text>}
         <Text style={s.body}>Recorded received: {formatFee(invoice.paid_paise)}. Manual entries are not gateway verified.</Text>
         {invoice.test_paise > 0 && <Text style={s.body}>Test payment records: {formatFee(invoice.test_paise)}. Excluded from real balance.</Text>}
         {invoice.excess_paise > 0 && <Text style={s.warning}>Excess received: {formatFee(invoice.excess_paise)}. Review required; no automatic refund.</Text>}
