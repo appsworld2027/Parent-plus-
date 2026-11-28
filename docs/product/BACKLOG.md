@@ -17,3 +17,4 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] parent-notification-badge — Parent sees a "new from your coach" banner and can mark it read — M2-40 (in-app; push not built)
 - [x] fee-reminders — Coach sends a gentle, escalating fee reminder on WhatsApp — M2-34
 - [x] class-reminders — Coach reminds a batch's families about the next class in one tap — M2-04
+- [x] web-push — Parents get browser alerts for coach notices even when the app is closed — M2-40 (web channel; native Android needs Firebase)

@@ -4,6 +4,7 @@ import { Text, TextInput } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { supabase } from '../auth/client';
 
+import { notifyFamilies } from './pushNotify';
 import { announcementLimit, announcementProblem } from './announcementRules';
 type Batch = { id: string; name: string };
 
@@ -32,6 +33,7 @@ export function CoachAnnounce({ academyId }: { academyId: string }) {
     try {
       const r = await supabase.rpc('post_batch_announcement', { target_batch: batch, message: text.trim() });
       if (r.error) throw r.error;
+      void notifyFamilies(batch, text.trim());
       setNote(`Posted to ${batches.find(b => b.id === batch)?.name ?? 'batch'}.`); setText('');
     } catch { setNote('Could not post. Your text is kept — try again.'); }
     setBusy(false);

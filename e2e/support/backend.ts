@@ -94,6 +94,11 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/rpc/post_batch_announcement')) {
         const f = ((window as unknown as { __announceFixture?: { posts: string[]; fails: number } }).__announceFixture ??= { posts: [], fails: 0 });
         if (f.fails > 0) { f.fails--; status = 500; data = { message: 'Fictional failure' }; } else { f.posts.push(payload.message); data = 'a1'; }
+      } else if (url.pathname.endsWith('/notify-batch') || url.pathname.endsWith('/rpc/save_push_subscription') || url.pathname.endsWith('/rpc/remove_push_subscription')) {
+        const f = ((window as unknown as { __pushFixture?: { calls: unknown[]; subs: string[] } }).__pushFixture ??= { calls: [], subs: [] });
+        if (url.pathname.endsWith('/notify-batch')) { f.calls.push(payload); data = payload.action === 'key' ? { publicKey: 'BEKNN0zoffLW3RgCg7uggfl5VTbzYlqAw3Mco_rjkyrLpBlQTiIRfsGu2o-UlS4Tje-vwSs6gAx6f7n_ZcqzybQ' } : { sent: 0, failed: 0 }; }
+        else if (url.pathname.endsWith('/rpc/save_push_subscription')) { f.subs.push(payload.push_endpoint); data = null; status = 204; }
+        else { f.subs = f.subs.filter(s => s !== payload.push_endpoint); data = null; status = 204; }
       } else if (url.pathname.endsWith('/rpc/get_coach_parent_requests')) { data = []; } else if (url.pathname.endsWith('/rpc/save_class_session')) {
         const index = state.classes.findIndex(c => c.id === payload.target_session);
         if (state.failClass) { status = 500; data = { message: 'Private class backend failure' }; }

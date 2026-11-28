@@ -9,6 +9,7 @@ import { SelectField } from '../ui/SelectField';
 import { saveBatch } from '../roster/service';
 import type { BatchDraft } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { notifyFamilies } from '../today/pushNotify';
 import { changeNotice, holidayNotices, noticeSummary, NOTE_LIMIT, type Notice } from './scheduleNotice';
 import { supabase } from '../auth/client';
 import { canRemindClass, classReminder } from './classReminder';
@@ -63,7 +64,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   async function sendNotices(list: Notice[]): Promise<Notice[]> {
     const failed: Notice[] = [];
     for (const n of list) {
-      try { const r = await supabase!.rpc('post_batch_announcement', { target_batch: n.batchId, message: n.message }); if (r.error) throw r.error; }
+      try { const r = await supabase!.rpc('post_batch_announcement', { target_batch: n.batchId, message: n.message }); if (r.error) throw r.error; void notifyFamilies(n.batchId, n.message); }
       catch { failed.push(n); }
     }
     setUnsent(failed); return failed;
