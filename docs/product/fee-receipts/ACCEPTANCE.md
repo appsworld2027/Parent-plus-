@@ -10,7 +10,7 @@ Coach-side, no database change. On each valid payment in an invoice's Payment hi
 
 ## In / Out
 - In: plain-text receipt: academy, receipt no., student, batch, month, amount, method, date, reference, balance after the invoice.
-- Out: PDF, email/WhatsApp auto-send, tax invoices, parent-side receipt list, gateway payments' provider receipts.
+- Out: PDF, automatic sending without the coach tapping send, tax invoices, parent-side receipt list, gateway payments' provider receipts.
 
 ## Acceptance criteria
 | ID | Given | When | Then |
@@ -23,10 +23,11 @@ Coach-side, no database change. On each valid payment in an invoice's Payment hi
 | FR-06 | two payments on one invoice | views each | different receipt numbers; same payment always the same number |
 | FR-07 | amounts | views receipt | formatted in ₹ with Indian grouping |
 | FR-08 | receipt open | taps Hide receipt | it closes |
+| FR-10 | a valid parent WhatsApp number on file | coach opens a receipt | "Send receipt on WhatsApp" opens WhatsApp to that number with the receipt text prefilled; with no number, a note explains and Share still works |
 | FR-09 | share not supported on the device | taps Share | receipt stays visible; a clear note says to copy or screenshot |
 
 ## Agents may decide alone
 Wording, layout, number format. Must ask founder for: PDF generation services, auto-sending, hosted DB changes.
 
 ## Tests
-Pure rules tests/fee-receipts.test.ts (FR-02,03,04,05,06,07); browser spec e2e/fee-receipts.spec.ts (FR-01,02,08). FR-09 is NOT RUN on a real device.
+Pure rules tests/fee-receipts.test.ts (FR-02,03,04,05,06,07); browser spec e2e/fee-receipts.spec.ts (FR-01,02,08). FR-10 e2e/fee-receipts.spec.ts (link opens; no-number note). FR-09 is NOT RUN on a real device.

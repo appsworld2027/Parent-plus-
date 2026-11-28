@@ -1,7 +1,9 @@
 import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, Share, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Linking, Pressable, Share, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '../ui/Typography';
+import { whatsappLink, whatsappNumber } from '../observations/whatsapp';
+import { supabase } from '../auth/client';
 import { randomUUID } from 'expo-crypto';
 import { localParts } from '../classes/model';
 import { deviceStorage } from '../deviceStorage';
@@ -47,7 +49,17 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [form, setForm] = useState<'payment' | 'void' | 'reverse' | null>(null);
   const [amount, setAmount] = useState(''), [date, setDate] = useState(today);
   const [method, setMethod] = useState<'cash' | 'bank' | 'upi' | 'other'>('cash');
-  const [receiptOpen, setReceiptOpen] = useState(''), [receiptNote, setReceiptNote] = useState('');
+  const [receiptOpen, setReceiptOpen] = useState(''), [receiptNote, setReceiptNote] = useState(''), [receiptPhone, setReceiptPhone] = useState<string | null>(null);
+  // Parent's WhatsApp number for the receipt (FR-10): first valid number on file; none means the button is not offered.
+  async function loadReceiptPhone(enrolmentId: string) {
+    setReceiptPhone(null);
+    try {
+      const studentId = context?.enrolments.find(e => e.id === enrolmentId)?.student_id; if (!studentId || !supabase) return;
+      const r = await supabase.from('student_contacts').select('student_id,phone').eq('academy_id', academy.id).eq('student_id', studentId);
+      if (r.error) return;
+      setReceiptPhone(((r.data ?? []) as { phone: string | null }[]).find(c => c.phone && whatsappNumber(c.phone))?.phone ?? null);
+    } catch { /* No number means no WhatsApp button; sharing still works. */ }
+  }
   const shareReceipt = async (message: string) => { try { await Share.share({ message }); setReceiptNote(''); } catch { setReceiptNote('Sharing is not available here. Copy the receipt text above or take a screenshot.'); } };
   const [reference, setReference] = useState(''), [reason, setReason] = useState(''), [payment, setPayment] = useState('');
   const [confirmation, setConfirmation] = useState<FeeOperation | null>(null);
@@ -325,10 +337,12 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           <Text style={s.body}>{entry.paid_on ?? entry.recorded_at.slice(0, 10)} · {entry.method?.toUpperCase() ?? entry.mode}</Text>
           {!!entry.reference && <Text style={s.body}>Reference: {entry.reference}</Text>}
           <Text style={s.caption}>Recorded {entry.recorded_at} · {entry.recorded_by === owner ? 'by you' : entry.source === 'gateway' ? 'by payment service' : 'legacy record'}</Text>
-          {canReceipt(entry) && invoice && <Button label={receiptOpen === entry.id ? 'Hide receipt' : 'View receipt'} soft onPress={() => { setReceiptOpen(receiptOpen === entry.id ? '' : entry.id); setReceiptNote(''); }} />}
+          {canReceipt(entry) && invoice && <Button label={receiptOpen === entry.id ? 'Hide receipt' : 'View receipt'} soft onPress={() => { const open = receiptOpen === entry.id; setReceiptOpen(open ? '' : entry.id); setReceiptNote(''); if (!open) void loadReceiptPhone(invoice.enrolment_id); }} />}
           {receiptOpen === entry.id && canReceipt(entry) && invoice && <View style={s.ledger}>
             <Text selectable style={s.body}>{receiptText(academy.name ?? 'Your academy', invoice, entry)}</Text>
             <Button label={`Share receipt ${receiptNumber(entry)}`} soft onPress={() => { void shareReceipt(receiptText(academy.name ?? 'Your academy', invoice, entry)); }} />
+            {receiptPhone ? <Button label="Send receipt on WhatsApp" soft onPress={() => { const link = whatsappLink(receiptPhone, receiptText(academy.name ?? 'Your academy', invoice, entry)); if (link) void Linking.openURL(link); }} />
+              : <Text style={s.caption}>No parent phone number on file. Use Share, or add a number in Students.</Text>}
             {!!receiptNote && <Text style={s.caption}>{receiptNote}</Text>}
           </View>}
           {entry.reversal ? <Text style={s.warning}>Reversed {entry.reversal.reversed_at}. Reason: {entry.reversal.reason}</Text>

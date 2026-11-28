@@ -10,7 +10,7 @@ Alert when a child has been marked **absent in the last 3 marked classes of a ba
 
 ## In / Out
 - In: a "Needs you" style card on Today listing child, batch and streak length; nothing shown when no alerts.
-- Out: messaging the parent, push notifications, configurable thresholds, charts.
+- Out: automatic messaging, push notifications, configurable thresholds, charts.
 
 ## Acceptance criteria
 | ID | Given | When | Then |
@@ -25,6 +25,8 @@ Alert when a child has been marked **absent in the last 3 marked classes of a ba
 | AP-08 | no alerts | opens Today | the card is not shown (no clutter) |
 | AP-09 | more than one child | opens Today | longest streak first, then name |
 | AP-10 | the data fails to load | opens Today | the card is hidden; the rest of Today still works |
+| AP-12 | an alert and a valid parent WhatsApp number on file (international format, +91…) | coach taps "Message parent on WhatsApp" | WhatsApp opens to that number with a prefilled friendly check-in message (child, streak, batch); nothing is sent until the coach sends it |
+| AP-13 | no valid phone number on file | alert shows | the button is replaced by "No phone number on file — add one in Students…" |
 | AP-11 | attendance belongs to another academy | any | never shown (queries are academy-scoped; RLS enforced by the existing tables) |
 
 ## Agents may decide alone
@@ -34,4 +36,4 @@ Wording, ordering, layout. No new database objects: reads existing `class_sessio
 It needs a hosted database change, notifications (paid) or messaging parents.
 
 ## Tests
-Pure rules tests/attendance-patterns.test.ts (AP-01..07, 09); browser spec e2e/attendance-patterns.spec.ts (AP-01, 02, 08, 10). AP-11 relies on existing RLS and is NOT RUN against a live database.
+Pure rules tests/attendance-patterns.test.ts (AP-01..07, 09); browser spec e2e/attendance-patterns.spec.ts (AP-01, 02, 08, 10). AP-12/13 e2e/attendance-patterns.spec.ts; AP-11 relies on existing RLS and is NOT RUN against a live database.

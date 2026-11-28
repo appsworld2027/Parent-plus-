@@ -193,8 +193,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
             />
           </>}
           {auth.academy && <CoachWrapUp academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onSchedule={() => navigate('Schedule')} onFeedback={() => navigate('Post')} />}
-          {auth.academy && <CoachSpotlight academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
-          {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
+          {auth.academy && <CoachSpotlight academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onObserve={() => navigate('Post')} />}
+          {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} academyName={auth.academy.name} />}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}

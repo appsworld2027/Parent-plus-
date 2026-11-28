@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { supabase } from '../auth/client';
@@ -8,7 +8,7 @@ import type { Enrolment, Student } from '../roster/model';
 import { spotlight, spotlightLine, type SpotlightPick } from './spotlight';
 
 // Spotlight rotation (M2-18): who to observe today. Reads only; hides when empty or on failure.
-export function CoachSpotlight({ academyId, timezone }: { academyId: string; timezone: string }) {
+export function CoachSpotlight({ academyId, timezone, onObserve }: { academyId: string; timezone: string; onObserve?: () => void }) {
   const [picks, setPicks] = useState<SpotlightPick[]>([]);
   useEffect(() => {
     let active = true;
@@ -47,7 +47,7 @@ export function CoachSpotlight({ academyId, timezone }: { academyId: string; tim
   if (!picks.length) return null;
   return <View style={s.card} accessibilityLiveRegion="polite">
     <Text style={s.title}>Spotlight today</Text>
-    {picks.map(p => <Text key={p.id} style={s.line}>{spotlightLine(p)}</Text>)}
+    {picks.map(p => <Pressable key={p.id} accessibilityRole="button" accessibilityLabel={`Write an observation about ${p.name}`} disabled={!onObserve} onPress={onObserve}><Text style={s.line}>{spotlightLine(p)}</Text></Pressable>)}
   </View>;
 }
 const s = StyleSheet.create({

@@ -32,3 +32,8 @@ test('SP-07 a failed load hides the card', async ({ page }) => {
   await expect(page.getByText('Spotlight today', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Your teaching workspace', { exact: true })).toBeVisible();
 });
+test('SP-08 tapping a spotlight line opens Feedback', async ({ page }) => {
+  await open(page);
+  await page.getByRole('button', { name: 'Write an observation about Fictional Ria', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'Feedback', exact: true })).toHaveAttribute('aria-selected', 'true');
+});

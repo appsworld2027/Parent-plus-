@@ -9,6 +9,8 @@ import { SelectField } from '../ui/SelectField';
 import { saveBatch } from '../roster/service';
 import type { BatchDraft } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { changeNotice, holidayNotices, noticeSummary, NOTE_LIMIT, type Notice } from './scheduleNotice';
+import { supabase } from '../auth/client';
 import { canRestore, holidayMessage, holidayTargets, withStatus } from './holiday';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
@@ -48,18 +50,38 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [holidayAsk, setHolidayAsk] = useState(false);
+  const [familyNote, setFamilyNote] = useState('');
+  const [unsent, setUnsent] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useFeedbackMessage('info', 'Update');
   const [error, setError] = useFeedbackMessage('error', 'Action needs attention');
   const generation = useRef(0);
   const scope = (session: string) => ({ owner, academy: academy.id, session });
 
-  async function setStatus(sessions: ClassSession[], status: ClassSession['status'], done: string) {
+  // Tells linked families through the existing batch announcement (SN-01..09). Returns the notices that failed.
+  async function sendNotices(list: Notice[]): Promise<Notice[]> {
+    const failed: Notice[] = [];
+    for (const n of list) {
+      try { const r = await supabase!.rpc('post_batch_announcement', { target_batch: n.batchId, message: n.message }); if (r.error) throw r.error; }
+      catch { failed.push(n); }
+    }
+    setUnsent(failed); return failed;
+  }
+  const batchNames = () => Object.fromEntries((context?.batches ?? []).map(b => [b.id, b.name]));
+  async function setStatus(sessions: ClassSession[], status: ClassSession['status'], done: string, holiday = false) {
     if (saving.current) return;
     saving.current = true; setBusy(true); setError(''); setNotice('');
-    try { for (const s of sessions) await saveClass(academy.id, withStatus(s, status, academy.timezone), academy.timezone); setNotice(done, { kind: 'success', title: 'Schedule updated' }); }
-    catch (failure) { setError(classFailure(failure, 'The schedule change could not be saved. Refresh and retry.')); }
-    finally { saving.current = false; setBusy(false); await reload(); }
+    const saved: ClassSession[] = []; let failure: unknown = null;
+    try { for (const s of sessions) { await saveClass(academy.id, withStatus(s, status, academy.timezone), academy.timezone); saved.push(s); } }
+    catch (e) { failure = e; }
+    const now = new Date(); const names = batchNames();
+    const notices = holiday ? holidayNotices(saved, names, academy.timezone, now, familyNote)
+      : saved.flatMap(s => { const n = changeNotice(s, withStatus(s, status, academy.timezone), names[s.batch_id] ?? 'Class', s.starts_at, academy.timezone, now, familyNote); return n ? [n] : []; });
+    const failed = await sendNotices(notices);
+    const told = noticeSummary(notices.length - failed.length, failed.length);
+    if (failure) setError(classFailure(failure, 'The schedule change could not be saved. Refresh and retry.') + (saved.length ? ` ${saved.length} of ${sessions.length} were saved. ${told}` : ''));
+    else { setNotice(`${done} ${told}`.trim(), { kind: failed.length ? 'info' : 'success', title: 'Schedule updated' }); setFamilyNote(''); }
+    saving.current = false; setBusy(false); await reload();
   }
   const reload = useCallback(async () => {
     const version = ++generation.current; setLoading(true); setError('');
@@ -112,7 +134,10 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
     if (!draft || busy || saving.current) return;
     try { classValues(draft, academy.timezone); } catch (failure) { setError(failure instanceof Error ? failure.message : 'Check class details.'); onViewChange(); return; }
     saving.current = true; setBusy(true); setError(''); setNotice('');
-    try { await saveClass(academy.id, draft, academy.timezone); const nextDate = draft.startDate; close(); setNotice(`Class saved. ${draft.startDate} ${draft.startTime} – ${draft.endDate} ${draft.endTime} (${academy.timezone}).`, { kind: 'success', title: 'Class saved' }); setDate(nextDate); setSelectedDate(nextDate); await reload(); }
+    try { await saveClass(academy.id, draft, academy.timezone); const nextDate = draft.startDate; close();
+      const before = context?.sessions.find(s => s.id === draft.id); const notices = changeNotice(before, draft, batchNames()[draft.batch] ?? 'Class', classValues(draft, academy.timezone).starts, academy.timezone, new Date(), familyNote);
+      const failed = notices ? await sendNotices([notices]) : []; const told = notices ? noticeSummary(1 - failed.length, failed.length) : '';
+      setNotice(`Class saved. ${draft.startDate} ${draft.startTime} – ${draft.endDate} ${draft.endTime} (${academy.timezone}). ${told}`.trim(), { kind: 'success', title: 'Class saved' }); setFamilyNote(''); setDate(nextDate); setSelectedDate(nextDate); await reload(); }
     catch (failure) { setError(classFailure(failure, 'The class save could not be confirmed. Keep your entries and retry. Once attendance is recorded, class times are protected.')); onViewChange(); }
     finally { saving.current = false; setBusy(false); }
   }
@@ -249,9 +274,12 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
           catch (failure) { setError(failure instanceof Error ? failure.message : 'Check the date.'); }
         }} />
         <Button title="Create a class" disabled={!context || loading || busy} onPress={() => edit()} />
+        <Field label={`Note to families (optional, up to ${NOTE_LIMIT} characters)`} value={familyNote} onChange={v => setFamilyNote(v.slice(0, NOTE_LIMIT))} disabled={loading || busy} />
         <Button title="Mark this day as a holiday" disabled={!context || loading || busy} onPress={() => setHolidayAsk(true)} />
         <Button title="Refresh classes" disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Classes refreshed.', { kind: 'success', title: 'Refresh complete' }); }); }} />
       </View>
+      {unsent.length > 0 && <View style={s.card}><Text style={s.title}>Families have not been told yet</Text><Text style={s.body}>The schedule change is saved, but {unsent.length} {unsent.length === 1 ? 'notice' : 'notices'} could not be sent.</Text>
+        <Button title="Send notice to families" disabled={busy} onPress={() => { void (async () => { setBusy(true); const failed = await sendNotices(unsent); setBusy(false); if (!failed.length) setNotice('Families notified.', { kind: 'success', title: 'Notice sent' }); })(); }} /></View>}
       {loading && <ActivityIndicator accessibilityLabel="Loading classes" />}
       {deviceDraft && <View style={s.card}><Text style={s.title}>Attendance draft on this device</Text><Text style={s.body}>Reconnect to verify the class and resume your unsent work. Nothing is sent automatically.</Text><Button title="Resume attendance draft" disabled={busy || loading} onPress={() => { void resumeDraft(); }} /><Button title="Discard saved attendance draft" disabled={busy} onPress={() => setDiscardStored(true)} /></View>}
       {context && !loading && !context.sessions.length && <Text style={s.body}>No classes scheduled for {selectedDate}.</Text>}
@@ -262,7 +290,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
         {canRestore(session) && <Button title={`Restore class ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => { void setStatus([session], 'scheduled', 'Class restored.'); }} />}
       </View>)}
     </>}
-    <ConfirmDialog visible={holidayAsk} title="Mark this day as a holiday?" message={holidayMessage(holidayTargets(context?.sessions ?? []).length)} confirmLabel="Cancel classes" cancelLabel="Keep classes" onConfirm={() => { setHolidayAsk(false); const targets = holidayTargets(context?.sessions ?? []); if (targets.length) void setStatus(targets, 'cancelled', `Holiday set: ${targets.length} ${targets.length === 1 ? 'class' : 'classes'} cancelled.`); }} onCancel={() => setHolidayAsk(false)} />
+    <ConfirmDialog visible={holidayAsk} title="Mark this day as a holiday?" message={holidayMessage(holidayTargets(context?.sessions ?? []).length)} confirmLabel="Cancel classes" cancelLabel="Keep classes" onConfirm={() => { setHolidayAsk(false); const targets = holidayTargets(context?.sessions ?? []); if (targets.length) void setStatus(targets, 'cancelled', `Holiday set: ${targets.length} ${targets.length === 1 ? 'class' : 'classes'} cancelled.`, true); }} onCancel={() => setHolidayAsk(false)} />
     <ConfirmDialog visible={discard} title="Leave your unsaved edits?" message="Edits that could not be saved on this device will be lost. Previously saved device drafts are retained." confirmLabel="Leave this form" cancelLabel="Keep editing" onCancel={() => setDiscard(false)} onConfirm={() => { close(); void reload(); }} />
     <ConfirmDialog visible={discardStored} title="Discard the device draft?" message="This removes unsent attendance from this device. Attendance already saved to the class is retained." confirmLabel="Discard device draft" cancelLabel="Keep draft" onCancel={() => setDiscardStored(false)} onConfirm={() => { void discardDeviceDraft(); }} />
     <ConfirmDialog visible={!!replaceWith} title="Another class has an unsent draft" message="Keep that draft and resume it from the class list, or discard it before opening this class." confirmLabel="Discard old draft and continue" cancelLabel="Keep old draft" onCancel={() => setReplaceWith(null)} onConfirm={() => {

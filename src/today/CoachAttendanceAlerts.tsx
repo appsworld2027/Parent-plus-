@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { supabase } from '../auth/client';
 import { localParts } from '../classes/model';
 import type { Enrolment, Student } from '../roster/model';
-import { alertLine, attendanceAlerts, type PatternAlert, type PatternMark, type PatternSession } from './attendancePatterns';
+import { whatsappLink, whatsappNumber } from '../observations/whatsapp';
+import { alertLine, attendanceAlerts, checkInMessage, type PatternAlert, type PatternMark, type PatternSession } from './attendancePatterns';
 
 const WINDOW_DAYS = 45;
 // Drop-out watch (AP-01..10). Reads only; hides itself when there is nothing to show or anything fails (AP-08, AP-10).
-export function CoachAttendanceAlerts({ academyId, timezone }: { academyId: string; timezone: string }) {
-  const [rows, setRows] = useState<(PatternAlert & { batch: string })[]>([]);
+export function CoachAttendanceAlerts({ academyId, timezone, academyName = 'Your academy' }: { academyId: string; timezone: string; academyName?: string }) {
+  const [rows, setRows] = useState<(PatternAlert & { batch: string; phone: string | null })[]>([]);
   useEffect(() => {
     let active = true;
     (async () => {
@@ -37,7 +38,13 @@ export function CoachAttendanceAlerts({ academyId, timezone }: { academyId: stri
         const today = localParts(now.toISOString(), timezone).date;
         const names = new Map((batches as { id: string; name: string }[]).map(b => [b.id, b.name]));
         const alerts = attendanceAlerts(sessions, marks, students as Student[], enrolments as Enrolment[], today, now);
-        if (active) setRows(alerts.map(a => ({ ...a, batch: names.get(a.batchId) ?? 'Batch' })));
+        // Phone numbers only for the alerted children; a missing or invalid number simply means no WhatsApp button (AP-13).
+        const phones = new Map<string, string>();
+        if (alerts.length) {
+          const cs = await supabase.from('student_contacts').select('student_id,phone').eq('academy_id', academyId).in('student_id', alerts.map(a => a.studentId));
+          if (!cs.error) for (const row of (cs.data ?? []) as { student_id: string; phone: string | null }[]) if (row.phone && whatsappNumber(row.phone) && !phones.has(row.student_id)) phones.set(row.student_id, row.phone);
+        }
+        if (active) setRows(alerts.map(a => ({ ...a, batch: names.get(a.batchId) ?? 'Batch', phone: phones.get(a.studentId) ?? null })));
       } catch { if (active) setRows([]); }
     })();
     return () => { active = false; };
@@ -45,11 +52,17 @@ export function CoachAttendanceAlerts({ academyId, timezone }: { academyId: stri
   if (!rows.length) return null;
   return <View style={s.card} accessibilityLiveRegion="polite">
     <Text style={s.title}>Attendance alerts</Text>
-    {rows.map(r => <Text key={`${r.studentId}-${r.batchId}`} style={s.line}>{alertLine(r, r.batch)}</Text>)}
+    {rows.map(r => <View key={`${r.studentId}-${r.batchId}`}>
+      <Text style={s.line}>{alertLine(r, r.batch)}</Text>
+      {r.phone ? <Pressable accessibilityRole="button" accessibilityLabel={`Message parent of ${r.name} on WhatsApp`} onPress={() => { const link = whatsappLink(r.phone!, checkInMessage(academyName, r, r.batch)); if (link) void Linking.openURL(link); }}><Text style={s.action}>Message parent on WhatsApp</Text></Pressable>
+        : <Text style={s.muted}>No phone number on file — add one in Students to message the parent.</Text>}
+    </View>)}
   </View>;
 }
 const s = StyleSheet.create({
   card: { backgroundColor: c.surface, borderRadius: 16, padding: 16, marginBottom: 12 },
   title: { color: c.text, fontWeight: '700', marginBottom: 6 },
-  line: { color: c.text, marginTop: 2 },
+  line: { color: c.text, marginTop: 6 },
+  action: { color: c.text, textDecorationLine: 'underline', marginTop: 2 },
+  muted: { color: c.dim, marginTop: 2 },
 });

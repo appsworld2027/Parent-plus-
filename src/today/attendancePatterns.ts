@@ -27,3 +27,5 @@ export function attendanceAlerts(sessions: PatternSession[], marks: PatternMark[
   return out.sort((a, b) => b.streak - a.streak || a.name.localeCompare(b.name));
 }
 export const alertLine = (a: PatternAlert, batch: string) => `${a.name} · ${batch} · absent ${a.streak} classes in a row`;
+export const checkInMessage = (academy: string, a: PatternAlert, batch: string) =>
+  `${academy}\nHi, we have missed ${a.name} in the last ${a.streak} ${batch} classes. Is everything okay? Please let us know if we can help.\n\n— Your coach`;

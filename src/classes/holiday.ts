@@ -8,4 +8,4 @@ export function withStatus(s: ClassSession, status: ClassSession['status'], time
   const a = localParts(s.starts_at, timezone), b = localParts(s.ends_at, timezone);
   return { id: s.id, batch: s.batch_id, startDate: a.date, startTime: a.time, endDate: b.date, endTime: b.time, room: s.room, status };
 }
-export const holidayMessage = (n: number) => n === 0 ? 'No scheduled classes to cancel on this date.' : `Cancel ${n} ${n === 1 ? 'class' : 'classes'} for a holiday? Families are not messaged automatically.`;
+export const holidayMessage = (n: number) => n === 0 ? 'No scheduled classes to cancel on this date.' : `Cancel ${n} ${n === 1 ? 'class' : 'classes'} for a holiday? Families of the affected batches are notified automatically.`;
