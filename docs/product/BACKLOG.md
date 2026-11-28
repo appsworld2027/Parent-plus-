@@ -13,8 +13,11 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] child-progress-timeline — Parent sees coach updates grouped by month, newest first — Parent Home
 - [x] schedule-changes — Coach restores a cancelled class and marks a whole day as a holiday — M2-05
 - [x] end-of-day-queue — Coach sees what is unfinished at the end of the day (attendance, feedback drafts) — M2-17
-- [x] spotlight-rotation — Coach is shown who to observe today, least recently observed first — M2-18
 - [x] parent-notification-badge — Parent sees a "new from your coach" banner and can mark it read — M2-40 (in-app; push not built)
 - [x] fee-reminders — Coach sends a gentle, escalating fee reminder on WhatsApp — M2-34
 - [x] class-reminders — Coach reminds a batch's families about the next class in one tap — M2-04
 - [x] web-push — Parents get browser alerts for coach notices even when the app is closed — M2-40 (web channel; native Android needs Firebase)
+- [x] coach-spotlight — Coach Today suggests up to 3 children to observe today (M2-18) — M2-18  (single Spotlight kept: the MM/development version; the parallel spotlight-rotation build was retired in the merge)
+- [ ] smart-attendance-defaults — Suggests usual attendance from each child's last 5 classes; coach still saves — M2-09
+- [ ] holiday-calendar — Schedule prompts on fixed-date national holidays (lunar festivals not covered) — M2-07
+- [ ] monthly-progress-report — Coach prepares and shares a child's monthly attendance and notes summary — M2-23

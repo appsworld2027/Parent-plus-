@@ -45,3 +45,9 @@ Status: saved locally, pushed to claude/amazing-einstein-a2tsdw; NOT verified by
 - APPLIED to hosted dev project parentplus-dev: migrations provider_verification_c1_2 and provider_listing_c1_3 (private bucket provider-documents included). NOT applied: the academies-wide verified-email policy from candidate 0022 (only its helper function), because it would change access for existing accounts.
 - No admin row yet: the founder's login email is not among the 6 accounts (checked ids only, no data changed). Needed: which email the founder signs in with.
 - Candidate files 0023_parent_quick_signals and 0023_provider_verification share a number; rename one when promoting.
+
+## Branch hygiene — 27 Nov 2026 (current)
+- wizardly and MM/development are the same commit line; fees-overdue (M2-41) built, locked spec 18/18. BACKLOG has no unchecked lines.
+- NOT merged on purpose: AM/consolidated, p0/*, fix/parent-plus-ai-org-secure-connector-20261127 (P0-related, founder said do not touch), build-status (bot).
+- Safe to delete but the proxy refuses branch deletion here: ai/memory-needs-you-fees-overdue-signoff, claude/amazing-einstein-a2tsdw. Keep ai/contract-needs-you-fees-overdue until PR #45 closes.
+- Remaining provider follow-ups: delete superseded ID files, upload quota, content sniffing.

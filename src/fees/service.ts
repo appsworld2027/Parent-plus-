@@ -52,6 +52,18 @@ export async function listInvoices(academy: string, month: string, cursor?: Pick
   const invoices = (result.data ?? []) as Invoice[];
   return { invoices, more: invoices.length === 50 };
 }
+// Every invoice that could be overdue, any month; paged to stay under the 1000-row cap.
+export async function loadOverdueInvoices(academy: string, today: string): Promise<Invoice[]> {
+  if (!supabase) throw new Error('Client unavailable');
+  const invoices: Invoice[] = [];
+  for (let offset = 0; ; offset += 500) {
+    const result = await supabase.from('fee_invoice_balances').select('*').eq('academy_id', academy)
+      .lt('due_on', today).gt('balance_paise', 0).is('voided_at', null).order('id').range(offset, offset + 499);
+    if (result.error) throw result.error;
+    invoices.push(...((result.data ?? []) as Invoice[]));
+    if ((result.data?.length ?? 0) < 500) return invoices;
+  }
+}
 export async function getInvoice(academy: string, id: string): Promise<FeeDetail> {
   if (!supabase) throw new Error('Client unavailable');
   const result = await supabase.rpc('get_fee_invoice', { target_academy: academy, target_invoice: id });

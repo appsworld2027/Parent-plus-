@@ -161,14 +161,15 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           rows = rows.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
           const cursor = url.searchParams.get('or')?.match(/created_at\.eq\.([^,]+),id\.lt\.([0-9a-f-]+)/);
           if (cursor) rows = rows.filter(row => row.created_at < cursor[1] || (row.created_at === cursor[1] && row.id < cursor[2]));
-          data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
+          const offset = Number(url.searchParams.get('offset') ?? 0); data = id ? rows[0] ?? null : rows.slice(offset, offset + Number(url.searchParams.get('limit') ?? 30));
         }
       } else if (url.pathname.endsWith('/observation_recipients')) {
         const raw = url.searchParams.get('observation_id');
         const inParam = raw?.startsWith('in.') ? raw.slice(3) : null;
         if (inParam) {
           const ids = inParam.replace(/[()]/g, '').split(',');
-          data = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
+          const all = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
+          const limit = url.searchParams.get('limit'); data = limit ? all.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(limit)) : all;
         } else {
           const id = raw?.replace(/^eq\./, '');
           data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));

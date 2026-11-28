@@ -1,0 +1,21 @@
+# Posts the browserless test report (npm run test:report) to every PR and every push to MM/development.
+name: Browserless test report
+on:
+  pull_request:
+  push:
+    branches: [MM/development]
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      # Writes the report to the job summary and reports/test-report.md; fails the job on any failure.
+      - run: npm run test:report
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: browserless-test-report, path: reports/ }
