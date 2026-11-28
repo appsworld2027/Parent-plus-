@@ -55,6 +55,7 @@ Use [the adoption guide](ai-workspace/agent-instructions/adoption.md) for other 
 
 The founders are non-technical. AI owns technical review, testing, validation, fixes and routine engineering decisions; do not ask founders to review code or judge test adequacy. Give a clear readiness recommendation with evidence and unresolved limits. Founders decide product priorities, material user-experience tradeoffs and release approval. Follow explicit session authorization for merges; do not infer production deployment permission from technical delegation. Independent review requirements remain: self-review must never be labeled independent review.
 
+
 ## AppsWorld AI Organization (v2) — added 20 November 2026 by Ankit
 
 This product is run with the AppsWorld AI Organization handbook at https://github.com/appsworld2027/parent-plus-ai-org (start with its `AGENTS.md` §0 "Native first" and §1 "Founder contract", and `playbooks/ai-pm.md` for product work). Work natively at full speed and tag the role you are playing (Maya, Arjun, Dev, Quinn, Rex …). Product settings for agents live in `.ai-org/manifest.json`. **The owner instructions above in this file — branch rules, merge approval, Supabase and release safety — take precedence over the AI Org handbook in this repository.** Background agents are triggered by `ai:*` labels through `.github/workflows/ai-agents.yml`; they open pull requests; they may merge into `MM/development` and `ai/contract-*` branches under the MM branch rule and the loop controller, and never merge to `main` without a founder `/approve`.
@@ -70,3 +71,11 @@ This product is run with the AppsWorld AI Organization handbook at https://githu
 - The AI Org loop controller may merge an approved, green **build** PR into its `ai/contract-*` feature branch. Only a founder `/approve` on the Demo Pack ships the feature PR to `main`. This is the explicit approval required above.
 - What gets built next: first unchecked line of `docs/product/BACKLOG.md`, one feature at a time.
 
+## Founder standing direction — recorded 28 Nov 2026 (founder, in chat)
+- AI works autonomously on the whole product build with full authority over routine work: features, tests, refactors, docs, branches, `MM/development`, additive migrations and Edge Function deploys on the dev project `parentplus-dev`, disposable test databases, and tools reachable from the cloud session.
+- Do not pause or ask the founder for permission already granted here. Ask only for a real product decision, or for something only the founder can supply (an account login, a credential entered through the secure form, a payment).
+- No local-machine dependency: do not ask the founder to run commands, download files, install apps or use a device. Prefer cloud-only routes.
+- Every coach action that affects families must also reach families; every alert must give a next action.
+- Unchanged hard gates (founder's earlier rules): release to `main` needs founder `/approve`; no real family or child data and no production settings or database changes; no new paid service without the founder; never put secrets in chat or the repository; no destructive change to existing data.
+- Write or update a session checkpoint (`docs/product/checkpoints/`) at every milestone and before any hosted change.
+  
