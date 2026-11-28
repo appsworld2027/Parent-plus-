@@ -71,3 +71,13 @@ None saved outside the repo. Durable rules live in `AGENTS.md`, this file and `d
   - Accepted, not fixed (low): no per-coach send rate limit; list silently capped at 1000 targets; `on conflict (endpoint)` re-assigns a shared-device endpoint to the newest signed-in parent (intended).
 - **NOT DONE yet:** independent review/test of the other nine features (attendance-patterns, fee-receipts, child-progress-timeline, schedule-changes, end-of-day-queue, spotlight-rotation, parent banner, fee reminders, class reminders); full suite not re-run this session; M2-09, M2-07, M2-23 not started.
 - Next action: fresh session continues with the nine reviews, then builds M2-09, M2-07, M2-23.
+
+## Update 2 — review completed, M2-09 / M2-07 / M2-23 built (28 Nov, same session)
+- Correction: an earlier "switch session" recommendation in this session was premature (no measured trigger); work continued.
+- Review of the other nine features (reviewer ≠ builder): unit 654 pass / 2 expected fail / 1 skipped; browser specs for all features pass; rule modules read line by line. **Two defects fixed (b7fe28d lineage):** `unseenCount` and `timelineGroups` compared timestamps as strings (breaks with `+00:00` vs `Z`); now by instant, tests NB-08, CT-08. No defects found in schedule-notice, holiday, fee reminder/receipt, attendance-patterns, spotlight, wrap-up rules.
+- Built: M2-09 smart attendance defaults (suggestion only, never auto-saved), M2-07 national-holiday prompt (fixed-date holidays only; lunar festivals and a saved academy calendar NOT built), M2-23 monthly progress report on student profile (WhatsApp share). Contracts in `docs/product/{smart-attendance-defaults,holiday-calendar,monthly-progress-report}/ACCEPTANCE.md`; QA-336..343 added; workbook rebuilt (343).
+- E2E mock extended: attendance by student, class_sessions `id=in.(...)`.
+- Evidence: `npm run check` 654 passed, 2 expected fail, 1 skipped (62 files); full browser suite 294 passed, 1 skipped, 0 failed (run on 424a84a+features, before merging AGENTS.md note).
+- Hosted change disclosure: the SSRF migration also deleted dev push_subscriptions rows that failed the allow-list (dev, fictional only).
+- NOT RUN: real push in a real browser; MR-11 WhatsApp share; SC-08 partial-save failure; independent review of the NEW three features (built and tested by the same session).
+- Next: independent review of M2-09/07/23; then M2-43 safety/health notes, M2-24 parent reactions; PR to main for founder /approve when ready.
