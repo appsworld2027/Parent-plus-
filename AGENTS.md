@@ -64,6 +64,9 @@ Whoever works here, with any tool (Claude Code, Codex, background agents, humans
 3. The Excel link (GitHub raw URL on `MM/development`) given to the founder in the completion report.
 Fix or enhance an existing feature: update the same three. Run `npm run check:features` to see what is missing; it is advisory until the founder agrees to make it blocking. Founders test only on the Vercel link, never with real family or child data.
 
+## Session handover (global, all tools and agents)
+At session start, load the `session-handover` skill (`.agents/skills/session-handover/SKILL.md`; Claude Code reads the same file from `.claude/skills/`). Read the latest `docs/product/SESSION_STATE.md` first. At every milestone, and whenever the session is long or repeating itself, decide CONTINUE or SWITCH; on SWITCH write the handover (`docs/session-handover/HANDOVER_TEMPLATE.md`) into git, verify it is pushed, give the founder the ready-to-paste prompt (`docs/session-handover/PROMPTS.md`), and stop. Delete superseded handover files once the new session has verified the handover; never delete database-change records, decisions or evidence.
+
 ## Founder technical delegation
 
 The founders are non-technical. AI owns technical review, testing, validation, fixes and routine engineering decisions; do not ask founders to review code or judge test adequacy. Give a clear readiness recommendation with evidence and unresolved limits. Founders decide product priorities, material user-experience tradeoffs and release approval. Follow explicit session authorization for merges; do not infer production deployment permission from technical delegation. Independent review requirements remain: self-review must never be labeled independent review.
