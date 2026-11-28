@@ -9,6 +9,7 @@ import { SelectField } from '../ui/SelectField';
 import { saveBatch } from '../roster/service';
 import type { BatchDraft } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { canRestore, holidayMessage, holidayTargets, withStatus } from './holiday';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
 import type { AttendanceDraft, ClassContext, ClassDraft, ClassSession, Mark, Marks } from './model';
@@ -46,12 +47,20 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   const [discardStored, setDiscardStored] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [holidayAsk, setHolidayAsk] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useFeedbackMessage('info', 'Update');
   const [error, setError] = useFeedbackMessage('error', 'Action needs attention');
   const generation = useRef(0);
   const scope = (session: string) => ({ owner, academy: academy.id, session });
 
+  async function setStatus(sessions: ClassSession[], status: ClassSession['status'], done: string) {
+    if (saving.current) return;
+    saving.current = true; setBusy(true); setError(''); setNotice('');
+    try { for (const s of sessions) await saveClass(academy.id, withStatus(s, status, academy.timezone), academy.timezone); setNotice(done, { kind: 'success', title: 'Schedule updated' }); }
+    catch (failure) { setError(classFailure(failure, 'The schedule change could not be saved. Refresh and retry.')); }
+    finally { saving.current = false; setBusy(false); await reload(); }
+  }
   const reload = useCallback(async () => {
     const version = ++generation.current; setLoading(true); setError('');
     try {
@@ -240,6 +249,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
           catch (failure) { setError(failure instanceof Error ? failure.message : 'Check the date.'); }
         }} />
         <Button title="Create a class" disabled={!context || loading || busy} onPress={() => edit()} />
+        <Button title="Mark this day as a holiday" disabled={!context || loading || busy} onPress={() => setHolidayAsk(true)} />
         <Button title="Refresh classes" disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Classes refreshed.', { kind: 'success', title: 'Refresh complete' }); }); }} />
       </View>
       {loading && <ActivityIndicator accessibilityLabel="Loading classes" />}
@@ -249,8 +259,10 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
         <Text style={s.title}>{batchName(session.batch_id)}</Text><Text style={s.body}>{caption(session)} · {session.status}</Text><Text style={s.body}>{session.room || 'Location not set'}</Text>
         <Button title={`Attendance for ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading || session.status === 'cancelled'} onPress={() => { void openAttendance(session); }} />
         <Button title={`Edit class ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => edit(session)} />
+        {canRestore(session) && <Button title={`Restore class ${batchName(session.batch_id)} at ${localParts(session.starts_at, academy.timezone).time}`} disabled={busy || loading} onPress={() => { void setStatus([session], 'scheduled', 'Class restored.'); }} />}
       </View>)}
     </>}
+    <ConfirmDialog visible={holidayAsk} title="Mark this day as a holiday?" message={holidayMessage(holidayTargets(context?.sessions ?? []).length)} confirmLabel="Cancel classes" cancelLabel="Keep classes" onConfirm={() => { setHolidayAsk(false); const targets = holidayTargets(context?.sessions ?? []); if (targets.length) void setStatus(targets, 'cancelled', `Holiday set: ${targets.length} ${targets.length === 1 ? 'class' : 'classes'} cancelled.`); }} onCancel={() => setHolidayAsk(false)} />
     <ConfirmDialog visible={discard} title="Leave your unsaved edits?" message="Edits that could not be saved on this device will be lost. Previously saved device drafts are retained." confirmLabel="Leave this form" cancelLabel="Keep editing" onCancel={() => setDiscard(false)} onConfirm={() => { close(); void reload(); }} />
     <ConfirmDialog visible={discardStored} title="Discard the device draft?" message="This removes unsent attendance from this device. Attendance already saved to the class is retained." confirmLabel="Discard device draft" cancelLabel="Keep draft" onCancel={() => setDiscardStored(false)} onConfirm={() => { void discardDeviceDraft(); }} />
     <ConfirmDialog visible={!!replaceWith} title="Another class has an unsent draft" message="Keep that draft and resume it from the class list, or discard it before opening this class." confirmLabel="Discard old draft and continue" cancelLabel="Keep old draft" onCancel={() => setReplaceWith(null)} onConfirm={() => {

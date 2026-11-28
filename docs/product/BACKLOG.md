@@ -11,3 +11,6 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] attendance-patterns — Coach sees children absent 3 classes in a row on Today — M2-12
 - [x] fee-receipts — Coach views and shares a receipt for each recorded payment — Fees
 - [x] child-progress-timeline — Parent sees coach updates grouped by month, newest first — Parent Home
+- [x] schedule-changes — Coach restores a cancelled class and marks a whole day as a holiday — M2-05
+- [x] end-of-day-queue — Coach sees what is unfinished at the end of the day (attendance, feedback drafts) — M2-17
+- [x] spotlight-rotation — Coach is shown who to observe today, least recently observed first — M2-18

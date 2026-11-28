@@ -31,6 +31,8 @@ import { PrototypeIcon } from './src/ui/PrototypeIcon';
 import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
+import { CoachWrapUp } from './src/today/CoachWrapUp';
+import { CoachSpotlight } from './src/today/CoachSpotlight';
 import { CoachAttendanceAlerts } from './src/today/CoachAttendanceAlerts';
 import { loadNeedsYouData } from './src/today/service';
 import type { Invoice } from './src/fees/model';
@@ -190,6 +192,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               error={needsYouError}
             />
           </>}
+          {auth.academy && <CoachWrapUp academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onSchedule={() => navigate('Schedule')} onFeedback={() => navigate('Post')} />}
+          {auth.academy && <CoachSpotlight academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}

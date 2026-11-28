@@ -46,6 +46,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       state.calls.push(url.pathname);
       let data: unknown = {};
       let status = 200;
+      if (((window as unknown as { __failTables?: string[] }).__failTables ?? []).some(table => url.pathname.endsWith(`/${table}`))) return new Response(JSON.stringify({ message: 'Injected fixture failure' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
       if (url.pathname.endsWith('/token')) {
         if (options.failLogin) {
           status = 400; data = { code: 'invalid_credentials', msg: 'Raw backend detail must not display' };

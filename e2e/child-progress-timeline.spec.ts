@@ -33,6 +33,7 @@ test('CT-01/02/03 two months, newest first, with a count', async ({ page }) => {
 });
 test('CT-04 no feedback shows no timeline headings or count', async ({ page }) => {
   await open(page, []);
+  await page.waitForTimeout(1500);
   await expect(page.getByText(/updates? from your coaches/)).toHaveCount(0);
   await expect(page.getByRole('heading', { name: /^(January|February|March|April|May|June|July|August|September|October|November|December) \d{4}$/ })).toHaveCount(0);
 });
