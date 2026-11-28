@@ -16,6 +16,7 @@ const react = (h: string, kind: string) => ok(`select public.react_to_feedback('
 beforeAll(async () => {
   db = await supabaseDatabase();
   await db.exec(readFileSync('supabase/migrations/202611280032_feedback_reactions.sql', 'utf8'));
+  await db.exec(readFileSync('supabase/migrations/202611280033_reactions_coach_counts.sql', 'utf8'));
   await db.exec('reset role');
   for (const [u, e] of [[coach, 'c'], [parent, 'p'], [stranger, 's'], [otherCoach, 'o']]) await db.query(`insert into auth.users(id,email,email_confirmed_at) values ($1,$2,now())`, [u, `${e}@example.test`]);
   await db.query(`insert into public.academies(id,owner_id,name) values ($1,$2,'Fictional A'),($3,$4,'Fictional B')`, [academy, coach, otherAcademy, otherCoach]);
@@ -42,8 +43,12 @@ describe('parent reactions candidate', () => {
     expect(await rows('select reaction from public.feedback_reactions')).toEqual([{ reaction: 'helpful' }]);
   });
   it('PR-05 the owning coach sees it; another academy coach does not', async () => {
-    await as(coach); expect((await rows('select reaction from public.feedback_reactions')).length).toBe(1);
-    await as(otherCoach); expect((await rows('select reaction from public.feedback_reactions')).length).toBe(0);
+    const coachRows = "select reaction from public.get_coach_feedback_reactions('2000-01-01')";
+    await as(coach); expect((await rows(coachRows)).length).toBe(1);
+    await as(otherCoach); expect((await rows(coachRows)).length).toBe(0);
+    await as(coach); expect(await ok('select parent_user_id from public.feedback_reactions')).toBe(true);
+    expect((await rows('select reaction from public.feedback_reactions')).length).toBe(0); // coach cannot read the table: no parent identity
+    expect(Object.keys((await db.query("select * from public.get_coach_feedback_reactions('2000-01-01')")).fields.map(f => f.name))).toHaveLength(3);
   });
   it('PR-07 an unlinked user cannot react or read', async () => {
     await as(stranger);
@@ -63,7 +68,7 @@ describe('parent reactions candidate', () => {
   it('PR-04 the parent can remove their reaction; the coach then sees none', async () => {
     await as(parent);
     expect(await ok(`select public.remove_feedback_reaction('${handoff}')`)).toBe(true);
-    await as(coach); expect(await rows('select reaction from public.feedback_reactions')).toEqual([]);
+    await as(coach); expect(await rows("select reaction from public.get_coach_feedback_reactions('2000-01-01')")).toEqual([]);
   });
   it('PR-10 a disconnected parent loses the ability to react', async () => {
     await db.exec('reset role'); await db.exec(`update public.parent_coach_links set active=false`);

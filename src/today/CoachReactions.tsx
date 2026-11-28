@@ -11,7 +11,7 @@ export function CoachReactions({ academyId, rows: preset }: { academyId: string;
   useEffect(() => {
     if (preset || !supabase) return; let active = true;
     const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
-    supabase.from('feedback_reactions').select('handoff_id,reaction,reacted_at').eq('academy_id', academyId).gte('reacted_at', since).order('reacted_at', { ascending: false }).limit(500)
+    supabase.rpc('get_coach_feedback_reactions', { since })
       .then(r => { if (active && !r.error) setRows((r.data ?? []) as ReactionRow[]); });
     return () => { active = false; };
   }, [academyId, preset]);

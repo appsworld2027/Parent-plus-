@@ -218,7 +218,7 @@ export function RosterScreen({ academy, academyName, timezone = 'Asia/Kolkata', 
       <View style={s.card}>
         <PhotoControl key={profile.id} academy={academy} kind="student" id={profile.id} exists disabled={busy} locked={!!profile.archived_at} onWorking={setPhotoBusy}/>
       </View>
-      <SafetyNote studentId={profile.id} readOnly={!!profile.archived_at} />
+      <SafetyNote key={profile.id} studentId={profile.id} readOnly={!!profile.archived_at} />
       <View style={s.card}>
         <Text style={s.title}>Guardian</Text>
         <Text style={s.body}>{data?.contacts.find(c=>c.student_id===profile.id)?.name??'No guardian details yet'}</Text>

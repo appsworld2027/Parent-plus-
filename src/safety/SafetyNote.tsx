@@ -8,7 +8,8 @@ import { loadSafetyNote, saveSafetyNote } from './service';
 // Coach-only card on the student profile. Parents never see it: the table is coach-readable only (M2-43).
 export function SafetyNote({ studentId, readOnly = false, load = loadSafetyNote, save = saveSafetyNote }: { studentId: string; readOnly?: boolean; load?: typeof loadSafetyNote; save?: typeof saveSafetyNote }) {
   const [saved, setSaved] = useState(''); const [text, setText] = useState(''); const [state, setState] = useState<'loading' | 'ready' | 'failed'>('loading');
-  const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
+  const [busy, setBusy] = useState(false); const [message, setMessage] = useState(''); const [bad, setBad] = useState(false);
+  const current = React.useRef(studentId); current.current = studentId;
   useEffect(() => {
     let active = true; setState('loading'); setMessage('');
     load(studentId).then(v => { if (active) { setSaved(v); setText(v); setState('ready'); } }).catch(() => { if (active) setState('failed'); });
@@ -16,10 +17,10 @@ export function SafetyNote({ studentId, readOnly = false, load = loadSafetyNote,
   }, [studentId, load]);
   async function onSave() {
     const check = checkSafetyNote(text);
-    if (!check.ok) { setMessage(check.message); return; }
-    setBusy(true); setMessage('');
-    try { await save(studentId, check.text); setSaved(check.text); setText(check.text); setMessage(check.text ? 'Safety note saved. Only you can see it.' : 'Safety note cleared.'); }
-    catch (e) { setMessage(safetyFailure(e)); } finally { setBusy(false); }
+    if (!check.ok) { setMessage(check.message); setBad(true); return; }
+    setBusy(true); setMessage(''); setBad(false); const target = studentId;
+    try { await save(target, check.text); if (current.current !== target) return; setSaved(check.text); setText(check.text); setMessage(check.text ? 'Safety note saved. Only you can see it.' : 'Safety note cleared.'); }
+    catch (e) { if (current.current === target) { setMessage(safetyFailure(e)); setBad(true); } } finally { setBusy(false); }
   }
   return <View style={s.card}>
     <Text style={s.title}>Safety and health note</Text>
@@ -33,7 +34,7 @@ export function SafetyNote({ studentId, readOnly = false, load = loadSafetyNote,
       <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy || text.trim() === saved }} disabled={busy || text.trim() === saved} onPress={onSave} style={[s.button, (busy || text.trim() === saved) && { opacity: 0.5 }]}>
         <Text style={s.buttonText}>{text.trim() ? 'Save safety note' : saved ? 'Clear safety note' : 'Save safety note'}</Text></Pressable>
     </>)}
-    {!!message && <Text accessibilityLiveRegion="polite" style={message.includes('could not') || message.includes('Keep the') || message.includes('cannot') ? s.error : s.ok}>{message}</Text>}
+    {!!message && <Text accessibilityLiveRegion="polite" style={bad ? s.error : s.ok}>{message}</Text>}
   </View>;
 }
 const s = StyleSheet.create({
