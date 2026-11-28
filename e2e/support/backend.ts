@@ -176,6 +176,11 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
         }
       } else if (url.pathname.endsWith('/fee_invoice_balances')) {
         data = (window as unknown as { __coachInvoices?: unknown[] }).__coachInvoices ?? [];
+      } else if (url.pathname.endsWith('/student_safety_notes') || url.pathname.endsWith('/rpc/save_student_safety_note')) {
+        const fx = (window as unknown as { __safetyFixture?: { note: string; saves: string[]; failLoad?: boolean; failSave?: boolean } }).__safetyFixture ?? { note: '', saves: [] };
+        if (url.pathname.endsWith('/student_safety_notes')) { if (fx.failLoad) { status = 500; data = { code: '500' }; } else data = fx.note ? [{ note: fx.note }] : []; }
+        else if (fx.failSave) { status = 500; data = { code: '500' }; }
+        else { fx.note = String(payload.note_text ?? '').trim(); fx.saves.push(fx.note); sessionStorage.setItem('__sn', JSON.stringify(fx)); data = null; status = 204; }
       } else if (url.pathname.endsWith('/parent_signals')) {
         data = (window as unknown as { __coachSignals?: unknown[] }).__coachSignals ?? [];
       } else if (url.pathname.endsWith('/observation_versions')) {

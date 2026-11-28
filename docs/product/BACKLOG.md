@@ -22,3 +22,5 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] holiday-calendar — Schedule prompts on fixed-date national holidays (lunar festivals not covered) — M2-07
 - [x] monthly-progress-report — Coach prepares and shares a child's monthly attendance and notes summary — M2-23
 - [x] parent-attendance — Parent sees their child's class attendance (ported from AM/consolidated onto parentplus-dev; flag-gated, non-production) — Parent
+- [x] safety-notes — Coach keeps a private safety/health note per student (never shown to parents) — M2-43
+- [x] parent-reactions — Parent reacts with one tap to reviewed feedback; coach sees counts — M2-24

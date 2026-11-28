@@ -37,6 +37,7 @@ import { CoachAttendanceAlerts } from './src/today/CoachAttendanceAlerts';
 import { loadNeedsYouData } from './src/today/service';
 import type { Invoice } from './src/fees/model';
 import { CoachSignals } from './src/today/CoachSignals';
+import { CoachReactions } from './src/today/CoachReactions';
 import { CoachAnnounce } from './src/today/CoachAnnounce';
 import { supabase } from './src/auth/client';
 import type { Student } from './src/roster/model';
@@ -202,6 +203,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           {auth.academy && <Spotlight academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onOpen={() => navigate('Post')} />}
           {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} academyName={auth.academy.name} />}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
+          {auth.academy && <CoachReactions academyId={auth.academy.id} />}
           {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
           {auth.academy&&<ParentConnectionApprovals academy={auth.academy.id} disabled={formBusy} onWorking={setFormBusy} />}

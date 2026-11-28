@@ -57,4 +57,9 @@ Rules: use the Vercel preview link, a coach account with a verified email, and O
 <!-- feature:parent-attendance -->
 | 27 | As a connected parent (preview with attendance flag ON), pick a class date where the coach saved Aarav as present | Aarav's class with 'present'; a date with no class says 'No shared classes for this date.'; a class without saved attendance shows unrecorded | parent-attendance |
 
+<!-- feature:safety-notes -->
+| 28 | As coach, Students → open **Fictional Aarav** → in "Safety and health note" type `Peanut allergy. Inhaler in blue bag.` → Save safety note | "Safety note saved. Only you can see it."; reopen the profile and the text is still there. Then type 501+ characters and save: message "Keep the note to 500 characters or fewer", nothing saved. Clear the box and tap "Clear safety note": "Safety note cleared." | safety-notes |
+<!-- feature:parent-reactions -->
+| 29 | After the coach has shared a reviewed note about Aarav to a connected test parent: as parent, under the note tap **Helpful**, then **Thank you**; reload. As coach open Today | Parent sees "Thank you · sent to coach" even after reload; **Undo** returns "Let your coach know:". Coach Today shows "Parents reacted to your feedback (1)" with "Thank you ×1", no parent names. With no reactions the card is absent. | parent-reactions |
+
 Not tested by AI and needing you: real phone behaviour, real email delivery (parked), anything on the live database.
