@@ -1,0 +1,3 @@
+test_id,feature_hierarchy,test_type,preconditions,steps,input,expected_result,actual_result,evidence,status,issue_id,environment,commit_sha,date
+holiday-calendar-SC-001,Master QA>M2-07 Holiday calendar,Unit,See docs/product/holiday-calendar/ACCEPTANCE.md,HC-01..05 fixed-date national holidays,—,As in contract,Matched expected result,tests/national-holidays.test.ts,PASS,,local unit (vitest),049a907,2026-11-28
+holiday-calendar-SC-002,Master QA>M2-07 Holiday calendar,Browser E2E (Playwright),See docs/product/holiday-calendar/ACCEPTANCE.md,"HC-06 prompt shown, nothing cancelled by itself",—,As in contract,Matched expected result,e2e/smart-defaults.spec.ts,PASS,,local Chromium (mock backend),049a907,2026-11-28

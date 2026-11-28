@@ -18,6 +18,6 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] class-reminders — Coach reminds a batch's families about the next class in one tap — M2-04
 - [x] web-push — Parents get browser alerts for coach notices even when the app is closed — M2-40 (web channel; native Android needs Firebase)
 - [x] coach-spotlight — Coach Today suggests up to 3 children to observe today (M2-18) — M2-18  (single Spotlight kept: the MM/development version; the parallel spotlight-rotation build was retired in the merge)
-- [ ] smart-attendance-defaults — Suggests usual attendance from each child's last 5 classes; coach still saves — M2-09
-- [ ] holiday-calendar — Schedule prompts on fixed-date national holidays (lunar festivals not covered) — M2-07
-- [ ] monthly-progress-report — Coach prepares and shares a child's monthly attendance and notes summary — M2-23
+- [x] smart-attendance-defaults — Suggests usual attendance from each child's last 5 classes; coach still saves — M2-09
+- [x] holiday-calendar — Schedule prompts on fixed-date national holidays (lunar festivals not covered) — M2-07
+- [x] monthly-progress-report — Coach prepares and shares a child's monthly attendance and notes summary — M2-23

@@ -27,4 +27,31 @@ Rules: use the Vercel preview link, a coach account with a verified email, and O
 <!-- feature:class-announcements -->
 | 12 | Post an announcement to Clay only | Clay families see it; Art families do not | class-announcements |
 
+<!-- feature:attendance-patterns -->
+| 14 | Save attendance for Fictional Aarav as absent in 3 Clay classes in a row (create past classes on Schedule), then open Today | Alert 'Fictional Aarav · Clay · absent 3 classes in a row' with a WhatsApp button. Mark him present once: the alert disappears | attendance-patterns |
+<!-- feature:fee-receipts -->
+| 15 | Record a ₹1,000 payment on Bela's invoice, open the payment | A receipt with number, student, month, amount; Share opens WhatsApp. A test-mode or reversed payment shows no receipt | fee-receipts |
+<!-- feature:child-progress-timeline -->
+| 16 | As parent, open the child with 2 reviewed feedback notes in different months | Updates grouped by month, newest first. A child with none shows a friendly empty message | child-progress-timeline |
+<!-- feature:schedule-changes -->
+| 17 | Cancel today's Clay class, add note 'Diwali', then Restore it | Families see 'Class update … is cancelled. Diwali' then '…is on again'. Mark the day as a holiday: one notice per batch | schedule-changes |
+<!-- feature:end-of-day-queue -->
+| 18 | With today's class started and no attendance saved, open Today | Wrap-up shows '1 class needs attendance'; after saving attendance it disappears | end-of-day-queue |
+<!-- feature:coach-spotlight -->
+| 19 | See Spotlight on Today | Up to 3 least-recently-noted children; one noted today is skipped | coach-spotlight |
+<!-- feature:parent-notification-badge -->
+| 20 | As parent after the coach posts an announcement | '1 new update from your coach' banner; Mark as read hides it; an update older than 7 days does not show | parent-notification-badge |
+<!-- feature:fee-reminders -->
+| 21 | On Aarav's invoice (₹2,000, overdue) tap Remind on WhatsApp | Friendly message with amount and month. Chirag (due today) has no reminder button | fee-reminders |
+<!-- feature:class-reminders -->
+| 22 | Tap Remind families on today's Clay class | Clay families see 'Reminder: Fictional Clay Class class today at HH:MM'. A cancelled class has no button | class-reminders |
+<!-- feature:web-push -->
+| 23 | As parent in a desktop browser turn alerts on, then the coach posts to Clay | A browser notification appears (NOT yet verified live by AI). Block notifications: guidance shown, nothing saved | web-push |
+<!-- feature:smart-attendance-defaults -->
+| 24 | Give Fictional Aarav 'present' in 3 of the last 5 Clay classes, open today's unmarked class | 'Fill usual attendance (1)' appears; tapping marks him present as an unsent draft; nothing is saved until you Save. A child who was absent last time is not filled | smart-attendance-defaults |
+<!-- feature:holiday-calendar -->
+| 25 | On Schedule choose 2026-08-15 | Prompt 'Independence Day is a national holiday…'; nothing is cancelled until you tap Mark this day as a holiday. Diwali dates show no prompt (not covered) | holiday-calendar |
+<!-- feature:monthly-progress-report -->
+| 26 | Open Fictional Aarav's profile and tap this month under Monthly progress report | Text 'attended X of Y' for this month and up to 3 notes written for him alone. A month with nothing recorded says so and offers no share | monthly-progress-report |
+
 Not tested by AI and needing you: real phone behaviour, real email delivery (parked), anything on the live database.
