@@ -129,3 +129,7 @@ Needs: merge origin/MM/development (5 conflicts: App.tsx, BACKLOG.md, SESSION_ST
 - Independent review (fresh agent ran tests): approve with fixes; fixed save-race on student switch, silent reaction-load failure, coach reading parent id. Not independently re-reviewed after fixes. Remaining minor: no automated test for the student-switch race or reaction-load failure (rows SN-13, PR-14 NOT RUN); reactions of a disconnected parent still count.
 - Not built: safety note on the attendance screen (profile only). Hosted real-login checks NOT RUN (SN-11, PR-12).
 - Next: workbooks for coach-needs-you, parent-quick-signals, class-announcements; add the two missing tests; release to main needs founder /approve.
+
+## Update 10 — workbooks done, release to main approved (28 Nov)
+- Workbooks built from executed tests: coach-needs-you (13 PASS/1 NOT RUN), parent-quick-signals (13/2), class-announcements (12/1). Evidence run this session: 47 unit/database tests and 19 browser tests passed. NOT RUN: founder preview checks, midnight roll-over (QS-12 display).
+- Founder approved release to main in chat. `npm run check:features`: 0 gaps.
