@@ -32,11 +32,16 @@ beforeAll(async () => {
 });
 
 describe('web push candidate', () => {
-  const ep = (n: number) => `https://push.example.test/send/fictional-endpoint-${n}`;
+  const ep = (n: number) => `https://fcm.googleapis.com/fcm/send/fictional-endpoint-${n}`;
   const save = (who: string, endpoint: string) => { return ok(`select public.save_push_subscription('${endpoint}', 'fictional-p256dh-key-1', 'fictional-auth-1')`); };
   it('WP-01 a parent saves and replaces their own subscription (one row per endpoint)', async () => {
     await as(parent); expect(await save(parent, ep(1))).toBe(true); expect(await save(parent, ep(1))).toBe(true);
     await db.exec('reset role'); expect((await rows(`select * from public.push_subscriptions where user_id='${parent}'`)).length).toBe(1);
+  });
+  it('WP-09 endpoints that are not real push services are refused (SSRF guard)', async () => {
+    await as(parent);
+    for (const bad of ['http://fcm.googleapis.com/fcm/send/aaaaaaaaaaaa', 'https://169.254.169.254/latest/meta-data/', 'https://evil.example.test/x/aaaaaaaaaaaaaa', 'https://fcm.googleapis.com.evil.test/x/aaaaaaaaaaa'])
+      expect(await save(parent, bad)).toBe(false);
   });
   it('WP-02 signed-out callers cannot save', async () => {
     await db.exec(`reset role; set role authenticated; reset request.jwt.claim.sub`);

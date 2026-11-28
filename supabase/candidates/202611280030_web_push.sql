@@ -21,6 +21,10 @@ create or replace function public.save_push_subscription(push_endpoint text, pus
 returns void language plpgsql security definer set search_path = '' as $$
 begin
   if auth.uid() is null then raise exception 'Sign in first' using errcode = '42501'; end if;
+  -- Only real browser push services (blocks server-side request forgery to internal or arbitrary hosts).
+  if push_endpoint !~* '^https://([a-z0-9-]+\.)*(googleapis\.com|push\.services\.mozilla\.com|notify\.windows\.com|push\.apple\.com)(:443)?/[^[:space:]]*$' then
+    raise exception 'Unsupported push service' using errcode = '22023';
+  end if;
   insert into public.push_subscriptions(user_id, endpoint, p256dh, auth) values (auth.uid(), push_endpoint, push_p256dh, push_auth)
   on conflict (endpoint) do update set user_id = excluded.user_id, p256dh = excluded.p256dh, auth = excluded.auth;
 end $$;

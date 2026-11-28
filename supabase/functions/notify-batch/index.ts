@@ -10,6 +10,9 @@ const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 const b64u = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+// Defence in depth: only ever POST to real browser push services, even if a stored row predates the SQL check.
+const PUSH_HOST = /(^|\.)(googleapis\.com|push\.services\.mozilla\.com|notify\.windows\.com|push\.apple\.com)$/i;
+const safeEndpoint = (e: string) => { try { const u = new URL(e); return u.protocol === 'https:' && (u.port === '' || u.port === '443') && PUSH_HOST.test(u.hostname); } catch { return false; } };
 const unb64u = (s: string) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
 
 async function vapid(admin: ReturnType<typeof createClient>) {
@@ -48,7 +51,7 @@ Deno.serve(async (req: Request) => {
     if (batch.error || !batch.data) return json({ error: 'Not available' }, 403);
     const targets = await admin.rpc('push_targets', { target_batch: body.batch_id });
     if (targets.error) throw targets.error;
-    const list = ((targets.data ?? []) as { endpoint: string; p256dh: string; auth: string }[]).slice(0, 1000);
+    const list = ((targets.data ?? []) as { endpoint: string; p256dh: string; auth: string }[]).filter(t => safeEndpoint(t.endpoint)).slice(0, 1000);
     webpush.setVapidDetails('https://github.com/appsworld2027/parent-plus-', keys.pub, keys.priv);
     const payload = JSON.stringify({ title: String(batch.data.name ?? 'Your coach'), body: message, url: '/parent' });
     let sent = 0, failed = 0;
