@@ -1,4 +1,7 @@
-# Session state — 2026-11-27 (branch claude/wizardly-ritchie-43u2va)
+# Session state
+**Latest checkpoint (read this first): docs/product/checkpoints/2026-11-28-coach-parent-backlog.md** (branch claude/zen-tesla-8avtnz). The notes below are an older running log.
+
+# Log — 2026-11-27 (branch claude/wizardly-ritchie-43u2va)
 Built and pushed this session, touched tests only (no full suite since the last full `npm run check`: 549 unit pass; full browser suite NOT re-run since cf4b285):
 - M2-06 parent-quick-signals: SQL candidate 202611270023, parent buttons, coach "From parents today", tests (7 DB, 5 browser). Details: docs/product/parent-quick-signals/CHECKPOINT.md.
 - M2-41 needs-you-fees-overdue: Needs you overdue item, Fees overdue first; tests tests/overdue-fees.test.ts (6), e2e/needs-you-fees.spec.ts (4). AC-14 TEST receipts NOT covered.
