@@ -23,3 +23,9 @@ test('MR-10 a month with nothing recorded says so and offers no sharing', async 
   await expect(page.getByText('Nothing was recorded this month.')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Share report on WhatsApp' })).toHaveCount(0);
 });
+test('MR-13 a prepared report has no coach-notes section when only batch notes exist', async ({ page }) => {
+  await open(page, true);
+  await page.getByRole('button', { name: /^Prepare \w+ \d{4} report$/ }).first().click();
+  await expect(page.getByText(/progress for Fictional Ria/)).toBeVisible();
+  await expect(page.getByText('From the coach:')).toHaveCount(0);
+});

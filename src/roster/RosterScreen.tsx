@@ -234,7 +234,7 @@ export function RosterScreen({ academy, academyName, timezone = 'Asia/Kolkata', 
           <Button label="Create a batch for this student" soft disabled={working} onPress={()=>{editStudent(profile);editBatch();setDirty(true);}} />
         </>}
       </View>
-      {!profile.archived_at && <MonthlyReportCard academy={academy} academyName={academyName ?? 'Your academy'} timezone={timezone ?? 'Asia/Kolkata'} student={profile.id} name={profile.name} phone={data?.contacts.find(contact=>contact.student_id===profile.id)?.phone} disabled={working} />}
+      {!profile.archived_at && <MonthlyReportCard key={profile.id} academy={academy} academyName={academyName ?? 'Your academy'} timezone={timezone ?? 'Asia/Kolkata'} student={profile.id} name={profile.name} phone={data?.contacts.find(contact=>contact.student_id===profile.id)?.phone} disabled={working} />}
       {!profile.archived_at && <ParentLinkCard key={profile.id} academy={academy} student={profile.id} name={profile.name} savedEmail={data?.contacts.find(contact=>contact.student_id===profile.id)?.email} disabled={working} onWorking={setBusy} />}
       <Button label={activeBatch?'Back to batch roster':'Back to students'} soft disabled={working} onPress={()=>{setProfileId(null);setProfileAddBatch(false);onViewChange();}} />
     </> : <>

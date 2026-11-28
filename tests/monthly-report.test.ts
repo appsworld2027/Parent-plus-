@@ -17,3 +17,10 @@ describe('monthly report', () => {
   it('MR-07 previousMonth wraps the year', () => { expect(previousMonth('2026-01')).toBe('2025-12'); expect(previousMonth('2026-11')).toBe('2026-10'); });
   it('MR-08 no attendance means no class line', () => expect(monthlyReport('A', 'B', '2026-11', tz, [], [{ recorded_at: '2026-11-02T00:00:00Z', note: 'Good' }]).text).not.toContain('Classes:'));
 });
+
+describe('independent review fixes', () => {
+  it('MR-12 only present/late count as attended; unknown statuses are ignored', () => {
+    const r = monthlyReport('A', 'B', '2026-11', tz, [{ status: 'present', starts_at: '2026-11-03T12:00:00Z' }, { status: 'excused', starts_at: '2026-11-04T12:00:00Z' }, { status: 'absent', starts_at: '2026-11-05T12:00:00Z' }], []);
+    expect([r.held, r.attended, r.absent]).toEqual([2, 1, 1]);
+  });
+});

@@ -81,3 +81,9 @@ None saved outside the repo. Durable rules live in `AGENTS.md`, this file and `d
 - Hosted change disclosure: the SSRF migration also deleted dev push_subscriptions rows that failed the allow-list (dev, fictional only).
 - NOT RUN: real push in a real browser; MR-11 WhatsApp share; SC-08 partial-save failure; independent review of the NEW three features (built and tested by the same session).
 - Next: independent review of M2-09/07/23; then M2-43 safety/health notes, M2-24 parent reactions; PR to main for founder /approve when ready.
+
+## Update 3 — independent review of M2-09/07/23 (fresh agent, code-reading only; it did not run tests)
+Fixed: (1) report card keyed per student, results ignored if the child changed, WhatsApp link only from the report's own child; (2) report now reads the chosen month with paged range queries (no silent 500-row cut); (3) privacy: only notes written for that one child alone are included (batch notes excluded); (4) batch history read per class (no 1000-row cap); (5) stale smart-default result ignored if another class was opened; (6) explicit present/late/absent counts. Not fixed (low): `thisMonth` label can lag across midnight on the last day of a month.
+Evidence: tsc clean; unit 655 passed/2 expected fail/1 skipped; monthly-report + smart-defaults browser specs 7/7. Not browser-covered: switching between two children, stale smart-defaults race. Coach notes are still private text shared by WhatsApp after the coach reads the preview (no edit box).
+## GAP found: per-feature Excel workbook rule (MM/development AGENTS.md, 27 Nov) not applied on this branch
+Needs: merge origin/MM/development (5 conflicts: App.tsx, BACKLOG.md, SESSION_STATE.md, src/today/spotlight.ts + tests/spotlight.test.ts — Spotlight M2-18 was built twice), then SCENARIOS.csv + testing/workbooks/<slug>.xlsx + FOUNDER_TEST_SCRIPT rows for each of the 13 features. NOT DONE yet.

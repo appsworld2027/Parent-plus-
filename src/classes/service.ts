@@ -54,7 +54,12 @@ export async function loadBatchHistory(academy: string, batch: string, before: s
   if (sess.error) throw sess.error;
   const ids = (sess.data ?? []).map(x => x.id as string);
   if (!ids.length) return { sessions: [], marks: [] };
-  const marks = await supabase.from('attendance').select('session_id,student_id,status').eq('academy_id', academy).in('session_id', ids);
-  if (marks.error) throw marks.error;
-  return { sessions: ids, marks: (marks.data ?? []) as { session_id: string; student_id: string; status: string }[] };
+  // One request per class (each at most 500 children) so the 1000-row limit can never drop marks.
+  const all: { session_id: string; student_id: string; status: string }[] = [];
+  for (const id of ids) {
+    const marks = await supabase.from('attendance').select('session_id,student_id,status').eq('academy_id', academy).eq('session_id', id).range(0, 999);
+    if (marks.error) throw marks.error;
+    all.push(...((marks.data ?? []) as { session_id: string; student_id: string; status: string }[]));
+  }
+  return { sessions: ids, marks: all };
 }

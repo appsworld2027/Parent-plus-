@@ -55,6 +55,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   const [busy, setBusy] = useState(false);
   const [holidayAsk, setHolidayAsk] = useState(false);
   const [usual, setUsual] = useState<Marks>({});
+  const openedSession = useRef('');
   const [familyNote, setFamilyNote] = useState('');
   const [unsent, setUnsent] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -180,8 +181,8 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
           setConflict(local);
         } else { value.marks = marks; value.local = true; setNotice('Unsent attendance draft restored from this device. Review and save to your class.'); }
       }
-      setActive(value); setDirty(false); setUsual({});
-      if (loaded.session.attendance_revision === 0) void loadBatchHistory(academy.id, loaded.session.batch_id, loaded.session.starts_at).then(h => setUsual(suggestedMarks(h.sessions, h.marks, eligibleStudents(latest, loaded.session, academy.timezone).map(x => x.id), {}))).catch(() => setUsual({}));
+      openedSession.current = loaded.session.id; setActive(value); setDirty(false); setUsual({});
+      if (loaded.session.attendance_revision === 0) void loadBatchHistory(academy.id, loaded.session.batch_id, loaded.session.starts_at).then(h => openedSession.current === loaded.session.id && setUsual(suggestedMarks(h.sessions, h.marks, eligibleStudents(latest, loaded.session, academy.timezone).map(x => x.id), {}))).catch(() => setUsual({}));
     } catch (failure) { setError(classFailure(failure, 'Attendance could not be opened. Check the connection and class status. Your device draft is retained.')); }
     finally { setBusy(false); }
   }

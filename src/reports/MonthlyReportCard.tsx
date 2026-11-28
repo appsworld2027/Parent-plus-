@@ -1,45 +1,52 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui/Typography';
 import { prototypeColors as c } from '../ui/prototypeTheme';
 import { supabase } from '../auth/client';
+import { wallTime } from '../classes/model';
 import { whatsappLink } from '../observations/whatsapp';
 import { monthKey, monthLabel, monthlyReport, previousMonth, type Report } from './monthlyReport';
 
 // Monthly progress report for one child (M2-23). Built only from attendance and recorded observations the coach already saved.
-async function loadFacts(academy: string, student: string) {
+// Facts are read for the chosen month only (range queries, paged) so long histories are never silently cut off.
+// Only notes written for this ONE student are used: a note for a whole batch can mention other children and never goes into one family's report.
+async function loadFacts(academy: string, student: string, month: string, timezone: string) {
   if (!supabase) throw new Error('Client unavailable');
-  const att = await supabase.from('attendance').select('session_id,status').eq('academy_id', academy).eq('student_id', student).limit(500);
-  if (att.error) throw att.error;
-  const ids = (att.data ?? []).map(a => a.session_id as string); const status = new Map((att.data ?? []).map(a => [a.session_id as string, a.status as string]));
-  const marks: { status: string; starts_at: string }[] = [];
+  const [y, m] = month.split('-').map(Number);
+  const start = wallTime(`${month}-01`, '00:00', timezone), end = wallTime(`${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`, '00:00', timezone);
+  const paged = async <T,>(build: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>) => {
+    const all: T[] = [];
+    for (let o = 0; ; o += 500) { const r = await build(o, o + 499); if (r.error) throw r.error; all.push(...(r.data ?? [])); if ((r.data?.length ?? 0) < 500) return all; }
+  };
+  const sessions = await paged<{ id: string; starts_at: string; status: string }>((f, t) => supabase!.from('class_sessions').select('id,starts_at,status').eq('academy_id', academy).gte('starts_at', start).lt('starts_at', end).order('starts_at').range(f, t));
+  const live = new Map(sessions.filter(x => x.status !== 'cancelled').map(x => [x.id, x.starts_at]));
+  const marks: { status: string; starts_at: string }[] = []; const ids = [...live.keys()];
   for (let i = 0; i < ids.length; i += 100) {
-    const s = await supabase.from('class_sessions').select('id,starts_at,status').eq('academy_id', academy).in('id', ids.slice(i, i + 100));
-    if (s.error) throw s.error;
-    for (const row of (s.data ?? []) as { id: string; starts_at: string; status: string }[]) if (row.status !== 'cancelled') marks.push({ status: status.get(row.id)!, starts_at: row.starts_at });
+    const rows = await paged<{ session_id: string; status: string }>((f, t) => supabase!.from('attendance').select('session_id,status').eq('academy_id', academy).eq('student_id', student).in('session_id', ids.slice(i, i + 100)).order('session_id').range(f, t));
+    for (const r of rows) marks.push({ status: r.status, starts_at: live.get(r.session_id)! });
   }
-  const rec = await supabase.from('observation_recipients').select('observation_id').eq('academy_id', academy).eq('student_id', student).limit(500);
-  if (rec.error) throw rec.error;
-  const obsIds = (rec.data ?? []).map(r => r.observation_id as string); const notes: { recorded_at: string; note: string }[] = [];
-  for (let i = 0; i < obsIds.length; i += 100) {
-    const o = await supabase.from('observations').select('id,note,recorded_at,status').eq('academy_id', academy).eq('status', 'recorded').in('id', obsIds.slice(i, i + 100));
-    if (o.error) throw o.error;
-    for (const row of (o.data ?? []) as { note: string; recorded_at: string | null }[]) if (row.recorded_at) notes.push({ recorded_at: row.recorded_at, note: row.note });
+  const obs = await paged<{ id: string; note: string; recorded_at: string | null; audience: string }>((f, t) => supabase!.from('observations').select('id,note,recorded_at,audience').eq('academy_id', academy).eq('status', 'recorded').eq('audience', 'student').gte('recorded_at', start).lt('recorded_at', end).order('id').range(f, t));
+  const notes: { recorded_at: string; note: string }[] = [];
+  for (let i = 0; i < obs.length; i += 100) {
+    const chunk = obs.slice(i, i + 100);
+    const rec = await paged<{ observation_id: string; student_id: string }>((f, t) => supabase!.from('observation_recipients').select('observation_id,student_id').eq('academy_id', academy).in('observation_id', chunk.map(o => o.id)).order('observation_id').range(f, t));
+    for (const o of chunk) { const mine = rec.filter(r => r.observation_id === o.id); if (o.recorded_at && mine.length === 1 && mine[0].student_id === student) notes.push({ recorded_at: o.recorded_at, note: o.note }); }
   }
   return { marks, notes };
 }
 export function MonthlyReportCard({ academy, academyName, timezone, student, name, phone, disabled }: { academy: string; academyName: string; timezone: string; student: string; name: string; phone?: string | null; disabled: boolean }) {
-  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [view, setView] = useState<{ month: string; report: Report } | null>(null);
+  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [view, setView] = useState<{ month: string; student: string; report: Report } | null>(null);
+  const current = useRef(student); current.current = student;
   const thisMonth = monthKey(new Date().toISOString(), timezone);
   async function prepare(month: string) {
     if (busy || disabled) return; setBusy(true); setError(''); setView(null);
-    try { const f = await loadFacts(academy, student); setView({ month, report: monthlyReport(academyName, name, month, timezone, f.marks, f.notes) }); }
+    try { const f = await loadFacts(academy, student, month, timezone); if (current.current !== student) return; setView({ month, student, report: monthlyReport(academyName, name, month, timezone, f.marks, f.notes) }); }
     catch { setError('The report could not be prepared. Check the connection and try again.'); }
-    finally { setBusy(false); }
+    finally { if (current.current === student) setBusy(false); }
   }
-  const link = view && phone ? whatsappLink(phone, view.report.text) : null;
+  const link = view && view.student === student && phone ? whatsappLink(phone, view.report.text) : null;
   return <View style={s.card}><Text style={s.title}>Monthly progress report</Text>
-    <Text style={s.body}>A short summary of {name}'s attendance and your recorded notes. Nothing is sent until you choose to share it.</Text>
+    <Text style={s.body}>A short summary of {name}'s attendance and your recorded notes. Only notes you wrote for this child alone are included; nothing is sent until you choose to share it. Read the text before sharing.</Text>
     <View style={s.row}>{[thisMonth, previousMonth(thisMonth)].map(m => <Pressable key={m} accessibilityRole="button" accessibilityLabel={`Prepare ${monthLabel(m)} report`} disabled={busy || disabled} onPress={() => { void prepare(m); }} style={s.btn}><Text style={s.btnText}>{monthLabel(m)}</Text></Pressable>)}</View>
     {!!error && <Text accessibilityRole="alert" style={s.err}>{error}</Text>}
     {view && <><Text style={s.report} selectable>{view.report.text}</Text>

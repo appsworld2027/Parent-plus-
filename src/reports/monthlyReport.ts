@@ -6,8 +6,8 @@ export const previousMonth = (month: string) => { const [y, m] = month.split('-'
 export const monthLabel = (month: string) => new Date(`${month}-15T12:00:00Z`).toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 export type Report = { held: number; attended: number; late: number; absent: number; notes: string[]; text: string; empty: boolean };
 export function monthlyReport(academy: string, student: string, month: string, tz: string, marks: ReportMark[], notes: ReportNote[]): Report {
-  const m = marks.filter(x => monthKey(x.starts_at, tz) === month);
-  const held = m.length, late = m.filter(x => x.status === 'late').length, absent = m.filter(x => x.status === 'absent').length, attended = held - absent;
+  const m = marks.filter(x => monthKey(x.starts_at, tz) === month && ['present', 'late', 'absent'].includes(x.status));
+  const held = m.length, late = m.filter(x => x.status === 'late').length, absent = m.filter(x => x.status === 'absent').length, attended = m.filter(x => x.status === 'present' || x.status === 'late').length;
   const picked = notes.filter(n => n.note.trim() && monthKey(n.recorded_at, tz) === month).sort((a, b) => Date.parse(b.recorded_at) - Date.parse(a.recorded_at)).slice(0, 3).map(n => n.note.trim().slice(0, 300));
   const empty = !held && !picked.length;
   const lines = [`${academy} — ${monthLabel(month)} progress for ${student}`];
