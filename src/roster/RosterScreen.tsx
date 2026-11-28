@@ -7,6 +7,7 @@ import type { Batch, BatchDraft, Roster, Student, StudentDraft, Proficiency } fr
 import { formatFee, validateBatch, validateStudent, batchStudents, proficiencyLabels } from './model';
 import { addBatchStudents, archiveStudent, loadRoster, rosterFailure, saveBatch, saveStudent } from './service';
 import { ParentLinkCard } from './ParentLinkCard';
+import { MonthlyReportCard } from '../reports/MonthlyReportCard';
 import { studentPhotoThumbnails } from '../photos/service';
 import { ScanRosterScreen, type SavedRosterImport } from '../onboarding/ScanRosterScreen';
 import { PhotoControl } from '../photos/PhotoControl';
@@ -24,7 +25,7 @@ function Field({ label, value, onChange, disabled, kind = 'text', max = 100 }: {
     keyboardType={kind === 'email' ? 'email-address' : kind === 'phone' ? 'phone-pad' : kind === 'number' ? 'number-pad' : kind === 'money' ? 'decimal-pad' : 'default'} style={s.input} /></View>;
 }
 
-export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan = false, startWithBatch = false, onScheduleBatch, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: { academy: string; timezone?: string; startWithScan?: boolean; startWithBatch?: boolean; onScheduleBatch?: (batch: string) => void; onLaunchHandled?: () => void; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
+export function RosterScreen({ academy, academyName, timezone = 'Asia/Kolkata', startWithScan = false, startWithBatch = false, onScheduleBatch, onLaunchHandled, onDirtyChange, onBusyChange, onViewChange }: { academy: string; academyName?: string; timezone?: string; startWithScan?: boolean; startWithBatch?: boolean; onScheduleBatch?: (batch: string) => void; onLaunchHandled?: () => void; onDirtyChange: (dirty: boolean) => void; onBusyChange: (busy: boolean) => void; onViewChange: () => void }) {
   const openedDirectly = useRef(startWithBatch);
   const [scanOpen,setScanOpen]=useState(startWithScan);
   const [tab, setTab] = useState<'students' | 'batches'>(startWithBatch ? 'batches' : 'students');
@@ -233,6 +234,7 @@ export function RosterScreen({ academy, timezone = 'Asia/Kolkata', startWithScan
           <Button label="Create a batch for this student" soft disabled={working} onPress={()=>{editStudent(profile);editBatch();setDirty(true);}} />
         </>}
       </View>
+      {!profile.archived_at && <MonthlyReportCard academy={academy} academyName={academyName ?? 'Your academy'} timezone={timezone ?? 'Asia/Kolkata'} student={profile.id} name={profile.name} phone={data?.contacts.find(contact=>contact.student_id===profile.id)?.phone} disabled={working} />}
       {!profile.archived_at && <ParentLinkCard key={profile.id} academy={academy} student={profile.id} name={profile.name} savedEmail={data?.contacts.find(contact=>contact.student_id===profile.id)?.email} disabled={working} onWorking={setBusy} />}
       <Button label={activeBatch?'Back to batch roster':'Back to students'} soft disabled={working} onPress={()=>{setProfileId(null);setProfileAddBatch(false);onViewChange();}} />
     </> : <>

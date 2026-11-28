@@ -150,7 +150,9 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/observations')) {
         if (options.missingObservationMigration) { status = 400; data = { code: '42703', message: 'Missing note column' }; }
         else {
-          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const rawId = url.searchParams.get('id') ?? '';
+          const inIds = rawId.startsWith('in.(') ? rawId.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : null;
+          const id = inIds ? undefined : rawId.replace(/^eq\./, '') || undefined;
           const statusFilter = url.searchParams.get('status')?.replace(/^eq\./, '');
           const recordedAtGte = url.searchParams.get('recorded_at')?.replace(/^gte\./, '');
           let rows = state.observations.filter(row => !id || row.id === id);
@@ -181,17 +183,20 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/class_sessions')) {
         if (options.missingClassMigration) { status = 400; data = { code: '42703', message: 'Missing class column' }; }
         else {
-          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const rawId = url.searchParams.get('id') ?? '';
+          const inIds = rawId.startsWith('in.(') ? rawId.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : null;
+          const id = inIds ? undefined : rawId.replace(/^eq\./, '') || undefined;
           const times = url.searchParams.getAll('starts_at');
           const from = times.find(t => t.startsWith('gte.'))?.slice(4);
           const until = times.find(t => t.startsWith('lt.'))?.slice(3);
-          const rows = state.classes.filter(c => (!id || c.id === id) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
+          const rows = state.classes.filter(c => (!id || c.id === id) && (!inIds || inIds.includes(c.id)) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
           if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : rows;
         }
       } else if (url.pathname.endsWith('/attendance')) {
         const raw = url.searchParams.get('session_id') ?? '';
-        const ids = raw.startsWith('in.(') ? raw.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : [raw.replace(/^eq\./, '')];
-        data = ids.flatMap(id => Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ session_id: id, student_id, status })));
+        const forStudent = url.searchParams.get('student_id')?.replace(/^eq\./, '');
+        const ids = !raw && forStudent ? Object.keys(state.attendance) : raw.startsWith('in.(') ? raw.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : [raw.replace(/^eq\./, '')];
+        data = ids.flatMap(id => Object.entries(state.attendance[id] ?? {}).filter(([student_id]) => !forStudent || student_id === forStudent).map(([student_id, status]) => ({ session_id: id, student_id, status })));
       } else if (url.pathname.endsWith('/students')) data = state.roster.students.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;

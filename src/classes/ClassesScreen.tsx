@@ -18,7 +18,9 @@ import { useFeedbackMessage } from '../ui/ActionFeedback';
 import { attendanceDrafts } from './localDrafts';
 import type { AttendanceDraft, ClassContext, ClassDraft, ClassSession, Mark, Marks } from './model';
 import { classValues, completeMarks, eligibleStudents, fingerprint, localParts, sameMarks } from './model';
-import { classFailure, loadAttendance, loadClasses, saveAttendance, saveClass } from './service';
+import { classFailure, loadAttendance, loadBatchHistory, loadClasses, saveAttendance, saveClass } from './service';
+import { fillLabel, suggestedMarks } from './smartDefaults';
+import { holidayHint, nationalHoliday } from './nationalHolidays';
 
 function Button({ title, onPress, disabled = false }: { title: string; onPress: () => void; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={[s.button, disabled && s.disabled]}><Text style={s.buttonText}>{title}</Text></Pressable>;
@@ -52,6 +54,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [holidayAsk, setHolidayAsk] = useState(false);
+  const [usual, setUsual] = useState<Marks>({});
   const [familyNote, setFamilyNote] = useState('');
   const [unsent, setUnsent] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +180,8 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
           setConflict(local);
         } else { value.marks = marks; value.local = true; setNotice('Unsent attendance draft restored from this device. Review and save to your class.'); }
       }
-      setActive(value); setDirty(false);
+      setActive(value); setDirty(false); setUsual({});
+      if (loaded.session.attendance_revision === 0) void loadBatchHistory(academy.id, loaded.session.batch_id, loaded.session.starts_at).then(h => setUsual(suggestedMarks(h.sessions, h.marks, eligibleStudents(latest, loaded.session, academy.timezone).map(x => x.id), {}))).catch(() => setUsual({}));
     } catch (failure) { setError(classFailure(failure, 'Attendance could not be opened. Check the connection and class status. Your device draft is retained.')); }
     finally { setBusy(false); }
   }
@@ -267,6 +271,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
       <ClassMediaPanel key={active.session.id} academy={academy.id} session={active.session.id} students={students} disabled={busy || !!conflict} onWorking={setBusy} />
       <Text style={s.body}>{active.local ? 'Unsent device draft' : 'Showing saved class attendance'} · {Object.keys(active.marks).length}/{students.length} marked</Text>
       {!students.length && <Text style={s.body}>No active students are enrolled for this class date.</Text>}
+      {(() => { const fresh = Object.fromEntries(Object.entries(usual).filter(([id]) => !active.marks[id])) as Marks; const n = Object.keys(fresh).length; return n > 0 && active.session.attendance_revision === 0 ? <><Text style={s.body}>Based on each child's last 5 classes. Nothing is saved until you tap Save.</Text><Button title={fillLabel(n)} disabled={busy || !!conflict} onPress={() => { void changeMarks({ ...active.marks, ...fresh }); }} /></> : null; })()}
       <Button title="Mark all present" disabled={busy || !students.length || students.length > 500 || !!conflict} onPress={() => { void changeMarks(Object.fromEntries(students.map(student => [student.id, 'present']))); }} />
       {students.map(student => <View style={s.student} key={student.id}><Text style={s.title}>{student.name}</Text>
         <View style={s.row}>{(['present', 'late', 'absent'] as Mark[]).map(mark => <Pressable key={mark} accessibilityRole="radio" accessibilityLabel={`${student.name}: ${mark}`} accessibilityState={{ checked: active.marks[student.id] === mark, disabled: busy || !!conflict }} aria-checked={active.marks[student.id] === mark} disabled={busy || !!conflict} onPress={() => { void changeMarks({ ...active.marks, [student.id]: mark }); }} style={[s.choice,active.marks[student.id]===mark&&(mark==='present'?s.attendancePresent:mark==='late'?s.attendanceLate:s.attendanceAbsent)]}><Text style={[s.attendanceText,active.marks[student.id]===mark&&s.selectedText]}>{mark}</Text></Pressable>)}</View>
@@ -283,6 +288,7 @@ export function ClassesScreen({ academy, owner, initialBatch, initialSession, on
         }} />
         <Button title="Create a class" disabled={!context || loading || busy} onPress={() => edit()} />
         <Field label={`Note to families (optional, up to ${NOTE_LIMIT} characters)`} value={familyNote} onChange={v => setFamilyNote(v.slice(0, NOTE_LIMIT))} disabled={loading || busy} />
+        {!!nationalHoliday(selectedDate) && <Text style={s.body}>{holidayHint(nationalHoliday(selectedDate)!)}</Text>}
         <Button title="Mark this day as a holiday" disabled={!context || loading || busy} onPress={() => setHolidayAsk(true)} />
         <Button title="Refresh classes" disabled={loading || busy} onPress={() => { setNotice(''); void reload().then(ok => { if (ok) setNotice('Classes refreshed.', { kind: 'success', title: 'Refresh complete' }); }); }} />
       </View>
