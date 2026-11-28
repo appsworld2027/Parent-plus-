@@ -46,6 +46,7 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       state.calls.push(url.pathname);
       let data: unknown = {};
       let status = 200;
+      if (((window as unknown as { __failTables?: string[] }).__failTables ?? []).some(table => url.pathname.endsWith(`/${table}`))) return new Response(JSON.stringify({ message: 'Injected fixture failure' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
       if (url.pathname.endsWith('/token')) {
         if (options.failLogin) {
           status = 400; data = { code: 'invalid_credentials', msg: 'Raw backend detail must not display' };
@@ -93,6 +94,11 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/rpc/post_batch_announcement')) {
         const f = ((window as unknown as { __announceFixture?: { posts: string[]; fails: number } }).__announceFixture ??= { posts: [], fails: 0 });
         if (f.fails > 0) { f.fails--; status = 500; data = { message: 'Fictional failure' }; } else { f.posts.push(payload.message); data = 'a1'; }
+      } else if (url.pathname.endsWith('/notify-batch') || url.pathname.endsWith('/rpc/save_push_subscription') || url.pathname.endsWith('/rpc/remove_push_subscription')) {
+        const f = ((window as unknown as { __pushFixture?: { calls: unknown[]; subs: string[] } }).__pushFixture ??= { calls: [], subs: [] });
+        if (url.pathname.endsWith('/notify-batch')) { f.calls.push(payload); data = payload.action === 'key' ? { publicKey: 'BEKNN0zoffLW3RgCg7uggfl5VTbzYlqAw3Mco_rjkyrLpBlQTiIRfsGu2o-UlS4Tje-vwSs6gAx6f7n_ZcqzybQ' } : { sent: 0, failed: 0 }; }
+        else if (url.pathname.endsWith('/rpc/save_push_subscription')) { f.subs.push(payload.push_endpoint); data = null; status = 204; }
+        else { f.subs = f.subs.filter(s => s !== payload.push_endpoint); data = null; status = 204; }
       } else if (url.pathname.endsWith('/rpc/get_coach_parent_requests')) { data = []; } else if (url.pathname.endsWith('/rpc/save_class_session')) {
         const index = state.classes.findIndex(c => c.id === payload.target_session);
         if (state.failClass) { status = 500; data = { message: 'Private class backend failure' }; }
@@ -144,7 +150,9 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/observations')) {
         if (options.missingObservationMigration) { status = 400; data = { code: '42703', message: 'Missing note column' }; }
         else {
-          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const rawId = url.searchParams.get('id') ?? '';
+          const inIds = rawId.startsWith('in.(') ? rawId.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : null;
+          const id = inIds ? undefined : rawId.replace(/^eq\./, '') || undefined;
           const statusFilter = url.searchParams.get('status')?.replace(/^eq\./, '');
           const recordedAtGte = url.searchParams.get('recorded_at')?.replace(/^gte\./, '');
           let rows = state.observations.filter(row => !id || row.id === id);
@@ -153,14 +161,15 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
           rows = rows.sort((a,b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
           const cursor = url.searchParams.get('or')?.match(/created_at\.eq\.([^,]+),id\.lt\.([0-9a-f-]+)/);
           if (cursor) rows = rows.filter(row => row.created_at < cursor[1] || (row.created_at === cursor[1] && row.id < cursor[2]));
-          data = id ? rows[0] ?? null : rows.slice(0,Number(url.searchParams.get('limit') ?? 30));
+          const offset = Number(url.searchParams.get('offset') ?? 0); data = id ? rows[0] ?? null : rows.slice(offset, offset + Number(url.searchParams.get('limit') ?? 30));
         }
       } else if (url.pathname.endsWith('/observation_recipients')) {
         const raw = url.searchParams.get('observation_id');
         const inParam = raw?.startsWith('in.') ? raw.slice(3) : null;
         if (inParam) {
           const ids = inParam.replace(/[()]/g, '').split(',');
-          data = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
+          const all = Object.entries(state.observationRecipients).filter(([key]) => ids.includes(key)).flatMap(([observation_id, studentIds]) => studentIds.map(student_id => ({ observation_id, student_id })));
+          const limit = url.searchParams.get('limit'); data = limit ? all.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(limit)) : all;
         } else {
           const id = raw?.replace(/^eq\./, '');
           data = Object.entries(state.observationRecipients).filter(([key]) => !id || key === id).flatMap(([observation_id, ids]) => ids.map(student_id => ({ observation_id, student_id })));
@@ -175,16 +184,20 @@ export async function backend(page: Page, options: { academy?: boolean; failLogi
       } else if (url.pathname.endsWith('/class_sessions')) {
         if (options.missingClassMigration) { status = 400; data = { code: '42703', message: 'Missing class column' }; }
         else {
-          const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+          const rawId = url.searchParams.get('id') ?? '';
+          const inIds = rawId.startsWith('in.(') ? rawId.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : null;
+          const id = inIds ? undefined : rawId.replace(/^eq\./, '') || undefined;
           const times = url.searchParams.getAll('starts_at');
           const from = times.find(t => t.startsWith('gte.'))?.slice(4);
           const until = times.find(t => t.startsWith('lt.'))?.slice(3);
-          const rows = state.classes.filter(c => (!id || c.id === id) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
+          const rows = state.classes.filter(c => (!id || c.id === id) && (!inIds || inIds.includes(c.id)) && (!from || Date.parse(c.starts_at) >= Date.parse(from)) && (!until || Date.parse(c.starts_at) < Date.parse(until)));
           if (id && !rows.length) { status = 406; data = { message: 'Class not found' }; } else data = id ? rows[0] : rows;
         }
       } else if (url.pathname.endsWith('/attendance')) {
-        const id = url.searchParams.get('session_id')?.replace(/^eq\./, '') ?? '';
-        data = Object.entries(state.attendance[id] ?? {}).map(([student_id, status]) => ({ student_id, status }));
+        const raw = url.searchParams.get('session_id') ?? '';
+        const forStudent = url.searchParams.get('student_id')?.replace(/^eq\./, '');
+        const ids = !raw && forStudent ? Object.keys(state.attendance) : raw.startsWith('in.(') ? raw.slice(4, -1).split(',').map(x => x.replace(/"/g, '')) : [raw.replace(/^eq\./, '')];
+        data = ids.flatMap(id => Object.entries(state.attendance[id] ?? {}).filter(([student_id]) => !forStudent || student_id === forStudent).map(([student_id, status]) => ({ session_id: id, student_id, status })));
       } else if (url.pathname.endsWith('/students')) data = state.roster.students.slice(Number(url.searchParams.get('offset') ?? 0), Number(url.searchParams.get('offset') ?? 0) + Number(url.searchParams.get('limit') ?? 1000));
       else if (url.pathname.endsWith('/student_contacts')) {
         status = options.missingRosterMigration ? 400 : 200;

@@ -47,3 +47,19 @@ export async function saveAttendance(session: ClassSession, marks: Marks): Promi
   if (result.error) throw result.error;
   return result.data as number;
 }
+// Recent past classes of one batch that have saved attendance, newest first, with their marks (smart defaults, M2-09). Best effort.
+export async function loadBatchHistory(academy: string, batch: string, before: string): Promise<{ sessions: string[]; marks: { session_id: string; student_id: string; status: string }[] }> {
+  if (!supabase) throw new Error('Client unavailable');
+  const sess = await supabase.from('class_sessions').select('id,status,attendance_revision').eq('academy_id', academy).eq('batch_id', batch).lt('starts_at', before).neq('status', 'cancelled').gt('attendance_revision', 0).order('starts_at', { ascending: false }).limit(5);
+  if (sess.error) throw sess.error;
+  const ids = (sess.data ?? []).map(x => x.id as string);
+  if (!ids.length) return { sessions: [], marks: [] };
+  // One request per class (each at most 500 children) so the 1000-row limit can never drop marks.
+  const all: { session_id: string; student_id: string; status: string }[] = [];
+  for (const id of ids) {
+    const marks = await supabase.from('attendance').select('session_id,student_id,status').eq('academy_id', academy).eq('session_id', id).range(0, 999);
+    if (marks.error) throw marks.error;
+    all.push(...((marks.data ?? []) as { session_id: string; student_id: string; status: string }[]));
+  }
+  return { sessions: ids, marks: all };
+}

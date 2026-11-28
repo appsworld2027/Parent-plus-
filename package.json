@@ -45,7 +45,7 @@
     "test:services:run": "node scripts/local-supabase.mjs test",
     "test:services:down": "node scripts/local-supabase.mjs down",
     "test:e2e": "playwright test",
-    "check": "npm run typecheck && npm test",
+    "check": "npm run typecheck && npm test && npm run test:component",
     "export:web": "expo export --platform web",
     "export:android": "expo export --platform android",
     "prepare:owner-sql": "node scripts/prepare-owner-sql.mjs",
@@ -53,7 +53,10 @@
     "prepare:identity-sql": "node scripts/prepare-identity-sql.mjs",
     "qa:lab:db": "vitest run -c qa/lab/vitest.lab.config.mts",
     "qa:lab:ui": "playwright test -c qa/lab/playwright.lab.config.ts --workers=1",
-    "qa:lab": "npm run qa:lab:db; npm run qa:lab:ui"
+    "qa:lab": "npm run qa:lab:db; npm run qa:lab:ui",
+    "test:component": "vitest run -c vitest.component.config.mts",
+    "test:report": "node scripts/test-report.mjs",
+    "check:features": "node scripts/check-feature-docs.mjs"
   },
   "private": true,
   "overrides": {

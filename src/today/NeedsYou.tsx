@@ -23,6 +23,8 @@ type Props = {
   onPress: () => void;
   loading?: boolean;
   error?: string | null;
+  feedbackError?: string | null;
+  feesError?: string | null;
 };
 
 export function NeedsYou({
@@ -36,6 +38,8 @@ export function NeedsYou({
   onPress,
   loading = false,
   error = null,
+  feedbackError = null,
+  feesError = null,
 }: Props) {
   // Loading state: show "Checking…" muted line, no count, no "All caught up"
   if (loading) {
@@ -62,11 +66,11 @@ export function NeedsYou({
     recipients,
     academy.timezone
   );
-  const count = needsYouStudents.length;
+  const count = feedbackError ? 0 : needsYouStudents.length;
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: academy.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   const fees = overdueFees(invoices, students, enrolments, today);
 
-  if (count === 0 && fees.students === 0) {
+  if (count === 0 && fees.students === 0 && !feedbackError && !feesError) {
     return (
       <View style={s.card} accessibilityLiveRegion="polite">
         <Text style={s.caughtUpTitle}>All caught up</Text>
@@ -89,14 +93,16 @@ export function NeedsYou({
       </Pressable>}
       {fees.students > 0 && <Pressable accessibilityRole="button" accessibilityLabel={formatOverdueMessage(fees.students)} onPress={onPressFees} style={s.card}>
         <View style={s.row}>
-          <View style={s.iconWrapper}><PrototypeIcon name="wallet" size={20} strokeWidth={2.2} color={c.rose} /></View>
+          <View style={s.iconWrapper}><View testID="needs-you-fees-wallet"><PrototypeIcon name="wallet" size={20} strokeWidth={2.2} color={c.rose} /></View></View>
           <View style={s.textColumn}>
             <Text style={s.countText}>{formatOverdueMessage(fees.students)}</Text>
             <Text style={s.subText}>{formatPending(fees.pendingPaise)}</Text>
           </View>
-          <PrototypeIcon name="chev" size={20} strokeWidth={2.2} color={c.muted} />
+          <View testID="needs-you-fees-chevron"><PrototypeIcon name="chev" size={20} strokeWidth={2.2} color={c.muted} /></View>
         </View>
       </Pressable>}
+      {feedbackError && <Text style={s.errorText}>{feedbackError}</Text>}
+      {feesError && <Text style={s.errorText}>{feesError}</Text>}
     </View>
   );
 }

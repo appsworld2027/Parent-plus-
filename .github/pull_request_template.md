@@ -17,6 +17,10 @@ Contract: `docs/product/<feature-slug>/ACCEPTANCE.md` (approved: <founder decisi
 |---|---|---|
 | AC-01 | pass / fail | |
 
+### Founder test scenarios (required before this feature is called done)
+- [ ] `docs/product/<slug>/SCENARIOS.csv` and `testing/workbooks/<slug>.xlsx` updated (Excel link: )
+- [ ] Row with sample test data added or updated in `docs/product/FOUNDER_TEST_SCRIPT.md`
+
 ### Decisions I made on my own
 -
 

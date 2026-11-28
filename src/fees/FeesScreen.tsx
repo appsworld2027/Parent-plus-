@@ -1,18 +1,23 @@
 import { prototypeColors as c, prototypeWeight } from '../ui/prototypeTheme';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Keyboard, Linking, Pressable, Share, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '../ui/Typography';
+import { whatsappLink, whatsappNumber } from '../observations/whatsapp';
+import { supabase } from '../auth/client';
 import { randomUUID } from 'expo-crypto';
 import { localParts } from '../classes/model';
 import { deviceStorage } from '../deviceStorage';
 import { formatFee } from '../roster/model';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useFeedbackMessage } from '../ui/ActionFeedback';
+import { reminder } from './reminder';
+import { canReceipt, receiptNumber, receiptText } from './receipt';
 import { billingOptions, invoiceStatus, operationSummary, paymentAmount, validDay, validMonth } from './model';
-import type { FeeContext, FeeDetail, FeeOperation, PendingFee } from './model';
+import type { FeeContext, FeeDetail, FeeOperation, Invoice, PendingFee } from './model';
 import { createPendingFees } from './pending';
 import { feeOverview, type StudentFee } from './summary';
-import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext } from './service';
+import { allMonthInvoices, executeFee, feeFailure, feeRejected, getInvoice, listInvoices, loadFeeContext, loadOverdueInvoices } from './service';
+import { monthLabel, overdueRows } from '../today/overdueFees';
 
 const pendingFees = createPendingFees(deviceStorage);
 function Button({ label, onPress, disabled = false, soft = false }: { label: string; onPress: () => void; disabled?: boolean; soft?: boolean }) {
@@ -25,13 +30,14 @@ function Field({ label, value, onChange, disabled, money = false, max = 10 }: { 
 }
 
 export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onViewChange }: {
-  academy: { id: string; timezone: string }; owner: string; onDirtyChange: (dirty: boolean) => void;
+  academy: { id: string; timezone: string; name?: string }; owner: string; onDirtyChange: (dirty: boolean) => void;
   onBusyChange: (busy: boolean) => void; onViewChange: () => void;
 }) {
   const today = localParts(new Date().toISOString(), academy.timezone).date;
   const [month, setMonth] = useState(today.slice(0, 7));
   const [filterMonth, setFilterMonth] = useState(month);
   const [context, setContext] = useState<FeeContext | null>(null);
+  const [overdueInvoices, setOverdueInvoices] = useState<Invoice[]>([]);
   const [list, setList] = useState<Awaited<ReturnType<typeof listInvoices>> | null>(null);
   const [detail, setDetail] = useState<FeeDetail | null>(null);
   const [view, setView] = useState<'list' | 'create' | 'detail' | 'collect'>('list');
@@ -46,6 +52,31 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const [form, setForm] = useState<'payment' | 'void' | 'reverse' | null>(null);
   const [amount, setAmount] = useState(''), [date, setDate] = useState(today);
   const [method, setMethod] = useState<'cash' | 'bank' | 'upi' | 'other'>('cash');
+  const [receiptOpen, setReceiptOpen] = useState(''), [receiptNote, setReceiptNote] = useState(''), [receiptPhone, setReceiptPhone] = useState<string | null>(null);
+  // Parent's WhatsApp number for the receipt (FR-10): first valid number on file; none means the button is not offered.
+  async function phoneFor(enrolmentId: string): Promise<string | null> {
+    try {
+      const studentId = context?.enrolments.find(e => e.id === enrolmentId)?.student_id; if (!studentId || !supabase) return null;
+      const r = await supabase.from('student_contacts').select('student_id,phone').eq('academy_id', academy.id).eq('student_id', studentId);
+      if (r.error) return null;
+      return ((r.data ?? []) as { phone: string | null }[]).find(c => c.phone && whatsappNumber(c.phone))?.phone ?? null;
+    } catch { return null; }
+  }
+  async function remindParent(inv: Invoice) {
+    const draft = reminder(academy.name ?? 'Your academy', inv, today); if (!draft) return;
+    const phone = await phoneFor(inv.enrolment_id); const link = phone ? whatsappLink(phone, draft.text) : null;
+    if (link) { setReceiptNote(''); void Linking.openURL(link); } else setReceiptNote('No parent phone number on file. Add one in Students to send a reminder.');
+  }
+  async function loadReceiptPhone(enrolmentId: string) {
+    setReceiptPhone(null);
+    try {
+      const studentId = context?.enrolments.find(e => e.id === enrolmentId)?.student_id; if (!studentId || !supabase) return;
+      const r = await supabase.from('student_contacts').select('student_id,phone').eq('academy_id', academy.id).eq('student_id', studentId);
+      if (r.error) return;
+      setReceiptPhone(((r.data ?? []) as { phone: string | null }[]).find(c => c.phone && whatsappNumber(c.phone))?.phone ?? null);
+    } catch { /* No number means no WhatsApp button; sharing still works. */ }
+  }
+  const shareReceipt = async (message: string) => { try { await Share.share({ message }); setReceiptNote(''); } catch { setReceiptNote('Sharing is not available here. Copy the receipt text above or take a screenshot.'); } };
   const [reference, setReference] = useState(''), [reason, setReason] = useState(''), [payment, setPayment] = useState('');
   const [confirmation, setConfirmation] = useState<FeeOperation | null>(null);
   const [pending, setPending] = useState<PendingFee | null>(null), [storageBlocked, setStorageBlocked] = useState(true);
@@ -58,17 +89,18 @@ export function FeesScreen({ academy, owner, onDirtyChange, onBusyChange, onView
   const selected = choices.find(item => item.id === enrolment);
   const overview = context && list ? feeOverview(context,list.invoices,filterMonth,today) : null;
   const selectedBatch = overview?.batches.find(batch => batch.id === batchView);
+  const overdue = context ? overdueRows(overdueInvoices, context.students, context.enrolments, today) : [];
 
   const reload = useCallback(async (targetMonth: string) => {
     const generation = ++version.current;
     setLoading(true); setList(null);
     try {
-      const [data, invoices] = await Promise.all([loadFeeContext(academy.id), allMonthInvoices(academy.id, targetMonth)]);
-      if (alive.current && generation === version.current) { setContext(data); setList({ invoices, more: false }); return true; }
+      const [data, invoices, overdue] = await Promise.all([loadFeeContext(academy.id), allMonthInvoices(academy.id, targetMonth), loadOverdueInvoices(academy.id, today)]);
+      if (alive.current && generation === version.current) { setContext(data); setList({ invoices, more: false }); setOverdueInvoices(overdue); return true; }
     } catch (failure) { if (alive.current && generation === version.current) error(feeFailure(failure, 'Fees could not be loaded. Check your connection and retry.')); }
     finally { if (alive.current && generation === version.current) setLoading(false); }
     return false;
-  }, [academy.id, error]);
+  }, [academy.id, error, today]);
   async function readPending() {
     setStorageBlocked(true);
     try {
@@ -206,6 +238,14 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           setFilterMonth(month); setBatchView(null); void reload(month);
         }} />
       </View>
+      {overview && !selectedBatch && overdue.length > 0 && <View testID="fees-overdue-section" style={s.card}>
+        <Text accessibilityRole="header" style={s.title}>Overdue</Text>
+        {overdue.map(row => <View key={row.studentId} testID="fees-overdue-row" style={{ gap: 2 }}>
+          <Text style={s.title}>{row.name}</Text>
+          <Text style={s.body}>{row.batches.join(', ')} · {row.months.map(monthLabel).join(', ')}</Text>
+          <Text style={s.badge}>{formatFee(row.paise)} due</Text>
+        </View>)}
+      </View>}
       {overview && <>
         <View style={s.summaryHero}>
           <Text style={s.heroLabel}>{filterMonth} · {selectedBatch ? selectedBatch.name : 'ALL BATCHES'}</Text>
@@ -287,6 +327,8 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
         <Text style={s.badge}>{invoiceStatus(invoice, today)}</Text>
         <Text style={s.body}>Monthly fee: {formatFee(invoice.amount_paise)} · Due {invoice.due_on}</Text>
         <Text style={s.title}>{invoice.voided_at ? 'Voided invoice' : `Outstanding: ${formatFee(invoice.balance_paise)}`}</Text>
+        {reminder('', invoice, today) && <Button label="Remind parent on WhatsApp" soft onPress={() => { void remindParent(invoice); }} />}
+        {!!receiptNote && !receiptOpen && <Text style={s.caption}>{receiptNote}</Text>}
         <Text style={s.body}>Recorded received: {formatFee(invoice.paid_paise)}. Manual entries are not gateway verified.</Text>
         {invoice.test_paise > 0 && <Text style={s.body}>Test payment records: {formatFee(invoice.test_paise)}. Excluded from real balance.</Text>}
         {invoice.excess_paise > 0 && <Text style={s.warning}>Excess received: {formatFee(invoice.excess_paise)}. Review required; no automatic refund.</Text>}
@@ -322,6 +364,14 @@ ${confirmation.kind === 'invoice' ? `${selected?.student ?? ''} · ${selected?.b
           <Text style={s.body}>{entry.paid_on ?? entry.recorded_at.slice(0, 10)} · {entry.method?.toUpperCase() ?? entry.mode}</Text>
           {!!entry.reference && <Text style={s.body}>Reference: {entry.reference}</Text>}
           <Text style={s.caption}>Recorded {entry.recorded_at} · {entry.recorded_by === owner ? 'by you' : entry.source === 'gateway' ? 'by payment service' : 'legacy record'}</Text>
+          {canReceipt(entry) && invoice && <Button label={receiptOpen === entry.id ? 'Hide receipt' : 'View receipt'} soft onPress={() => { const open = receiptOpen === entry.id; setReceiptOpen(open ? '' : entry.id); setReceiptNote(''); if (!open) void loadReceiptPhone(invoice.enrolment_id); }} />}
+          {receiptOpen === entry.id && canReceipt(entry) && invoice && <View style={s.ledger}>
+            <Text selectable style={s.body}>{receiptText(academy.name ?? 'Your academy', invoice, entry)}</Text>
+            <Button label={`Share receipt ${receiptNumber(entry)}`} soft onPress={() => { void shareReceipt(receiptText(academy.name ?? 'Your academy', invoice, entry)); }} />
+            {receiptPhone ? <Button label="Send receipt on WhatsApp" soft onPress={() => { const link = whatsappLink(receiptPhone, receiptText(academy.name ?? 'Your academy', invoice, entry)); if (link) void Linking.openURL(link); }} />
+              : <Text style={s.caption}>No parent phone number on file. Use Share, or add a number in Students.</Text>}
+            {!!receiptNote && <Text style={s.caption}>{receiptNote}</Text>}
+          </View>}
           {entry.reversal ? <Text style={s.warning}>Reversed {entry.reversal.reversed_at}. Reason: {entry.reversal.reason}</Text>
             : entry.source === 'manual' && !invoice?.voided_at && <Button label={`Correct manual record ${formatFee(entry.amount_paise)}`} soft disabled={disabled} onPress={() => beginForm('reverse', entry.id)} />}
         </View>)}

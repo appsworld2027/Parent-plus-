@@ -31,6 +31,9 @@ import { PrototypeIcon } from './src/ui/PrototypeIcon';
 import { PrototypeFrame } from './src/ui/PrototypeFrame';
 import { ActionFeedback, FeedbackProvider, useFeedbackMessage } from './src/ui/ActionFeedback';
 import { NeedsYou } from './src/today/NeedsYou';
+import { CoachWrapUp } from './src/today/CoachWrapUp';
+import { Spotlight } from './src/today/Spotlight';
+import { CoachAttendanceAlerts } from './src/today/CoachAttendanceAlerts';
 import { loadNeedsYouData } from './src/today/service';
 import type { Invoice } from './src/fees/model';
 import { CoachSignals } from './src/today/CoachSignals';
@@ -90,13 +93,15 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
   const [needsYouRecipients, setNeedsYouRecipients] = useState<Recipient[]>([]);
   const [needsYouInvoices, setNeedsYouInvoices] = useState<Invoice[]>([]);
   const [needsYouError, setNeedsYouError] = useState<string | null>(null);
+  const [needsYouFeedbackError, setNeedsYouFeedbackError] = useState<string | null>(null);
+  const [needsYouFeesError, setNeedsYouFeesError] = useState<string | null>(null);
   const [needsYouLoading, setNeedsYouLoading] = useState(false);
 
   useEffect(() => {
     if (screen !== 'Today' || !auth.academy) return;
     let active = true;
     setNeedsYouLoading(true);
-    setNeedsYouError(null);
+    setNeedsYouError(null); setNeedsYouFeedbackError(null); setNeedsYouFeesError(null);
     async function load() {
       try {
         const data = await loadNeedsYouData(auth.academy!.id, new Intl.DateTimeFormat('en-CA', { timeZone: auth.academy!.timezone ?? 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
@@ -106,6 +111,8 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
         setNeedsYouObservations(data.observations);
         setNeedsYouRecipients(data.recipients);
         setNeedsYouInvoices(data.invoices);
+        if (data.feedbackFailed) setNeedsYouFeedbackError(`Feedback could not load. Reference: ${diagnostics.record('OBSERVATION_FAILURE').reference}`);
+        if (data.feesFailed) setNeedsYouFeesError(`Fees could not load. Reference: ${diagnostics.record('FEE_FAILURE').reference}`);
       } catch (error) {
         if (active) {
           const ref = diagnostics.record('OBSERVATION_FAILURE').reference;
@@ -187,8 +194,13 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
               onPress={() => navigate('Post')}
               loading={needsYouLoading}
               error={needsYouError}
+              feedbackError={needsYouFeedbackError}
+              feesError={needsYouFeesError}
             />
           </>}
+          {auth.academy && <CoachWrapUp academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onSchedule={() => navigate('Schedule')} onFeedback={() => navigate('Post')} />}
+          {auth.academy && <Spotlight academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} onOpen={() => navigate('Post')} />}
+          {auth.academy && <CoachAttendanceAlerts academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} academyName={auth.academy.name} />}
           {auth.academy && <CoachSignals academyId={auth.academy.id} timezone={auth.academy.timezone ?? 'Asia/Kolkata'} />}
           {auth.academy && <CoachAnnounce academyId={auth.academy.id} />}
           {auth.academy && <TodayClasses academy={auth.academy} onOpen={() => navigate('Schedule')} onOpenSession={session=>{setClassLaunch({session});navigate('Schedule');}} />}
@@ -230,7 +242,7 @@ function AppContent({ exitPreview }: { exitPreview?: () => void }) {
           {!!notice && <Text style={styles.notice}>{notice}</Text>}
           <FontLicense />
           {!!report && <View style={styles.card}><Text style={styles.sectionTitle}>Sanitized report</Text><Text selectable testID="diagnostic-report" style={styles.report}>{report}</Text></View>}
-        </> : screen === 'Profile' && auth.session ? <ProviderProfileScreen key={auth.session.user.id} /> : screen === 'Listing' && auth.session ? <ListingScreen key={auth.session.user.id} onOpenProfile={() => navigate('Profile')} /> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
+        </> : screen === 'Profile' && auth.session ? <ProviderProfileScreen key={auth.session.user.id} /> : screen === 'Listing' && auth.session ? <ListingScreen key={auth.session.user.id} onOpenProfile={() => navigate('Profile')} /> : screen === 'Fees' && auth.academy && auth.session ? <FeesScreen key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Post' && auth.academy && auth.session ? <ObservationsScreen initialClass={feedbackLaunch} onLaunchHandled={feedbackLaunchHandled} key={auth.academy.id} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Schedule' && auth.academy && auth.session ? <ClassesScreen key={auth.academy.id} startWithCreate={!!classLaunch&&!classLaunch.session} initialSession={classLaunch?.session} initialBatch={classLaunch?.batch} onWriteFeedback={(session,students)=>{setFeedbackLaunch({session,students});navigate('Post');}} academy={auth.academy} owner={auth.session.user.id} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : screen === 'Students' && auth.academy ? <RosterScreen key={auth.academy.id} academy={auth.academy.id} academyName={auth.academy.name} timezone={auth.academy.timezone} startWithScan={launchRosterSetup} startWithBatch={launchBatch} onScheduleBatch={batch => { setClassLaunch({batch}); navigate('Schedule'); }} onLaunchHandled={rosterLaunchHandled} onDirtyChange={setFormDirty} onBusyChange={setFormBusy} onViewChange={scrollToTop} /> : <>
           <Text style={styles.eyebrow}>{screen === 'Post' ? 'CLASS UPDATES' : screen.toUpperCase()}</Text>
           <Text accessibilityRole="header" style={styles.heading}>{stages[screen].title}</Text>
           <Text style={styles.subtitle}>{stages[screen].body}</Text>

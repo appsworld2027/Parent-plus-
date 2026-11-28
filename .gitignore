@@ -53,3 +53,4 @@ __pycache__/
 .local-supabase/
 supabase/.temp/
 qa-results/
+reports/

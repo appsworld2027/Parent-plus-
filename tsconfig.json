@@ -7,6 +7,7 @@
   "exclude": [
     "node_modules",
     "supabase/functions/scan-roster/index.ts",
+    "supabase/functions/notify-batch/index.ts",
     "supabase/scan-roster-dashboard.ts"
   ]
 }

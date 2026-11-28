@@ -24,7 +24,7 @@ test('AC-02/10 feedback and fees items appear together', async ({ page }) => {
   await expect(page.getByRole('button', { name: /child needs|children need/ })).toBeVisible();
 });
 test('AC-12 an invoice due today is not overdue', async ({ page }) => {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   await open(page, [invoice(100000, '2999-01-01'), invoice(100000, today)]);
   await expect(page.getByRole('button', { name: /fees? overdue/ })).toHaveCount(0);
 });
