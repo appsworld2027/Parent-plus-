@@ -29,6 +29,8 @@ import { identityFailure } from './identity';
 import { loadAnnouncements, announcementsForChild, type Announcement } from './signals';
 import { loadTodaySignals, sendSignal, withdrawSignal, signalsForChild, signalLabels, type SignalKind, type TodaySignal } from './signals';
 import { createFamily, loadFamily, loadParentData, parentFailure, saveFamilyRecord } from './service';
+import { appConfig } from '../config';
+import { ParentAttendance } from './ParentAttendance';
 
 type Tab='Home'|'Week'|'Together'|'Explore';
 type Sheet='child'|'moment'|'todo'|'event'|'connect'|'activity'|'profile'|'consent';
@@ -232,6 +234,7 @@ function ParentWorkspace({onExitPreview}:{onExitPreview?:()=>void}) {
         <View accessibilityRole="tablist" style={s.childRow}>{children.map(value=><Pressable accessibilityRole="tab" accessibilityLabel={`Choose child ${value.name}`} accessibilityState={{selected:child?.id===value.id}} aria-selected={child?.id===value.id} key={value.id} disabled={busy} onPress={()=>{setSelected(value.id);setMediaPreview(null);}} style={[s.childChip,child?.id===value.id&&s.childActive]}><View style={[s.face,{backgroundColor:parentColors[value.color]}]}><Text style={s.faceText}>{value.name.slice(0,2)}</Text></View><Text style={[s.childName,child?.id===value.id&&s.childSelectedText]}>{value.name}</Text></Pressable>)}<Pressable accessibilityRole="button" accessibilityLabel="Add a child" disabled={busy} onPress={()=>open('child')} style={s.addChild}><Text style={s.link}>＋ Add child</Text></Pressable></View>
         {!child?<View style={s.card}><Text style={s.cardTitle}>Start with your child</Text><Text style={s.muted}>Add a name, optional birthday and a colour. Then your week and coach updates have a place to belong.</Text><Button title="Add my first child" disabled={busy} action={()=>open('child')} /></View>:<>
           {tab==='Home'&&<>
+            {appConfig.environment!=='production'&&process.env.EXPO_PUBLIC_ENABLE_PARENT_ATTENDANCE==='true'&&!!owner&&!!child&&data.identityReady&&links.length>0&&<ParentAttendance key={`${owner}:${child.id}:${links.map(l=>l.id).sort().join(',')}`} owner={owner} child={child.id} initialDay={today}/>}
             <Pressable accessibilityRole="button" accessibilityLabel={nextEvent?'View next family plan':'Add a family plan'} disabled={busy} onPress={()=>nextEvent?setTab('Week'):open('event')} style={[s.nextBand,{backgroundColor:nextBandColor}]}><View style={s.grow}><Text style={s.nextKicker}>{nextEvent?'Next family plan':'Make a little time together'}</Text><Text style={s.nextTitle}>{nextEvent?.title??'Add your next family plan'}</Text></View>{nextEvent&&<Text style={s.nextTime}>{localParts(nextEvent.starts_at,family.timezone).time}</Text>}<View style={s.chevronBubble}><PrototypeIcon name="chev" source="parent" size={17} color={c.white} /></View></Pressable>
             {section('This week',()=>setTab('Week'),'See week →')}
             <View style={s.metrics}>{[

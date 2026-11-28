@@ -1,0 +1,43 @@
+import React,{useEffect,useRef,useState} from 'react';
+import {ActivityIndicator,Pressable,StyleSheet,TextInput,View} from 'react-native';
+import {Text} from '../ui/Typography';
+import {mondayOf,type AttendanceSession,type AttendanceStatus} from './attendance';
+import {loadAttendancePage} from './attendanceService';
+import {diagnostics} from '../diagnostics';
+function failure(message:string) {
+ try{return `${message} Reference: ${diagnostics.record('PARENT_ATTENDANCE_FAILURE').reference}`;}
+ catch{return message;}
+}
+function attendanceLabel(status:AttendanceStatus){return status==='make_up'?'make-up session':status;}
+export function ParentAttendance({owner,child,initialDay}:{owner:string;child:string;initialDay:string}) {
+ const [day,setDay]=useState(initialDay),[revision,setRevision]=useState(0);
+ const [state,setState]=useState<{day:string;rows:AttendanceSession[];loading:boolean;more:boolean;error:string}>({day:'',rows:[],loading:false,more:false,error:''});
+ const generation=useRef(0),busy=useRef(false);
+ useEffect(()=>{
+  const token=++generation.current;busy.current=true;
+  setState({day,rows:[],loading:true,more:false,error:''});
+  try{mondayOf(day);}catch{busy.current=false;setState({day,rows:[],loading:false,more:false,error:'Enter a valid class date as YYYY-MM-DD.'});return;}
+  void loadAttendancePage(owner,child,day).then(rows=>{if(token===generation.current)setState({day,rows,loading:false,more:rows.length===50,error:''});}).catch(()=>{if(token===generation.current)setState({day,rows:[],loading:false,more:false,error:failure('Attendance could not be loaded. Retry to check the latest records.')});}).finally(()=>{if(token===generation.current)busy.current=false;});
+  return()=>{generation.current++;};
+ },[owner,child,day,revision]);
+ async function more(){
+  if(busy.current||state.day!==day||!state.more)return;
+  busy.current=true;const token=generation.current;
+  setState(current=>({...current,loading:true,error:''}));
+  try{const rows=await loadAttendancePage(owner,child,day,state.rows.at(-1));if(token===generation.current)setState(current=>({...current,rows:[...current.rows,...rows],loading:false,more:rows.length===50,error:''}));}
+  catch{if(token===generation.current)setState(current=>({...current,loading:false,error:failure('More attendance could not be loaded. Retry or refresh.')}));}
+  finally{if(token===generation.current)busy.current=false;}
+ }
+ const visible=state.day===day?state.rows:[];
+ return <View style={s.card}><Text accessibilityRole="header" style={s.title}>Class attendance</Text>
+  <Text style={s.text}>Choose a class date at the academy. Class times below are shown in UTC.</Text>
+  <TextInput accessibilityLabel="Attendance class date" value={day} onChangeText={value=>{if(value!==day){generation.current++;setDay(value);}}} maxLength={10} autoCapitalize="none" style={s.input}/>
+  <Pressable accessibilityRole="button" onPress={()=>setRevision(x=>x+1)} style={s.button}><Text style={s.text}>Refresh attendance</Text></Pressable>
+  {state.loading&&<ActivityIndicator accessibilityLabel="Loading attendance"/>}
+  {!!state.error&&<Text role="alert" style={s.text}>{state.error}</Text>}
+  {!state.loading&&!state.error&&state.day===day&&!visible.length&&<Text style={s.text}>No shared classes for this date.</Text>}
+  {visible.map(row=><View key={row.session_id} style={s.row}><Text style={s.title}>{row.workspace_name} · {row.batch_name}</Text><Text style={s.text}>{new Date(row.starts_at).toISOString().slice(0,16).replace('T',' ')} UTC · {row.session_status}</Text><Text style={s.text}>{row.attendance_status===null?'Attendance not recorded':`Coach recorded: ${attendanceLabel(row.attendance_status)}`}</Text></View>)}
+  {state.more&&state.day===day&&<Pressable accessibilityRole="button" disabled={state.loading} onPress={()=>{void more();}} style={s.button}><Text style={s.text}>Load more attendance</Text></Pressable>}
+ </View>;
+}
+const s=StyleSheet.create({card:{padding:18,gap:12,borderRadius:22,backgroundColor:'#151A20',borderWidth:1,borderColor:'#313A45'},title:{color:'#F9FBFC',fontWeight:'700',fontSize:17},text:{color:'#DCE3E8',fontSize:14,lineHeight:22},input:{minHeight:48,padding:12,borderWidth:1,borderColor:'#A9B3BF',borderRadius:12,color:'#F9FBFC'},button:{minHeight:48,padding:12,borderRadius:12,backgroundColor:'#20262F',alignItems:'center'},row:{gap:6,borderTopWidth:1,borderColor:'#313A45',paddingTop:12}});

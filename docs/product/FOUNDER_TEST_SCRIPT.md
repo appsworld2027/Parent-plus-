@@ -54,4 +54,7 @@ Rules: use the Vercel preview link, a coach account with a verified email, and O
 <!-- feature:monthly-progress-report -->
 | 26 | Open Fictional Aarav's profile and tap this month under Monthly progress report | Text 'attended X of Y' for this month and up to 3 notes written for him alone. A month with nothing recorded says so and offers no share | monthly-progress-report |
 
+<!-- feature:parent-attendance -->
+| 27 | As a connected parent (preview with attendance flag ON), pick a class date where the coach saved Aarav as present | Aarav's class with 'present'; a date with no class says 'No shared classes for this date.'; a class without saved attendance shows unrecorded | parent-attendance |
+
 Not tested by AI and needing you: real phone behaviour, real email delivery (parked), anything on the live database.
