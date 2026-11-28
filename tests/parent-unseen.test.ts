@@ -13,3 +13,12 @@ describe('unseen coach updates', () => {
   it('NB-05 nothing means zero', () => expect(unseenCount([], null, now)).toBe(0));
   it('NB-06 markers are per child (pure per-list)', () => { expect(unseenCount(['2026-11-28T10:00:00Z'], '2026-11-28T11:00:00Z', now)).toBe(0); expect(unseenCount(['2026-11-28T10:00:00Z'], null, now)).toBe(1); });
 });
+
+describe('independent review: mixed timestamp formats', () => {
+  it('NB-08 same instant in +00:00 and Z form is not counted as new', () => {
+    const now = new Date('2026-11-28T10:00:00Z');
+    expect(unseenCount(['2026-11-28T09:00:00+00:00'], '2026-11-28T09:00:00.000Z', now)).toBe(0);
+    expect(unseenCount(['2026-11-28T09:00:01+00:00'], '2026-11-28T09:00:00.000Z', now)).toBe(1);
+    expect(unseenCount(['2026-11-28T14:30:00+05:30'], '2026-11-28T09:00:00.000Z', now)).toBe(0);
+  });
+});

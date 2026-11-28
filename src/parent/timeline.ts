@@ -4,7 +4,7 @@ const fmt = (tz: string) => new Intl.DateTimeFormat('en-CA', { timeZone: tz, yea
 export function timelineGroups<T extends TimelineItem>(items: T[], timezone: string | undefined | null) {
   const tz = timezone || 'Asia/Kolkata';
   const groups = new Map<string, T[]>();
-  for (const item of [...items].sort((a, b) => b.reviewed_at.localeCompare(a.reviewed_at))) {
+  for (const item of [...items].sort((a, b) => Date.parse(b.reviewed_at) - Date.parse(a.reviewed_at))) {
     const key = fmt(tz).format(new Date(item.reviewed_at)).slice(0, 7);
     groups.set(key, [...(groups.get(key) ?? []), item]);
   }

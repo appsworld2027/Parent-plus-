@@ -23,3 +23,10 @@ describe('child progress timeline', () => {
     expect(timelineGroups([row('a', '2026-11-30T20:00:00Z')], '')[0].label).toBe('December 2026');
   });
 });
+
+describe('independent review: mixed timestamp formats', () => {
+  it('CT-08 newest first even when formats differ (+00:00 vs Z)', () => {
+    const g = timelineGroups([{ reviewed_at: '2026-11-10T09:00:00+00:00' }, { reviewed_at: '2026-11-10T09:30:00.000Z' }], 'Asia/Kolkata');
+    expect(g[0].items.map(i => i.reviewed_at)).toEqual(['2026-11-10T09:30:00.000Z', '2026-11-10T09:00:00+00:00']);
+  });
+});

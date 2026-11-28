@@ -3,7 +3,7 @@
 export type Stamped = { at: string };
 const WEEK = 7 * 86_400_000;
 export function unseenCount(stamps: string[], lastSeen: string | null, now: Date): number {
-  return stamps.filter(at => Date.parse(at) >= now.getTime() - WEEK && (!lastSeen || at > lastSeen)).length;
+  return stamps.filter(at => Date.parse(at) >= now.getTime() - WEEK && (!lastSeen || Date.parse(at) > Date.parse(lastSeen))).length;
 }
 export const unseenLine = (n: number) => `${n} new ${n === 1 ? 'update' : 'updates'} from your coach`;
 const key = (childId: string) => `parentplus.parent.seen.v1.${childId}`;
