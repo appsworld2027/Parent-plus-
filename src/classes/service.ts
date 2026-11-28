@@ -63,3 +63,11 @@ export async function loadBatchHistory(academy: string, batch: string, before: s
   }
   return { sessions: ids, marks: all };
 }
+
+// Parent signals for one class (M2-10). Coach-only read; newest first. A failure is thrown so the screen can hide the suggestion rather than imply none were sent.
+export async function loadSessionSignals(academy: string, session: string): Promise<{ student_id: string; kind: string; changed_at: string }[]> {
+  if (!supabase) throw new Error('Client unavailable');
+  const r = await supabase.from('parent_signals').select('student_id,kind,changed_at').eq('academy_id', academy).eq('session_id', session).order('changed_at', { ascending: false }).limit(500);
+  if (r.error) throw r.error;
+  return (r.data ?? []) as { student_id: string; kind: string; changed_at: string }[];
+}

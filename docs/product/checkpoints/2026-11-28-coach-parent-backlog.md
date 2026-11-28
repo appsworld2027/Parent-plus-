@@ -137,3 +137,7 @@ Needs: merge origin/MM/development (5 conflicts: App.tsx, BACKLOG.md, SESSION_ST
 ## Update 11 — RELEASED to main (28 Nov)
 - PR 58 merged to main as b5e1bba on founder approval in chat; all CI checks were green including contract-lock. MM/development fast-forwarded to main. Contains M2-43, M2-24, workbooks for all features (check:features 0 gaps).
 - Still NOT RUN: real-device web push, hosted real-login checks, midnight roll-over for quick signals; no independent re-review of the review fixes.
+
+## Update 12 — M2-10 attendance from parent signals built (28 Nov, on MM/development, NOT released)
+- Backlog was fully ticked; chose M2-10 from the roadmap (builds on quick signals; no database change). Files: src/classes/signalSuggestions.ts, loadSessionSignals in service.ts, ClassesScreen button; contract/scenarios/workbook docs/product/signal-attendance, founder row 30.
+- Evidence: npm run check 753 pass + 2 expected fail, component 20; new browser tests 4/4; classes, smart-defaults, schedule-changes specs re-run (see session). Independent review: PENDING (builder only). Hosted check NOT RUN. Release to main needs founder /approve.

@@ -24,3 +24,4 @@ and Maya turns it into a Feature Contract for founder approval. Reorder lines to
 - [x] parent-attendance — Parent sees their child's class attendance (ported from AM/consolidated onto parentplus-dev; flag-gated, non-production) — Parent
 - [x] safety-notes — Coach keeps a private safety/health note per student (never shown to parents) — M2-43
 - [x] parent-reactions — Parent reacts with one tap to reviewed feedback; coach sees counts — M2-24
+- [x] signal-attendance — Coach can apply parents' running-late/missing/dropped-off signals to attendance in one tap, then save — M2-10

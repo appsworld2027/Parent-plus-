@@ -62,4 +62,7 @@ Rules: use the Vercel preview link, a coach account with a verified email, and O
 <!-- feature:parent-reactions -->
 | 29 | After the coach has shared a reviewed note about Aarav to a connected test parent: as parent, under the note tap **Helpful**, then **Thank you**; reload. As coach open Today | Parent sees "Thank you · sent to coach" even after reload; **Undo** returns "Let your coach know:". Coach Today shows "Parents reacted to your feedback (1)" with "Thank you ×1", no parent names. With no reactions the card is absent. | parent-reactions |
 
+<!-- feature:signal-attendance -->
+| 30 | As parent, on **Fictional Aarav**'s card tap **Missing today** (class today). As coach: Schedule → Attendance for today's Clay class | Text "Parents told you: 1 missing. Nothing is saved until you tap Save." and button "Apply parent signals (1)"; tap it: Aarav shows absent but is not saved until Save. With no parent signal the button is absent. | signal-attendance |
+
 Not tested by AI and needing you: real phone behaviour, real email delivery (parked), anything on the live database.
