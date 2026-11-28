@@ -61,3 +61,13 @@ Contracts: `docs/product/<slug>/ACCEPTANCE.md` (attendance-patterns, fee-receipt
 
 ## 10. Memory updates
 None saved outside the repo. Durable rules live in `AGENTS.md`, this file and `docs/product/SESSION_STATE.md`.
+
+## Update — independent review session (28 Nov, session 2, reviewer ≠ builder)
+- Verified checkpoint against `git log` and SESSION_STATE: consistent (code up to fd794a2, docs 9bb96a9).
+- **Security review of `notify-batch` + `202611280030_web_push.sql` — DONE.**
+  - Sound: only the academy owner can read `batches` (RLS `academy_access`), so only they can push to a batch; subscription/settings tables have no client grants; `push_targets`/`push_forget` are service-role only; VAPID private key never leaves `push_settings`; remove only deletes the caller's own row; VAPID bootstrap insert is one atomic statement.
+  - **Defect found and fixed (commit 424a84a): SSRF.** Any signed-in user could save an arbitrary `endpoint`, and the function would POST to it from the server. Now the save function only accepts https endpoints on real push services (googleapis.com, push.services.mozilla.com, notify.windows.com, push.apple.com) and `notify-batch` re-checks before sending. Test WP-09 added; web-push suites 13/13 pass.
+  - Hosted on parentplus-dev: migration `push_endpoint_ssrf_guard` applied (also deleted any stored rows not matching the allow-list, dev data only) and `notify-batch` redeployed (version 2, verify_jwt on). Not re-run against a real browser push.
+  - Accepted, not fixed (low): no per-coach send rate limit; list silently capped at 1000 targets; `on conflict (endpoint)` re-assigns a shared-device endpoint to the newest signed-in parent (intended).
+- **NOT DONE yet:** independent review/test of the other nine features (attendance-patterns, fee-receipts, child-progress-timeline, schedule-changes, end-of-day-queue, spotlight-rotation, parent banner, fee reminders, class reminders); full suite not re-run this session; M2-09, M2-07, M2-23 not started.
+- Next action: fresh session continues with the nine reviews, then builds M2-09, M2-07, M2-23.
